@@ -1,0 +1,25 @@
+# نسخ احتياطية وتصديرات من اللوح — لا تُرفع
+*.json
+!package.json
+سجل-المهام-*.csv
+نسخة-لوح-اليوم-*.json
+نسخة-نسق-*.json
+ترحيل-لوح-اليوم*.json
+
+# الجسر مكانه Apps Script لا المستودع العام
+notion-bridge.gs
+
+# أدوات التشغيل المحلي
+serve-local.bat
+serve-local.ps1
+.claude/
+
+# لا ترفع أي ملف يحمل مفاتيح
+*.token
+.env
+secrets.*
+
+# ملفات النظام
+Thumbs.db
+desktop.ini
+.DS_Store
