@@ -295,12 +295,12 @@ h1{font-family:var(--font-head);font-size:40px;font-weight:700;margin:0;letter-s
 .pri-row{display:grid;grid-template-columns:34px 1fr;gap:10px}
 .rank{font-family:var(--font-head);font-size:24px;font-weight:700;background:var(--board);border-radius:8px;display:flex;align-items:center;justify-content:center}
 .pri-row:first-child .rank{background:var(--ink);color:var(--paper)}
-/* شعار نَسَق — ألوانه ثابتة من الهوية، وتفتح القاعدة في الوضع الداكن لتبقى ظاهرة */
+/* شعار نَسَق — ألوان النسخة الملوّنة من ملفات الهوية؛ في الداكن تُستخدم درجات الهوية الفاتحة */
 .brand-mark{width:46px;height:46px;flex:none}
-.brand-mark .bm-bowl{fill:var(--bm-bowl,#174C4F)} .brand-mark .bm-leaf1{fill:#3F8580}
-.brand-mark .bm-leaf2{fill:#6F9B83} .brand-mark .bm-dot{fill:#D6A84F}
-:root[data-theme="dark"]{--bm-bowl:#DCEBE9}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bm-bowl:#DCEBE9}}
+.brand-mark .bm-1{fill:var(--bm-1,#174C4F)} .brand-mark .bm-2{fill:var(--bm-2,#2F6F6B)}
+.brand-mark .bm-dot{fill:#D6A84F}
+:root[data-theme="dark"]{--bm-1:#F7F6F2;--bm-2:#9FC6C0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bm-1:#F7F6F2;--bm-2:#9FC6C0}}
 /* أولويات «نَسَق»: دوائر بلون الهوية كما في التصميم */
 :root[data-palette="nasaq"] .rank{border-radius:50%;width:34px;height:34px;align-self:center;font-size:17px;background:var(--focus);color:var(--on-accent)}
 .field{border:0;border-bottom:1px solid var(--rule);background:transparent;font:inherit;color:inherit;padding:9px 4px;width:100%}
@@ -750,12 +750,11 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <div class="auth-overlay" id="authOverlay" hidden>
   <div class="auth-card">
     <div class="auth-brand">
-      <!-- شعار نَسَق (مسودة مؤقتة — تُستبدل بالشعار النهائي): «ن» من نبتة، ونقطتها معيّن زعفراني -->
-      <svg class="brand-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path class="bm-bowl" d="M10 54 C10 82 30 96 53 96 C77 96 94 80 94 50 C85 70 70 80 53 80 C34 80 19 70 10 54 Z"/>
-        <path class="bm-leaf1" d="M29 77 C9 62 9 34 27 10 C47 30 47 58 29 77 Z"/>
-        <path class="bm-leaf2" d="M54 79 C42 62 44 40 60 25 C74 44 69 66 54 79 Z"/>
-        <path class="bm-dot" d="M73 2 L83 12 L73 22 L63 12 Z"/>
+      <!-- شعار نَسَق 2a — وحدتان ونقطة (من ملفات الهوية: logo-svg/nasaq-2a-mark-color.svg) -->
+      <svg class="brand-mark" viewBox="18 12 76 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path class="bm-1" d="M47 92 L47 22 C25 46 25 74 47 92 Z"/>
+        <path class="bm-2" d="M53 92 L53 46 C74 62 74 82 53 92 Z"/>
+        <rect class="bm-dot" x="63" y="19" width="15" height="15" transform="rotate(45 70.5 26.5)"/>
       </svg>
       <div>
         <h2>نَسَق</h2>
