@@ -141,6 +141,113 @@
 /* الخط نفسه للعناوين والنص في «نَسَق»، فيُعوَّض الفرق بالوزن لا بعائلة خط أخرى */
 :root[data-palette="nasaq"] h1,:root[data-palette="nasaq"] h2,:root[data-palette="nasaq"] h3{font-weight:600;letter-spacing:0}
 :root[data-palette="nasaq"] .sheet{box-shadow:var(--shadow)}
+
+/* ---------- عناصر التحكم في «نَسَق» ----------
+   حقول بتعبئة ناعمة بدل الإطار، وتوهّج عند التركيز، وأزرار أساسية بلون الهوية،
+   وثانوية بتعبئة خفيفة، وتبويبات كبسولية، ومربع إنجاز دائري.
+   محصورة في هذا الطابع — الكلاسيكي يحتفظ بطابع الدفتر، والحيوي كما هو. */
+:root[data-palette="nasaq"]{
+  --field-bg:#F3F0EA; --field-line:#E6E1D8; --field-hover:#D9D3C8;
+  --ring:rgba(15,107,102,.18); --on-accent:#FFFFFF; --btn-soft:#ECF1EF; --btn-soft-hover:#E1ECE9;
+}
+:root[data-theme="dark"][data-palette="nasaq"]{
+  --field-bg:#1C2625; --field-line:#2A3735; --field-hover:#3A4A47;
+  --ring:rgba(79,179,170,.24); --on-accent:#0F1615; --btn-soft:#1F2B29; --btn-soft-hover:#263633;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"])[data-palette="nasaq"]{
+    --field-bg:#1C2625; --field-line:#2A3735; --field-hover:#3A4A47;
+    --ring:rgba(79,179,170,.24); --on-accent:#0F1615; --btn-soft:#1F2B29; --btn-soft-hover:#263633;
+  }
+}
+
+/* الحقول */
+:root[data-palette="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
+  li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
+  .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
+  .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
+  .settings-body input,.auth-form input,.mini-add){
+  background-color:var(--field-bg); border:1px solid var(--field-line); border-radius:10px;
+  transition:background-color .15s, border-color .15s, box-shadow .15s;
+}
+:root[data-palette="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
+  li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
+  .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
+  .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
+  .settings-body input,.auth-form input,.mini-add):hover{border-color:var(--field-hover)}
+:root[data-palette="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
+  li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
+  .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
+  .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
+  .settings-body input,.auth-form input,.mini-add):focus{
+  outline:none; background-color:var(--surface); border-color:var(--focus); box-shadow:0 0 0 3px var(--ring);
+}
+:root[data-palette="nasaq"] :is(input,textarea)::placeholder{color:var(--muted);opacity:.8}
+/* القوائم المنسدلة: سهم نحيف بدل سهم النظام (يسار الحقل لأن الاتجاه RTL) */
+:root[data-palette="nasaq"] :is(.add select,.pull select,.exp-add select){
+  appearance:none; -webkit-appearance:none; padding-left:32px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237A8886' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:left 12px center;
+}
+
+/* الأولويات وختام اليوم: صفوف ناعمة بدل خطوط الدفتر */
+:root[data-palette="nasaq"] .field{
+  border:1px solid transparent; border-radius:10px; padding:10px 12px; background:transparent;
+  transition:background-color .15s, border-color .15s, box-shadow .15s;
+}
+:root[data-palette="nasaq"] .field:hover{background:var(--field-bg)}
+:root[data-palette="nasaq"] .field:focus{outline:none;background:var(--surface);border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
+
+/* الأزرار الأساسية: لون الهوية بدل الأسود */
+:root[data-palette="nasaq"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+  .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button){
+  background:var(--focus); color:var(--on-accent); border:1px solid transparent; border-radius:10px;
+  font-weight:600; box-shadow:0 1px 2px rgba(18,48,47,.12);
+  transition:background-color .15s, transform .1s, box-shadow .15s;
+}
+:root[data-palette="nasaq"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+  .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button):hover{
+  background:color-mix(in srgb, var(--focus) 88%, var(--ink)); box-shadow:0 4px 12px var(--ring);
+}
+:root[data-palette="nasaq"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+  .pomo-controls button.go,.exp-add button,.auth-primary):active{transform:scale(.97)}
+
+/* الأزرار الثانوية: تعبئة خفيفة بلا إطار */
+:root[data-palette="nasaq"] :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
+  .modal .row button:not(.primary),.pomo-controls button:not(.go),.cal-head button,.energy button,
+  .water button,.set-actions button:not(.danger)){
+  background:var(--btn-soft); color:var(--ink); border:1px solid transparent; border-radius:10px;
+  transition:background-color .15s, transform .1s;
+}
+:root[data-palette="nasaq"] :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
+  .modal .row button:not(.primary),.pomo-controls button:not(.go),.cal-head button,.energy button,
+  .water button,.set-actions button:not(.danger)):hover{background:var(--btn-soft-hover)}
+:root[data-palette="nasaq"] .energy button.active{background:var(--focus-bg);border-color:var(--focus);color:var(--focus-ink)}
+/* زرّا "⋯" للتفاصيل معرّفان بـ id فيغلبان القاعدة العامة — نعطيهما الهيئة الثانوية صراحةً */
+:root[data-palette="nasaq"] :is(#addDetailsBtn,#expAddDetailsBtn){
+  background:var(--btn-soft); color:var(--ink-2); border:1px solid transparent; border-radius:10px; box-shadow:none;
+}
+:root[data-palette="nasaq"] :is(#addDetailsBtn,#expAddDetailsBtn):hover{background:var(--btn-soft-hover);box-shadow:none}
+:root[data-palette="nasaq"] :is(#addDetailsBtn,#expAddDetailsBtn)[aria-expanded="true"]{background:var(--focus-bg);color:var(--focus-ink);border-color:var(--focus)}
+
+/* التبويبات: كبسولات بدل ملفات الأرشيف */
+:root[data-palette="nasaq"] .tab{
+  border:1px solid transparent; border-radius:999px; background:transparent; color:var(--muted);
+  font-weight:600; transition:background-color .15s, color .15s, box-shadow .15s;
+}
+:root[data-palette="nasaq"] .tab:hover{background:var(--field-bg);color:var(--ink)}
+:root[data-palette="nasaq"] .tab.active{background:var(--paper);color:var(--ink);border-color:var(--rule);box-shadow:0 1px 3px rgba(18,48,47,.08)}
+:root[data-palette="nasaq"] .tabbar{margin-bottom:14px}
+
+/* حالة المهمة ومفتاح الطابع */
+:root[data-palette="nasaq"] .state{border-color:transparent;background:var(--field-bg)}
+:root[data-palette="nasaq"] .pswitch{background:var(--field-bg);border-color:transparent}
+:root[data-palette="nasaq"] .pswitch button.active{background:var(--focus);color:var(--on-accent)}
+
+/* مربع الإنجاز: دائري كتطبيقات المهام الحديثة */
+:root[data-palette="nasaq"] .check{border-radius:50%;border-color:var(--field-hover);transition:background-color .15s, border-color .15s}
+:root[data-palette="nasaq"] .check:hover{border-color:var(--done);background:color-mix(in srgb, var(--done) 10%, var(--surface))}
+:root[data-palette="nasaq"] .check[aria-checked="true"]::after{inset:3px 5.5px 5px 5.5px}
 *{box-sizing:border-box}
 input,textarea,select{min-width:0}
 html,body{margin:0;padding:0}
