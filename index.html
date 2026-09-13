@@ -242,9 +242,9 @@
 /* التنقّل الجانبي: العنصر النشط بلون الهوية كما في التصميم */
 :root[data-palette="nasaq"] .tab.active{background:var(--focus);color:var(--on-accent)}
 :root[data-palette="nasaq"] .tab:hover:not(.active){background:var(--field-bg)}
-:root[data-palette="nasaq"] .task-filters button.active,
-:root[data-palette="nasaq"] .close-day{background:var(--focus);border-color:var(--focus);color:var(--on-accent)}
-:root[data-palette="nasaq"] .greet-card{background:linear-gradient(120deg,var(--paper) 55%,var(--focus-bg))}
+:root[data-palette="nasaq"] .task-filters button.active{background:var(--focus);border-color:var(--focus);color:var(--on-accent)}
+/* زر إغلاق اليوم بلون الهوية الثابت في الوضعين، كي يبقى الشعار الفاتح عليه واضحًا */
+:root[data-palette="nasaq"] .close-day{background:#174C4F;color:#fff}
 @media (max-width:999px){
   :root[data-palette="nasaq"] .tab.active{background:transparent;color:var(--focus)}
 }
@@ -457,11 +457,17 @@ body{padding:0}
 .greet-title{font-family:var(--font-head);font-size:32px;font-weight:700;line-height:1.2;margin:0;color:var(--brand,var(--ink))}
 .greet-tagline{margin:2px 0 0;font-size:18px;color:var(--ink-2);font-weight:500}
 .greet-date{margin-top:10px;font-size:13.5px;color:var(--muted)}
-/* مساحة الصورة ضعف ما كانت (٧٢٪ بدل ٣٦٪)، والتدرّج نحو النص ١٠٪ فقط كي لا يحجب الصورة */
-.greet-media{position:relative;width:72%;max-width:880px;flex:none;display:flex;align-items:flex-end;justify-content:flex-end;padding:12px}
+/* نقشة نَسَق: الشعار مكرّرًا بإزاحة متناوبة، بلون الهوية وشفافية ١٠٪ — بدل التدرّج.
+   تُرسم كقناع (mask) فيأخذ لونها من المتغيّر، فتصلح لكل طابع وللوضع الداكن. */
+.greet-card::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.1;background:var(--brand,var(--ink));
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Csvg x='8' y='6' width='28' height='31' viewBox='18 12 76 84'%3E%3Cpath d='M47 92 L47 22 C25 46 25 74 47 92 Z'/%3E%3Cpath d='M53 92 L53 46 C74 62 74 82 53 92 Z'/%3E%3Crect x='63' y='19' width='15' height='15' transform='rotate(45 70.5 26.5)'/%3E%3C/svg%3E%3Csvg x='56' y='54' width='28' height='31' viewBox='18 12 76 84'%3E%3Cpath d='M47 92 L47 22 C25 46 25 74 47 92 Z'/%3E%3Cpath d='M53 92 L53 46 C74 62 74 82 53 92 Z'/%3E%3Crect x='63' y='19' width='15' height='15' transform='rotate(45 70.5 26.5)'/%3E%3C/svg%3E%3C/svg%3E") 0 0/96px 96px repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Csvg x='8' y='6' width='28' height='31' viewBox='18 12 76 84'%3E%3Cpath d='M47 92 L47 22 C25 46 25 74 47 92 Z'/%3E%3Cpath d='M53 92 L53 46 C74 62 74 82 53 92 Z'/%3E%3Crect x='63' y='19' width='15' height='15' transform='rotate(45 70.5 26.5)'/%3E%3C/svg%3E%3Csvg x='56' y='54' width='28' height='31' viewBox='18 12 76 84'%3E%3Cpath d='M47 92 L47 22 C25 46 25 74 47 92 Z'/%3E%3Cpath d='M53 92 L53 46 C74 62 74 82 53 92 Z'/%3E%3Crect x='63' y='19' width='15' height='15' transform='rotate(45 70.5 26.5)'/%3E%3C/svg%3E%3C/svg%3E") 0 0/96px 96px repeat}
+.greet-text,.greet-media{z-index:1}
+/* مساحة الصورة: ٧٢٪ من عرض البطاقة (ضعف السابق) وارتفاع أكبر، بلا تدرّج يحجبها */
+.greet-media{position:relative;width:72%;max-width:900px;flex:none;display:flex;align-items:flex-end;justify-content:flex-end;padding:12px}
 .greet-card:not(.has-photo) .greet-media{width:auto}
-.greet-card.has-photo{min-height:220px}
-.greet-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(to left,transparent,#000 10%);mask-image:linear-gradient(to left,transparent,#000 10%)}
+.greet-card.has-photo{min-height:280px}
+.greet-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-start-end-radius:0;border-end-end-radius:0}
 .greet-media .hero-empty{position:static;inset:auto;border:1px dashed var(--rule);border-radius:999px;background:transparent;padding:6px 14px;font:inherit;font-size:12.5px}
 .greet-card.has-photo .hero-tools{display:flex}
 
@@ -479,7 +485,7 @@ body{padding:0}
 .card .pinned{margin-bottom:14px}
 .card.review{margin-top:0}
 .c-review .q{grid-template-columns:1fr;gap:4px;border-bottom:0;padding:6px 0}
-.card.archive{margin-top:0;border-top:1px solid var(--rule)}
+.card.archive{margin-top:0;border-top:1px solid var(--rule);grid-column:1 / -1}
 .card.archive summary{font-size:17.5px;align-items:center;gap:8px}
 .card.archive summary .ic{width:19px;height:19px;color:var(--focus)}
 .c-ideas .braindump{height:110px}
@@ -496,8 +502,25 @@ body{padding:0}
 .sum-item{background:var(--stripe);border-radius:10px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px}
 .sum-item b{font-family:var(--font-head);font-size:19px;font-weight:700;color:var(--ink);line-height:1.2}
 .sum-item span{font-size:11.5px;color:var(--muted)}
-.close-day{margin-top:14px;width:100%;font:inherit;font-size:14px;font-weight:600;padding:11px 14px;border-radius:10px;border:0;background:var(--ink);color:var(--paper);cursor:pointer}
-.close-day:hover{opacity:.92}
+/* ختام اليوم: شريحة عريضة — ملخص | أسئلة | زر الإغلاق */
+.closing-band{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) auto;gap:22px 28px;align-items:center;padding:22px 24px}
+.closing-band .card-head{margin-bottom:6px}
+.closing-sub{margin:0 0 14px;color:var(--muted);font-size:13.5px}
+.closing-band .day-summary{margin:0}
+.closing-qs{display:flex;flex-direction:column;gap:6px;min-width:0}
+.closing-band .q{display:grid;grid-template-columns:170px minmax(0,1fr);gap:10px;align-items:center;border-bottom:0;padding:0}
+/* زر الإغلاق: كبير، بلون الهوية، ومعه شعار نَسَق */
+.close-day{display:flex;align-items:center;gap:14px;min-width:230px;min-height:92px;padding:16px 24px;border:0;border-radius:18px;
+  font:inherit;text-align:start;cursor:pointer;color:#fff;background:var(--ink);
+  box-shadow:0 10px 26px rgba(0,0,0,.14);transition:transform .15s, box-shadow .15s}
+.close-day:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,0,0,.18)}
+.close-day:active{transform:translateY(0) scale(.98)}
+.close-mark{width:46px;height:52px;flex:none}
+.close-day .close-mark .bm-1{fill:#F7F6F2}
+.close-day .close-mark .bm-2{fill:#9FC6C0}
+.close-day-text{display:flex;flex-direction:column;gap:2px;line-height:1.25}
+.close-day-text b{font-family:var(--font-head);font-size:20px;font-weight:700}
+.close-day-text small{font-size:12.5px;opacity:.85}
 .habits-mini{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
 .habit{display:flex;align-items:center;gap:8px;font:inherit;font-size:13px;text-align:start;padding:9px 11px;border-radius:10px;border:1px solid var(--rule);background:transparent;color:var(--ink);cursor:pointer;min-width:0}
 .habit span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -547,6 +570,8 @@ body{padding:0}
   .col-b{grid-column:2;grid-row:1}
   .col-a{grid-column:2;grid-row:2}
   .archive{grid-column:1 / -1}
+  .closing-band{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}
+  .closing-band .close-day{grid-column:1 / -1;justify-content:center}
 }
 /* شاشة ضيقة وهاتف: شريط علوي + تنقّل سفلي، وعمود واحد مرتّب حسب الأهمية */
 @media (max-width:999px){
@@ -571,12 +596,14 @@ body{padding:0}
   .greet-tagline{font-size:15.5px}
   .greet-card.has-photo{flex-direction:column-reverse}
   .greet-card.has-photo .greet-media{width:100%;max-width:none;height:260px}
-  .greet-card.has-photo .greet-media img{-webkit-mask-image:linear-gradient(to top,transparent,#000 10%);mask-image:linear-gradient(to top,transparent,#000 10%)}
   .dash{display:flex;flex-direction:column;gap:14px}
   .col{display:contents}
-  .c-pri{order:1}.c-tasks{order:2}.c-sched{order:3}.c-review{order:4}.c-ideas{order:5}
-  .c-focus{order:6}.c-habits{order:7}.c-cal{order:8}.c-projects{order:9}.archive{order:10}
+  .c-pri{order:1}.c-tasks{order:2}.c-sched{order:3}.c-ideas{order:4}
+  .c-focus{order:5}.c-habits{order:6}.c-cal{order:7}.c-projects{order:8}.c-review{order:9}.archive{order:10}
   .card{padding:16px}
+  .closing-band{display:flex;flex-direction:column;align-items:stretch;gap:16px}
+  .closing-band .q{grid-template-columns:1fr;gap:4px}
+  .close-day{min-height:80px;justify-content:center}
   .day-summary{grid-template-columns:repeat(2,1fr)}
 }
 @media (max-width:420px){
@@ -1209,15 +1236,26 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </div>
     </section>
 
-    <section class="card c-review review">
+  </div>
+
+
+  <!-- ختام اليوم: شريحة عريضة أسفل كل البطاقات -->
+  <section class="card c-review review closing-band">
+    <div class="closing-intro">
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>ختام اليوم</h2></div>
+      <p class="closing-sub">راجع يومك في دقيقة، ثم أغلقه ليبدأ الغد على نَسَق.</p>
       <div class="day-summary" id="daySummary"></div>
+    </div>
+    <div class="closing-qs">
       <div class="q"><label for="r1">ماذا أنجزت اليوم؟</label><input class="field" id="r1"></div>
       <div class="q"><label for="r2">ما الذي لم يُنجز، ولماذا؟</label><input class="field" id="r2"></div>
       <div class="q"><label for="r3">ما أول مهمة غدًا؟</label><input class="field" id="r3"></div>
-      <button class="close-day" id="newDay" type="button">أغلق اليوم وابدأ يومًا جديدًا ←</button>
-    </section>
-  </div>
+    </div>
+    <button class="close-day" id="newDay" type="button">
+      <svg class="brand-mark close-mark" viewBox="18 12 76 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path class="bm-1" d="M47 92 L47 22 C25 46 25 74 47 92 Z"/><path class="bm-2" d="M53 92 L53 46 C74 62 74 82 53 92 Z"/><rect class="bm-dot" x="63" y="19" width="15" height="15" transform="rotate(45 70.5 26.5)"/></svg>
+      <span class="close-day-text"><b>أغلق اليوم</b><small>وابدأ يومًا جديدًا على نَسَق</small></span>
+    </button>
+  </section>
 
   <details class="card archive" id="archive">
     <summary><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M10 13h4"/></svg>الأرشيف <b id="arcCount"></b></summary>
