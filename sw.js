@@ -9,7 +9,7 @@
  *
  * عند تغيير قائمة SHELL أو منطق هذا الملف: ارفع رقم CACHE ليُستبدل القديم.
  */
-const CACHE = 'daily-board-v1';
+const CACHE = 'daily-board-v2';   /* v2: أيقونات شعار نَسَق */
 const SHELL = [
   './',
   './index.html',

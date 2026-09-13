@@ -6,7 +6,7 @@
 <title>نَسَق — لوح يومك</title>
 <!-- تثبيت اللوح كتطبيق (الهاتف والحاسوب) -->
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#2B2E6B">
+<meta name="theme-color" content="#F7F6F2">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -58,13 +58,14 @@
     --pattern:rgba(255,255,255,.05);
   }
   :root:not([data-theme="light"])[data-palette="nasaq"]{
-    --ink:#E6EEEC; --ink-2:#B5C7C3; --paper:#151D1C; --board:#0F1615;
-    --rule:#26322F; --done:#5CC08B; --hold:#E0A74A; --urgent:#E8876F;
-    --muted:#92A6A2; --focus:#4FB3AA;
-    --surface:#1A2322; --stripe:#182120;
-    --hold-bg:#2E2615; --hold-ink:#E0A74A;
-    --focus-bg:#13302D; --focus-ink:#86D2CA;
-    --imp-b-bg:#1E2B29;
+    --ink:#E8EFEE; --ink-2:#BCCDCB; --paper:#112426; --board:#0C1A1B;
+    --rule:#22393B; --done:#8FC1A5; --hold:#E0B865; --urgent:#E6A08B;
+    --muted:#8EA5A3; --focus:#7CC4BC;
+    --surface:#152C2E; --stripe:#132829;
+    --hold-bg:#2E2814; --hold-ink:#E0B865;
+    --focus-bg:#173B3B; --focus-ink:#A9DCD6;
+    --imp-b-bg:#1A3334;
+    --brand:#7CC4BC; --accent:#E0B865;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.4);
     --overlay:rgba(0,0,0,.6);
     --pattern:rgba(255,255,255,.03);
@@ -112,27 +113,33 @@
 }
 /* ---------- طابع «نَسَق» — من مواصفة الهوية: أبيض دافئ، أخضر مزرق داكن، حدود رفيعة،
    ظلال شبه معدومة، زوايا ناعمة، وكثافة بصرية منخفضة. تباين كل الألوان ≥ 4.5 (WCAG AA). */
+/* القيم مأخوذة من دليل الهوية: Nasaq Teal ‎#174C4F، Saffron ‎#D6A84F، Teal Light ‎#DCEBE9،
+   Ivory ‎#F7F6F2 (خلفية)، White (سطح)، Ink ‎#202A2A، Slate، Mist ‎#E4E4E4 (حدود).
+   الألوان الدلالية (Sage/Amber/Terracotta) باهتة كنص (تباين ٢–٣)، فتُستخدم كما هي تعبئةً،
+   وللنص درجاتها الأغمق المشتقة (≥ 4.5 على العاجي). */
 :root[data-palette="nasaq"]{
-  --ink:#12302F; --ink-2:#2E5552; --paper:#FBFAF7; --board:#F3F0EA;
-  --rule:#E3DED5; --done:#2B7453; --hold:#8F5D0E; --urgent:#B03F2B;
-  --muted:#5B6866; --focus:#0F6B66; --r:12px;
-  --surface:#FFFEFB; --stripe:#F6F3EE;
-  --hold-bg:#FBF1DE; --hold-ink:#7E520C;
-  --focus-bg:#E3F0EE; --focus-ink:#0B524E;
-  --imp-b-bg:#E6EFED;
-  --shadow:0 1px 2px rgba(18,48,47,.05),0 8px 24px rgba(18,48,47,.07);
-  --overlay:rgba(18,48,47,.32);
-  --pattern:rgba(18,48,47,.04);
+  --ink:#202A2A; --ink-2:#3E4A4A; --paper:#FFFFFF; --board:#F7F6F2;
+  --rule:#E4E4E4; --done:#547563; --hold:#88682E; --urgent:#9F5F4D;
+  --muted:#627070; --focus:#174C4F; --r:12px;
+  --surface:#FFFFFF; --stripe:#FAF9F6;
+  --hold-bg:#F6EEDC; --hold-ink:#7A5B22;
+  --focus-bg:#DCEBE9; --focus-ink:#174C4F;
+  --imp-b-bg:#E8F0EE;
+  --brand:#174C4F; --accent:#D6A84F;
+  --shadow:0 1px 2px rgba(23,76,79,.05),0 8px 24px rgba(23,76,79,.06);
+  --overlay:rgba(23,76,79,.3);
+  --pattern:rgba(23,76,79,.035);
   --font-head:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
 }
 :root[data-theme="dark"][data-palette="nasaq"]{
-  --ink:#E6EEEC; --ink-2:#B5C7C3; --paper:#151D1C; --board:#0F1615;
-  --rule:#26322F; --done:#5CC08B; --hold:#E0A74A; --urgent:#E8876F;
-  --muted:#92A6A2; --focus:#4FB3AA; --r:12px;
-  --surface:#1A2322; --stripe:#182120;
-  --hold-bg:#2E2615; --hold-ink:#E0A74A;
-  --focus-bg:#13302D; --focus-ink:#86D2CA;
-  --imp-b-bg:#1E2B29;
+  --ink:#E8EFEE; --ink-2:#BCCDCB; --paper:#112426; --board:#0C1A1B;
+  --rule:#22393B; --done:#8FC1A5; --hold:#E0B865; --urgent:#E6A08B;
+  --muted:#8EA5A3; --focus:#7CC4BC; --r:12px;
+  --surface:#152C2E; --stripe:#132829;
+  --hold-bg:#2E2814; --hold-ink:#E0B865;
+  --focus-bg:#173B3B; --focus-ink:#A9DCD6;
+  --imp-b-bg:#1A3334;
+  --brand:#7CC4BC; --accent:#E0B865;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.4);
   --overlay:rgba(0,0,0,.6);
   --pattern:rgba(255,255,255,.03);
@@ -147,19 +154,21 @@
    وثانوية بتعبئة خفيفة، وتبويبات كبسولية، ومربع إنجاز دائري.
    محصورة في هذا الطابع — الكلاسيكي يحتفظ بطابع الدفتر، والحيوي كما هو. */
 :root[data-palette="nasaq"]{
-  --field-bg:#F3F0EA; --field-line:#E6E1D8; --field-hover:#D9D3C8;
-  --ring:rgba(15,107,102,.18); --on-accent:#FFFFFF; --btn-soft:#ECF1EF; --btn-soft-hover:#E1ECE9;
+  --field-bg:#F7F6F2; --field-line:#E4E4E4; --field-hover:#CFD6D5;
+  --ring:rgba(23,76,79,.16); --on-accent:#FFFFFF; --btn-soft:#DCEBE9; --btn-soft-hover:#CDE2DF;
 }
 :root[data-theme="dark"][data-palette="nasaq"]{
-  --field-bg:#1C2625; --field-line:#2A3735; --field-hover:#3A4A47;
-  --ring:rgba(79,179,170,.24); --on-accent:#0F1615; --btn-soft:#1F2B29; --btn-soft-hover:#263633;
+  --field-bg:#0E1F20; --field-line:#22393B; --field-hover:#2F4A4C;
+  --ring:rgba(124,196,188,.25); --on-accent:#0C1A1B; --btn-soft:#173B3B; --btn-soft-hover:#1D4646;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"])[data-palette="nasaq"]{
-    --field-bg:#1C2625; --field-line:#2A3735; --field-hover:#3A4A47;
-    --ring:rgba(79,179,170,.24); --on-accent:#0F1615; --btn-soft:#1F2B29; --btn-soft-hover:#263633;
+    --field-bg:#0E1F20; --field-line:#22393B; --field-hover:#2F4A4C;
+    --ring:rgba(124,196,188,.25); --on-accent:#0C1A1B; --btn-soft:#173B3B; --btn-soft-hover:#1D4646;
   }
 }
+/* العنوان الرئيسي بلون الهوية، كما في التصميم */
+:root[data-palette="nasaq"] h1{color:var(--brand)}
 
 /* الحقول */
 :root[data-palette="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
@@ -286,6 +295,14 @@ h1{font-family:var(--font-head);font-size:40px;font-weight:700;margin:0;letter-s
 .pri-row{display:grid;grid-template-columns:34px 1fr;gap:10px}
 .rank{font-family:var(--font-head);font-size:24px;font-weight:700;background:var(--board);border-radius:8px;display:flex;align-items:center;justify-content:center}
 .pri-row:first-child .rank{background:var(--ink);color:var(--paper)}
+/* شعار نَسَق — ألوانه ثابتة من الهوية، وتفتح القاعدة في الوضع الداكن لتبقى ظاهرة */
+.brand-mark{width:46px;height:46px;flex:none}
+.brand-mark .bm-bowl{fill:var(--bm-bowl,#174C4F)} .brand-mark .bm-leaf1{fill:#3F8580}
+.brand-mark .bm-leaf2{fill:#6F9B83} .brand-mark .bm-dot{fill:#D6A84F}
+:root[data-theme="dark"]{--bm-bowl:#DCEBE9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bm-bowl:#DCEBE9}}
+/* أولويات «نَسَق»: دوائر بلون الهوية كما في التصميم */
+:root[data-palette="nasaq"] .rank{border-radius:50%;width:34px;height:34px;align-self:center;font-size:17px;background:var(--focus);color:var(--on-accent)}
 .field{border:0;border-bottom:1px solid var(--rule);background:transparent;font:inherit;color:inherit;padding:9px 4px;width:100%}
 .field::placeholder{color:#A6B2AA}
 .field:focus{outline:none;border-bottom-color:var(--focus);box-shadow:0 1px 0 var(--focus)}
@@ -733,10 +750,12 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <div class="auth-overlay" id="authOverlay" hidden>
   <div class="auth-card">
     <div class="auth-brand">
-      <svg class="mast-ic" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="10" y="6" width="28" height="36" rx="4" stroke="currentColor" stroke-width="2.5"/>
-        <rect x="17" y="3" width="14" height="7" rx="2" fill="currentColor"/>
-        <path d="M16 24l6 6 12-14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- شعار نَسَق (مسودة مؤقتة — تُستبدل بالشعار النهائي): «ن» من نبتة، ونقطتها معيّن زعفراني -->
+      <svg class="brand-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path class="bm-bowl" d="M10 54 C10 82 30 96 53 96 C77 96 94 80 94 50 C85 70 70 80 53 80 C34 80 19 70 10 54 Z"/>
+        <path class="bm-leaf1" d="M29 77 C9 62 9 34 27 10 C47 30 47 58 29 77 Z"/>
+        <path class="bm-leaf2" d="M54 79 C42 62 44 40 60 25 C74 44 69 66 54 79 Z"/>
+        <path class="bm-dot" d="M73 2 L83 12 L73 22 L63 12 Z"/>
       </svg>
       <div>
         <h2>نَسَق</h2>
