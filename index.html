@@ -57,6 +57,18 @@
     --overlay:rgba(0,0,0,.65);
     --pattern:rgba(255,255,255,.05);
   }
+  :root:not([data-theme="light"])[data-palette="nasaq"]{
+    --ink:#E6EEEC; --ink-2:#B5C7C3; --paper:#151D1C; --board:#0F1615;
+    --rule:#26322F; --done:#5CC08B; --hold:#E0A74A; --urgent:#E8876F;
+    --muted:#92A6A2; --focus:#4FB3AA;
+    --surface:#1A2322; --stripe:#182120;
+    --hold-bg:#2E2615; --hold-ink:#E0A74A;
+    --focus-bg:#13302D; --focus-ink:#86D2CA;
+    --imp-b-bg:#1E2B29;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.4);
+    --overlay:rgba(0,0,0,.6);
+    --pattern:rgba(255,255,255,.03);
+  }
 }
 :root[data-theme="dark"]{
   --ink:#E9ECE4; --ink-2:#B7C4B3; --paper:#1B1E19; --board:#14160F;
@@ -98,6 +110,37 @@
   --pattern:rgba(255,255,255,.05);
   --font-head:Cairo,"IBM Plex Sans Arabic",sans-serif;
 }
+/* ---------- طابع «نَسَق» — من مواصفة الهوية: أبيض دافئ، أخضر مزرق داكن، حدود رفيعة،
+   ظلال شبه معدومة، زوايا ناعمة، وكثافة بصرية منخفضة. تباين كل الألوان ≥ 4.5 (WCAG AA). */
+:root[data-palette="nasaq"]{
+  --ink:#12302F; --ink-2:#2E5552; --paper:#FBFAF7; --board:#F3F0EA;
+  --rule:#E3DED5; --done:#2B7453; --hold:#8F5D0E; --urgent:#B03F2B;
+  --muted:#5B6866; --focus:#0F6B66; --r:12px;
+  --surface:#FFFEFB; --stripe:#F6F3EE;
+  --hold-bg:#FBF1DE; --hold-ink:#7E520C;
+  --focus-bg:#E3F0EE; --focus-ink:#0B524E;
+  --imp-b-bg:#E6EFED;
+  --shadow:0 1px 2px rgba(18,48,47,.05),0 8px 24px rgba(18,48,47,.07);
+  --overlay:rgba(18,48,47,.32);
+  --pattern:rgba(18,48,47,.04);
+  --font-head:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+}
+:root[data-theme="dark"][data-palette="nasaq"]{
+  --ink:#E6EEEC; --ink-2:#B5C7C3; --paper:#151D1C; --board:#0F1615;
+  --rule:#26322F; --done:#5CC08B; --hold:#E0A74A; --urgent:#E8876F;
+  --muted:#92A6A2; --focus:#4FB3AA; --r:12px;
+  --surface:#1A2322; --stripe:#182120;
+  --hold-bg:#2E2615; --hold-ink:#E0A74A;
+  --focus-bg:#13302D; --focus-ink:#86D2CA;
+  --imp-b-bg:#1E2B29;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.4);
+  --overlay:rgba(0,0,0,.6);
+  --pattern:rgba(255,255,255,.03);
+  --font-head:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+}
+/* الخط نفسه للعناوين والنص في «نَسَق»، فيُعوَّض الفرق بالوزن لا بعائلة خط أخرى */
+:root[data-palette="nasaq"] h1,:root[data-palette="nasaq"] h2,:root[data-palette="nasaq"] h3{font-weight:600;letter-spacing:0}
+:root[data-palette="nasaq"] .sheet{box-shadow:var(--shadow)}
 *{box-sizing:border-box}
 input,textarea,select{min-width:0}
 html,body{margin:0;padding:0}
@@ -585,7 +628,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </svg>
       <div>
         <h2>نَسَق</h2>
-        <div class="auth-sub" id="authSub">سجّل دخولك للمتابعة</div>
+        <div class="auth-sub" id="authSub">لكل شيء مكان، ولكل يوم نَسَق.</div>
       </div>
     </div>
 
@@ -665,6 +708,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <h3>🎨 المظهر</h3>
         <div class="set-row"><span>الطابع</span>
           <span class="pswitch" id="setPalette">
+            <button data-palette="nasaq" type="button">نَسَق</button>
             <button data-palette="" type="button">كلاسيكي</button>
             <button data-palette="vibrant" type="button">حيوي</button>
           </span>
@@ -755,7 +799,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </div>
 
     <h3>🧠 تفريغ الأفكار</h3>
-    <textarea class="braindump" id="brainDump" placeholder="أي فكرة عابرة... لا تحتاج أن تكون مهمة الآن"></textarea>
+    <textarea class="braindump" id="brainDump" placeholder="ما الذي يشغلك؟ اتركه هنا الآن، ورتّبه لاحقًا."></textarea>
 
     <h3 id="pomoTitle">⏱️ مؤقّت التركيز</h3>
     <div class="pomodoro">
@@ -1061,7 +1105,16 @@ function applyTheme(t){
   if(t==='light'||t==='dark') document.documentElement.setAttribute('data-theme', t);
   else document.documentElement.removeAttribute('data-theme');
   const tb = $('setThemeBtn'); if(tb) tb.textContent = isDarkNow() ? '☀︎ فاتح' : '🌙 داكن';
+  syncThemeColor();
 }
+/* لون شريط الحالة في الهاتف والتطبيق المثبَّت يتبع خلفية الطابع الحالي */
+function syncThemeColor(){
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(!meta) return;
+  const c = getComputedStyle(document.documentElement).getPropertyValue('--board').trim();
+  if(c) meta.setAttribute('content', c);
+}
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncThemeColor);
 let theme = ''; try{ theme = localStorage.getItem(TKEY) || ''; }catch(e){}
 applyTheme(theme);
 $('setThemeBtn').onclick = ()=>{
@@ -1079,6 +1132,7 @@ function applyPalette(p){
   document.querySelectorAll('.pswitch button').forEach(b=>{
     b.classList.toggle('active', (b.dataset.palette||'')===p);
   });
+  syncThemeColor();
 }
 applyPalette(palette);
 document.querySelectorAll('.pswitch button').forEach(b=>{
@@ -1138,12 +1192,16 @@ function showToast(msg, undoFn){
   const card = document.createElement('div');
   card.className = 'card';
   const span = document.createElement('span'); span.textContent = msg;
-  const btn = document.createElement('button');
-  btn.type = 'button'; btn.textContent = 'تراجع';
-  btn.onclick = ()=>{ clearTimeout(toastTimer); box.innerHTML = ''; undoFn(); };
-  card.append(span, btn);
+  card.append(span);
+  /* بلا دالة تراجع: رسالة عابرة تختفي بعد ثوانٍ */
+  if(undoFn){
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.textContent = 'تراجع';
+    btn.onclick = ()=>{ clearTimeout(toastTimer); box.innerHTML = ''; undoFn(); };
+    card.append(btn);
+  }
   box.appendChild(card);
-  toastTimer = setTimeout(()=>{ box.innerHTML = ''; }, 600000);
+  toastTimer = setTimeout(()=>{ box.innerHTML = ''; }, undoFn ? 600000 : 4500);
 }
 
 /* ---------- storage ---------- */
@@ -1616,7 +1674,7 @@ function pinAsGoal(text){
 function render(){
   const list = $('list');
   list.innerHTML = '';
-  if(!tasks.length) list.innerHTML = '<li class="empty">'+EMPTY_ICON+'<span>اللوح فارغ. اكتب أول مهمة في الأعلى.</span></li>';
+  if(!tasks.length) list.innerHTML = '<li class="empty">'+EMPTY_ICON+'<span>يومك هادئ حتى الآن. خطوة واحدة تكفي للبدء — اكتب أول مهمة في الأعلى.</span></li>';
 
   const priValues = [...document.querySelectorAll('.pri .field')].map(f=>f.value.trim());
   tasks.forEach(t=>{
@@ -1654,7 +1712,7 @@ function render(){
     if(!t.done){
       if(t.due){
         const diff = dayNum(t.due) - dayNum(new Date());
-        if(diff<0){ ageText = 'متأخرة '+fmtDays(-diff); age.classList.add('late'); }
+        if(diff<0){ ageText = 'متأخرة '+fmtDays(-diff); age.classList.add('late'); age.title = 'هذه المهمة تنتظر قرارك'; }
         else if(diff===0){ ageText = 'مستحقة اليوم'; }
         else { ageText = 'خلال '+fmtDays(diff); }
       }else{
@@ -1871,7 +1929,7 @@ function showDueForDay(key){
 
   if(!local.length && !notionOnly.length){
     const e = document.createElement('div'); e.className='empty'; e.style.border='0'; e.style.padding='4px 0';
-    e.textContent='لا مهام مستحقة هذا اليوم.'; box.appendChild(e); return;
+    e.textContent='لا شيء مجدول لهذا اليوم.'; box.appendChild(e); return;
   }
 
   const ul = document.createElement('ul'); ul.className='cal-day-items';
@@ -2131,7 +2189,7 @@ miniAdd('laterInput','laterAddBtn', laters);
 $('newDay').onclick = ()=>{
   const d = tasks.filter(t=>t.done), left = tasks.length-d.length;
   if(!d.length && !left){
-    openModal({title:'اللوح فارغ', bodyHTML:'<p>لا توجد مهام لبدء يوم جديد بها.</p>', actions:[{label:'حسنًا', primary:true}]});
+    openModal({title:'يومك هادئ', bodyHTML:'<p>لا مهام بعد لتبدأ بها يومًا جديدًا. أضف أول مهمة وستجدها هنا.</p>', actions:[{label:'حسنًا', primary:true}]});
     return;
   }
   openModal({
@@ -2146,6 +2204,7 @@ $('newDay').onclick = ()=>{
         document.querySelectorAll('.pri .field').forEach(f=>f.value='');
         ['r1','r2','r3'].forEach(id=>$(id).value='');
         sync();
+        showToast(d.length ? 'يومك أخذ نَسَقه ✦ — بدأ يوم جديد.' : 'بدأ يوم جديد. خطوة واحدة تكفي للبدء.');
       }}
     ]
   });
@@ -2855,7 +2914,7 @@ function showAuth(mode){
   $('authSub').textContent = mode==='register' ? 'أنشئ حسابك للبدء'
     : mode==='reset' ? 'استرداد كلمة السر عبر بريدك'
     : mode==='bridge' ? 'إعداد رابط الجسر'
-    : 'سجّل دخولك للمتابعة';
+    : 'لكل شيء مكان، ولكل يوم نَسَق.';
   if(mode==='bridge') $('authBridgeUrl').value = bridge || '';
   setAuthMsg('');
 }
