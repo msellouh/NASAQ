@@ -1319,14 +1319,84 @@ function jsonpPost(payload){
   });
 }
 
+/* ---------- القناة الأساسية: إطار مخفي من الجسر + postMessage ----------
+   ردود Apps Script العادية (fetch وJSONP) تمرّ عبر رابط مؤقت على googleusercontent
+   يعيد 404 بشكل متقطّع. الإطار يحمّل صفحة HtmlService من الجسر، وهي تنفّذ الطلبات عبر
+   google.script.run — بلا ذلك الرابط وبلا حدّ حجم. إن لم يستجب الإطار (جسر قديم لا يعرفه،
+   أو متصفح يحجبه) نعود تلقائيًا إلى JSONP/fetch مع إعادة المحاولة للعمليات الآمنة. */
+let rpcFrame = null, rpcWin = null, rpcOrigin = '', rpcReady = null, rpcReadyDone = null;
+let rpcSeq = 0, rpcDisabled = false;
+const rpcPending = new Map();
+window.addEventListener('message', ev=>{
+  const m = ev.data;
+  if(!m || m.__nasaq !== 1) return;
+  let host = ''; try{ host = new URL(ev.origin).hostname; }catch(e){ return; }
+  if(!/\.googleusercontent\.com$/.test(host)) return;
+  if(m.type === 'ready'){ rpcWin = ev.source; rpcOrigin = ev.origin; if(rpcReadyDone) rpcReadyDone(); return; }
+  if(m.type === 'result' && ev.origin === rpcOrigin){
+    const p = rpcPending.get(m.id); if(!p) return;
+    rpcPending.delete(m.id); clearTimeout(p.timer);
+    if(m.ok) p.resolve(m.body); else p.reject(new Error(m.error || 'خطأ في الجسر'));
+  }
+});
+function rpcReset(){
+  if(rpcFrame && rpcFrame.parentNode) rpcFrame.parentNode.removeChild(rpcFrame);
+  rpcFrame = null; rpcWin = null; rpcOrigin = ''; rpcReady = null; rpcReadyDone = null; rpcDisabled = false;
+}
+function rpcInit(){
+  if(rpcReady) return rpcReady;
+  rpcReady = new Promise((resolve, reject)=>{
+    const t = setTimeout(()=>reject(new Error('rpc-init-timeout')), 15000);
+    rpcReadyDone = ()=>{ clearTimeout(t); resolve(); };
+    rpcFrame = document.createElement('iframe');
+    rpcFrame.setAttribute('aria-hidden', 'true'); rpcFrame.tabIndex = -1; rpcFrame.title = 'nasaq-bridge';
+    rpcFrame.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden';
+    rpcFrame.src = bridge + (bridge.indexOf('?') < 0 ? '?' : '&') + 'frame=1&o=' + encodeURIComponent(location.origin);
+    document.body.appendChild(rpcFrame);
+  });
+  /* لم يستجب الإطار: نزيله ونعتمد الطريقة الاحتياطية بقية الجلسة */
+  rpcReady.catch(()=>{ rpcReset(); rpcDisabled = true; });
+  return rpcReady;
+}
+function rpcCall(payload){
+  return rpcInit().then(()=>new Promise((resolve, reject)=>{
+    const id = ++rpcSeq;
+    const timer = setTimeout(()=>{ rpcPending.delete(id); reject(new Error('لم يردّ الجسر خلال 60 ثانية.')); }, 60000);
+    rpcPending.set(id, {resolve, reject, timer});
+    rpcWin.postMessage({__nasaq:1, type:'call', id, payload: JSON.stringify(payload)}, rpcOrigin);
+  })).then(txt=>JSON.parse(txt));
+}
+
+/* عمليات يصحّ تكرارها إن ضاع ردّها — لا تُنشئ شيئًا مرتين ولا ترسل بريدًا */
+const RETRY_SAFE = new Set(['auth_login','auth_me','boot','ping','options','search','state_get','state_set',
+  'expense_options','expense_summary','admin_list_users','set_status','delete']);
+function jsonpWithRetry(payload){
+  const tries = RETRY_SAFE.has(payload.action) ? 3 : 1;
+  let n = 0;
+  const attempt = ()=>jsonpPost(payload).catch(e=>{
+    if(++n < tries && !/60 ثانية/.test(e.message)) return new Promise(r=>setTimeout(r, 700*n)).then(attempt);
+    throw e;
+  });
+  return attempt();
+}
+function legacyPost(payload){
+  const raw = JSON.stringify(payload);
+  /* حدّ الرابط الآمن ~٨٠٠٠ حرف؛ ما دون ذلك يمرّ عبر JSONP */
+  if(bridge.length + encodeURIComponent(raw).length + 80 < 7000) return jsonpWithRetry(payload);
+  return fetchPost(raw);
+}
+
 function post(body){
   if(!bridge) return Promise.reject(new Error('لا يوجد رابط جسر'));
   const payload = Object.assign({}, body);
   if(auth && auth.token) payload.token = auth.token;
-  const raw = JSON.stringify(payload);
-  /* حدّ الرابط الآمن ~٨٠٠٠ حرف؛ ما دون ذلك يمرّ عبر JSONP الموثوق */
-  if(bridge.length + encodeURIComponent(raw).length + 80 < 7000) return jsonpPost(payload).then(checkOk);
-  return fetchPost(raw).then(checkOk);
+  /* الإطار يحتاج صفحة عبر http(s) — من file:// نذهب مباشرة إلى الطريقة الاحتياطية */
+  if(/^https?:$/.test(location.protocol) && !rpcDisabled){
+    return rpcCall(payload)
+      .catch(err=>{ if(err && err.message === 'rpc-init-timeout') return legacyPost(payload); throw err; })
+      .then(checkOk);
+  }
+  return legacyPost(payload).then(checkOk);
 }
 
 function checkOk(d){
@@ -1385,6 +1455,7 @@ $('setBridgeSave').onclick = ()=>{
   bridge = val;
   try{ localStorage.setItem(BKEY, bridge); }catch(e){}
   clearCalCache();
+  rpcReset();   /* الإطار مرتبط بالجسر القديم */
   expOptionsLoaded = false;
   saveAuth(null);
   if(!bridge){
@@ -2916,6 +2987,7 @@ $('authBridgeSave').onclick = ()=>{
   bridge = $('authBridgeUrl').value.trim();
   try{ localStorage.setItem(BKEY, bridge); }catch(e){}
   clearCalCache();
+  rpcReset();   /* الإطار مرتبط بالجسر القديم */
   expOptionsLoaded = false;
   saveAuth(null);
   if(!bridge){ hideAuth(); setDot('', 'وضع محلي — بلا مزامنة'); applyOwnerVisibility(); return; }
