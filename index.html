@@ -292,6 +292,10 @@ table.arc tr:nth-child(even) td{background:var(--stripe)}
 .dot.err{background:var(--urgent)}
 #settingsBtn{font-size:15px;border:1px solid var(--rule);border-radius:999px;width:34px;height:32px;display:inline-flex;align-items:center;justify-content:center;background:var(--board);color:var(--ink);cursor:pointer;flex:none}
 #settingsBtn:hover{border-color:var(--ink-2)}
+/* زر أيقونة بنفس هيئة زر الإعدادات — أيقونة SVG ترث لون النص فتصلح لكل الطوابع */
+.icon-btn{border:1px solid var(--rule);border-radius:999px;width:34px;height:32px;display:inline-flex;align-items:center;justify-content:center;background:var(--board);color:var(--ink);cursor:pointer;flex:none;padding:0}
+.icon-btn:hover{border-color:var(--ink-2)}
+.icon-btn svg{width:16px;height:16px;display:block}
 .pull{margin-top:16px;border:1px solid var(--rule);border-radius:8px;padding:12px;background:var(--stripe)}
 .pull h4{font-family:var(--font-head);font-size:17px;margin:0 0 8px}
 .pull .row{display:grid;grid-template-columns:1fr 130px 130px 110px 84px;gap:8px}
@@ -588,7 +592,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   /* شريط علوي: حالة المزامنة والإعدادات في سطر، والتبويبات الثلاثة متساوية في سطر */
   .tabbar{gap:6px}
   .tabbar-spacer{display:none}
-  .tabbar-sync{order:-2;flex:1 1 calc(100% - 52px);min-width:0;padding:6px 12px}
+  .tabbar-sync{order:-3;flex:1 1 calc(100% - 94px);min-width:0;padding:6px 12px}
+  #themeQuickBtn{order:-2}
   .tabbar-sync #syncMsg{overflow:hidden;text-overflow:ellipsis;min-width:0}
   .tabbar-sync #syncTime{display:none}
   #settingsBtn{order:-1}
@@ -608,7 +613,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   @page{size:A4;margin:12mm}
   body{background:#fff;padding:0;font-size:12px}
   .sheet{border:0;max-width:none;grid-template-columns:220px 1fr}
-  .tabbar,.tools,.add,.add-details,.hint,.mini-row,.kill,.exp,.pin,.state,.archive,.actual,.toast,.modal-overlay,#settingsBtn,.settings-overlay,.auth-overlay,li.details,.two-col,.pomodoro,#pomoTitle,.hero,.exp-add,.exp-add-details,.spotify-box{display:none}
+  .tabbar,.tools,.add,.add-details,.hint,.mini-row,.kill,.exp,.pin,.state,.archive,.actual,.toast,.modal-overlay,#settingsBtn,#themeQuickBtn,.settings-overlay,.auth-overlay,li.details,.two-col,.pomodoro,#pomoTitle,.hero,.exp-add,.exp-add-details,.spotify-box{display:none}
   .rail{background:#fff}
   .field,.review input{border-bottom:1px solid #999}
   ol.tasks li.task{break-inside:avoid}
@@ -770,6 +775,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <span id="syncTime"></span>
     <span id="stateNote"></span>
   </div>
+  <button id="themeQuickBtn" class="icon-btn" type="button" aria-label="تبديل الوضع الداكن" title="الوضع الداكن"></button>
   <button id="settingsBtn" type="button" title="الإعدادات">⚙️</button>
 </div>
 
@@ -1088,6 +1094,10 @@ const EMPTY_ICON = '<svg class="empty-ic" viewBox="0 0 64 64" fill="none" xmlns=
   '<path d="M32 38V26" stroke="currentColor" stroke-width="2"/></svg>';
 const PIN_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:13px;height:13px;display:block">'+
   '<circle cx="12" cy="8" r="5"/><path d="M12 13v9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>';
+const MOON_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
+  '<path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>';
+const SUN_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">'+
+  '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg>';
 
 const now = new Date();
 $('date').textContent = now.toLocaleDateString('ar-EG-u-nu-arab',{day:'numeric',month:'long',year:'numeric'});
@@ -1105,6 +1115,13 @@ function applyTheme(t){
   if(t==='light'||t==='dark') document.documentElement.setAttribute('data-theme', t);
   else document.documentElement.removeAttribute('data-theme');
   const tb = $('setThemeBtn'); if(tb) tb.textContent = isDarkNow() ? '☀︎ فاتح' : '🌙 داكن';
+  const qb = $('themeQuickBtn');
+  if(qb){
+    const dark = isDarkNow();
+    qb.innerHTML = dark ? SUN_ICON : MOON_ICON;
+    qb.title = dark ? 'الوضع الفاتح' : 'الوضع الداكن';
+    qb.setAttribute('aria-pressed', String(dark));
+  }
   syncThemeColor();
 }
 /* لون شريط الحالة في الهاتف والتطبيق المثبَّت يتبع خلفية الطابع الحالي */
@@ -1117,15 +1134,21 @@ function syncThemeColor(){
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncThemeColor);
 let theme = ''; try{ theme = localStorage.getItem(TKEY) || ''; }catch(e){}
 applyTheme(theme);
-$('setThemeBtn').onclick = ()=>{
+/* زرّان يبدّلان الوضع نفسه: في الإعدادات، وأيقونة سريعة في الشريط العلوي */
+function toggleTheme(){
   theme = isDarkNow() ? 'light' : 'dark';
   try{ localStorage.setItem(TKEY, theme); }catch(e){}
   applyTheme(theme);
-};
+}
+$('setThemeBtn').onclick = toggleTheme;
+$('themeQuickBtn').onclick = toggleTheme;
 
 /* ---------- palette ---------- */
 const PKEY = 'daily-board-palette';
-let palette = ''; try{ palette = localStorage.getItem(PKEY) || ''; }catch(e){}
+/* «نَسَق» هو الطابع الافتراضي لأي جهاز لم يُختر فيه طابع بعد. الاختيار المحفوظ يُحترم
+   كما هو — والكلاسيكي محفوظ كنص فارغ ''، لذلك نميّزه عن "لا شيء محفوظ" (null). */
+let palette = 'nasaq';
+try{ const saved = localStorage.getItem(PKEY); if(saved !== null) palette = saved; }catch(e){}
 function applyPalette(p){
   if(p) document.documentElement.setAttribute('data-palette', p);
   else document.documentElement.removeAttribute('data-palette');
