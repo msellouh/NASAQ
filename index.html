@@ -674,16 +674,80 @@ ol.tasks li.task.flash{animation:task-flash 1.6s ease-out}
 .ob-count{margin-inline-start:10px;font-family:"IBM Plex Sans Arabic",sans-serif;font-size:12.5px;font-weight:500;color:var(--muted)}
 .ob-bar{height:6px;border-radius:999px;background:var(--stripe);overflow:hidden;margin:-4px 0 14px}
 .ob-bar i{display:block;height:100%;background:var(--accent,var(--focus));border-radius:999px;transition:width .4s}
-.ob-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
-.ob-step{width:100%;height:100%;display:flex;align-items:flex-start;gap:10px;text-align:start;padding:11px 12px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;transition:border-color .15s,transform .15s}
-.ob-step:hover:not(:disabled){border-color:var(--focus);transform:translateY(-1px)}
-.ob-step:disabled{cursor:default;background:var(--stripe)}
-.ob-check{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--ink-2);display:grid;place-items:center;font-size:12px;color:var(--paper);margin-top:1px}
-.ob-step.done .ob-check{background:var(--done);border-color:var(--done)}
-.ob-text{display:flex;flex-direction:column;gap:2px;min-width:0}
-.ob-text b{font-size:13.5px}
-.ob-text small{font-size:12px;color:var(--muted);line-height:1.5}
-.ob-step.done .ob-text b{text-decoration:line-through;text-decoration-color:var(--muted);color:var(--muted)}
+/* معرض الملصقات — على طريقة معارض «الجزيرة 360» / هوية «مَدار».
+   مزاجان: نهار (افتراضي) وليل (الوضع الداكن) — ألوان الستارة والعنوان تتبع المزاج */
+:root{
+  --ob-bg:#EDF2F9; --ob-ink:#14162A; --ob-sub:#3A3F62; --ob-shade:none; --ob-on-hue:#FFFFFF;
+  --ob-scrim:linear-gradient(to top,color-mix(in srgb,var(--ob-tintc,#FBFCFE) 97%,transparent) 0%,color-mix(in srgb,var(--ob-tintc,#FBFCFE) 84%,transparent) 30%,color-mix(in srgb,var(--ob-tintc,#FBFCFE) 12%,transparent) 58%,transparent 70%);
+  --ob-shadow:0 1px 2px rgba(20,22,42,.06),0 10px 22px rgba(20,22,42,.10);
+  --ob-glow:55%;   /* شدة توهّج الملصق المكتمل — أهدأ نهارًا */
+  --ob-idle:grayscale(1) opacity(.5); --ob-idle-next:grayscale(.5) opacity(.8);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --ob-bg:#14162A; --ob-ink:#FFFFFF; --ob-sub:#D9DDEA; --ob-shade:0 2px 14px rgba(0,0,0,.55); --ob-on-hue:#0A0E2A;
+  --ob-scrim:linear-gradient(to top,rgba(8,9,20,.94) 0%,rgba(8,9,20,.72) 30%,rgba(8,9,20,.1) 58%,transparent 70%);
+  --ob-shadow:0 10px 24px rgba(8,9,20,.3); --ob-glow:85%;
+  --ob-idle:grayscale(.9) brightness(.5); --ob-idle-next:grayscale(.45) brightness(.8);
+} }
+:root[data-theme="dark"]{
+  --ob-bg:#14162A; --ob-ink:#FFFFFF; --ob-sub:#D9DDEA; --ob-shade:0 2px 14px rgba(0,0,0,.55); --ob-on-hue:#0A0E2A;
+  --ob-scrim:linear-gradient(to top,rgba(8,9,20,.94) 0%,rgba(8,9,20,.72) 30%,rgba(8,9,20,.1) 58%,transparent 70%);
+  --ob-shadow:0 10px 24px rgba(8,9,20,.3); --ob-glow:85%;
+  --ob-idle:grayscale(.9) brightness(.5); --ob-idle-next:grayscale(.45) brightness(.8);
+}
+.ob-poster{--ob-hue:var(--ob-hue-l,#007A99)}
+.ob-poster .ob-art.is-dark{display:none}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .ob-poster{--ob-hue:var(--ob-hue-d,#00B7D4)}
+  :root:not([data-theme="light"]) .ob-poster .ob-art.is-dark{display:block}
+  :root:not([data-theme="light"]) .ob-poster .ob-art.is-light{display:none} }
+:root[data-theme="dark"] .ob-poster{--ob-hue:var(--ob-hue-d,#00B7D4)}
+:root[data-theme="dark"] .ob-poster .ob-art.is-dark{display:block}
+:root[data-theme="dark"] .ob-poster .ob-art.is-light{display:none}
+.ob-gallery{position:relative}
+.ob-steps{list-style:none;margin:0;padding:6px 4px 4px;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(172px,1fr);gap:14px;
+  overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding-inline:4px;scrollbar-width:none}
+.ob-steps::-webkit-scrollbar{display:none}
+.ob-steps li{scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:9px;min-width:0}
+.ob-poster{position:relative;display:block;width:100%;aspect-ratio:4 / 5;padding:0;border:0;border-radius:10px;overflow:hidden;isolation:isolate;
+  background:var(--ob-bg);color:var(--ob-ink);font:inherit;text-align:center;cursor:pointer;
+  box-shadow:var(--ob-shadow);transition:transform .25s ease,box-shadow .25s ease}
+.ob-poster .ob-art{position:absolute;inset:0;width:100%;height:100%;z-index:-2;transition:transform .6s ease,filter .3s}
+.ob-poster .ob-art.is-light{display:block}
+/* ستارة سفلية تضمن تباين العنوان فوق أي مشهد — فاتحة نهارًا، داكنة ليلًا */
+.ob-poster::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--ob-scrim)}
+.ob-cap{position:absolute;inset-inline:10px;bottom:12px;display:flex;flex-direction:column;align-items:center;gap:5px}
+.ob-title{font-family:Alexandria,"Readex Pro","IBM Plex Sans Arabic",sans-serif;font-weight:800;font-size:clamp(17px,1.45vw,21px);line-height:1.2;text-shadow:var(--ob-shade)}
+.ob-title em{display:block;font-style:normal;color:var(--ob-hue)}
+.ob-sub{font-size:11.5px;line-height:1.45;color:var(--ob-sub)}
+.ob-chip{margin-top:4px;padding:3px 12px;border-radius:6px;background:#1E6F73;color:#fff;font-size:11.5px;font-weight:700;white-space:nowrap}
+.ob-poster.next .ob-chip{background:var(--ob-hue);color:var(--ob-on-hue)}
+.ob-poster:hover:not(:disabled),.ob-poster:focus-visible{transform:translateY(-4px);box-shadow:0 0 0 3px var(--ob-hue),0 18px 34px rgba(8,9,20,.25);outline:none}
+.ob-poster:hover:not(:disabled) .ob-art{transform:scale(1.06)}
+/* المنطق التحفيزي: ما لم يُنجز باهت بلا لون، وما أُنجز يتوهّج بلونه.
+   المرور على ملصق باهت يعيد إليه لونه — لمحة عمّا ينتظرك حين تُكمله. */
+.ob-poster:not(.done) .ob-art{filter:var(--ob-idle)}
+.ob-poster.next:not(.done) .ob-art{filter:var(--ob-idle-next)}
+.ob-poster:not(.done):not(.next) .ob-title em{color:var(--ob-sub)}
+.ob-poster:not(.done):hover .ob-art,.ob-poster:not(.done):focus-visible .ob-art{filter:none}
+.ob-poster:not(.done):hover .ob-title em,.ob-poster:not(.done):focus-visible .ob-title em{color:var(--ob-hue)}
+.ob-poster.next{box-shadow:0 0 0 2px var(--ob-hue),var(--ob-shadow)}
+.ob-poster.done{cursor:default;box-shadow:0 0 0 2px var(--ob-hue),0 0 30px -2px color-mix(in srgb,var(--ob-hue) var(--ob-glow),transparent),var(--ob-shadow)}
+.ob-poster.done .ob-art{filter:saturate(1.15)}
+.ob-poster.fresh{animation:ob-glow 1.4s ease-out 2}
+@keyframes ob-glow{
+  0%{box-shadow:0 0 0 2px var(--ob-hue),0 0 0 0 var(--ob-hue),var(--ob-shadow);transform:scale(1)}
+  35%{box-shadow:0 0 0 3px var(--ob-hue),0 0 46px 6px color-mix(in srgb,var(--ob-hue) var(--ob-glow),transparent),var(--ob-shadow);transform:scale(1.03)}
+  100%{box-shadow:0 0 0 2px var(--ob-hue),0 0 30px -2px color-mix(in srgb,var(--ob-hue) var(--ob-glow),transparent),var(--ob-shadow);transform:scale(1)}}
+.ob-poster.done .ob-chip{background:#087F5D}
+.ob-meta{font-size:12px;padding:3px 12px;border-radius:6px;border:1px solid var(--rule);background:var(--surface);color:var(--muted);white-space:nowrap}
+.ob-arrow{position:absolute;top:calc(50% - 34px);z-index:3;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.25);
+  background:rgba(20,22,42,.82);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.ob-arrow[hidden]{display:none}
+.ob-arrow:hover{background:#14162A}
+.ob-arrow:focus-visible{outline:3px solid var(--accent,#00B7D4);outline-offset:2px}
+.ob-next{inset-inline-end:-8px}
+.ob-prev{inset-inline-start:-8px}
+@media (prefers-reduced-motion:reduce){ .ob-poster,.ob-poster .ob-art{transition:none} .ob-poster:hover:not(:disabled),.ob-poster:hover .ob-art{transform:none} .ob-poster.fresh{animation:none} }
 
 /* ---------- وضع التركيز بملء الشاشة ---------- */
 .focus-overlay{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px 20px;text-align:center;
@@ -1308,6 +1372,97 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 :root[data-palette="nasaq360"] .close-day .close-mark .bm-1{fill:#EEF1F7}
 :root[data-palette="nasaq360"] .close-day .close-mark .bm-2{fill:#34F5B5}
 :root[data-palette="nasaq360"] .close-day .close-mark .bm-dot{fill:#00B7D4}
+
+/* ==================== واجهة «360» الكاملة — صفحة «اليوم» في طابع «نَسَق 360» فقط ====================
+   التحية وصورتك تملآن الشاشة كواجهة «الجزيرة 360»: العنوان الكبير والسطر والتاريخ ولمحة اليوم وزر الفعل
+   على اليمين فوق ستارة ليلية، ثم تذوب الواجهة في خلفية الصفحة وتتوالى الأقسام بظهور هادئ عند التمرير. */
+.hero-meta,.hero-dots,.hero-cue{display:none}
+:root[data-palette="nasaq360"][data-tab="board"] .content{padding-top:0}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card{
+  --hp:0;   /* تقدّم التمرير عبر الواجهة (0..1) — يضبطه الـJS */
+  min-height:100vh;min-height:100svh;margin:0 -28px var(--gap);
+  /* النص في مجرى الصفحة (لا تموضع مطلق): إن طال عن الشاشة كبرت الواجهة ولم يُقصّ */
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;
+  padding:96px clamp(24px,6vw,96px) clamp(130px,20vh,210px);
+  border:0;border-radius:0;box-shadow:none;background:#080914;color:#EEF1F7;overflow:hidden;isolation:isolate}
+/* بلا صورة: ليل المدار — هالات بنفسجية ونعناعية وسماوية، وحلقات الأثير */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card::before{opacity:1;z-index:0;-webkit-mask:none;mask:none;
+  background:
+    radial-gradient(ellipse 55% 70% at 20% 30%,rgba(106,67,184,.38),transparent 70%),
+    radial-gradient(ellipse 45% 60% at 42% 105%,rgba(14,158,116,.30),transparent 70%),
+    radial-gradient(ellipse 40% 50% at 88% 18%,rgba(0,183,212,.20),transparent 70%),
+    repeating-radial-gradient(circle at 14% 46%,transparent 0 46px,rgba(255,255,255,.05) 46px 47px)}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo::before{opacity:0}
+/* الستارة: داكنة من جهة النص (اليمين)، وتذوب في لون الصفحة من الأسفل */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(to left,rgba(8,9,20,.88) 0%,rgba(8,9,20,.55) 34%,rgba(8,9,20,.08) 64%,transparent 78%),
+    linear-gradient(to top,var(--board) 0%,color-mix(in srgb,var(--board) 55%,transparent) 8%,transparent 24%),
+    linear-gradient(to bottom,rgba(8,9,20,.4),transparent 16%)}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-media{position:absolute;inset:0;width:auto;max-width:none;height:auto;padding:0;z-index:auto;display:block}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-media img{z-index:0;border-radius:0;
+  translate:0 calc(var(--hp) * 70px);animation:hero-kenburns 22s ease-out both}
+@keyframes hero-kenburns{from{scale:1.12}to{scale:1.02}}
+/* أدوات الصورة أعلى الجهة اليسرى، كأزرار الشريط العلوي في «360» */
+:root[data-palette="nasaq360"][data-tab="board"] :is(.greet-media .hero-empty,.hero-tools){position:absolute;top:22px;inset-inline-end:26px;inset-inline-start:auto;bottom:auto;z-index:4}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-media .hero-empty{inset:22px 26px auto auto;inset-inline-start:auto;inset-inline-end:26px;
+  border:1px solid rgba(255,255,255,.45);border-radius:4px;background:rgba(8,9,20,.35);color:#fff;padding:9px 16px;font-size:13px;backdrop-filter:blur(6px)}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-media .hero-empty:hover{background:#fff;color:#14162A}
+:root[data-palette="nasaq360"][data-tab="board"] :is(.hero-add,.hero-del){border-radius:4px;padding:8px 14px;font-size:13px;backdrop-filter:blur(6px)}
+/* النص: يمين الشاشة، ويتلاشى ويرتفع قليلًا مع التمرير */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-text{position:relative;z-index:2;flex:none;width:min(600px,100%);padding:0;gap:10px;
+  opacity:calc(1 - var(--hp) * 1.35);translate:0 calc(var(--hp) * -46px)}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-title{color:#fff;font-size:clamp(40px,5.4vw,78px);font-weight:800;line-height:1.08;text-shadow:0 4px 30px rgba(0,0,0,.45)}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-tagline{color:#E3E6F0;font-size:clamp(16px,1.5vw,21px);text-shadow:0 2px 14px rgba(0,0,0,.5)}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-date{color:#C4C9DD;margin-top:2px}
+:root[data-palette="nasaq360"][data-tab="board"] .hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.hm-chip{padding:5px 12px;border-radius:4px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#EEF1F7;font-size:13px;backdrop-filter:blur(6px)}
+.hm-chip.late{background:rgba(255,107,110,.18);border-color:rgba(255,107,110,.55);color:#FFD2D3}
+.hm-pri{flex-basis:100%;margin:4px 0 0;font-size:14px;color:#E3E6F0}
+.hm-pri b{color:#7FE3F5;font-weight:600;margin-inline-end:6px}
+/* زر الفعل: مستطيل سماوي عريض كزر «شاهد الآن» */
+:root[data-palette="nasaq360"][data-tab="board"] .plan-day{margin-top:18px;border-radius:4px;padding:15px 44px;min-width:200px;min-height:52px;font-size:16px;font-weight:700;
+  background:#00B7D4;color:#14162A;transition:background-color .18s,color .18s}
+:root[data-palette="nasaq360"][data-tab="board"] .plan-day:hover{background:#fff;color:#14162A}
+:root[data-palette="nasaq360"][data-tab="board"] .plan-day.done{background:rgba(8,9,20,.35);color:#fff;border:1px solid rgba(255,255,255,.55);backdrop-filter:blur(6px)}
+:root[data-palette="nasaq360"][data-tab="board"] .plan-day.done:hover{background:#fff;color:#14162A}
+:root[data-palette="nasaq360"][data-tab="board"] .plan-day:focus-visible{outline:3px solid #7FE3F5;outline-offset:3px}
+/* نقاط الصور ومؤشر التمرير */
+:root[data-palette="nasaq360"][data-tab="board"] .hero-dots:not(:empty){display:flex;gap:12px;position:absolute;z-index:3;bottom:92px;left:50%;translate:-50% 0;opacity:calc(1 - var(--hp) * 2)}
+.hero-dot{width:11px;height:11px;padding:0;border-radius:50%;border:0;background:rgba(255,255,255,.45);cursor:pointer;transition:background-color .2s,transform .2s}
+.hero-dot:hover{background:rgba(255,255,255,.8)}
+.hero-dot.active{background:#fff;transform:scale(1.15)}
+:root[data-palette="nasaq360"][data-tab="board"] .hero-cue{display:flex;flex-direction:column;align-items:center;gap:2px;position:absolute;z-index:3;bottom:26px;left:50%;translate:-50% 0;
+  border:0;background:none;color:var(--ink-2);font:inherit;font-size:12.5px;cursor:pointer;padding:6px 12px;opacity:calc(1 - var(--hp) * 2.5)}
+:root[data-palette="nasaq360"][data-tab="board"] .hero-cue svg{animation:hero-cue 2.2s ease-in-out infinite}
+@keyframes hero-cue{0%,100%{translate:0 0}50%{translate:0 6px}}
+/* دخول الواجهة: العناصر تصعد تباعًا عند فتح الصفحة */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-text > *{animation:hero-in .9s cubic-bezier(.2,.7,.2,1) both}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-text > :nth-child(2){animation-delay:.12s}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-text > :nth-child(3){animation-delay:.22s}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-text > :nth-child(4){animation-delay:.32s}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-text > :nth-child(5){animation-delay:.42s}
+@keyframes hero-in{from{opacity:0;translate:0 22px}to{opacity:1;translate:0 0}}
+/* الأقسام تتوالى بظهور هادئ حين تبلغها */
+:root[data-palette="nasaq360"] .rv{opacity:0;translate:0 28px;transition:opacity .7s ease var(--rv-d,0ms),translate .8s cubic-bezier(.2,.7,.2,1) var(--rv-d,0ms)}
+:root[data-palette="nasaq360"] .rv.in{opacity:1;translate:0 0}
+@media (max-width:999px){
+  :root[data-palette="nasaq360"][data-tab="board"] .greet-card{margin:0 -12px 14px;min-height:calc(100svh - 56px);padding:84px 20px 150px}
+  :root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo{flex-direction:column}
+  :root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo .greet-media{height:auto}
+  :root[data-palette="nasaq360"][data-tab="board"] .greet-text{width:100%}
+  :root[data-palette="nasaq360"][data-tab="board"] .greet-card::after{background:
+    linear-gradient(to top,var(--board) 0%,color-mix(in srgb,var(--board) 55%,transparent) 7%,rgba(8,9,20,.78) 26%,rgba(8,9,20,.35) 58%,rgba(8,9,20,.45) 100%)}
+  :root[data-palette="nasaq360"][data-tab="board"] .plan-day{width:100%}
+  :root[data-palette="nasaq360"][data-tab="board"] .hero-cue{bottom:90px}
+  :root[data-palette="nasaq360"][data-tab="board"] .hero-dots:not(:empty){bottom:128px}
+}
+@media (prefers-reduced-motion:reduce){
+  :root[data-palette="nasaq360"][data-tab="board"] :is(.greet-media img,.greet-text > *,.hero-cue svg){animation:none}
+  :root[data-palette="nasaq360"][data-tab="board"] :is(.greet-text,.greet-media img){translate:none;opacity:1}
+  :root[data-palette="nasaq360"] .rv{opacity:1;translate:none;transition:none}
+}
+@media print{ .rv{opacity:1 !important;translate:none !important} }
 @media (max-width:999px){
   :root[data-palette="nasaq360"] .sidenav-brand .orbit{width:42px;height:42px}
   :root[data-palette="nasaq360"] .sidenav-brand .orbit .brand-mark{width:26px;height:26px}
@@ -1529,6 +1684,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <h1 class="greet-title" id="heroGreet">صباح الخير</h1>
     <p class="greet-tagline">لكل شيء مكان، ولكل يوم نَسَق.</p>
     <div class="greet-date"><span id="weekday">—</span>، <span id="date">—</span></div>
+    <!-- لمحة اليوم: تظهر في واجهة «360» الكاملة فقط -->
+    <div class="hero-meta" id="heroMeta"></div>
     <button class="plan-day" id="planDayBtn" type="button">☀️ خطّط يومك</button>
   </div>
   <div class="greet-media">
@@ -1539,6 +1696,11 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <button class="hero-del" id="heroDelBtn" type="button" title="احذف هذه الصورة" hidden>×</button>
     </div>
   </div>
+  <div class="hero-dots" id="heroDots" aria-label="صورك"></div>
+  <button class="hero-cue" id="heroCue" type="button" aria-label="انتقل إلى يومك">
+    <span>تابع يومك</span>
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+  </button>
 </section>
 <input type="file" id="heroFileInput" accept="image/*" multiple hidden>
 
@@ -2036,6 +2198,7 @@ function showTab(name){
     b.classList.toggle('active', n===name);
     if(n===name) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
   });
+  document.documentElement.dataset.tab = name;   /* يعتمد عليه الـCSS: واجهة «360» الكاملة لصفحة اليوم فقط */
   try{ localStorage.setItem(TABKEY, name); }catch(e){}
   if(location.hash.replace('#','') !== TAB_HASH[name]) history.pushState(null, '', '#' + TAB_HASH[name]);
   if(name==='expenses') loadExpenseTab();
@@ -2661,7 +2824,7 @@ function render(){
   refreshTimelineTasks();
   renderWeekStrip();
   renderEnergyHint();
-  renderOnboard();
+  try{ renderOnboard(); }catch(e){}   /* رسوم الملصقات تُعرَّف لاحقًا في الملف */
   try{ updatePomoLive(); }catch(e){}   /* قد يُرسم اللوح قبل تهيئة المؤقّت */
 }
 
@@ -2831,6 +2994,17 @@ function renderSideToday(){
   const bar = add('st-bar'); const f = document.createElement('i'); f.style.width = pct + '%'; bar.appendChild(f);
   if(late) add('st-late', AR(late) + (late === 1 ? ' مهمة تنتظر قرارك' : ' مهام تنتظر قرارك'));
   if(first){ const p = add('st-pri'); const b = document.createElement('b'); b.textContent = 'الأولوية الأولى'; p.append(b, document.createTextNode(first)); }
+  /* لمحة اليوم في واجهة «360» الكاملة */
+  const hm = $('heroMeta');
+  if(hm){
+    hm.innerHTML = '';
+    const chip = (t, cls)=>{ const s = document.createElement('span'); s.className = 'hm-chip' + (cls ? ' ' + cls : ''); s.textContent = t; hm.appendChild(s); };
+    const dueToday = tasks.filter(t=>taskMatches(t, 'today')).length;
+    chip(total ? AR(done) + ' من ' + AR(total) + ' منجزة' : 'لا مهام بعد — ابدأ بواحدة');
+    if(dueToday) chip(AR(dueToday) + ' مستحقة اليوم');
+    if(late) chip(AR(late) + ' متأخرة', 'late');
+    if(first){ const p = document.createElement('p'); p.className = 'hm-pri'; const b = document.createElement('b'); b.textContent = 'أولويتك الأولى'; p.append(b, document.createTextNode(first)); hm.appendChild(p); }
+  }
 }
 document.querySelectorAll('.pri .field').forEach(f=>f.addEventListener('input', renderSideToday));
 
@@ -2937,18 +3111,19 @@ function renderOnboard(){
   if(st.hidden){ box.hidden = true; return; }
   let routines = 0; try{ routines = (flow.amRoutine || []).length + (flow.pmRoutine || []).length; }catch(e){}
   let planned = false; try{ planned = !!localStorage.getItem(PLAN_KEY); }catch(e){}
+  /* كل خطوة ملصق: عنوان بسطرين (الثاني بلون الخطوة)، وسطر قصير، ومشهد مرسوم في OB_ART */
   const steps = [
-    {done: tasks.length + archive.length > 0, t:'أضف أول مهمة', d:'اكتبها في «مهام اليوم»، والاختصارات تختصر عليك: #مشروع !أ ٣٠',
+    {key:'task', done: tasks.length + archive.length > 0, t:'أضف أول مهمة', l1:'أضف', l2:'أول مهمة', sub:'اكتبها، والاختصارات تكفيك', time:'٣٠ ثانية',
       go: ()=>{ showTab('board'); $('tText').scrollIntoView({block:'center'}); $('tText').focus(); }},
-    {done: [...document.querySelectorAll('.pri .field')].some(f=>f.value.trim()), t:'حدّد أولوية اليوم', d:'ما لو أُنجز وحده كان اليوم ناجحًا.',
+    {key:'pri', done: [...document.querySelectorAll('.pri .field')].some(f=>f.value.trim()), t:'حدّد أولوية اليوم', l1:'حدّد', l2:'أولوية اليوم', sub:'ما لو أُنجز وحده كفى', time:'٣٠ ثانية',
       go: ()=>{ const f = document.querySelector('.pri .field'); f.scrollIntoView({block:'center'}); f.focus(); }},
-    {done: planned, t:'خطّط يومك', d:'ثلاث خطوات صباحية: أمس، ما ينتظر قرارك، ثم أولوياتك.', go: ()=>openPlanDay()},
-    {done: routines > 0, t:'أضف عادة إلى روتينك', d:'من صفحة «العادات» — تظهر هنا كل يوم.',
+    {key:'plan', done: planned, t:'خطّط يومك', l1:'خطّط', l2:'يومك', sub:'أمس ← ما ينتظرك ← أولوياتك', time:'٣ دقائق', go: ()=>openPlanDay()},
+    {key:'habit', done: routines > 0, t:'أضف عادة إلى روتينك', l1:'أضف عادة', l2:'إلى روتينك', sub:'تظهر لك كل صباح', time:'دقيقة',
       go: ()=>{ showTab('flow'); $('amInput').focus(); }},
-    {done: !!st.focus, t:'جرّب جلسة تركيز', d:'٢٥ دقيقة لمهمة واحدة، بملء الشاشة.', go: ()=>openFocusMode()}
+    {key:'focus', done: !!st.focus, t:'جرّب جلسة تركيز', l1:'جرّب', l2:'جلسة تركيز', sub:'٢٥ دقيقة لشيء واحد', time:'٢٥ دقيقة', go: ()=>openFocusMode()}
   ];
   const n = steps.filter(s=>s.done).length;
-  if(n === steps.length){ setOnboard({hidden:true}); box.hidden = true; return; }
+  if(n === steps.length){ setOnboard({hidden:true}); box.hidden = true; showToast('أكملت خطوات البداية كلها — يومك الآن على نَسَق ✨'); return; }
   box.hidden = false; box.innerHTML = '';
   const head = document.createElement('div'); head.className = 'card-head';
   const h = document.createElement('h2'); h.textContent = 'ابدأ مع نَسَق';
@@ -2959,23 +3134,155 @@ function renderOnboard(){
   head.append(h, x);
   const bar = document.createElement('div'); bar.className = 'ob-bar'; const f = document.createElement('i');
   f.style.width = (n / steps.length * 100) + '%'; bar.appendChild(f);
+  /* معرض بطاقات على طريقة «مَدار»: ملصقات متجاورة، تُمرَّر أفقيًا حين يضيق المكان */
+  const gal = document.createElement('div'); gal.className = 'ob-gallery';
   const ol = document.createElement('ol'); ol.className = 'ob-steps';
-  steps.forEach(s=>{
+  const nextIdx = steps.findIndex(s=>!s.done);
+  /* ما اكتمل منذ آخر مرة يتوهّج بنبضة احتفال مرة واحدة */
+  const seen = Array.isArray(st.seen) ? st.seen : null;
+  const doneKeys = steps.filter(s=>s.done).map(s=>s.key);
+  if(!seen || doneKeys.some(k=>!seen.includes(k))) setOnboard({seen: doneKeys});
+  steps.forEach((s, i)=>{
+    const art = OB_ART[s.key];
     const li = document.createElement('li');
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'ob-step' + (s.done ? ' done' : '');
+    const b = document.createElement('button'); b.type = 'button';
+    const fresh = s.done && seen && !seen.includes(s.key);   /* أول عرض بلا سجل: لا احتفال بما سبق */
+    b.className = 'ob-poster' + (s.done ? ' done' : '') + (i === nextIdx ? ' next' : '') + (fresh ? ' fresh' : '');
+    b.style.setProperty('--ob-hue-d', art.text.dark);
+    b.style.setProperty('--ob-hue-l', art.text.light);
+    /* ستارة النهار بلون الملصق حين يكتمل أو يكون التالي، ورمادية محايدة لما لم يُبدأ */
+    b.style.setProperty('--ob-tintc', (s.done || i === nextIdx) ? obTint(art.art.light, .07) : '#F6F7FA');
     b.disabled = s.done;
-    const c = document.createElement('span'); c.className = 'ob-check'; c.setAttribute('aria-hidden', 'true'); c.textContent = s.done ? '✓' : '';
-    const tx = document.createElement('span'); tx.className = 'ob-text';
-    const tb = document.createElement('b'); tb.textContent = s.t;
-    const td = document.createElement('small'); td.textContent = s.d;
-    tx.append(tb, td);
-    b.append(c, tx);
-    if(s.done) b.setAttribute('aria-label', s.t + ' — تمّت');
+    b.setAttribute('aria-label', s.t + ' — ' + s.sub + (s.done ? ' (تمّت)' : ''));
+    b.innerHTML = obPosterSvg(s.key);   /* رسم ثابت من الكود، لا نصّ من المستخدم */
+    const cap = document.createElement('span'); cap.className = 'ob-cap'; cap.setAttribute('aria-hidden', 'true');
+    const ti = document.createElement('span'); ti.className = 'ob-title';
+    const em = document.createElement('em'); em.textContent = s.l2;
+    ti.append(document.createTextNode(s.l1), em);
+    const su = document.createElement('span'); su.className = 'ob-sub'; su.textContent = s.sub;
+    const ch = document.createElement('span'); ch.className = 'ob-chip';
+    ch.textContent = s.done ? '✓ تمّت' : (i === nextIdx ? 'ابدأ هنا' : 'الخطوة ' + AR(i + 1));
+    cap.append(ti, su, ch);
+    b.appendChild(cap);
     b.onclick = s.go;
-    li.appendChild(b); ol.appendChild(li);
+    const meta = document.createElement('span'); meta.className = 'ob-meta'; meta.setAttribute('aria-hidden', 'true');
+    meta.textContent = s.done ? 'أنجزتها' : '≈ ' + s.time;
+    li.append(b, meta); ol.appendChild(li);
   });
-  box.append(head, bar, ol);
+  const arrow = (cls, label, dir)=>{
+    const a = document.createElement('button'); a.type = 'button'; a.className = 'ob-arrow ' + cls;
+    a.setAttribute('aria-label', label); a.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (dir < 0 ? 'm14 6-6 6 6 6' : 'm10 6 6 6-6 6') + '"/></svg>';
+    /* في الاتجاه العربي: «التالي» يسارًا (scrollLeft سالب) */
+    a.onclick = ()=>{ const card = ol.querySelector('li'); ol.scrollBy({left: dir * ((card ? card.offsetWidth : 200) + 14), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); };
+    return a;
+  };
+  const nextA = arrow('ob-next', 'البطاقات التالية', -1), prevA = arrow('ob-prev', 'البطاقات السابقة', 1);
+  const syncArrows = ()=>{
+    const max = ol.scrollWidth - ol.clientWidth;
+    prevA.hidden = Math.abs(ol.scrollLeft) < 10;
+    nextA.hidden = max <= 10 || Math.abs(ol.scrollLeft) >= max - 10;
+  };
+  ol.addEventListener('scroll', syncArrows, {passive:true});
+  gal.append(ol, prevA, nextA);
+  box.append(head, bar, gal);
+  requestAnimationFrame(syncArrows);
 }
+window.addEventListener('resize', ()=>{ const ol = document.querySelector('#onboard .ob-steps'); if(ol) ol.dispatchEvent(new Event('scroll')); });
+
+/* مشاهد الملصقات بمزاجين: «ليل مَدار» الكحلي للوضع الداكن، و«نهار» عاجي أزرق للفاتح.
+   المشهد نفسه يتبدّل لونه وخلفيته، والـCSS يُظهر النسخة المطابقة للوضع الحالي. */
+const OB_MOODS = {
+  /* soft: مضاعف شدة التوهّجات المموّهة داخل المشهد. tint: درجات خلفية النهار من لون الخطوة نفسه */
+  dark:  {bg:['#0A0E2A','#14162A','#080914'], glow:.55, glowMid:.12, glowR:.6, soft:1, ring:'#FFFFFF', ringOp:.07, star:'#FFFFFF', starOp:1,
+          card:'#1D2248', line:'#EEF1F7', ground:'#0B0D22', onHue:'#0A0E2A', track:'#FFFFFF', txt:'#EEF1F7', txt2:'#C4C9DD', hollow:'#14162A'},
+  light: {tint:[.05,.11,.2], glow:.2, glowMid:.09, glowR:.85, soft:.45, ringOp:.12, starOp:.4,
+          card:'#FFFFFF', line:'#14162A', onHue:'#FFFFFF', track:'#14162A', txt:'#14162A', txt2:'#5E6485', hollow:'#FFFFFF'}
+};
+/* يمزج اللون مع الأبيض العاجي بنسبة amt (0 = أبيض، 1 = اللون كاملًا) */
+function obTint(hex, amt){
+  const n = parseInt(hex.slice(1), 16), base = [251, 252, 254];
+  return '#' + [n >> 16, (n >> 8) & 255, n & 255].map((c, i)=>Math.round(base[i] + (c - base[i]) * amt).toString(16).padStart(2, '0')).join('');
+}
+const OB_BASE = (id, hue, glowY, P)=>{
+  /* النهار: خلفية بدرجات فاتحة من لون الخطوة، فيذوب التوهّج فيها بدل أن يبدو بقعة على أبيض */
+  const bg = P.tint ? P.tint.map(t=>obTint(hue, t)) : P.bg;
+  const ring = P.ring || hue, star = P.star || hue;
+  return '<defs><linearGradient id="'+id+'-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+bg[0]+'"/><stop offset=".6" stop-color="'+bg[1]+'"/><stop offset="1" stop-color="'+bg[2]+'"/></linearGradient>' +
+  '<radialGradient id="'+id+'-gl" cx=".5" cy="'+glowY+'" r="'+P.glowR+'"><stop offset="0" stop-color="'+hue+'" stop-opacity="'+P.glow+'"/><stop offset=".5" stop-color="'+hue+'" stop-opacity="'+P.glowMid+'"/><stop offset="1" stop-color="'+hue+'" stop-opacity="0"/></radialGradient>' +
+  '<filter id="'+id+'-bl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="'+(P.tint ? 10 : 7)+'"/></filter></defs>' +
+  '<rect width="240" height="300" fill="url(#'+id+'-bg)"/><rect width="240" height="300" fill="url(#'+id+'-gl)"/>' +
+  '<g fill="none" stroke="'+ring+'" stroke-opacity="'+P.ringOp+'"><circle cx="240" cy="0" r="70"/><circle cx="240" cy="0" r="120"/><circle cx="240" cy="0" r="170"/><circle cx="240" cy="0" r="220"/><circle cx="240" cy="0" r="270"/></g>' +
+  '<g fill="'+star+'" opacity="'+P.starOp+'"><circle cx="28" cy="34" r="1.2" opacity=".6"/><circle cx="62" cy="18" r=".9" opacity=".5"/><circle cx="196" cy="52" r="1.1" opacity=".55"/><circle cx="40" cy="96" r=".8" opacity=".4"/><circle cx="214" cy="118" r="1" opacity=".45"/><circle cx="150" cy="24" r=".8" opacity=".5"/></g>';
+};
+/* المشهد يُصغَّر ويُرفع قليلًا (fit) كي يبقى فوق العنوان في الملصقات الصغيرة */
+const OB_SVG = (mood, base, scene, fit) => '<svg class="ob-art is-' + mood + '" viewBox="0 0 240 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' +
+  base + '<g transform="' + (fit || 'translate(12 -16) scale(.9)') + '">' + scene + '</g></svg>';
+/* لكل خطوة: art = لون المشهد في كل مزاج، text = لون السطر الثاني من العنوان (تباين ≥ 4.5 على ستارته) */
+const OB_ART = {
+  /* ورقة مهام مائلة، أول بند منجز، وزر «+» مضيء */
+  task: {art:{dark:'#00B7D4', light:'#0096B8'}, text:{dark:'#00B7D4', light:'#007A99'}, glowY:.3,
+    scene:(P, H, id)=>
+    '<g transform="rotate(-8 120 112)"><rect x="60" y="50" width="120" height="132" rx="12" fill="'+P.card+'" stroke="'+H+'" stroke-opacity=".55" stroke-width="1.5"/>' +
+    '<rect x="60" y="50" width="120" height="22" rx="12" fill="'+H+'" fill-opacity=".16"/>' +
+    '<rect x="77" y="88" width="15" height="15" rx="4" fill="#34D6A0"/><path d="m80.5 95.5 3 3 5-6" fill="none" stroke="#14162A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<rect x="100" y="92" width="62" height="7" rx="3.5" fill="'+P.line+'" opacity=".3"/>' +
+    '<rect x="77" y="116" width="15" height="15" rx="4" fill="none" stroke="'+H+'" stroke-width="1.6"/><rect x="100" y="120" width="50" height="7" rx="3.5" fill="'+P.line+'" opacity=".55"/>' +
+    '<rect x="77" y="144" width="15" height="15" rx="4" fill="none" stroke="'+H+'" stroke-width="1.6" opacity=".6"/><rect x="100" y="148" width="58" height="7" rx="3.5" fill="'+P.line+'" opacity=".25"/></g>' +
+    '<circle cx="176" cy="172" r="26" fill="'+H+'" opacity="'+(.6*P.soft)+'" filter="url(#'+id+'-bl)"/><circle cx="176" cy="172" r="21" fill="'+H+'"/>' +
+    '<path d="M176 162v20M166 172h20" stroke="'+P.onHue+'" stroke-width="4" stroke-linecap="round"/>'},
+  /* هدف بحلقات، وسهم أصاب المركز */
+  pri: {art:{dark:'#FF6B6E', light:'#E0474B'}, text:{dark:'#FF8A8C', light:'#C42B2E'}, glowY:.32,
+    scene:(P, H, id)=>
+    '<circle cx="118" cy="120" r="66" fill="none" stroke="'+H+'" stroke-opacity=".28" stroke-width="2"/>' +
+    '<circle cx="118" cy="120" r="48" fill="'+H+'" fill-opacity=".06" stroke="'+H+'" stroke-opacity=".5" stroke-width="2"/>' +
+    '<circle cx="118" cy="120" r="30" fill="'+H+'" fill-opacity=".16" stroke="'+H+'" stroke-width="2"/>' +
+    '<circle cx="118" cy="120" r="16" fill="#FFB36B" opacity="'+(.8*P.soft)+'" filter="url(#'+id+'-bl)"/><circle cx="118" cy="120" r="11" fill="#FFC35A"/>' +
+    '<path d="M206 36 125 113" stroke="'+P.line+'" stroke-width="3.2" stroke-linecap="round"/><path d="m121 117 13-3-4 13z" fill="'+P.line+'"/>' +
+    '<path d="m206 36 14-3m-14 3-3 14m7-10 13-3m-13 3-3 13" stroke="'+H+'" stroke-width="2.4" stroke-linecap="round"/>'},
+  /* شروق فوق الأفق، وطريق بثلاث محطات: أمس، ما ينتظرك، أولوياتك */
+  plan: {art:{dark:'#E8B24C', light:'#D6962E'}, text:{dark:'#E8B24C', light:'#88682E'}, glowY:.38, fit:'translate(0 -36)',   /* الأفق يرتفع بلا تصغير كي تبقى الأرض بعرض الملصق */
+    scene:(P, H, id)=>
+    '<defs><linearGradient id="'+id+'-sun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD98A"/><stop offset="1" stop-color="#E07A3C"/></linearGradient></defs>' +
+    '<g stroke="'+H+'" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"><path d="M120 76v-18M84 90l-11-13M156 90l11-13M62 120l-16-6M178 120l16-6"/></g>' +
+    '<circle cx="120" cy="150" r="54" fill="'+H+'" opacity="'+(.5*P.soft)+'" filter="url(#'+id+'-bl)"/>' +
+    '<path d="M72 150a48 48 0 0 1 96 0z" fill="url(#'+id+'-sun)"/>' +
+    '<rect x="0" y="150" width="240" height="190" fill="'+(P.ground || obTint(H, .24))+'"/><path d="M0 150h240" stroke="'+H+'" stroke-opacity=".6" stroke-width="1.5"/>' +
+    '<path d="M104 300c10-40 34-60 14-92-8-13 6-24 2-58" fill="none" stroke="'+H+'" stroke-opacity=".3" stroke-width="10" stroke-linecap="round"/>' +
+    '<path d="M104 300c10-40 34-60 14-92-8-13 6-24 2-58" fill="none" stroke="'+H+'" stroke-width="1.6" stroke-dasharray="3 7" stroke-linecap="round"/>' +
+    '<circle cx="119" cy="208" r="6" fill="'+H+'"/><circle cx="121" cy="178" r="4.5" fill="'+H+'" opacity=".8"/><circle cx="120" cy="158" r="3.2" fill="'+H+'" opacity=".65"/>'},
+  /* نبتة داخل حلقة الأسبوع: سبع نقاط، خمس منها ممتلئة */
+  habit: {art:{dark:'#34F5B5', light:'#0E9E74'}, text:{dark:'#34F5B5', light:'#087F5D'}, glowY:.34,
+    scene:(P, H, id)=>
+    '<circle cx="120" cy="118" r="58" fill="none" stroke="'+H+'" stroke-opacity=".2" stroke-width="1.5" stroke-dasharray="2 6"/>' +
+    [0,1,2,3,4,5,6].map(i=>{ const a = (-90 + i * 360 / 7) * Math.PI / 180, x = (120 + 58 * Math.cos(a)).toFixed(1), y = (118 + 58 * Math.sin(a)).toFixed(1);
+      return i < 5 ? '<circle cx="'+x+'" cy="'+y+'" r="7" fill="'+H+'"/>' : '<circle cx="'+x+'" cy="'+y+'" r="6.5" fill="'+P.hollow+'" stroke="'+H+'" stroke-width="1.8"/>'; }).join('') +
+    '<ellipse cx="120" cy="150" rx="26" ry="6" fill="'+H+'" opacity="'+(.25*P.soft)+'" filter="url(#'+id+'-bl)"/>' +
+    '<path d="M120 150c0-18 0-30 2-44" stroke="'+H+'" stroke-width="3.5" stroke-linecap="round" fill="none"/>' +
+    '<path d="M121 118c-20 2-31-8-33-24 18-2 30 8 33 24z" fill="'+H+'" fill-opacity=".8"/>' +
+    '<path d="M122 108c4-19 17-26 33-24-2 18-15 26-33 24z" fill="'+H+'"/>' +
+    '<circle cx="138" cy="92" r="10" fill="'+H+'" opacity="'+(.45*P.soft)+'" filter="url(#'+id+'-bl)"/>'},
+  /* حلقة المدار ٣٣٠° حول «٢٥» — مؤقّت جلسة التركيز */
+  focus: {art:{dark:'#B69CF5', light:'#7C55D0'}, text:{dark:'#C9B5FF', light:'#6A43B8'}, glowY:.32,
+    scene:(P, H, id)=>
+    '<defs><linearGradient id="'+id+'-ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1FC99A"/><stop offset=".5" stop-color="#00A5C2"/><stop offset="1" stop-color="'+H+'"/></linearGradient></defs>' +
+    '<circle cx="120" cy="116" r="60" fill="none" stroke="'+P.track+'" stroke-opacity=".1" stroke-width="10"/>' +
+    '<path d="M135.5 58A60 60 0 1 1 104.5 58" fill="none" stroke="'+H+'" stroke-opacity="'+(.5*P.soft)+'" stroke-width="12" stroke-linecap="round" filter="url(#'+id+'-bl)"/>' +
+    '<path d="M135.5 58A60 60 0 1 1 104.5 58" fill="none" stroke="url(#'+id+'-ring)" stroke-width="8" stroke-linecap="round"/>' +
+    '<circle cx="135.5" cy="58" r="6" fill="'+P.txt+'"/>' +
+    '<text x="120" y="130" text-anchor="middle" font-family="Alexandria, Readex Pro, sans-serif" font-weight="800" font-size="40" fill="'+P.txt+'">٢٥</text>' +
+    '<text x="120" y="150" text-anchor="middle" font-family="Readex Pro, sans-serif" font-size="11" fill="'+P.txt2+'">دقيقة</text>'}
+};
+/* الملصق يحمل النسختين معًا، ويُظهر الـCSS ما يطابق الوضع — فلا يحتاج إعادة رسم عند تبديل الوضع */
+const obSvgCache = {};
+function obPosterSvg(key){
+  if(obSvgCache[key]) return obSvgCache[key];
+  const a = OB_ART[key];
+  return obSvgCache[key] = ['dark', 'light'].map(m=>{
+    const id = 'ob' + key + '-' + m, H = a.art[m];
+    return OB_SVG(m, OB_BASE(id, H, a.glowY, OB_MOODS[m]), a.scene(OB_MOODS[m], H, id), a.fit);
+  }).join('');
+}
+try{ renderOnboard(); }catch(e){}   /* إن رُسم اللوح قبل تعريف الرسوم أعلاه */
 
 /* ---------- صفحة المهام الموسّعة: أقسام حسب الموعد، مرتّبة بالأهمية ---------- */
 const TP_GROUPS = [
@@ -3834,6 +4141,38 @@ $('palInput').addEventListener('keydown', e=>{
   else if(e.key === 'Tab'){ e.preventDefault(); }   /* يبقى التركيز في حقل البحث */
 });
 $('paletteOverlay').addEventListener('mousedown', e=>{ if(e.target === $('paletteOverlay')) closePalette(); });
+
+/* ---------- Enter ينقلك إلى الحقل التالي — في كل المنصة ----------
+   داخل البطاقة أو النافذة نفسها؛ وفي آخر حقل يُغلق الإدخال (فيُحفظ). الحقول التي لـEnter فيها
+   عمل خاص (إضافة مهمة، دخول، إضافة عادة…) تبقى كما هي. Shift+Enter وحقول النص الطويل لا تتأثر. */
+const ENTER_OWN = '#tText,#tProj,#tMins,.mini-add,#amInput,#pmInput,#expAmount,#expText,#loginPass,.sub-add,#palInput,.edit-input,[data-enter="own"]';
+const ENTER_SKIP_TYPES = /^(checkbox|radio|button|submit|reset|file|range|color|hidden|image)$/;
+const ENTER_SCOPE = '.modal,.auth-form,.settings-panel section,.settings-panel,li.details,.pri,.card,section,.tabpanel';
+function enterFields(scope){
+  return [...scope.querySelectorAll('input,select,textarea')].filter(f=>
+    !f.disabled && !f.readOnly && !ENTER_SKIP_TYPES.test(f.type) && f.tabIndex >= 0 && f.offsetParent !== null);
+}
+document.addEventListener('keydown', e=>{
+  if(e.key !== 'Enter' || e.shiftKey || e.ctrlKey || e.metaKey || e.altKey || e.isComposing || e.defaultPrevented) return;
+  const el = e.target;
+  if(!(el instanceof HTMLInputElement || el instanceof HTMLSelectElement)) return;
+  if(ENTER_SKIP_TYPES.test(el.type) || el.matches(ENTER_OWN)) return;
+  const scope = el.closest(ENTER_SCOPE) || document.body;
+  const fields = enterFields(scope), i = fields.indexOf(el);
+  e.preventDefault();
+  const next = i > -1 ? fields[i + 1] : null;
+  if(next){
+    next.focus();
+    if(next instanceof HTMLInputElement && /^(text|search|url|email|tel|number|password|)$/.test(next.type)) try{ next.select(); }catch(err){}
+  } else el.blur();
+});
+/* لوحة مفاتيح الجوال تُظهر «التالي» أو «تم» حسب موقع الحقل */
+document.addEventListener('focusin', e=>{
+  const el = e.target;
+  if(!(el instanceof HTMLInputElement) || ENTER_SKIP_TYPES.test(el.type) || el.matches(ENTER_OWN)) return;
+  const fields = enterFields(el.closest(ENTER_SCOPE) || document.body);
+  el.setAttribute('enterkeyhint', fields.indexOf(el) < fields.length - 1 ? 'next' : 'done');
+});
 $('paletteBtn').onclick = openPalette;
 document.addEventListener('keydown', e=>{
   if((e.ctrlKey || e.metaKey) && !e.altKey && (e.key === 'k' || e.key === 'K' || e.code === 'KeyK')){
@@ -4255,6 +4594,19 @@ function showPhoto(){
     $('heroImg').src = cur.url;
     $('heroDelBtn').hidden = !cur.dbId;
   }
+  /* نقاط التنقّل بين صورك (تظهر في واجهة «360» حين تكون أكثر من صورة) */
+  const dots = $('heroDots'); dots.innerHTML = '';
+  if(photoList.length > 1){
+    const curI = photoIdx % photoList.length;
+    photoList.forEach((p, i)=>{
+      const d = document.createElement('button'); d.type = 'button';
+      d.className = 'hero-dot' + (i === curI ? ' active' : '');
+      d.setAttribute('aria-label', 'الصورة ' + AR(i + 1) + ' من ' + AR(photoList.length));
+      if(i === curI) d.setAttribute('aria-current', 'true');
+      d.onclick = ()=>{ photoIdx = i; showPhoto(); };
+      dots.appendChild(d);
+    });
+  }
   updateGreeting();
 }
 /* التحية ظاهرة دائمًا في بطاقة الترحيب، بصورة أو بدونها، وتتبدّل مع وقت اليوم */
@@ -4299,6 +4651,38 @@ function openAddPhotoModal(){
 }
 $('heroEmpty').onclick = openAddPhotoModal;
 $('heroAddBtn').onclick = openAddPhotoModal;
+
+/* ---------- واجهة «360»: حركة التمرير، ومؤشر «تابع يومك»، وظهور الأقسام تباعًا ---------- */
+function heroMode(){ const r = document.documentElement.dataset; return r.palette === 'nasaq360' && r.tab === 'board'; }
+let heroTick = false;
+function heroScroll(){
+  heroTick = false;
+  const el = $('heroBanner');
+  if(!heroMode()){ el.style.removeProperty('--hp'); return; }
+  const p = Math.min(1, Math.max(0, scrollY / ((el.offsetHeight || 1) * .7)));
+  el.style.setProperty('--hp', p.toFixed(3));
+}
+window.addEventListener('scroll', ()=>{ if(!heroTick){ heroTick = true; requestAnimationFrame(heroScroll); } }, {passive:true});
+$('heroCue').onclick = ()=>{
+  const target = $('tabBoard');
+  const bar = matchMedia('(max-width:999px)').matches ? document.querySelector('.sidenav').offsetHeight : 0;   /* الشريط العلوي في الجوال */
+  window.scrollTo({top: target.getBoundingClientRect().top + scrollY - bar - 8,
+    behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+};
+if('IntersectionObserver' in window){
+  const rvIO = new IntersectionObserver(entries=>{
+    let k = 0;
+    entries.forEach(en=>{
+      if(!en.isIntersecting) return;
+      const el = en.target;
+      el.style.setProperty('--rv-d', (k++ * 90) + 'ms');   /* ما يظهر معًا يتوالى بفاصل قصير */
+      el.classList.add('in');
+      rvIO.unobserve(el);
+      setTimeout(()=>el.style.removeProperty('--rv-d'), 1200);
+    });
+  }, {rootMargin:'0px 0px -6% 0px', threshold:.06});
+  document.querySelectorAll('#tabBoard .onboard, #tabBoard .dash .card').forEach(el=>{ el.classList.add('rv'); rvIO.observe(el); });
+}
 $('heroFileInput').addEventListener('change', async e=>{
   const files = [...e.target.files].filter(f=>f.type.startsWith('image/'));
   for(const f of files){ await addPhotoBlob(f).catch(()=>{}); }
