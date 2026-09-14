@@ -589,6 +589,39 @@ body{padding:0}
   .add-details{grid-template-columns:1fr}
 }
 
+/* ---------- ألوان المشاريع: خط جانبي في سطر المهمة، ونقطة قبل اسم المشروع ---------- */
+ol.tasks li.task.has-proj{box-shadow:inset -3px 0 0 var(--pc)}
+li.task.has-proj .proj::before,.dot-pc::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pc);margin-inline-end:6px;vertical-align:middle}
+/* تخطيط الصباح */
+.plan-day{align-self:flex-start;margin-top:12px;font:inherit;font-size:13.5px;font-weight:600;padding:8px 16px;border-radius:999px;border:0;cursor:pointer;background:var(--ink);color:var(--paper);min-height:38px}
+:root[data-palette^="nasaq"] .plan-day{background:var(--focus);color:var(--on-accent)}
+.plan-day.done{background:transparent;color:var(--ink-2);border:1px solid var(--rule)}
+.plan-modal{max-width:560px}
+.plan-steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.plan-step{font-size:12px;padding:4px 10px;border-radius:999px;background:var(--stripe);color:var(--muted)}
+.plan-step.on{background:var(--ink);color:var(--paper)}
+.plan-step.past{color:var(--done)}
+.plan-lead{margin:0 0 10px;font-size:15px;color:var(--ink)}
+.plan-list{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow-y:auto}
+.plan-done{padding:6px 10px;border-radius:8px;background:var(--stripe);font-size:13.5px;color:var(--ink-2)}
+.plan-item{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--rule);border-radius:10px}
+.plan-text{flex:1;min-width:0;font-size:14px}
+.plan-tag{font-size:11.5px;color:var(--muted);background:var(--stripe);border-radius:999px;padding:2px 8px}
+.plan-acts{display:flex;gap:6px}
+.plan-acts button{font:inherit;font-size:12.5px;padding:5px 12px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);cursor:pointer;min-height:32px}
+.plan-acts button:first-child{background:var(--focus-bg);border-color:var(--focus);color:var(--focus-ink)}
+.plan-pick button{display:flex;align-items:center;gap:8px;width:100%;text-align:start;font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);cursor:pointer}
+.plan-pick.on button{border-color:var(--focus);background:var(--focus-bg);color:var(--focus-ink)}
+.plan-sum{margin:0;font-size:12.5px;color:var(--muted)}
+.plan-sum.over{color:var(--hold-ink);background:var(--hold-bg);padding:8px 10px;border-radius:8px}
+.plan-nav{display:flex;justify-content:space-between;gap:8px;margin-top:14px}
+.plan-nav button{font:inherit;font-size:14px;padding:9px 18px;border-radius:10px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);cursor:pointer}
+.plan-nav button.primary{background:var(--ink);border-color:var(--ink);color:var(--paper);margin-inline-start:auto}
+:root[data-palette^="nasaq"] .plan-nav button.primary{background:var(--focus);border-color:var(--focus);color:var(--on-accent)}
+/* تنبيه تجاوز ساعات العمل */
+.cap-warn{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:-6px 0 14px;padding:8px 12px;border-radius:10px;background:var(--hold-bg);color:var(--hold-ink);font-size:13px}
+.cap-warn[hidden]{display:none}
+
 /* ---------- رأس الصفحات (المهام · العادات · المصروفات) ---------- */
 .card-head h3{display:flex;align-items:center;gap:8px;font-family:var(--font-head);font-size:16.5px;font-weight:700;margin:0;color:var(--ink)}
 .card-note{font-size:12.5px;color:var(--muted)}
@@ -1374,6 +1407,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <h1 class="greet-title" id="heroGreet">صباح الخير</h1>
     <p class="greet-tagline">لكل شيء مكان، ولكل يوم نَسَق.</p>
     <div class="greet-date"><span id="weekday">—</span>، <span id="date">—</span></div>
+    <button class="plan-day" id="planDayBtn" type="button">☀️ خطّط يومك</button>
   </div>
   <div class="greet-media">
     <img id="heroImg" alt="" hidden>
@@ -1410,6 +1444,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <div class="meter"><span id="doneCount">٠</span> من <span id="totalCount">٠</span> منجزة · <b id="load">—</b></div>
       </div>
       <div class="progress" aria-hidden="true"><div class="fill" id="fill"></div></div>
+      <div class="cap-warn" id="capWarn" role="status" hidden></div>
 
       <div class="task-filters" id="taskFilters" aria-label="تصفية المهام">
         <button type="button" data-f="all" class="active">الكل <b></b></button>
@@ -1963,6 +1998,22 @@ function applyFullState(s){
   render(); renderTimeline(); renderFlow(); renderExpenses();
 }
 
+/* ---------- حماية المزامنة ----------
+   حادثة ٢٠٢٦-٠٩-١٤: متصفح بنسخة فارغة فُتح أول مرة في يوم جديد، فسجّل تصفير روتين اليوم
+   كتعديل، ورفع نسخته الفارغة بعد ثانيتين — قبل أن يصل ردّ السحابة — فمسح الحالة المحفوظة.
+   ثلاث قواعد تمنع تكرارها:
+   ١) لا رفع قبل أول قراءة ناجحة للسحابة (stateReady). التعديلات قبلها تُحفظ محليًا وتنتظر.
+   ٢) لا تُرفع نسخة بلا محتوى فوق سحابة فيها محتوى، مهما كان التوقيت.
+   ٣) جهاز بلا محتوى يأخذ ما في السحابة حتى لو بدا توقيته أحدث. */
+let stateReady = false, pendingPush = false, remoteHasContent = false;
+function stateHasContent(s){
+  if(!s) return false;
+  const b = s.board || {}, f = s.flow || {};
+  return !!((b.tasks||[]).length || (b.archive||[]).length || (b.waits||[]).length || (b.laters||[]).length ||
+    (b.pri||[]).some(Boolean) || (b.rev||[]).some(Boolean) || b.pinned || b.dump ||
+    Object.values(b.timeline||{}).some(Boolean) || (s.expenses||[]).length ||
+    (f.amRoutine||[]).length || (f.pmRoutine||[]).length || (f.grat||[]).some(Boolean));
+}
 function touchState(){
   if(applyingRemote) return;
   stateUpdatedAt = Date.now();
@@ -1971,11 +2022,17 @@ function touchState(){
 }
 function queueStatePush(){
   if(!bridge) return;
+  if(!stateReady){ pendingPush = true; return; }   /* القاعدة ١ */
   clearTimeout(statePushTimer);
   statePushTimer = setTimeout(pushState, 2000);
 }
 function pushState(){
   if(!bridge || applyingRemote || statePushing) return;
+  if(!stateReady){ pendingPush = true; return; }
+  if(remoteHasContent && !stateHasContent(fullState())){   /* القاعدة ٢ */
+    setStateNote('لم يُرفع: نسخة هذا الجهاز فارغة والسحابة فيها بيانات');
+    return;
+  }
   statePushing = true;
   setStateNote('يحفظ سحابيًا…');
   post({action:'state_set', state: fullState(), updatedAt: stateUpdatedAt})
@@ -1994,7 +2051,12 @@ function pullState(pre){
   setStateNote('يقرأ السحابة…');
   return (pre ? Promise.resolve(pre) : post({action:'state_get'})).then(d=>{
     const remoteAt = Number(d.updatedAt)||0;
-    if(d.state && remoteAt > bootUpdatedAt){
+    remoteHasContent = stateHasContent(d.state);
+    stateReady = true;
+    /* القاعدة ٣: جهاز فارغ يأخذ السحابة الممتلئة مهما كان التوقيت */
+    const localEmpty = !stateHasContent(fullState());
+    if(d.state && (remoteAt > bootUpdatedAt || (localEmpty && remoteHasContent))){
+      pendingPush = false;
       applyingRemote = true;
       try{ applyFullState(d.state); } finally { applyingRemote = false; }
       stateUpdatedAt = remoteAt;
@@ -2012,11 +2074,17 @@ function pullState(pre){
       pushState();
       setStateNote('نُقلت بياناتك المحلية إلى حسابك '+clockNow());
     }else if(stateUpdatedAt > remoteAt){
+      pendingPush = false;
       pushState();
     }else{
+      pendingPush = false;
       setStateNote('متزامن '+clockNow());
     }
-  }).catch(()=>{ setStateNote('تعذّرت قراءة السحابة'); });
+  }).catch(()=>{
+    /* لم نقرأ السحابة: لا نرفع شيئًا (stateReady يبقى false)، ونعيد المحاولة بعد قليل */
+    setStateNote('تعذّرت قراءة السحابة — سأعيد المحاولة');
+    setTimeout(()=>{ if(!stateReady && auth && auth.token) pullState(); }, 30000);
+  });
 }
 
 /* ---------- Notion bridge ---------- */
@@ -2413,7 +2481,18 @@ function render(){
   $('totalCount').textContent = AR(tasks.length);
   $('fill').style.width = (tasks.length ? done/tasks.length*100 : 0)+'%';
   const m = tasks.filter(t=>!t.done).reduce((s,t)=>s+(Number(t.mins)||0),0);
-  $('load').textContent = m ? fmtMins(m) + ' متبقية' : '—';
+  const cap = workMins();
+  $('load').textContent = m ? fmtMins(m) + ' مخطّطة من ' + fmtMins(cap) : '—';
+  /* تنبيه تجاوز الطاقة: الوقت المقدّر للمهام المفتوحة أطول من يوم العمل */
+  const cw = $('capWarn');
+  if(m > cap){
+    cw.hidden = false; cw.innerHTML = '';
+    const s = document.createElement('span');
+    s.textContent = 'خطتك أطول من يوم عملك بـ ' + fmtMins(m - cap) + ' — ربما تؤجّل مهمة للغد؟';
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'card-link'; b.textContent = 'ساعات عملي';
+    b.onclick = openCapacityModal;
+    cw.append(s, b);
+  } else cw.hidden = true;
 
   renderMini('waitList', waits, i=>{waits.splice(i,1);sync();});
   renderMini('laterList', laters, i=>{laters.splice(i,1);sync();});
@@ -2426,6 +2505,156 @@ function render(){
   renderTasksPage();
   renderSideToday();
 }
+
+/* ---------- ساعات العمل (سعة اليوم) — افتراضيًا ٨ ساعات، محفوظة على الجهاز ---------- */
+const WORK_KEY = 'daily-board-workmins';
+function workMins(){ let v = 480; try{ v = Number(localStorage.getItem(WORK_KEY)) || 480; }catch(e){} return v; }
+function openCapacityModal(){
+  openModal({
+    title: 'ساعات عملك اليومية',
+    bodyHTML: '<p>يُنبّهك نَسَق إن تجاوز الوقتُ المقدّر لمهامك المفتوحة هذه المدة.</p>' +
+      '<input type="number" id="capHours" min="1" max="16" step="0.5" style="width:120px"> ساعة',
+    onRender: body => { body.querySelector('#capHours').value = workMins() / 60; body.querySelector('#capHours').focus(); },
+    actions: [
+      {label:'إلغاء'},
+      {label:'احفظ', primary:true, onClick:({close, bodyEl})=>{
+        const h = Number(bodyEl.querySelector('#capHours').value);
+        if(h > 0 && h <= 16){ try{ localStorage.setItem(WORK_KEY, String(Math.round(h * 60))); }catch(e){} }
+        close(); render();
+      }}
+    ]
+  });
+}
+
+/* ---------- ألوان المشاريع: لون ثابت يُشتق من الاسم، من ألوان الهوية الهادئة ---------- */
+const PROJ_COLORS = ['#2F6F6B','#C99A45','#668A9A','#C87861','#82758E','#6F9B83','#D6A84F','#8A7F6E'];
+function projColor(name){
+  const s = String(name || '').trim(); if(!s) return '';
+  let h = 0; for(const ch of s) h = (h * 31 + ch.codePointAt(0)) >>> 0;
+  return PROJ_COLORS[h % PROJ_COLORS.length];
+}
+
+/* ---------- تخطيط الصباح: رحلة من ثلاث خطوات ----------
+   أمس ← ما ينتظر قرارك ← أولويات اليوم. يستخدم بيانات اللوح نفسها، ولا يحذف شيئًا دون ضغطك. */
+const PLAN_KEY = 'daily-board-planned';
+function plannedToday(){ try{ return localStorage.getItem(PLAN_KEY) === iso(new Date()); }catch(e){ return false; } }
+function updatePlanBtn(){
+  const b = $('planDayBtn'); if(!b) return;
+  const done = plannedToday();
+  b.classList.toggle('done', done);
+  b.textContent = done ? '✓ خطّطت يومك — راجع الخطة' : '☀️ خطّط يومك';
+}
+function openPlanDay(){
+  const today = iso(new Date());
+  const y = new Date(); y.setDate(y.getDate() - 1); const yest = iso(y);
+  const t2 = new Date(); t2.setDate(t2.getDate() + 1); const tomorrow = iso(t2);
+  const dayOf = s => s ? localYMD(new Date(s)) : '';
+  let step = 1;
+  const m = openModal({ title: 'خطّط يومك', bodyHTML: '<div class="plan"></div>', actions: [] });
+  const box = m.bodyEl.querySelector('.plan');
+  m.bodyEl.closest('.modal').classList.add('plan-modal');
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if(cls) e.className = cls; if(txt != null) e.textContent = txt; return e; };
+  const steps = el('div', 'plan-steps');
+  const nav = el('div', 'plan-nav');
+  const body = el('div', 'plan-body');
+  box.append(steps, body, nav);
+
+  function draw(){
+    steps.innerHTML = '';
+    ['أمس', 'ما ينتظر قرارك', 'أولويات اليوم'].forEach((s, i)=>{
+      const d = el('span', 'plan-step' + (i + 1 === step ? ' on' : i + 1 < step ? ' past' : ''), AR(i + 1) + '. ' + s);
+      steps.appendChild(d);
+    });
+    body.innerHTML = ''; nav.innerHTML = '';
+    const next = (label, fn, primary = true) => { const b = el('button', primary ? 'primary' : '', label); b.type = 'button'; b.onclick = fn; nav.appendChild(b); };
+
+    if(step === 1){
+      const doneY = archive.concat(tasks).filter(t=>t.done && dayOf(t.doneAt) === yest);
+      body.appendChild(el('p', 'plan-lead', doneY.length ? 'أنجزت أمس ' + AR(doneY.length) + (doneY.length === 1 ? ' مهمة' : ' مهام') + ' ✦' : 'لا مهام مسجّلة كمنجزة أمس — اليوم بداية جديدة.'));
+      if(doneY.length){
+        const ul = el('ul', 'plan-list');
+        doneY.slice(0, 8).forEach(t=>ul.appendChild(el('li', 'plan-done', t.text)));
+        body.appendChild(ul);
+      }
+      next('التالي ←', ()=>{ step = 2; draw(); });
+    }
+
+    if(step === 2){
+      const late = tasks.filter(t=>taskMatches(t, 'overdue'));
+      const items = late.map(t=>({kind:'task', t})).concat(laters.map((text, i)=>({kind:'later', text, i})));
+      if(!items.length){
+        body.appendChild(el('p', 'plan-lead', 'لا شيء متأخر ولا مؤجّل — كل شيء في مكانه.'));
+      } else {
+        body.appendChild(el('p', 'plan-lead', AR(items.length) + ' ' + (items.length === 1 ? 'أمر ينتظر' : 'أمور تنتظر') + ' قرارك:'));
+        const ul = el('ul', 'plan-list');
+        items.forEach(it=>{
+          const li = el('li', 'plan-item');
+          li.appendChild(el('span', 'plan-text', it.kind === 'task' ? it.t.text : it.text));
+          li.appendChild(el('span', 'plan-tag', it.kind === 'task' ? 'متأخرة' : 'مؤجّلة'));
+          const acts = el('span', 'plan-acts');
+          const act = (label, fn) => { const b = el('button', '', label); b.type = 'button'; b.onclick = ()=>{ fn(); draw(); }; acts.appendChild(b); };
+          if(it.kind === 'task'){
+            act('اليوم', ()=>{ it.t.due = today; it.t.dirty = true; sync(); });
+            act('غدًا',  ()=>{ it.t.due = tomorrow; it.t.dirty = true; sync(); });
+          } else {
+            act('اليوم', ()=>{
+              tasks.push({id:Date.now()+Math.random(), text:it.text, proj:'', donor:'', imp:'ب', due:today, mins:'', actual:'', notes:'',
+                          done:false, state:0, createdAt:new Date().toISOString(), dirty:true});
+              laters.splice(laters.indexOf(it.text), 1); sync();
+            });
+            act('احذف', ()=>{ laters.splice(laters.indexOf(it.text), 1); sync(); });
+          }
+          li.appendChild(acts); ul.appendChild(li);
+        });
+        body.appendChild(ul);
+      }
+      next('→ السابق', ()=>{ step = 1; draw(); }, false);
+      next('التالي ←', ()=>{ step = 3; draw(); });
+    }
+
+    if(step === 3){
+      const open = tasks.filter(t=>!t.done);
+      const current = [...document.querySelectorAll('.pri .field')].map(f=>f.value.trim()).filter(Boolean);
+      const chosen = new Set(open.filter(t=>current.includes(t.text.trim())).map(t=>t.id));
+      body.appendChild(el('p', 'plan-lead', open.length ? 'اختر حتى ثلاث مهام تجعل اليوم ناجحًا لو أنجزتها:' : 'لا مهام مفتوحة بعد — أضف أول مهمة ثم عُد إلى هنا.'));
+      const sum = el('p', 'plan-sum');
+      const refreshSum = ()=>{
+        const mins = open.filter(t=>chosen.has(t.id)).reduce((s,t)=>s + (Number(t.mins)||0), 0);
+        const all = open.reduce((s,t)=>s + (Number(t.mins)||0), 0), cap = workMins();
+        sum.textContent = 'الأولويات: ' + (mins ? fmtMins(mins) : '—') + ' · كل المفتوح: ' + (all ? fmtMins(all) : '—') + ' من يوم عمل ' + fmtMins(cap) + (all > cap ? ' — أطول من يومك، فكّر في تأجيل شيء' : '');
+        sum.classList.toggle('over', all > cap);
+      };
+      const ul = el('ul', 'plan-list');
+      open.forEach(t=>{
+        const li = el('li', 'plan-pick' + (chosen.has(t.id) ? ' on' : ''));
+        const b = el('button', '', null); b.type = 'button';
+        b.setAttribute('aria-pressed', String(chosen.has(t.id)));
+        b.append(el('span', 'plan-text', t.text), el('span', 'plan-tag', t.mins ? fmtMins(t.mins) : ''));
+        b.onclick = ()=>{
+          if(chosen.has(t.id)) chosen.delete(t.id);
+          else if(chosen.size < 3) chosen.add(t.id);
+          li.classList.toggle('on', chosen.has(t.id)); b.setAttribute('aria-pressed', String(chosen.has(t.id))); refreshSum();
+        };
+        li.appendChild(b); ul.appendChild(li);
+      });
+      body.append(ul, sum); refreshSum();
+      next('→ السابق', ()=>{ step = 2; draw(); }, false);
+      next('لنبدأ اليوم ✦', ()=>{
+        const picked = open.filter(t=>chosen.has(t.id)).map(t=>t.text.trim());
+        const fields = [...document.querySelectorAll('.pri .field')];
+        const rest = current.filter(v=>!picked.includes(v));
+        const final = picked.concat(rest).slice(0, 3);
+        fields.forEach((f, i)=>{ f.value = final[i] || ''; });
+        try{ localStorage.setItem(PLAN_KEY, today); }catch(e){}
+        save(); render(); updatePlanBtn(); m.close();
+        showToast('يومك على نَسَق ✦ — خطوة واحدة تكفي للبدء.');
+      });
+    }
+  }
+  draw();
+}
+$('planDayBtn').onclick = openPlanDay;
+updatePlanBtn();
 
 /* ---------- «يومك في لمحة» في الشريط الجانبي ---------- */
 function renderSideToday(){
@@ -2516,6 +2745,7 @@ function renderTasksPage(){
     const b = document.createElement('button'); b.type = 'button';
     b.className = 'tp-proj' + (pj === p ? ' active' : '');
     const nm = document.createElement('span'); nm.textContent = p;
+    if(projColor(p) && p !== 'بلا مشروع'){ nm.classList.add('dot-pc'); nm.style.setProperty('--pc', projColor(p)); }
     const ct = document.createElement('b'); ct.textContent = AR(n);
     b.append(nm, ct);
     b.onclick = ()=>{ if(p === 'بلا مشروع') return; sel.value = (pj === p ? '' : p); renderTasksPage(); };
@@ -2530,6 +2760,8 @@ $('tpAdd').onclick = ()=>{ showTab('board'); const i = $('tText'); i.scrollIntoV
 function appendTaskRow(list, t, priValues){
   const li = document.createElement('li');
   li.className = 'task' + (t.done ? ' done' : '');
+  const pc = projColor(t.proj);
+  if(pc){ li.classList.add('has-proj'); li.style.setProperty('--pc', pc); }
 
   const chk = document.createElement('button');
   chk.className='check'; chk.setAttribute('role','checkbox');
@@ -2679,7 +2911,8 @@ function renderProjects(){
     const p = document.createElement('span'); p.className = 'proj-pct'; p.textContent = AR(pct) + '٪';
     top.append(n, p);
     const bar = document.createElement('div'); bar.className = 'proj-bar';
-    const f = document.createElement('i'); f.style.width = pct + '%'; bar.appendChild(f);
+    const f = document.createElement('i'); f.style.width = pct + '%'; f.style.background = projColor(r.name); bar.appendChild(f);
+    n.style.setProperty('--pc', projColor(r.name)); n.classList.add('dot-pc');
     const meta = document.createElement('div'); meta.className = 'proj-meta';
     meta.textContent = r.open ? AR(r.open) + ' مفتوحة من ' + AR(r.total) : 'مكتمل — ' + AR(r.total) + ' مهام';
     row.append(top, bar, meta); box.appendChild(row);
@@ -3942,6 +4175,7 @@ function resetLocalForUser(newUser){
     ['r1','r2','r3'].forEach(id=>{ const el = $(id); if(el) el.value=''; });
     $('pinnedEvent').value = ''; $('brainDump').value = '';
     stateUpdatedAt = 0; bootUpdatedAt = 0;
+    stateReady = false; pendingPush = false; remoteHasContent = false;   /* قراءة السحابة تخصّ المستخدم السابق */
     applyingRemote = true;
     try{ render(); renderTimeline(); renderFlow(); renderExpenses(); } finally { applyingRemote = false; }
   }
