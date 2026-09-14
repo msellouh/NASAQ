@@ -622,6 +622,111 @@ li.task.has-proj .proj::before,.dot-pc::before{content:"";display:inline-block;w
 .cap-warn{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:-6px 0 14px;padding:8px 12px;border-radius:10px;background:var(--hold-bg);color:var(--hold-ink);font-size:13px}
 .cap-warn[hidden]{display:none}
 
+/* ---------- الطاقة المنخفضة ← مهام قصيرة ---------- */
+.energy-hint{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-6px 0 14px;padding:9px 12px;border-radius:10px;background:var(--focus-bg);color:var(--focus-ink);font-size:13px}
+.energy-hint[hidden]{display:none}
+.eh-task{font:inherit;font-size:12.5px;padding:5px 10px;min-height:32px;border-radius:999px;border:1px solid var(--focus);background:var(--surface);color:var(--focus-ink);cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eh-task:hover{background:var(--focus);color:var(--paper)}
+
+/* ---------- شريط الأسبوع ---------- */
+.week-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin:0 0 12px}
+.ws-day{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 0 5px;min-height:56px;border:1px solid var(--rule);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;transition:border-color .15s,background .15s}
+.ws-day:hover{border-color:var(--ink-2)}
+.ws-dow{font-size:10.5px;color:var(--muted);white-space:nowrap}
+.ws-num{font-size:15px;line-height:1.2}
+.ws-count{font-size:10.5px;color:var(--muted);min-height:14px}
+.ws-day.has .ws-count{color:var(--paper);background:var(--urgent);border-radius:999px;padding:0 6px;font-weight:600}
+.ws-day.today{border-color:var(--focus)}
+.ws-day.today .ws-dow{color:var(--focus-ink);font-weight:600}
+.ws-day.active{background:var(--focus-bg);border-color:var(--focus);box-shadow:inset 0 0 0 1px var(--focus)}
+
+/* ---------- حوّل الفكرة إلى مهمة ---------- */
+.idea-to-task{align-self:flex-start;margin-top:6px;min-height:32px}
+
+/* ---------- الخطوات الفرعية + التركيز على مهمة ---------- */
+.sub-badge{display:inline-block;margin-inline-start:8px;padding:1px 7px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--muted);font:inherit;font-size:11px;line-height:1.5;cursor:pointer;vertical-align:1px}
+.sub-badge.all{border-color:var(--done);color:var(--done)}
+.sub-badge:hover{border-color:var(--focus);color:var(--focus-ink)}
+li.details .subs{grid-column:1 / -1;display:flex;flex-direction:column;gap:6px;padding-top:4px}
+.subs-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12.5px;font-weight:600;color:var(--muted)}
+.focus-go{font:inherit;font-size:12.5px;font-weight:600;padding:6px 12px;min-height:32px;border-radius:999px;border:1px solid var(--focus);background:var(--focus-bg);color:var(--focus-ink);cursor:pointer}
+.focus-go:hover{background:var(--focus);color:var(--paper)}
+.subs-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.subs-list li{display:grid;grid-template-columns:22px 1fr 22px;align-items:center;gap:8px;font-size:13px;padding:2px 0}
+.subs-list li.done span{text-decoration:line-through;color:var(--muted)}
+.sub-check{width:18px;height:18px;padding:0;border:1.5px solid var(--ink-2);border-radius:5px;background:var(--surface);cursor:pointer;display:grid;place-items:center;color:var(--paper);font-size:11px;line-height:1}
+.sub-check[aria-checked="true"]{background:var(--done);border-color:var(--done)}
+.sub-check[aria-checked="true"]::after{content:"✓"}
+.subs-list .kill{opacity:.55}
+.subs-list li:hover .kill{opacity:1}
+li.details input.sub-add{max-width:420px}
+
+/* ---------- العدّ الحيّ على سطر المهمة ---------- */
+ol.tasks li.task.timing{background:var(--focus-bg);box-shadow:inset -3px 0 0 var(--focus)}
+.pomo-live{display:inline-block;margin-inline-end:6px;padding:1px 7px;border-radius:999px;background:var(--focus);color:var(--paper);font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.pomo-live.paused{background:var(--muted)}
+ol.tasks li.task.flash{animation:task-flash 1.6s ease-out}
+@keyframes task-flash{0%,30%{background:var(--hold-bg);box-shadow:inset 0 0 0 2px var(--hold)}100%{background:transparent;box-shadow:none}}
+
+/* ---------- قائمة البداية ---------- */
+.card.onboard{margin-bottom:var(--gap,18px)}
+.card.onboard[hidden]{display:none}
+.ob-count{margin-inline-start:10px;font-family:"IBM Plex Sans Arabic",sans-serif;font-size:12.5px;font-weight:500;color:var(--muted)}
+.ob-bar{height:6px;border-radius:999px;background:var(--stripe);overflow:hidden;margin:-4px 0 14px}
+.ob-bar i{display:block;height:100%;background:var(--accent,var(--focus));border-radius:999px;transition:width .4s}
+.ob-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.ob-step{width:100%;height:100%;display:flex;align-items:flex-start;gap:10px;text-align:start;padding:11px 12px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;transition:border-color .15s,transform .15s}
+.ob-step:hover:not(:disabled){border-color:var(--focus);transform:translateY(-1px)}
+.ob-step:disabled{cursor:default;background:var(--stripe)}
+.ob-check{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--ink-2);display:grid;place-items:center;font-size:12px;color:var(--paper);margin-top:1px}
+.ob-step.done .ob-check{background:var(--done);border-color:var(--done)}
+.ob-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ob-text b{font-size:13.5px}
+.ob-text small{font-size:12px;color:var(--muted);line-height:1.5}
+.ob-step.done .ob-text b{text-decoration:line-through;text-decoration-color:var(--muted);color:var(--muted)}
+
+/* ---------- وضع التركيز بملء الشاشة ---------- */
+.focus-overlay{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px 20px;text-align:center;
+  background:#174C4F;color:#fff}   /* لون ثابت داكن في كل الطوابع والأوضاع: النص الأبيض يبقى مقروءًا */
+.focus-overlay[hidden]{display:none}
+.focus-overlay{overflow-y:auto}
+.focus-overlay > *{flex:none}
+body.focus-open{overflow:hidden}
+.fm-mark{width:54px;height:60px;opacity:.9}
+.fm-mark .bm-1,.fm-mark .bm-2{fill:#fff}
+.fm-mark .bm-dot{fill:var(--accent,#D6A84F)}
+.fm-label{margin:0;font-size:13px;letter-spacing:.5px;opacity:.75}
+.fm-task{margin:0;max-width:760px;font-size:clamp(20px,3.2vw,30px);font-weight:600;line-height:1.5;overflow-wrap:anywhere}
+.fm-time{font-size:clamp(72px,16vw,168px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:2px}
+.fm-bar{width:min(420px,80vw);height:6px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden}
+.fm-bar i{display:block;height:100%;width:0;background:var(--accent,#D6A84F);border-radius:999px;transition:width 1s linear}
+.fm-controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.fm-controls button{font:inherit;font-size:15px;padding:11px 22px;min-height:46px;border-radius:999px;border:1px solid rgba(255,255,255,.45);background:transparent;color:#fff;cursor:pointer}
+.fm-controls button:hover{background:rgba(255,255,255,.12)}
+.fm-controls button:focus-visible{outline:3px solid var(--accent,#D6A84F);outline-offset:2px}
+.fm-controls .fm-go{background:#fff;color:#174C4F;border-color:#fff;font-weight:700;min-width:150px}
+.fm-controls .fm-go:hover{background:rgba(255,255,255,.9)}
+.fm-controls kbd{font:inherit;font-size:11px;opacity:.7;border:1px solid rgba(255,255,255,.4);border-radius:4px;padding:0 4px;margin-inline-start:4px}
+.fm-note{margin:10px 0 0;max-width:460px;font-size:13px;opacity:.7;line-height:1.7}
+@media (prefers-reduced-motion:reduce){ .fm-bar i,.ob-bar i{transition:none} ol.tasks li.task.flash{animation:none;outline:2px solid var(--hold)} }
+
+/* ---------- لوحة الأوامر ---------- */
+.palette-overlay{position:fixed;inset:0;z-index:290;background:var(--overlay);display:flex;align-items:flex-start;justify-content:center;padding:12vh 16px 16px}
+.palette-overlay[hidden]{display:none}
+.palette{width:min(620px,100%);background:var(--paper);color:var(--ink);border:1px solid var(--rule);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;max-height:70vh}
+.palette input{border:0;border-bottom:1px solid var(--rule);background:transparent;color:inherit;font:inherit;font-size:16px;padding:16px 18px;outline:none}
+.pal-list{list-style:none;margin:0;padding:6px;overflow-y:auto}
+.pal-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14px}
+.pal-item[aria-selected="true"]{background:var(--focus-bg);color:var(--focus-ink)}
+.pal-ic{flex:none;width:22px;text-align:center;color:var(--muted)}
+.pal-item[aria-selected="true"] .pal-ic{color:inherit}
+.pal-txt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pal-meta{flex:none;font-size:12px;color:var(--muted)}
+.pal-group{padding:8px 12px 4px;font-size:11.5px;font-weight:600;color:var(--muted)}
+.pal-empty{padding:14px 12px;color:var(--muted);font-size:13px}
+.pal-foot{border-top:1px solid var(--rule);padding:8px 14px;font-size:11.5px;color:var(--muted)}
+.pal-foot kbd,.palette kbd{font:inherit;font-size:11px;border:1px solid var(--rule);border-radius:4px;padding:0 5px;background:var(--surface)}
+
 /* ---------- رأس الصفحات (المهام · العادات · المصروفات) ---------- */
 .card-head h3{display:flex;align-items:center;gap:8px;font-family:var(--font-head);font-size:16.5px;font-weight:700;margin:0;color:var(--ink)}
 .card-note{font-size:12.5px;color:var(--muted)}
@@ -787,6 +892,10 @@ li.task.has-proj .proj::before,.dot-pc::before{content:"";display:inline-block;w
 .tools button:hover{border-color:var(--ink-2)}
 .tools .primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .tools .primary:hover{background:var(--ink-2)}
+/* زرّا النسخ والطباعة في سطر عنوان الأرشيف */
+.archive summary .arc-actions{margin:0 auto 0 0;max-width:none;gap:8px;flex-wrap:nowrap}
+.archive summary .arc-actions button{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:13px;font-weight:600;padding:7px 14px;min-height:36px}
+@media (max-width:560px){ .archive summary{flex-wrap:wrap} .archive summary .arc-actions{margin-inline-start:0;width:100%;justify-content:flex-start} }
 
 /* ---------- toast ---------- */
 .toast{position:fixed;inset-inline:0;bottom:18px;display:flex;justify-content:center;pointer-events:none;z-index:80;padding:0 16px}
@@ -831,15 +940,26 @@ li.task.has-proj .proj::before,.dot-pc::before{content:"";display:inline-block;w
 /* ---------- timeline ---------- */
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:28px}
 .two-col>div{min-width:0}
-.tl-wrap{max-height:280px;overflow-y:auto;border:1px solid var(--rule);border-radius:var(--r);padding:6px}
-.tl-row{display:grid;grid-template-columns:64px 1fr;gap:8px;align-items:center;padding:5px 6px;border-inline-start:3px solid var(--rule);border-radius:6px;margin-bottom:3px}
-.tl-row:nth-child(5n+1){border-inline-start-color:var(--focus)}
-.tl-row:nth-child(5n+2){border-inline-start-color:var(--hold)}
-.tl-row:nth-child(5n+3){border-inline-start-color:var(--done)}
-.tl-row:nth-child(5n+4){border-inline-start-color:var(--urgent)}
-.tl-row:nth-child(5n+5){border-inline-start-color:var(--ink-2)}
+.tl-wrap{max-height:280px;overflow-y:auto;border:1px solid var(--rule);border-radius:var(--r);padding:6px;position:relative}
+.tl-sec{position:sticky;top:-6px;z-index:2;margin:2px -6px 4px;padding:6px 12px 5px;font-size:11.5px;font-weight:600;letter-spacing:.2px;color:var(--muted);background:var(--paper);border-bottom:1px solid var(--rule)}
+.tl-sec:first-child{margin-top:-6px}
+.tl-row{display:grid;grid-template-columns:64px 1fr;gap:8px;align-items:center;padding:5px 6px;border-inline-start:3px solid var(--rule);border-radius:6px;margin-bottom:3px;position:relative}
+.tl-row.past .tl-hour{opacity:.6}
+.tl-row.linked{border-inline-start-color:var(--pc,var(--focus))}
+/* الساعة الحالية: خلفية خفيفة وخط «الآن» عند الدقيقة الجارية */
+.tl-row.now{background:var(--focus-bg);border-inline-start-color:var(--urgent)}
+.tl-row.now .tl-hour{color:var(--focus-ink);font-weight:600}
+.tl-row.now::after{content:"";position:absolute;inset-inline:0;top:var(--m,50%);height:2px;background:var(--urgent);pointer-events:none;z-index:1}
+.tl-row.now::before{content:"";position:absolute;inset-inline-start:-6px;top:calc(var(--m,50%) - 4px);width:10px;height:10px;border-radius:50%;background:var(--urgent);z-index:1}
 .tl-hour{font-size:12px;color:var(--muted);white-space:nowrap}
-.tl-input{border:1px solid var(--rule);border-radius:6px;background:var(--surface);font:inherit;font-size:13px;padding:5px 8px;color:inherit;width:100%}
+.tl-body{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}
+.tl-input{border:1px solid var(--rule);border-radius:6px;background:var(--surface);font:inherit;font-size:13px;padding:5px 8px;color:inherit;width:100%;flex:1 1 140px;min-width:0}
+.tl-chip{flex:none;font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--focus-bg);color:var(--focus-ink);white-space:nowrap}
+.tl-chip[hidden]{display:none}
+.tl-event{flex:1 1 100%;font-size:12px;padding:4px 8px;border-radius:6px;background:var(--hold-bg);color:var(--hold-ink);border-inline-start:3px solid var(--hold)}
+.tl-foot{font-size:11.5px;color:var(--muted);margin-top:8px;display:flex;flex-direction:column;gap:3px}
+.tl-foot:empty{display:none}
+.tl-allday{color:var(--hold-ink)}
 
 /* ---------- calendar ---------- */
 .cal-head{display:flex;align-items:center;justify-content:space-between}
@@ -1205,7 +1325,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   body{background:#fff;padding:0;font-size:12px}
   .sheet{border:0;max-width:none;grid-template-columns:220px 1fr}
   .sidenav,.greet-card,.tools,.add,.add-details,.hint,.mini-row,.kill,.exp,.pin,.state,.archive,.actual,.toast,.modal-overlay,.settings-overlay,.auth-overlay,li.details,.two-col,.pomodoro,.exp-add,.exp-add-details,.spotify-box,
-  .c-sched,.c-cal,.c-focus,.c-habits,.c-projects,.task-filters,.progress,.day-summary,.close-day{display:none}
+  .c-sched,.c-cal,.c-focus,.c-habits,.c-projects,.task-filters,.progress,.day-summary,.close-day,
+  .onboard,.energy-hint,.idea-to-task,.sub-badge,.pomo-live,.focus-overlay,.palette-overlay{display:none}
   /* الطباعة: البطاقات تتتابع كورقة واحدة */
   .app{display:block} .content{padding:0} .dash{display:block} .col{display:contents}
   .card{border:0;box-shadow:none;padding:0 0 12px;break-inside:avoid-page}
@@ -1392,6 +1513,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <span id="stateNote"></span>
     </div>
     <div class="sidenav-actions">
+      <button id="paletteBtn" class="icon-btn" type="button" aria-label="بحث وأوامر سريعة (Ctrl+K)" title="بحث وأوامر سريعة — Ctrl+K"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></button>
       <button id="themeQuickBtn" class="icon-btn" type="button" aria-label="تبديل الوضع الداكن" title="الوضع الداكن"></button>
       <button id="settingsBtn" class="icon-btn" type="button" aria-label="الإعدادات" title="الإعدادات">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
@@ -1421,6 +1543,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <input type="file" id="heroFileInput" accept="image/*" multiple hidden>
 
 <div class="tabpanel" id="tabBoard">
+<!-- قائمة البداية: تظهر حتى تكتمل خطواتها أو تُخفى -->
+<section class="card onboard" id="onboard" hidden></section>
 <div class="dash">
 
   <!-- العمود الأول (يمين): ما يجب أن يُنجز -->
@@ -1445,6 +1569,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </div>
       <div class="progress" aria-hidden="true"><div class="fill" id="fill"></div></div>
       <div class="cap-warn" id="capWarn" role="status" hidden></div>
+      <div class="energy-hint" id="energyHint" role="status" hidden></div>
 
       <div class="task-filters" id="taskFilters" aria-label="تصفية المهام">
         <button type="button" data-f="all" class="active">الكل <b></b></button>
@@ -1493,12 +1618,15 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <div class="col col-b">
     <section class="card c-sched">
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>جدول اليوم</h2></div>
-      <div class="tl-wrap"><div id="timelineList"></div></div>
+      <div class="tl-wrap" id="tlWrap"><div id="timelineList"></div></div>
+      <datalist id="tlTasks"></datalist>
+      <div class="tl-foot" id="tlFoot"></div>
     </section>
 
     <section class="card c-ideas">
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>أفكار عابرة</h2></div>
       <textarea class="braindump" id="brainDump" placeholder="ما الذي يشغلك؟ اتركه هنا الآن، ورتّبه لاحقًا."></textarea>
+      <button type="button" class="card-link idea-to-task" id="ideaToTask">↩ حوّل السطر الحالي إلى مهمة</button>
 
       <h3 class="sub">بانتظار رد</h3>
       <ul class="mini" id="waitList"></ul>
@@ -1525,6 +1653,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <div class="col col-a">
     <section class="card c-cal">
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>التقويم</h2></div>
+      <div class="week-strip" id="weekStrip" aria-label="الأيام السبعة القادمة"></div>
       <div class="cal-head">
         <button id="calPrev" type="button">‹</button>
         <span id="calLabel"></span>
@@ -1536,7 +1665,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </section>
 
     <section class="card c-focus">
-      <div class="card-head"><h2 id="pomoTitle"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M10 2h4"/></svg>التركيز</h2></div>
+      <div class="card-head"><h2 id="pomoTitle"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M10 2h4"/></svg>التركيز</h2>
+        <button type="button" class="card-link" id="focusModeBtn" title="وضع التركيز بملء الشاشة">⛶ وضع التركيز</button></div>
       <div class="pomodoro">
         <div class="pomo-time" id="pomoTime">٢٥:٠٠</div>
         <div class="pomo-controls">
@@ -1570,7 +1700,12 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </section>
 
   <details class="card archive" id="archive">
-    <summary><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M10 13h4"/></svg>الأرشيف <b id="arcCount"></b></summary>
+    <summary><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M10 13h4"/></svg>الأرشيف <b id="arcCount"></b>
+      <span class="tools arc-actions">
+        <button id="copyBtn" type="button">انسخ ملخص اليوم</button>
+        <button class="primary" id="printBtn" type="button">اطبع اليوم</button>
+      </span>
+    </summary>
 
     <div class="arc-tools">
       <input type="search" id="arcSearch" placeholder="ابحث في المهام المنجزة — بالاسم أو المشروع">
@@ -1600,11 +1735,30 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </div>
   </details>
 </div>
-
-<div class="tools">
-  <button id="copyBtn">انسخ ملخص اليوم</button>
-  <button class="primary" onclick="window.print()">اطبع اليوم</button>
 </div>
+
+<!-- وضع التركيز: ملء الشاشة، ساعة كبيرة ومهمة واحدة -->
+<div class="focus-overlay" id="focusOverlay" role="dialog" aria-modal="true" aria-labelledby="fmTask" hidden>
+  <svg class="brand-mark fm-mark" viewBox="18 12 76 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path class="bm-1" d="M47 92 L47 22 C25 46 25 74 47 92 Z"/><path class="bm-2" d="M53 92 L53 46 C74 62 74 82 53 92 Z"/><rect class="bm-dot" x="63" y="19" width="15" height="15" transform="rotate(45 70.5 26.5)"/></svg>
+  <p class="fm-label">وقت التركيز</p>
+  <h2 class="fm-task" id="fmTask">—</h2>
+  <div class="fm-time" id="fmTime" aria-live="off">٢٥:٠٠</div>
+  <div class="fm-bar" aria-hidden="true"><i id="fmFill"></i></div>
+  <div class="fm-controls">
+    <button type="button" class="fm-go" id="fmToggle">ابدأ</button>
+    <button type="button" id="fmReset">↺ من جديد</button>
+    <button type="button" id="fmExit">خروج <kbd>Esc</kbd></button>
+  </div>
+  <p class="fm-note">شيء واحد في كل مرة. ما يخطر ببالك الآن، اكتبه في «أفكار عابرة» بعد الجلسة.</p>
+</div>
+
+<!-- لوحة الأوامر: Ctrl+K -->
+<div class="palette-overlay" id="paletteOverlay" hidden>
+  <div class="palette" role="dialog" aria-modal="true" aria-label="لوحة الأوامر">
+    <input type="text" id="palInput" placeholder="ابحث عن مهمة، أو اكتب أمرًا… (أضف: نص المهمة)" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="palList">
+    <ul class="pal-list" id="palList" role="listbox"></ul>
+    <div class="pal-foot"><kbd>↑</kbd><kbd>↓</kbd> تنقّل · <kbd>Enter</kbd> تنفيذ · <kbd>Esc</kbd> إغلاق</div>
+  </div>
 </div>
 
 <!-- ==================== صفحة المهام الموسّعة ==================== -->
@@ -2194,7 +2348,7 @@ function rpcCall(payload){
 }
 
 /* عمليات يصحّ تكرارها إن ضاع ردّها — لا تُنشئ شيئًا مرتين ولا ترسل بريدًا */
-const RETRY_SAFE = new Set(['auth_login','auth_me','boot','ping','options','search','state_get','state_set',
+const RETRY_SAFE = new Set(['auth_login','auth_me','boot','ping','options','search','state_get','state_set','calendar_today',
   'expense_options','expense_summary','admin_list_users','set_status','delete']);
 function jsonpWithRetry(payload){
   const tries = RETRY_SAFE.has(payload.action) ? 3 : 1;
@@ -2504,6 +2658,11 @@ function render(){
   renderProjects();
   renderTasksPage();
   renderSideToday();
+  refreshTimelineTasks();
+  renderWeekStrip();
+  renderEnergyHint();
+  renderOnboard();
+  try{ updatePomoLive(); }catch(e){}   /* قد يُرسم اللوح قبل تهيئة المؤقّت */
 }
 
 /* ---------- ساعات العمل (سعة اليوم) — افتراضيًا ٨ ساعات، محفوظة على الجهاز ---------- */
@@ -2530,7 +2689,8 @@ function openCapacityModal(){
 const PROJ_COLORS = ['#2F6F6B','#C99A45','#668A9A','#C87861','#82758E','#6F9B83','#D6A84F','#8A7F6E'];
 function projColor(name){
   const s = String(name || '').trim(); if(!s) return '';
-  let h = 0; for(const ch of s) h = (h * 31 + ch.codePointAt(0)) >>> 0;
+  /* FNV-1a: توزيع أفضل من h*31 الذي كان يعطي مشاريع مختلفة اللون نفسه */
+  let h = 0x811c9dc5; for(const ch of s){ h ^= ch.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; }
   return PROJ_COLORS[h % PROJ_COLORS.length];
 }
 
@@ -2674,6 +2834,149 @@ function renderSideToday(){
 }
 document.querySelectorAll('.pri .field').forEach(f=>f.addEventListener('input', renderSideToday));
 
+/* ---------- شريط الأسبوع: الأيام السبعة القادمة وعدد ما يستحق في كل يوم ---------- */
+const WS_DOW = ['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
+function renderWeekStrip(){
+  const box = $('weekStrip'); if(!box) return;
+  try{
+    box.innerHTML = '';
+    for(let i = 0; i < 7; i++){
+      const d = new Date(); d.setDate(d.getDate() + i);
+      const key = iso(d);
+      const local = tasks.filter(t=>!t.done && t.due === key);
+      const ids = new Set(local.map(t=>t.notionId).filter(Boolean));
+      const remote = (notionMonthCache[monthKey(d)] || []).filter(r=>r.due === key && !ids.has(r.pageId) && notionState(r.status) !== 'done');
+      const n = local.length + remote.length;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ws-day' + (i === 0 ? ' today' : '') + (calShownDay === key ? ' active' : '') + (n ? ' has' : '');
+      b.setAttribute('aria-pressed', String(calShownDay === key));
+      b.setAttribute('aria-label', (i === 0 ? 'اليوم، ' : '') + WS_DOW[d.getDay()] + ' ' + arDate(key) + ': ' + (n ? AR(n) + ' مهام' : 'لا مهام'));
+      const dw = document.createElement('span'); dw.className = 'ws-dow'; dw.textContent = i === 0 ? 'اليوم' : WS_DOW[d.getDay()];
+      const nm = document.createElement('b'); nm.className = 'ws-num'; nm.textContent = AR(d.getDate());
+      const ct = document.createElement('span'); ct.className = 'ws-count'; ct.textContent = n ? AR(n) : '·';
+      b.append(dw, nm, ct);
+      b.onclick = ()=>{
+        if(monthKey(calMonth) !== monthKey(d)){ calMonth = new Date(d.getFullYear(), d.getMonth(), 1); renderCalendar(); refreshCalendarFromNotion(); }
+        showDueForDay(key);
+      };
+      box.appendChild(b);
+    }
+  }catch(e){}   /* قد يُرسم قبل تهيئة ذاكرة التقويم */
+}
+
+/* ---------- الطاقة المنخفضة ← اقتراح مهام قصيرة ---------- */
+function renderEnergyHint(){
+  const box = $('energyHint'); if(!box) return;
+  let e = 0; try{ e = flow.energy || 0; }catch(err){ box.hidden = true; return; }
+  const short = tasks.filter(t=>!t.done && Number(t.mins) > 0 && Number(t.mins) <= 30)
+    .sort((a,b)=>Number(a.mins) - Number(b.mins)).slice(0, 3);
+  if(!e || e > 2 || !short.length){ box.hidden = true; return; }
+  box.hidden = false; box.innerHTML = '';
+  const s = document.createElement('span'); s.className = 'eh-text';
+  s.textContent = 'طاقتك منخفضة اليوم — ابدأ بشيء قصير:';
+  box.appendChild(s);
+  short.forEach(t=>{
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'eh-task';
+    const nm = document.createElement('bdi'); nm.textContent = t.text;   /* يعزل الأسماء اللاتينية عن الأرقام بعدها */
+    b.append(nm, document.createTextNode(' · ' + fmtMins(t.mins)));
+    b.title = 'اعرضها في القائمة';
+    b.onclick = ()=>revealTask(t);
+    box.appendChild(b);
+  });
+}
+
+/* يظهر المهمة في «مهام اليوم»: يفتح تفاصيلها ويمرّر إليها ويومضها */
+function revealTask(t){
+  showTab('board');
+  if(!taskMatches(t, taskFilter)) taskFilter = 'all';
+  expandedIds.add(t.id); render();
+  const li = document.querySelector('#list li.task[data-id="' + CSS.escape(String(t.id)) + '"]');
+  if(!li) return;
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  li.scrollIntoView({block:'center', behavior: calm ? 'auto' : 'smooth'});
+  li.classList.add('flash'); setTimeout(()=>li.classList.remove('flash'), 1800);
+}
+
+/* مهمة من نص حرّ (فكرة عابرة أو لوحة الأوامر) — تفهم الاختصارات نفسها: #مشروع @مانح !أ */
+function quickTask(raw){
+  const extra = /[#@]|![أبج]/.test(raw) ? parseQuickAdd(raw) : {};
+  const t = {
+    id: Date.now()+Math.random(), text: extra.text || raw, proj: extra.proj || '', donor: extra.donor || '',
+    imp: extra.imp || 'ب', due: extra.due || '', mins: extra.mins || '', actual:'', notes:'',
+    done:false, state:0, createdAt:new Date().toISOString(), dirty:true
+  };
+  tasks.push(t); sync();
+  return t;
+}
+
+/* ---------- «حوّل الفكرة إلى مهمة»: السطر الذي يقف عنده المؤشر، أو أول سطر ---------- */
+$('ideaToTask').onclick = ()=>{
+  const ta = $('brainDump'), v = ta.value;
+  let pos = ta.selectionStart || 0;
+  let a = v.lastIndexOf('\n', pos - 1) + 1, b = v.indexOf('\n', pos); if(b < 0) b = v.length;
+  if(!v.slice(a, b).trim()){   /* المؤشر على سطر فارغ: خذ أول سطر فيه نص */
+    const m = v.match(/[^\n]*\S[^\n]*/); if(!m){ ta.focus(); showToast('اكتب فكرة أولًا، ثم حوّلها إلى مهمة.'); return; }
+    a = m.index; b = a + m[0].length;
+  }
+  const line = v.slice(a, b).replace(/^\s*[-•*–]\s*/, '').trim();
+  if(b < v.length) b++; else if(a > 0) a--;   /* احذف السطر مع فاصله */
+  ta.value = v.slice(0, a) + v.slice(b);
+  save(); renderDaySummary();
+  const t = quickTask(line);
+  showToast('صارت مهمة: ' + (t.text.length > 30 ? t.text.slice(0, 30) + '…' : t.text));
+};
+
+/* ---------- قائمة البداية: خمس خطوات تعرّف بنَسَق، تُخفى متى شئت ---------- */
+const ONBOARD_KEY = 'daily-board-onboard';
+function onboardState(){ try{ return JSON.parse(localStorage.getItem(ONBOARD_KEY) || '{}') || {}; }catch(e){ return {}; } }
+function setOnboard(patch){ try{ localStorage.setItem(ONBOARD_KEY, JSON.stringify(Object.assign(onboardState(), patch))); }catch(e){} }
+function renderOnboard(){
+  const box = $('onboard'); if(!box) return;
+  const st = onboardState();
+  if(st.hidden){ box.hidden = true; return; }
+  let routines = 0; try{ routines = (flow.amRoutine || []).length + (flow.pmRoutine || []).length; }catch(e){}
+  let planned = false; try{ planned = !!localStorage.getItem(PLAN_KEY); }catch(e){}
+  const steps = [
+    {done: tasks.length + archive.length > 0, t:'أضف أول مهمة', d:'اكتبها في «مهام اليوم»، والاختصارات تختصر عليك: #مشروع !أ ٣٠',
+      go: ()=>{ showTab('board'); $('tText').scrollIntoView({block:'center'}); $('tText').focus(); }},
+    {done: [...document.querySelectorAll('.pri .field')].some(f=>f.value.trim()), t:'حدّد أولوية اليوم', d:'ما لو أُنجز وحده كان اليوم ناجحًا.',
+      go: ()=>{ const f = document.querySelector('.pri .field'); f.scrollIntoView({block:'center'}); f.focus(); }},
+    {done: planned, t:'خطّط يومك', d:'ثلاث خطوات صباحية: أمس، ما ينتظر قرارك، ثم أولوياتك.', go: ()=>openPlanDay()},
+    {done: routines > 0, t:'أضف عادة إلى روتينك', d:'من صفحة «العادات» — تظهر هنا كل يوم.',
+      go: ()=>{ showTab('flow'); $('amInput').focus(); }},
+    {done: !!st.focus, t:'جرّب جلسة تركيز', d:'٢٥ دقيقة لمهمة واحدة، بملء الشاشة.', go: ()=>openFocusMode()}
+  ];
+  const n = steps.filter(s=>s.done).length;
+  if(n === steps.length){ setOnboard({hidden:true}); box.hidden = true; return; }
+  box.hidden = false; box.innerHTML = '';
+  const head = document.createElement('div'); head.className = 'card-head';
+  const h = document.createElement('h2'); h.textContent = 'ابدأ مع نَسَق';
+  const cnt = document.createElement('span'); cnt.className = 'ob-count'; cnt.textContent = AR(n) + ' من ' + AR(steps.length);
+  h.appendChild(cnt);
+  const x = document.createElement('button'); x.type = 'button'; x.className = 'card-link'; x.textContent = 'إخفاء القائمة';
+  x.onclick = ()=>{ setOnboard({hidden:true}); renderOnboard(); showToast('أُخفيت قائمة البداية.'); };
+  head.append(h, x);
+  const bar = document.createElement('div'); bar.className = 'ob-bar'; const f = document.createElement('i');
+  f.style.width = (n / steps.length * 100) + '%'; bar.appendChild(f);
+  const ol = document.createElement('ol'); ol.className = 'ob-steps';
+  steps.forEach(s=>{
+    const li = document.createElement('li');
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'ob-step' + (s.done ? ' done' : '');
+    b.disabled = s.done;
+    const c = document.createElement('span'); c.className = 'ob-check'; c.setAttribute('aria-hidden', 'true'); c.textContent = s.done ? '✓' : '';
+    const tx = document.createElement('span'); tx.className = 'ob-text';
+    const tb = document.createElement('b'); tb.textContent = s.t;
+    const td = document.createElement('small'); td.textContent = s.d;
+    tx.append(tb, td);
+    b.append(c, tx);
+    if(s.done) b.setAttribute('aria-label', s.t + ' — تمّت');
+    b.onclick = s.go;
+    li.appendChild(b); ol.appendChild(li);
+  });
+  box.append(head, bar, ol);
+}
+
 /* ---------- صفحة المهام الموسّعة: أقسام حسب الموعد، مرتّبة بالأهمية ---------- */
 const TP_GROUPS = [
   {f:'overdue',  t:'المتأخرة', note:'هذه المهام تنتظر قرارك'},
@@ -2760,6 +3063,7 @@ $('tpAdd').onclick = ()=>{ showTab('board'); const i = $('tText'); i.scrollIntoV
 function appendTaskRow(list, t, priValues){
   const li = document.createElement('li');
   li.className = 'task' + (t.done ? ' done' : '');
+  li.dataset.id = t.id;
   const pc = projColor(t.proj);
   if(pc){ li.classList.add('has-proj'); li.style.setProperty('--pc', pc); }
 
@@ -2779,6 +3083,17 @@ function appendTaskRow(list, t, priValues){
   txt.className='t-text'; txt.textContent = t.text;
   if(t.notes) txt.title = t.notes;
   makeEditable(txt, ()=>t.text, v=>{ if(v) t.text = v; }, ()=>{ t.dirty = true; sync(); });
+  /* شارة الخطوات الفرعية «٢/٤» — تفتح التفاصيل بدل تعديل النص */
+  if(t.subs && t.subs.length){
+    const sd = t.subs.filter(s=>s.done).length;
+    const sb = document.createElement('button');
+    sb.type = 'button'; sb.className = 'sub-badge' + (sd === t.subs.length ? ' all' : '');
+    sb.textContent = AR(sd) + '/' + AR(t.subs.length);
+    sb.title = 'الخطوات: ' + AR(sd) + ' من ' + AR(t.subs.length) + ' — اضغط لعرضها';
+    sb.onclick = e=>{ e.stopPropagation(); expandedIds.add(t.id); render(); };
+    sb.addEventListener('keydown', e=>e.stopPropagation());
+    txt.appendChild(sb);
+  }
 
   const proj = document.createElement('div');
   proj.className='proj'; proj.textContent = [t.proj, t.donor].filter(Boolean).join(' · ');
@@ -2973,6 +3288,49 @@ function renderDetailsRow(t){
   notes.addEventListener('blur', ()=>{ const v = notes.value.trim(); if(v !== (t.notes||'')){ t.notes = v; t.dirty = true; sync(); } });
 
   li.append(due, donor, notes);
+
+  /* خطوات فرعية: قائمة تحقق صغيرة داخل المهمة، تُحفظ مع حالة اللوح (لا تُرسل إلى نوشن) */
+  const subs = document.createElement('div'); subs.className = 'subs';
+  const sh = document.createElement('div'); sh.className = 'subs-head';
+  const st = document.createElement('span'); st.textContent = 'الخطوات';
+  sh.appendChild(st);
+  if(!t.done){
+    const fb = document.createElement('button');
+    fb.type = 'button'; fb.className = 'focus-go';
+    fb.textContent = '▶ ركّز عليها ٢٥ دقيقة';
+    fb.onclick = ()=>focusOnTask(t);
+    sh.appendChild(fb);
+  }
+  subs.appendChild(sh);
+  const ul = document.createElement('ul'); ul.className = 'subs-list';
+  (t.subs || []).forEach((s, i)=>{
+    const r = document.createElement('li'); r.className = s.done ? 'done' : '';
+    const c = document.createElement('button');
+    c.type = 'button'; c.className = 'sub-check'; c.setAttribute('role','checkbox');
+    c.setAttribute('aria-checked', String(!!s.done)); c.setAttribute('aria-label', s.text);
+    c.onclick = ()=>{ s.done = !s.done; sync(); };
+    const tx = document.createElement('span'); tx.textContent = s.text;
+    const k = document.createElement('button');
+    k.type = 'button'; k.className = 'kill'; k.textContent = '×'; k.title = 'احذف الخطوة';
+    k.onclick = ()=>{ t.subs.splice(i, 1); sync(); };
+    r.append(c, tx, k); ul.appendChild(r);
+  });
+  subs.appendChild(ul);
+  const add = document.createElement('input');
+  add.className = 'sub-add'; add.placeholder = '＋ أضف خطوة، ثم Enter';
+  add.setAttribute('aria-label', 'أضف خطوة فرعية');
+  add.addEventListener('keydown', e=>{
+    if(e.key !== 'Enter') return;
+    const v = add.value.trim(); if(!v) return;
+    (t.subs = t.subs || []).push({text: v, done: false});
+    sync();
+    /* أعد التركيز إلى حقل الإضافة الجديد لتتابع الكتابة */
+    const again = [...document.querySelectorAll('li.task[data-id="' + CSS.escape(String(t.id)) + '"] + li.details .sub-add')]
+      .find(el=>el.offsetParent !== null);
+    if(again) again.focus();
+  });
+  subs.appendChild(add);
+  li.appendChild(subs);
   return li;
 }
 
@@ -2996,18 +3354,103 @@ function to12h(h24){
   if(hour12 === 0) hour12 = 12;
   return arDigits(String(hour12).padStart(2,'0'))+':'+arDigits('00')+' '+period;
 }
+/* جدول اليوم الحيّ: أقسام اليوم، خط «الآن»، ربط مهمة بالساعة (بمدتها)، ومواعيد تقويم Google */
+const TL_SECTIONS = {'06:00':'صباحًا', '12:00':'ظهرًا', '17:00':'مساءً'};
+const GCAL_KEY = 'daily-board-gcal';
+let gcalEvents = (()=>{ try{ const c = JSON.parse(localStorage.getItem(GCAL_KEY) || 'null'); return c && c.date === iso(new Date()) ? (c.events || []) : []; }catch(e){ return []; } })();
+let gcalState = gcalEvents.length ? 'cached' : '';
+let tlScrolled = false;
+function tlTaskFor(text){ const v = (text || '').trim(); return v ? tasks.find(t=>!t.done && t.text.trim() === v) : null; }
+/* تُستدعى من render(): تحدّث قائمة المهام المقترحة ومدة كل ساعة دون لمس ما يُكتب */
+function refreshTimelineTasks(){
+  const dl = $('tlTasks');
+  if(dl){ dl.innerHTML = ''; tasks.filter(t=>!t.done).forEach(t=>{ const o = document.createElement('option'); o.value = t.text; dl.appendChild(o); }); }
+  document.querySelectorAll('#timelineList .tl-row').forEach(r=>{ if(r._link) r._link(); });
+}
 function renderTimeline(){
   const wrap = $('timelineList'); wrap.innerHTML='';
   TIMELINE_HOURS.forEach(h=>{
+    if(TL_SECTIONS[h]){ const s = document.createElement('div'); s.className = 'tl-sec'; s.textContent = TL_SECTIONS[h]; wrap.appendChild(s); }
+    const hh = Number(h.slice(0, 2));
     const row=document.createElement('div');
-    row.className='tl-row';
+    row.className='tl-row'; row.dataset.h = hh;
     const lab=document.createElement('span'); lab.className='tl-hour'; lab.textContent=to12h(h);
+    const body = document.createElement('div'); body.className = 'tl-body';
     const inp=document.createElement('input'); inp.className='tl-input'; inp.value=timeline[h]||''; inp.placeholder='—';
-    inp.addEventListener('input', ()=>{ timeline[h]=inp.value; save(); });
-    row.append(lab,inp);
+    inp.setAttribute('list', 'tlTasks');
+    inp.setAttribute('aria-label', 'المخطّط للساعة ' + to12h(h));
+    const chip = document.createElement('span'); chip.className = 'tl-chip';
+    const link = ()=>{
+      const t = tlTaskFor(inp.value);
+      chip.textContent = t && t.mins ? fmtMins(t.mins) : ''; chip.hidden = !chip.textContent;
+      row.classList.toggle('linked', !!t);
+      row.style.setProperty('--pc', (t && projColor(t.proj)) || 'var(--focus)');
+    };
+    row._link = link;
+    inp.addEventListener('input', ()=>{ timeline[h]=inp.value; link(); save(); });
+    body.append(inp, chip);
+    gcalEvents.filter(e=>!e.allDay && Number(String(e.start).slice(0, 2)) === hh).forEach(e=>{
+      const ev = document.createElement('div'); ev.className = 'tl-event';
+      ev.textContent = arDigits(e.start) + (e.end ? '–' + arDigits(e.end) : '') + ' · ' + e.title;
+      ev.title = 'من تقويم Google';
+      body.appendChild(ev);
+    });
+    row.append(lab, body);
     wrap.appendChild(row);
   });
+  refreshTimelineTasks();
+  renderTlFoot();
+  tickTimeline();
+  if(!tlScrolled) scrollTimelineToNow();
 }
+/* يحدّث خط «الآن» كل دقيقة دون إعادة الرسم، كي لا يضيع ما تكتبه */
+function tickTimeline(){
+  const now = new Date(), h = now.getHours();
+  document.querySelectorAll('#timelineList .tl-row').forEach(r=>{
+    const rh = Number(r.dataset.h);
+    r.classList.toggle('past', rh < h);
+    r.classList.toggle('now', rh === h);
+    if(rh === h) r.style.setProperty('--m', (now.getMinutes() / 60 * 100).toFixed(1) + '%');
+  });
+}
+function scrollTimelineToNow(){
+  const w = $('tlWrap'); if(!w || !w.clientHeight) return;   /* غير ظاهر الآن */
+  const r = w.querySelector('.tl-row.now') || w.querySelector('.tl-row:not(.past)');
+  if(r){ const sec = r.previousElementSibling && r.previousElementSibling.classList.contains('tl-sec') ? r.previousElementSibling : r;
+    w.scrollTop = Math.max(0, sec.offsetTop - 8); }
+  tlScrolled = true;
+}
+function renderTlFoot(){
+  const f = $('tlFoot'); if(!f) return;
+  f.innerHTML = '';
+  const allDay = gcalEvents.filter(e=>e.allDay);
+  if(allDay.length){
+    const d = document.createElement('div'); d.className = 'tl-allday';
+    d.textContent = 'طوال اليوم: ' + allDay.map(e=>e.title).join(' · ');
+    f.appendChild(d);
+  }
+  if(gcalState === 'ok' || gcalState === 'cached'){
+    const n = gcalEvents.length;
+    const s = document.createElement('div'); s.className = 'tl-gcal';
+    const cnt = n === 1 ? 'موعد واحد' : n === 2 ? 'موعدان' : AR(n) + (n <= 10 ? ' مواعيد' : ' موعدًا');
+    s.textContent = n ? cnt + ' من تقويم Google اليوم' : 'لا مواعيد في تقويم Google اليوم';
+    f.appendChild(s);
+  }
+}
+/* مواعيد اليوم من تقويم Google — لصاحب اللوح فقط، قراءة فقط، عبر الجسر */
+function loadGcal(){
+  if(!notionOK()) return;
+  const today = iso(new Date());
+  post({action:'calendar_today', date: today})
+    .then(d=>{
+      gcalEvents = (d.events || []).filter(e=>e && e.title);
+      gcalState = 'ok';
+      try{ localStorage.setItem(GCAL_KEY, JSON.stringify({date: today, events: gcalEvents})); }catch(e){}
+      renderTimeline();
+    })
+    .catch(e=>{ gcalState = /أمر غير معروف/.test(e.message) ? 'unsupported' : 'err'; renderTlFoot(); });
+}
+setInterval(tickTimeline, 60 * 1000);
 
 /* ---------- calendar ---------- */
 let calMonth = new Date(); calMonth.setDate(1);
@@ -3078,6 +3521,7 @@ function renderCalendar(){
 }
 function showDueForDay(key){
   calShownDay = key;
+  renderWeekStrip();
   const box = $('calDayList'); box.innerHTML='';
   const local = tasks.concat(archive).filter(t=>t.due===key);
   const notionRows = (notionMonthCache[monthKey(calMonth)]||[]).filter(r=>r.due===key);
@@ -3207,45 +3651,197 @@ function renderPomoOptions(){
     tasks.filter(t=>!t.done).map(t=>'<option value="'+t.id+'">'+t.text.replace(/</g,'&lt;')+'</option>').join('');
   if([...sel.options].some(o=>o.value===prev)) sel.value = prev;
 }
-$('pomoToggle').onclick = ()=>{
-  if(pomoRunning){
-    clearInterval(pomoInterval); pomoRunning = false;
-    $('pomoToggle').textContent = 'استئناف';
-    return;
+/* المؤقّت واحد يخدم ثلاثة أماكن: بطاقة التركيز، سطر المهمة (عدّ حيّ)، ووضع التركيز بملء الشاشة */
+const BASE_TITLE = document.title;
+function pomoTaskObj(){ const id = $('pomoTask').value; return id ? tasks.find(x=>String(x.id)===id) : null; }
+function pomoLabel(){ return pomoRunning ? 'إيقاف مؤقت' : (pomoRemaining < POMO_DEFAULT ? 'استئناف' : 'ابدأ'); }
+function updatePomoLive(){
+  renderPomoClock();
+  $('pomoToggle').textContent = pomoLabel();
+  const active = pomoRunning || pomoRemaining < POMO_DEFAULT;
+  document.title = pomoRunning ? '⏱ ' + fmtClock(pomoRemaining) + ' — ' + BASE_TITLE : BASE_TITLE;
+  /* وضع التركيز */
+  const t = pomoTaskObj();
+  $('fmTime').textContent = fmtClock(pomoRemaining);
+  $('fmTask').textContent = t ? t.text : 'جلسة تركيز حرة';
+  $('fmToggle').textContent = pomoLabel();
+  $('fmFill').style.width = ((POMO_DEFAULT - pomoRemaining) / POMO_DEFAULT * 100) + '%';
+  /* العدّ الحيّ على سطر المهمة */
+  document.querySelectorAll('li.task.timing').forEach(li=>li.classList.remove('timing'));
+  document.querySelectorAll('.pomo-live').forEach(el=>el.remove());
+  if(active && t){
+    document.querySelectorAll('li.task[data-id="' + CSS.escape(String(t.id)) + '"]').forEach(li=>{
+      li.classList.add('timing');
+      const b = document.createElement('span'); b.className = 'pomo-live' + (pomoRunning ? '' : ' paused');
+      b.textContent = '⏱ ' + fmtClock(pomoRemaining);
+      b.title = pomoRunning ? 'جلسة تركيز جارية' : 'جلسة تركيز متوقفة مؤقتًا';
+      li.querySelector('.mins')?.prepend(b);
+    });
   }
+}
+function pomoFinish(){
+  clearInterval(pomoInterval); pomoRunning = false;
+  const t = pomoTaskObj();
+  if(t){
+    t.actual = (Number(t.actual)||0) + Math.round(POMO_DEFAULT/60);
+    t.dirty = true;
+    $('pomoHint').textContent = 'أُضيفت ٢٥ دقيقة إلى: '+t.text;
+  }else{
+    $('pomoHint').textContent = 'انتهت الجلسة.';
+  }
+  pomoRemaining = POMO_DEFAULT;
+  try{ navigator.vibrate && navigator.vibrate([200, 100, 200]); }catch(e){}
+  showToast('انتهت جلسة التركيز — خذ استراحة قصيرة.');
+  if(t) sync(); else updatePomoLive();
+}
+function pomoStart(){
+  if(pomoRunning) return;
   pomoRunning = true;
-  $('pomoToggle').textContent = 'إيقاف';
+  if(!onboardState().focus){ setOnboard({focus:true}); renderOnboard(); }
   pomoInterval = setInterval(()=>{
     pomoRemaining--;
-    renderPomoClock();
-    if(pomoRemaining<=0){
-      clearInterval(pomoInterval); pomoRunning = false;
-      $('pomoToggle').textContent = 'ابدأ';
-      const taskId = $('pomoTask').value;
-      if(taskId){
-        const t = tasks.find(x=>String(x.id)===taskId);
-        if(t){
-          t.actual = (Number(t.actual)||0) + Math.round(POMO_DEFAULT/60);
-          t.dirty = true;
-          $('pomoHint').textContent = 'أُضيفت ٢٥ دقيقة إلى: '+t.text;
-          sync();
-        }
-      }else{
-        $('pomoHint').textContent = 'انتهت الجلسة.';
-      }
-      pomoRemaining = POMO_DEFAULT;
-      renderPomoClock();
-    }
+    if(pomoRemaining <= 0) pomoFinish(); else updatePomoLive();
   }, 1000);
-};
-$('pomoReset').onclick = ()=>{
+  updatePomoLive();
+}
+function pomoPause(){ clearInterval(pomoInterval); pomoRunning = false; updatePomoLive(); }
+function pomoToggle(){ if(pomoRunning) pomoPause(); else pomoStart(); }
+function pomoReset(){
   clearInterval(pomoInterval); pomoRunning = false;
   pomoRemaining = POMO_DEFAULT;
-  $('pomoToggle').textContent = 'ابدأ';
   $('pomoHint').textContent = '';
-  renderPomoClock();
-};
-renderPomoClock();
+  updatePomoLive();
+}
+/* ابدأ جلسة لمهمة بعينها — من سطرها أو تفاصيلها أو لوحة الأوامر */
+function focusOnTask(t){
+  if(String($('pomoTask').value) !== String(t.id)){ pomoReset(); renderPomoOptions(); $('pomoTask').value = String(t.id); }
+  if(t.state !== 1 && !t.done){ t.state = 1; t.dirty = true; sync(); }   /* صارت «قيد التنفيذ» */
+  pomoStart();
+  openFocusMode();
+}
+let focusReturn = null;
+function openFocusMode(){
+  focusReturn = document.activeElement;
+  updatePomoLive();
+  $('focusOverlay').hidden = false;
+  document.body.classList.add('focus-open');
+  $('fmToggle').focus();
+}
+function closeFocusMode(){
+  $('focusOverlay').hidden = true;
+  document.body.classList.remove('focus-open');
+  if(focusReturn && document.contains(focusReturn)){ focusReturn.focus(); return; }
+  /* الزر الذي فتح الوضع أُعيد رسمه: ارجع إلى زر التركيز في سطر المهمة نفسها إن ظهر */
+  const t = pomoTaskObj();
+  const b = t && [...document.querySelectorAll('li.task[data-id="' + CSS.escape(String(t.id)) + '"] + li.details .focus-go')].find(el=>el.offsetParent !== null);
+  if(b) b.focus(); else document.activeElement && document.activeElement.blur();
+}
+$('pomoToggle').onclick = pomoToggle;
+$('pomoReset').onclick = pomoReset;
+$('pomoTask').addEventListener('change', updatePomoLive);
+$('focusModeBtn').onclick = openFocusMode;
+$('fmToggle').onclick = pomoToggle;
+$('fmReset').onclick = pomoReset;
+$('fmExit').onclick = closeFocusMode;
+$('focusOverlay').addEventListener('keydown', e=>{
+  if(e.key === 'Escape'){ e.preventDefault(); closeFocusMode(); }
+  if(e.key === 'Tab'){   /* يبقى التنقّل داخل وضع التركيز */
+    const f = [...$('focusOverlay').querySelectorAll('button')];
+    const i = f.indexOf(document.activeElement);
+    if(e.shiftKey && i <= 0){ e.preventDefault(); f[f.length-1].focus(); }
+    else if(!e.shiftKey && i === f.length-1){ e.preventDefault(); f[0].focus(); }
+  }
+});
+updatePomoLive();
+
+/* ---------- لوحة الأوامر (Ctrl+K): انتقل، نفّذ، ابحث في المهام، أو أضف مهمة ---------- */
+const PAL_COMMANDS = [
+  {ic:'◧', t:'اذهب إلى: اليوم',      k:'اليوم لوح الرئيسية today', run:()=>showTab('board')},
+  {ic:'☑', t:'اذهب إلى: المهام',     k:'المهام قائمة tasks',       run:()=>showTab('tasks')},
+  {ic:'❋', t:'اذهب إلى: العادات',    k:'العادات روتين طاقة habits', run:()=>showTab('flow')},
+  {ic:'¤', t:'اذهب إلى: المصروفات',  k:'المصروفات ميزانية expenses', run:()=>showTab('expenses')},
+  {ic:'☀', t:'خطّط يومك',            k:'خطط تخطيط الصباح plan',     run:()=>openPlanDay()},
+  {ic:'⛶', t:'وضع التركيز',          k:'تركيز مؤقت بومودورو focus', run:()=>openFocusMode()},
+  {ic:'◐', t:'بدّل الوضع الداكن',    k:'داكن فاتح ليلي theme dark', run:()=>toggleTheme()},
+  {ic:'⎘', t:'انسخ ملخص اليوم',      k:'نسخ ملخص copy',             run:()=>$('copyBtn').click()},
+  {ic:'⏲', t:'ساعات عملي',           k:'ساعات العمل سعة capacity',  run:()=>openCapacityModal()},
+  {ic:'⚙', t:'الإعدادات',             k:'اعدادات إعدادات settings',  run:()=>openSettings()}
+];
+let palItems = [], palIndex = 0, palReturn = null;
+/* يطابق مع تجاهل التشكيل والهمزات، كي تجد «خطط» ما كُتب «خطّط» */
+const palNorm = s => String(s || '').toLowerCase().replace(/[ً-ْـ]/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
+function renderPalette(){
+  const raw = $('palInput').value.trim(), q = palNorm(raw);
+  const ul = $('palList'); ul.innerHTML = '';
+  palItems = [];
+  const group = label => { const g = document.createElement('li'); g.className = 'pal-group'; g.setAttribute('role','presentation'); g.textContent = label; ul.appendChild(g); };
+  const item = (ic, text, meta, run) => {
+    const li = document.createElement('li');
+    li.className = 'pal-item'; li.setAttribute('role','option'); li.id = 'pal-' + palItems.length;
+    const a = document.createElement('span'); a.className = 'pal-ic'; a.setAttribute('aria-hidden','true'); a.textContent = ic;
+    const b = document.createElement('span'); b.className = 'pal-txt'; b.textContent = text;
+    li.append(a, b);
+    if(meta){ const m = document.createElement('span'); m.className = 'pal-meta'; m.textContent = meta; li.appendChild(m); }
+    const idx = palItems.length;
+    li.addEventListener('mousemove', ()=>{ if(palIndex !== idx){ palIndex = idx; markPalette(); } });
+    li.addEventListener('click', ()=>runPalette(idx));
+    palItems.push({li, run}); ul.appendChild(li);
+  };
+  /* \b لا يعمل مع الحروف العربية، لذلك نتحقق من الفاصل صراحةً */
+  const wantsAdd = /^(أضف|اضف|add)(?=[\s:：]|$)/i.test(raw);
+  const addText = wantsAdd ? raw.replace(/^(أضف|اضف|add)\s*[:：]?\s*/i, '') : '';
+  if(raw && wantsAdd && addText){ item('＋', 'أضف مهمة: ' + addText, 'Enter', ()=>{ const t = quickTask(addText); showToast('أُضيفت: ' + t.text); }); }
+  const cmds = PAL_COMMANDS.filter(c=>!q || palNorm(c.t + ' ' + c.k).includes(q));
+  if(cmds.length){ group('أوامر'); cmds.forEach(c=>item(c.ic, c.t, '', c.run)); }
+  if(q){
+    const found = tasks.filter(t=>palNorm([t.text, t.proj, t.donor, t.notes].join(' ')).includes(q))
+      .sort((a,b)=>Number(a.done) - Number(b.done)).slice(0, 8);
+    if(found.length){
+      group('مهام');
+      found.forEach(t=>item(t.done ? '✓' : '○', t.text, [t.proj, t.due ? arDate(t.due) : ''].filter(Boolean).join(' · '), ()=>revealTask(t)));
+      found.filter(t=>!t.done).slice(0, 2).forEach(t=>item('▶', 'ركّز على: ' + t.text, '٢٥ د', ()=>focusOnTask(t)));
+    }
+    if(!wantsAdd){ item('＋', 'أضف «' + raw + '» مهمةً جديدة', '', ()=>{ const t = quickTask(raw); showToast('أُضيفت: ' + t.text); }); }
+  }
+  if(!palItems.length){ const e = document.createElement('li'); e.className = 'pal-empty'; e.textContent = 'لا نتائج.'; ul.appendChild(e); }
+  palIndex = 0; markPalette();
+}
+function markPalette(){
+  palItems.forEach((it, i)=>it.li.setAttribute('aria-selected', String(i === palIndex)));
+  const cur = palItems[palIndex];
+  if(cur){ $('palInput').setAttribute('aria-activedescendant', cur.li.id); cur.li.scrollIntoView({block:'nearest'}); }
+  else $('palInput').removeAttribute('aria-activedescendant');
+}
+function runPalette(i){ const it = palItems[i]; if(!it) return; closePalette(false); it.run(); }
+function openPalette(){
+  if(!$('focusOverlay').hidden) return;
+  palReturn = document.activeElement;
+  $('paletteOverlay').hidden = false;
+  $('palInput').value = '';
+  renderPalette();
+  $('palInput').focus();
+}
+function closePalette(restore = true){
+  $('paletteOverlay').hidden = true;
+  if(restore && palReturn && document.contains(palReturn)) palReturn.focus();
+}
+$('palInput').addEventListener('input', renderPalette);
+$('palInput').addEventListener('keydown', e=>{
+  if(e.key === 'ArrowDown'){ e.preventDefault(); if(palItems.length){ palIndex = (palIndex + 1) % palItems.length; markPalette(); } }
+  else if(e.key === 'ArrowUp'){ e.preventDefault(); if(palItems.length){ palIndex = (palIndex - 1 + palItems.length) % palItems.length; markPalette(); } }
+  else if(e.key === 'Enter'){ e.preventDefault(); runPalette(palIndex); }
+  else if(e.key === 'Escape'){ e.preventDefault(); closePalette(); }
+  else if(e.key === 'Tab'){ e.preventDefault(); }   /* يبقى التركيز في حقل البحث */
+});
+$('paletteOverlay').addEventListener('mousedown', e=>{ if(e.target === $('paletteOverlay')) closePalette(); });
+$('paletteBtn').onclick = openPalette;
+document.addEventListener('keydown', e=>{
+  if((e.ctrlKey || e.metaKey) && !e.altKey && (e.key === 'k' || e.key === 'K' || e.code === 'KeyK')){
+    if(!$('authOverlay').hidden) return;
+    e.preventDefault();
+    if($('paletteOverlay').hidden) openPalette(); else closePalette();
+  }
+});
 
 /* ---------- archive ---------- */
 function renderArchive(){
@@ -3388,6 +3984,9 @@ $('copyBtn').onclick = ()=>{
   if(navigator.clipboard) navigator.clipboard.writeText(out).then(ok, ()=>prompt('انسخ النص:', out));
   else prompt('انسخ النص:', out);
 };
+/* الزرّان داخل سطر عنوان الأرشيف: لا يفتحان الأرشيف ولا يغلقانه */
+document.querySelector('.arc-actions').addEventListener('click', e=>{ if(e.target.closest('button')) e.preventDefault(); });
+$('printBtn').onclick = ()=>window.print();
 
 /* ---------- download helper ---------- */
 function download(name, text, type){
@@ -3563,7 +4162,7 @@ $('amInput').addEventListener('keydown', e=>{ if(e.key==='Enter') flowAdd('amInp
 $('pmInput').addEventListener('keydown', e=>{ if(e.key==='Enter') flowAdd('pmInput', flow.pmRoutine); });
 
 document.querySelectorAll('#energyPicker button').forEach(b=>{
-  b.onclick = ()=>{ flow.energy = Number(b.dataset.v); syncFlow(); };
+  b.onclick = ()=>{ flow.energy = Number(b.dataset.v); syncFlow(); renderEnergyHint(); };
 });
 document.querySelectorAll('#gratWrap input').forEach(inp=>{
   inp.addEventListener('input', ()=>{ flow.grat[Number(inp.dataset.i)] = inp.value; saveFlow(); });
@@ -4153,7 +4752,7 @@ function bootConnected(){
       if(d.options) fillOptions(d.options);
       else if(notionOK()) loadOptions();
       pullState(d.legacy ? undefined : d);
-      if(notionOK()){ pushDirty(); refreshCalendarFromNotion(); }
+      if(notionOK()){ pushDirty(); refreshCalendarFromNotion(); loadGcal(); }
     })
     .catch(e=>setDot('err','تعذّر الاتصال: '+e.message));
 }
@@ -4167,6 +4766,8 @@ function resetLocalForUser(newUser){
       [KEY, FKEY, EKEY, SKEY].forEach(k=>localStorage.removeItem(k));
     }catch(e){}
     clearCalCache();   /* مهام نوشن المحفوظة تخصّ المستخدم السابق */
+    try{ localStorage.removeItem(GCAL_KEY); }catch(e){}
+    gcalEvents = []; gcalState = '';   /* ومواعيد تقويمه كذلك */
     tasks = []; waits = []; laters = []; archive = []; timeline = {}; expenses = [];
     expandedIds.clear();
     flow = {amRoutine:[], pmRoutine:[], energy:0, grat:['','',''],
