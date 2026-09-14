@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=Cairo:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=Cairo:wght@500;700;800&family=Alexandria:wght@600;700;800;900&family=Readex+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#14312A; --ink-2:#2A544A; --paper:#FBFAF6; --board:#EDF0EA;
@@ -146,8 +146,8 @@
   --font-head:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
 }
 /* الخط نفسه للعناوين والنص في «نَسَق»، فيُعوَّض الفرق بالوزن لا بعائلة خط أخرى */
-:root[data-palette="nasaq"] h1,:root[data-palette="nasaq"] h2,:root[data-palette="nasaq"] h3{font-weight:600;letter-spacing:0}
-:root[data-palette="nasaq"] .sheet{box-shadow:var(--shadow)}
+:root[data-palette^="nasaq"] h1,:root[data-palette^="nasaq"] h2,:root[data-palette^="nasaq"] h3{font-weight:600;letter-spacing:0}
+:root[data-palette^="nasaq"] .sheet{box-shadow:var(--shadow)}
 
 /* ---------- عناصر التحكم في «نَسَق» ----------
    حقول بتعبئة ناعمة بدل الإطار، وتوهّج عند التركيز، وأزرار أساسية بلون الهوية،
@@ -168,10 +168,10 @@
   }
 }
 /* العنوان الرئيسي بلون الهوية، كما في التصميم */
-:root[data-palette="nasaq"] h1{color:var(--brand)}
+:root[data-palette^="nasaq"] h1{color:var(--brand)}
 
 /* الحقول */
-:root[data-palette="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
+:root[data-palette^="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
   li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
   .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
   .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
@@ -179,85 +179,85 @@
   background-color:var(--field-bg); border:1px solid var(--field-line); border-radius:10px;
   transition:background-color .15s, border-color .15s, box-shadow .15s;
 }
-:root[data-palette="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
+:root[data-palette^="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
   li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
   .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
   .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
   .settings-body input,.auth-form input,.mini-add):hover{border-color:var(--field-hover)}
-:root[data-palette="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
+:root[data-palette^="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
   li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
   .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
   .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
   .settings-body input,.auth-form input,.mini-add):focus{
   outline:none; background-color:var(--surface); border-color:var(--focus); box-shadow:0 0 0 3px var(--ring);
 }
-:root[data-palette="nasaq"] :is(input,textarea)::placeholder{color:var(--muted);opacity:.8}
+:root[data-palette^="nasaq"] :is(input,textarea)::placeholder{color:var(--muted);opacity:.8}
 /* القوائم المنسدلة: سهم نحيف بدل سهم النظام (يسار الحقل لأن الاتجاه RTL) */
-:root[data-palette="nasaq"] :is(.add select,.pull select,.exp-add select){
+:root[data-palette^="nasaq"] :is(.add select,.pull select,.exp-add select){
   appearance:none; -webkit-appearance:none; padding-left:32px;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237A8886' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat:no-repeat; background-position:left 12px center;
 }
 
 /* الأولويات وختام اليوم: صفوف ناعمة بدل خطوط الدفتر */
-:root[data-palette="nasaq"] .field{
+:root[data-palette^="nasaq"] .field{
   border:1px solid transparent; border-radius:10px; padding:10px 12px; background:transparent;
   transition:background-color .15s, border-color .15s, box-shadow .15s;
 }
-:root[data-palette="nasaq"] .field:hover{background:var(--field-bg)}
-:root[data-palette="nasaq"] .field:focus{outline:none;background:var(--surface);border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
+:root[data-palette^="nasaq"] .field:hover{background:var(--field-bg)}
+:root[data-palette^="nasaq"] .field:focus{outline:none;background:var(--surface);border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
 
 /* الأزرار الأساسية: لون الهوية بدل الأسود */
-:root[data-palette="nasaq"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+:root[data-palette^="nasaq"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
   .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button){
   background:var(--focus); color:var(--on-accent); border:1px solid transparent; border-radius:10px;
   font-weight:600; box-shadow:0 1px 2px rgba(18,48,47,.12);
   transition:background-color .15s, transform .1s, box-shadow .15s;
 }
-:root[data-palette="nasaq"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+:root[data-palette^="nasaq"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
   .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button):hover{
   background:color-mix(in srgb, var(--focus) 88%, var(--ink)); box-shadow:0 4px 12px var(--ring);
 }
-:root[data-palette="nasaq"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+:root[data-palette^="nasaq"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
   .pomo-controls button.go,.exp-add button,.auth-primary):active{transform:scale(.97)}
 
 /* الأزرار الثانوية: تعبئة خفيفة بلا إطار */
-:root[data-palette="nasaq"] :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
+:root[data-palette^="nasaq"] :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
   .modal .row button:not(.primary),.pomo-controls button:not(.go),.cal-head button,.energy button,
   .water button,.set-actions button:not(.danger)){
   background:var(--btn-soft); color:var(--ink); border:1px solid transparent; border-radius:10px;
   transition:background-color .15s, transform .1s;
 }
-:root[data-palette="nasaq"] :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
+:root[data-palette^="nasaq"] :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
   .modal .row button:not(.primary),.pomo-controls button:not(.go),.cal-head button,.energy button,
   .water button,.set-actions button:not(.danger)):hover{background:var(--btn-soft-hover)}
-:root[data-palette="nasaq"] .energy button.active{background:var(--focus-bg);border-color:var(--focus);color:var(--focus-ink)}
+:root[data-palette^="nasaq"] .energy button.active{background:var(--focus-bg);border-color:var(--focus);color:var(--focus-ink)}
 /* زرّا "⋯" للتفاصيل معرّفان بـ id فيغلبان القاعدة العامة — نعطيهما الهيئة الثانوية صراحةً */
-:root[data-palette="nasaq"] :is(#addDetailsBtn,#expAddDetailsBtn){
+:root[data-palette^="nasaq"] :is(#addDetailsBtn,#expAddDetailsBtn){
   background:var(--btn-soft); color:var(--ink-2); border:1px solid transparent; border-radius:10px; box-shadow:none;
 }
-:root[data-palette="nasaq"] :is(#addDetailsBtn,#expAddDetailsBtn):hover{background:var(--btn-soft-hover);box-shadow:none}
-:root[data-palette="nasaq"] :is(#addDetailsBtn,#expAddDetailsBtn)[aria-expanded="true"]{background:var(--focus-bg);color:var(--focus-ink);border-color:var(--focus)}
+:root[data-palette^="nasaq"] :is(#addDetailsBtn,#expAddDetailsBtn):hover{background:var(--btn-soft-hover);box-shadow:none}
+:root[data-palette^="nasaq"] :is(#addDetailsBtn,#expAddDetailsBtn)[aria-expanded="true"]{background:var(--focus-bg);color:var(--focus-ink);border-color:var(--focus)}
 
 /* التنقّل الجانبي: العنصر النشط بلون الهوية كما في التصميم */
-:root[data-palette="nasaq"] .tab.active{background:var(--focus);color:var(--on-accent)}
-:root[data-palette="nasaq"] .tab:hover:not(.active){background:var(--field-bg)}
-:root[data-palette="nasaq"] .task-filters button.active{background:var(--focus);border-color:var(--focus);color:var(--on-accent)}
+:root[data-palette^="nasaq"] .tab.active{background:var(--focus);color:var(--on-accent)}
+:root[data-palette^="nasaq"] .tab:hover:not(.active){background:var(--field-bg)}
+:root[data-palette^="nasaq"] .task-filters button.active{background:var(--focus);border-color:var(--focus);color:var(--on-accent)}
 /* زر إغلاق اليوم بلون الهوية الثابت في الوضعين، كي يبقى الشعار الفاتح عليه واضحًا */
 :root[data-palette="nasaq"] .close-day{background:#174C4F;color:#fff}
 @media (max-width:999px){
-  :root[data-palette="nasaq"] .tab.active{background:transparent;color:var(--focus)}
+  :root[data-palette^="nasaq"] .tab.active{background:transparent;color:var(--focus)}
 }
 
 /* حالة المهمة ومفتاح الطابع */
-:root[data-palette="nasaq"] .state{border-color:transparent;background:var(--field-bg)}
-:root[data-palette="nasaq"] .pswitch{background:var(--field-bg);border-color:transparent}
-:root[data-palette="nasaq"] .pswitch button.active{background:var(--focus);color:var(--on-accent)}
+:root[data-palette^="nasaq"] .state{border-color:transparent;background:var(--field-bg)}
+:root[data-palette^="nasaq"] .pswitch{background:var(--field-bg);border-color:transparent}
+:root[data-palette^="nasaq"] .pswitch button.active{background:var(--focus);color:var(--on-accent)}
 
 /* مربع الإنجاز: دائري كتطبيقات المهام الحديثة */
-:root[data-palette="nasaq"] .check{border-radius:50%;border-color:var(--field-hover);transition:background-color .15s, border-color .15s}
-:root[data-palette="nasaq"] .check:hover{border-color:var(--done);background:color-mix(in srgb, var(--done) 10%, var(--surface))}
-:root[data-palette="nasaq"] .check[aria-checked="true"]::after{inset:3px 5.5px 5px 5.5px}
+:root[data-palette^="nasaq"] .check{border-radius:50%;border-color:var(--field-hover);transition:background-color .15s, border-color .15s}
+:root[data-palette^="nasaq"] .check:hover{border-color:var(--done);background:color-mix(in srgb, var(--done) 10%, var(--surface))}
+:root[data-palette^="nasaq"] .check[aria-checked="true"]::after{inset:3px 5.5px 5px 5.5px}
 *{box-sizing:border-box}
 input,textarea,select{min-width:0}
 html,body{margin:0;padding:0}
@@ -303,7 +303,7 @@ h1{font-family:var(--font-head);font-size:40px;font-weight:700;margin:0;letter-s
 :root[data-theme="dark"]{--bm-1:#F7F6F2;--bm-2:#9FC6C0}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bm-1:#F7F6F2;--bm-2:#9FC6C0}}
 /* أولويات «نَسَق»: دوائر بلون الهوية كما في التصميم */
-:root[data-palette="nasaq"] .rank{border-radius:50%;width:34px;height:34px;align-self:center;font-size:17px;background:var(--focus);color:var(--on-accent)}
+:root[data-palette^="nasaq"] .rank{border-radius:50%;width:34px;height:34px;align-self:center;font-size:17px;background:var(--focus);color:var(--on-accent)}
 .field{border:0;border-bottom:1px solid var(--rule);background:transparent;font:inherit;color:inherit;padding:9px 4px;width:100%}
 .field::placeholder{color:#A6B2AA}
 .field:focus{outline:none;border-bottom-color:var(--focus);box-shadow:0 1px 0 var(--focus)}
@@ -563,6 +563,57 @@ body{padding:0}
   .add-details{grid-template-columns:1fr}
 }
 
+/* ---------- رأس الصفحات (المهام · العادات · المصروفات) ---------- */
+.card-head h3{display:flex;align-items:center;gap:8px;font-family:var(--font-head);font-size:16.5px;font-weight:700;margin:0;color:var(--ink)}
+.card-note{font-size:12.5px;color:var(--muted)}
+.page-head{display:flex;align-items:center;justify-content:space-between;gap:14px 20px;flex-wrap:wrap;margin-bottom:16px;padding:20px 24px}
+.page-title{font-family:var(--font-head);font-size:26px;font-weight:700;margin:0;color:var(--brand,var(--ink));line-height:1.2}
+.page-sub{margin:4px 0 0;color:var(--muted);font-size:14px}
+.page-date{font-size:13.5px;color:var(--muted)}
+.page-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.page-tools input[type=search]{min-width:240px;border:1px solid var(--rule);border-radius:10px;background:var(--surface);font:inherit;font-size:14px;padding:9px 12px;color:inherit}
+.page-tools select{border:1px solid var(--rule);border-radius:10px;background:var(--surface);font:inherit;font-size:14px;padding:9px 12px;color:inherit;max-width:220px}
+.btn-primary{font:inherit;font-size:14px;font-weight:600;padding:9px 16px;border-radius:10px;border:0;background:var(--ink);color:var(--paper);cursor:pointer;min-height:40px}
+.btn-primary:hover{opacity:.92}
+
+/* صفحة المهام */
+.tasks-page{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+.tp-groups{display:flex;flex-direction:column;gap:16px;min-width:0}
+.tp-group{container-type:inline-size}
+.tp-count{font-family:inherit;font-size:12px;font-weight:600;background:var(--stripe);color:var(--ink-2);border-radius:999px;padding:1px 9px;margin-inline-start:4px}
+.tp-overdue .card-head h3{color:var(--urgent)}
+.tp-done ol.tasks{opacity:.85}
+.tp-side{display:flex;flex-direction:column;gap:16px;position:sticky;top:18px}
+.tp-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.tp-projects{display:flex;flex-direction:column;gap:4px}
+.tp-proj{display:flex;justify-content:space-between;align-items:center;gap:8px;font:inherit;font-size:13.5px;text-align:start;padding:9px 12px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--ink);cursor:pointer;min-height:40px}
+.tp-proj span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tp-proj b{font-weight:600;color:var(--muted);font-size:12.5px}
+.tp-proj:hover{background:var(--stripe)}
+.tp-proj.active{background:var(--focus-bg);color:var(--focus-ink);border-color:var(--focus)}
+.tp-empty{text-align:center;color:var(--muted);padding:40px 20px}
+.tp-empty .empty-ic{width:54px;height:54px;margin:0 auto 10px;display:block;opacity:.5}
+
+/* صفحة العادات */
+.page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;align-items:start}
+.page-wide{grid-column:1 / -1}
+.page-grid .meals{grid-template-columns:1fr;margin-bottom:12px}
+.streak{font-size:12.5px;font-weight:600;color:var(--hold-ink);background:var(--hold-bg);border-radius:999px;padding:3px 10px}
+.streak:empty{display:none}
+.habit-week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;margin:4px 0 10px}
+.hw-day{display:flex;flex-direction:column;align-items:center;gap:6px}
+.hw-bar{width:100%;max-width:34px;height:72px;background:var(--stripe);border-radius:8px;position:relative;overflow:hidden}
+.hw-bar i{position:absolute;inset:auto 0 0 0;background:var(--accent,var(--hold));border-radius:8px;transition:height .4s}
+.hw-day.full .hw-bar i{background:var(--done)}
+.hw-day span{font-size:11.5px;color:var(--muted)}
+.hw-day.today span{color:var(--ink);font-weight:700}
+.card-note:is(p){margin:0;line-height:1.6}
+
+/* صفحة المصروفات */
+.exp-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
+.exp-side{display:flex;flex-direction:column;gap:16px;position:sticky;top:18px}
+.sub-head{margin-top:22px;padding-top:16px;border-top:1px solid var(--rule)}
+
 /* شاشة متوسطة: عمودان — المهام يمينًا، والباقي مكدّس يسارًا */
 @media (max-width:1399px){
   .dash{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}
@@ -601,6 +652,16 @@ body{padding:0}
   .c-pri{order:1}.c-tasks{order:2}.c-sched{order:3}.c-ideas{order:4}
   .c-focus{order:5}.c-habits{order:6}.c-cal{order:7}.c-projects{order:8}.c-review{order:9}.archive{order:10}
   .card{padding:16px}
+  /* الصفحات الأخرى: عمود واحد */
+  .page-head{padding:16px}
+  .page-title{font-size:22px}
+  .page-tools{width:100%}
+  .page-tools input[type=search]{min-width:0;flex:1 1 100%}
+  .page-tools select{flex:1;max-width:none}
+  .tasks-page,.exp-grid{grid-template-columns:1fr}
+  .tp-side,.exp-side{position:static}
+  .exp-side{order:-1}
+  .page-grid{grid-template-columns:1fr}
   .closing-band{display:flex;flex-direction:column;align-items:stretch;gap:16px}
   .closing-band .q{grid-template-columns:1fr;gap:4px}
   .close-day{min-height:80px;justify-content:center}
@@ -892,6 +953,167 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   .check{width:22px;height:22px}
   .kill,.exp,.pin{min-width:26px;min-height:26px}
 }
+/* ==================== طابع «نَسَق 360» ====================
+   هوية «مَدار» المستوحاة من «أثير» و«الجزيرة 360»: ليل كحلي، ونعناعي للإنجاز، وسماوي للفعل،
+   وبنفسجي للانتظار، وأحمر للعاجل. يرث عناصر تحكم «نَسَق» (قواعد ^="nasaq" أعلاه) ويبدّل
+   الألوان والخطوط والتدرّج والنقشة. الأصل هو الوضع الداكن «ليل المدار»، والفاتح نسخة «الورق»
+   بالطيف العميق. تباين كل نص ≥ 4.5. الأزرار الأساسية سماوية بنص ليلي (7.4:1) لا أبيض (2.4:1). */
+:root[data-palette="nasaq360"]{
+  --ink:#14162A; --ink-2:#3A3F62; --paper:#FFFFFF; --board:#EEF1F7;
+  --rule:#DCE0EC; --done:#087F5D; --hold:#6A43B8; --urgent:#C42B2E;
+  --muted:#5E6485; --focus:#007A99; --r:14px;
+  --surface:#FFFFFF; --stripe:#F5F7FB;
+  --hold-bg:#EEE8FA; --hold-ink:#5A3A9E;
+  --focus-bg:#E0F4F8; --focus-ink:#005F78;
+  --imp-b-bg:#E6E9F3;
+  --brand:#14162A; --accent:#00B7D4;
+  --shadow:0 1px 2px rgba(20,22,42,.06),0 10px 28px rgba(20,22,42,.08);
+  --overlay:rgba(20,22,42,.45);
+  --pattern:rgba(0,122,153,.08);
+  --font-head:Alexandria,"Readex Pro",Tahoma,sans-serif;
+  --font-body:"Readex Pro","Segoe UI",Tahoma,sans-serif;
+  --field-bg:#F3F5FA; --field-line:#DCE0EC; --field-hover:#C3C9DC;
+  --ring:rgba(0,183,212,.25); --on-accent:#FFFFFF; --btn-soft:#E6E9F3; --btn-soft-hover:#DADEEC;
+  /* الزر الأساسي: سماوي 360 بنص ليلي، وينقلب عند المرور كما في الجزيرة 360 */
+  --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#14162A; --on-cta-hover:#EEF1F7;
+  --live:#C42B2E; --on-done:#FFFFFF;
+  --bm-1:#14162A; --bm-2:#087F5D; --bm-dot:#007A99;
+  /* الحلقة: ٣٣٠° مخروطية تبدأ بعد فجوة ٣٠° عند الثانية عشرة — نعناعي ← سماوي ← بنفسجي */
+  --orbit:conic-gradient(from 15deg,#0E9E74 0deg,#0086A8 150deg,#6A43B8 300deg,#6A43B8 330deg,transparent 330deg);
+  --grad-line:linear-gradient(to left,#0E9E74,#0086A8 55%,#6A43B8);
+  --grad-text:linear-gradient(90deg,#0E9E74,#0086A8 55%,#6A43B8);
+  --aura-1:rgba(106,67,184,.12); --aura-2:rgba(14,158,116,.10); --orbit-line:rgba(0,122,153,.16);
+  color-scheme:light;
+}
+:root[data-theme="dark"][data-palette="nasaq360"]{
+  --ink:#EEF1F7; --ink-2:#C4C9DD; --paper:#1D2040; --board:#14162A;
+  --rule:#2C3058; --done:#34F5B5; --hold:#B69CF5; --urgent:#FF6B6E;
+  --muted:#9AA1BE; --focus:#00B7D4;
+  --surface:#1D2040; --stripe:#22264A;
+  --hold-bg:#2A2350; --hold-ink:#C9B5FF;
+  --focus-bg:#0F3246; --focus-ink:#7FE3F5;
+  --imp-b-bg:#2A2E55;
+  --brand:#EEF1F7; --accent:#00B7D4;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 30px rgba(0,0,0,.35);
+  --overlay:rgba(8,9,20,.72);
+  --pattern:rgba(0,183,212,.07);
+  --field-bg:#171A31; --field-line:#2C3058; --field-hover:#3B4070;
+  --ring:rgba(0,183,212,.3); --on-accent:#14162A; --btn-soft:#262A4F; --btn-soft-hover:#30355F;
+  --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#EEF1F7; --on-cta-hover:#14162A;
+  --live:#D92F32; --on-done:#14162A;
+  --bm-1:#EEF1F7; --bm-2:#34F5B5; --bm-dot:#00B7D4;
+  --orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg);
+  --grad-line:linear-gradient(to left,#34F5B5,#00B7D4 55%,#7B55CC);
+  --grad-text:linear-gradient(90deg,#34F5B5,#00B7D4 55%,#7B55CC);
+  --aura-1:rgba(123,85,204,.32); --aura-2:rgba(52,245,181,.14); --orbit-line:rgba(0,183,212,.2);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"])[data-palette="nasaq360"]{
+    --ink:#EEF1F7; --ink-2:#C4C9DD; --paper:#1D2040; --board:#14162A;
+    --rule:#2C3058; --done:#34F5B5; --hold:#B69CF5; --urgent:#FF6B6E;
+    --muted:#9AA1BE; --focus:#00B7D4;
+    --surface:#1D2040; --stripe:#22264A;
+    --hold-bg:#2A2350; --hold-ink:#C9B5FF;
+    --focus-bg:#0F3246; --focus-ink:#7FE3F5;
+    --imp-b-bg:#2A2E55;
+    --brand:#EEF1F7; --accent:#00B7D4;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 30px rgba(0,0,0,.35);
+    --overlay:rgba(8,9,20,.72);
+    --pattern:rgba(0,183,212,.07);
+    --field-bg:#171A31; --field-line:#2C3058; --field-hover:#3B4070;
+    --ring:rgba(0,183,212,.3); --on-accent:#14162A; --btn-soft:#262A4F; --btn-soft-hover:#30355F;
+    --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#EEF1F7; --on-cta-hover:#14162A;
+    --live:#D92F32; --on-done:#14162A;
+    --bm-1:#EEF1F7; --bm-2:#34F5B5; --bm-dot:#00B7D4;
+    --orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg);
+    --grad-line:linear-gradient(to left,#34F5B5,#00B7D4 55%,#7B55CC);
+    --grad-text:linear-gradient(90deg,#34F5B5,#00B7D4 55%,#7B55CC);
+    --aura-1:rgba(123,85,204,.32); --aura-2:rgba(52,245,181,.14); --orbit-line:rgba(0,183,212,.2);
+    color-scheme:dark;
+  }
+}
+
+/* الخطوط: Alexandria للعناوين والأرقام الكبيرة، وReadex Pro للنص. لا تباعد بين الحروف العربية */
+:root[data-palette="nasaq360"] body{font-family:var(--font-body);background-image:none}
+/* نقشة المدار: دوائر متحدة المركز من الزاوية، كموجات الأثير وصفر «360».
+   طبقة ثابتة مستقلة بدل background-attachment:fixed كي لا يُعاد رسمها مع كل تمرير */
+:root[data-palette="nasaq360"] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:repeating-radial-gradient(circle at 0 0,transparent 0 56px,var(--pattern) 56px 57px);transform:translateZ(0)}
+:root[data-palette="nasaq360"] :is(h1,h2,h3){font-weight:700}
+:root[data-palette="nasaq360"] .greet-title{font-weight:800}
+:root[data-palette="nasaq360"] .greet-tagline{font-weight:400}
+:root[data-palette="nasaq360"] :is(.pomo-time,.count,.sum-item b,.budget-overall .big,.exp-amt){font-weight:800;font-variant-numeric:tabular-nums}
+
+/* الشعار: رمز نَسَق داخل حلقة المدار، و«360» بتدرّج الهوية */
+.orbit{display:contents}
+:root[data-palette="nasaq360"] .orbit{display:inline-grid;place-items:center;position:relative;flex:none;border-radius:50%;width:56px;height:56px}
+:root[data-palette="nasaq360"] .orbit::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--orbit);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px))}
+:root[data-palette="nasaq360"] .orbit .brand-mark{width:34px;height:34px}
+:root[data-palette="nasaq360"] .auth-brand .orbit{width:60px;height:60px}
+:root[data-palette="nasaq360"] .auth-brand .orbit .brand-mark{width:38px;height:38px}
+:root[data-palette="nasaq360"] .brand-mark .bm-dot{fill:var(--bm-dot)}
+:root[data-palette="nasaq360"] :is(.brand-name,.auth-brand h2)::after{content:"360";display:inline-block;direction:ltr;
+  font-family:Alexandria,sans-serif;font-weight:900;font-size:.5em;margin-inline-start:.3em;vertical-align:.8em;
+  background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent}
+:root[data-palette="nasaq360"] .brand-latin::after{content:" 360"}
+
+/* الأزرار الأساسية: سماوي بنص ليلي، وعند المرور ينقلب (ورق في الداكن، ليل في الفاتح) */
+:root[data-palette="nasaq360"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+  .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button){
+  background:var(--cta); color:var(--on-cta); box-shadow:none; font-family:var(--font-head); font-weight:600;
+  transition:background-color .18s, color .18s, transform .1s;
+}
+:root[data-palette="nasaq360"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+  .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button):hover{
+  background:var(--cta-hover); color:var(--on-cta-hover); box-shadow:none;
+}
+/* الحالات النشطة بلون الفعل نفسه */
+:root[data-palette="nasaq360"] .tab.active,
+:root[data-palette="nasaq360"] .task-filters button.active,
+:root[data-palette="nasaq360"] .pswitch button.active{background:var(--cta);border-color:transparent;color:var(--on-cta)}
+:root[data-palette="nasaq360"] .rank{background:var(--cta);color:var(--on-cta);font-family:var(--font-head);font-weight:800}
+@media (max-width:999px){
+  :root[data-palette="nasaq360"] .tab.active{background:transparent;color:var(--focus)}
+}
+/* الحقول: سهم القائمة بلون «الضباب» */
+:root[data-palette="nasaq360"] :is(.add select,.pull select,.exp-add select){
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA1BE' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* الدلالات: العاجل تعبئةً بأحمر «مباشر»، والإنجاز بنص يقرأ على النعناعي */
+:root[data-palette="nasaq360"] .imp.a{background:var(--live)}
+:root[data-palette="nasaq360"] .day-done.is-done{color:var(--on-done)}
+
+/* التدرّج: شرائط التقدّم تمتلئ بطيف الحلقة من اليمين */
+:root[data-palette="nasaq360"] :is(.progress .fill,.proj-bar i){background:var(--grad-line)}
+
+/* بطاقة الترحيب: هالة أثير ومدارات 360 بدل نقشة الشعار */
+:root[data-palette="nasaq360"] .greet-card::before{opacity:1;
+  background:
+    radial-gradient(ellipse 36% 95% at 7% 25%,var(--aura-1),transparent 70%),
+    radial-gradient(ellipse 30% 80% at 24% 115%,var(--aura-2),transparent 70%),
+    repeating-radial-gradient(circle at -60px 50%,transparent 0 26px,var(--orbit-line) 26px 27px);
+  -webkit-mask:linear-gradient(to right,#000,transparent 68%);
+          mask:linear-gradient(to right,#000,transparent 68%)}
+
+/* ختام اليوم: ليل ثابت في الوضعين، بوهج سماوي خلف الرمز */
+:root[data-palette="nasaq360"] .close-day{color:#EEF1F7;
+  background:radial-gradient(circle at 88% 50%,rgba(0,183,212,.26),transparent 55%),linear-gradient(135deg,#1D2040,#14162A);
+  box-shadow:inset 0 0 0 1px #2C3058,0 10px 26px rgba(20,22,42,.22);
+  --orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg)}
+:root[data-palette="nasaq360"] .close-day .orbit{width:68px;height:68px}
+:root[data-palette="nasaq360"] .close-day .close-mark{width:34px;height:38px}
+:root[data-palette="nasaq360"] .close-day .close-mark .bm-1{fill:#EEF1F7}
+:root[data-palette="nasaq360"] .close-day .close-mark .bm-2{fill:#34F5B5}
+:root[data-palette="nasaq360"] .close-day .close-mark .bm-dot{fill:#00B7D4}
+@media (max-width:999px){
+  :root[data-palette="nasaq360"] .sidenav-brand .orbit{width:42px;height:42px}
+  :root[data-palette="nasaq360"] .sidenav-brand .orbit .brand-mark{width:26px;height:26px}
+}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 @media print{
   :root{
@@ -920,12 +1142,13 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <div class="auth-overlay" id="authOverlay" hidden>
   <div class="auth-card">
     <div class="auth-brand">
-      <!-- شعار نَسَق 2a — وحدتان ونقطة (من ملفات الهوية: logo-svg/nasaq-2a-mark-color.svg) -->
-      <svg class="brand-mark" viewBox="18 12 76 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- شعار نَسَق 2a — وحدتان ونقطة (من ملفات الهوية: logo-svg/nasaq-2a-mark-color.svg).
+           .orbit لا أثر له إلا في طابع «نَسَق 360» حيث يرسم حلقة المدار حول الرمز -->
+      <span class="orbit"><svg class="brand-mark" viewBox="18 12 76 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path class="bm-1" d="M47 92 L47 22 C25 46 25 74 47 92 Z"/>
         <path class="bm-2" d="M53 92 L53 46 C74 62 74 82 53 92 Z"/>
         <rect class="bm-dot" x="63" y="19" width="15" height="15" transform="rotate(45 70.5 26.5)"/>
-      </svg>
+      </svg></span>
       <div>
         <h2>نَسَق</h2>
         <div class="auth-sub" id="authSub">لكل شيء مكان، ولكل يوم نَسَق.</div>
@@ -1011,6 +1234,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
             <button data-palette="nasaq" type="button">نَسَق</button>
             <button data-palette="" type="button">كلاسيكي</button>
             <button data-palette="vibrant" type="button">حيوي</button>
+            <button data-palette="nasaq360" type="button">نَسَق 360</button>
           </span>
         </div>
         <div class="set-row"><span>الوضع الداكن</span><button id="setThemeBtn" type="button">🌙</button></div>
@@ -1049,11 +1273,11 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <div class="app">
 <aside class="sidenav" aria-label="التنقل الرئيسي">
   <div class="sidenav-brand">
-    <svg class="brand-mark" viewBox="18 12 76 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <span class="orbit"><svg class="brand-mark" viewBox="18 12 76 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path class="bm-1" d="M47 92 L47 22 C25 46 25 74 47 92 Z"/>
       <path class="bm-2" d="M53 92 L53 46 C74 62 74 82 53 92 Z"/>
       <rect class="bm-dot" x="63" y="19" width="15" height="15" transform="rotate(45 70.5 26.5)"/>
-    </svg>
+    </svg></span>
     <div class="sidenav-brand-text">
       <span class="brand-name">نَسَق</span>
       <span class="brand-latin">NASAQ</span>
@@ -1064,6 +1288,10 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <button class="tab active" id="tabBoardBtn" type="button">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>
       <span>اليوم</span>
+    </button>
+    <button class="tab" id="tabTasksBtn" type="button">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8 12 3 3 5-6"/></svg>
+      <span>المهام</span>
     </button>
     <button class="tab" id="tabFlowBtn" type="button">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c0-9 5-15 15-16-1 10-7 15-16 15"/><path d="M5 21c3-6 7-9 11-11"/></svg>
@@ -1252,7 +1480,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="q"><label for="r3">ما أول مهمة غدًا؟</label><input class="field" id="r3"></div>
     </div>
     <button class="close-day" id="newDay" type="button">
-      <svg class="brand-mark close-mark" viewBox="18 12 76 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path class="bm-1" d="M47 92 L47 22 C25 46 25 74 47 92 Z"/><path class="bm-2" d="M53 92 L53 46 C74 62 74 82 53 92 Z"/><rect class="bm-dot" x="63" y="19" width="15" height="15" transform="rotate(45 70.5 26.5)"/></svg>
+      <span class="orbit"><svg class="brand-mark close-mark" viewBox="18 12 76 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path class="bm-1" d="M47 92 L47 22 C25 46 25 74 47 92 Z"/><path class="bm-2" d="M53 92 L53 46 C74 62 74 82 53 92 Z"/><rect class="bm-dot" x="63" y="19" width="15" height="15" transform="rotate(45 70.5 26.5)"/></svg></span>
       <span class="close-day-text"><b>أغلق اليوم</b><small>وابدأ يومًا جديدًا على نَسَق</small></span>
     </button>
   </section>
@@ -1295,13 +1523,70 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 </div>
 </div>
 
-<div class="tabpanel" id="tabFlow" hidden>
-<main class="sheet">
-  <aside class="rail">
-    <div class="date" id="flowDate">—</div>
-    <div class="weekday" id="flowWeekday">—</div>
+<!-- ==================== صفحة المهام الموسّعة ==================== -->
+<div class="tabpanel" id="tabTasks" hidden>
+<section class="card page-head">
+  <div class="page-head-text">
+    <h2 class="page-title">المهام</h2>
+    <p class="page-sub">كل ما عليك، مرتّبًا حسب موعده وأهميته.</p>
+  </div>
+  <div class="page-tools">
+    <input type="search" id="tpSearch" placeholder="ابحث بالاسم أو المشروع أو المانح…" aria-label="ابحث في المهام">
+    <select id="tpProj" aria-label="تصفية حسب المشروع"><option value="">كل المشاريع</option></select>
+    <button type="button" class="btn-primary" id="tpAdd">＋ مهمة جديدة</button>
+  </div>
+</section>
+<div class="tasks-page">
+  <div class="tp-groups" id="tpGroups"></div>
+  <aside class="tp-side">
+    <section class="card">
+      <div class="card-head"><h3>نظرة سريعة</h3></div>
+      <div class="tp-stats" id="tpStats"></div>
+    </section>
+    <section class="card">
+      <div class="card-head"><h3>حسب المشروع</h3></div>
+      <div class="tp-projects" id="tpProjects"></div>
+    </section>
+  </aside>
+</div>
+</div>
 
-    <h3>🔋 مستوى الطاقة اليوم</h3>
+<!-- ==================== صفحة العادات ==================== -->
+<div class="tabpanel" id="tabFlow" hidden>
+<section class="card page-head">
+  <div class="page-head-text">
+    <h2 class="page-title">العادات</h2>
+    <p class="page-sub">روتينك وطاقتك وامتنانك — مساحتك الشخصية، خارج قائمة المهام.</p>
+  </div>
+  <div class="page-date"><span id="flowWeekday">—</span>، <span id="flowDate">—</span></div>
+</section>
+<div class="page-grid">
+  <section class="card">
+    <div class="card-head"><h3>🌅 روتين الصباح</h3></div>
+    <ul class="mini" id="amList"></ul>
+    <div class="mini-row">
+      <input class="mini-add" id="amInput" placeholder="أضف عادة صباحية">
+      <button id="amAddBtn" type="button" title="أضف">+</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h3>🌙 الروتين المسائي</h3></div>
+    <ul class="mini" id="pmList"></ul>
+    <div class="mini-row">
+      <input class="mini-add" id="pmInput" placeholder="أضف عادة مسائية">
+      <button id="pmAddBtn" type="button" title="أضف">+</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h3>أسبوعك مع العادات</h3><span class="streak" id="habitStreak"></span></div>
+    <div class="habit-week" id="habitWeek"></div>
+    <p class="card-note">يمتلئ كل يوم بقدر ما أنجزت من روتينك، والسلسلة تحسب الأيام المتتالية التي أكملته فيها.</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h3>🔋 مستوى الطاقة اليوم</h3></div>
     <div class="energy" id="energyPicker">
       <button data-v="1" type="button" title="منخفض جدًا">🔋</button>
       <button data-v="2" type="button" title="منخفض">🔋</button>
@@ -1309,47 +1594,19 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <button data-v="4" type="button" title="جيد">🔋</button>
       <button data-v="5" type="button" title="ممتاز">🔋</button>
     </div>
+  </section>
 
-    <h3>🙏 لحظات الامتنان</h3>
+  <section class="card">
+    <div class="card-head"><h3>🙏 لحظات الامتنان</h3></div>
     <div class="grat" id="gratWrap">
       <input data-i="0" placeholder="١. أنا ممتن لـ...">
       <input data-i="1" placeholder="٢.">
       <input data-i="2" placeholder="٣.">
     </div>
-  </aside>
+  </section>
 
-  <section class="main">
-    <div class="masthead">
-      <svg class="mast-ic" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <circle cx="24" cy="18" r="9" stroke="currentColor" stroke-width="2.5"/>
-        <path d="M6 36c4-5 8-5 12 0s8 5 12 0 8-5 12 0" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-      </svg>
-      <div>
-        <h1>العادات</h1>
-        <div class="tag">روتينك وطاقتك وامتنانك — مساحتك الشخصية، خارج قائمة المهام.</div>
-      </div>
-    </div>
-
-    <div class="flow-cols">
-      <div>
-        <div class="section-label">🌅 روتين الصباح</div>
-        <ul class="mini" id="amList"></ul>
-        <div class="mini-row">
-          <input class="mini-add" id="amInput" placeholder="أضف عادة صباحية">
-          <button id="amAddBtn" type="button" title="أضف">+</button>
-        </div>
-      </div>
-      <div>
-        <div class="section-label">🌙 الروتين المسائي</div>
-        <ul class="mini" id="pmList"></ul>
-        <div class="mini-row">
-          <input class="mini-add" id="pmInput" placeholder="أضف عادة مسائية">
-          <button id="pmAddBtn" type="button" title="أضف">+</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="section-label" style="margin-top:28px">🍽️ الوجبات</div>
+  <section class="card">
+    <div class="card-head"><h3>🍽️ الوجبات والماء</h3></div>
     <div class="meals">
       <input id="mealBreak" placeholder="الإفطار">
       <input id="mealLunch" placeholder="الغداء">
@@ -1362,8 +1619,10 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <button id="waterPlus" type="button">+</button>
       <span>أكواب</span>
     </div>
+  </section>
 
-    <div class="section-label" style="margin-top:28px">🎵 مشغّل سبوتيفاي</div>
+  <section class="card page-wide">
+    <div class="card-head"><h3>🎵 مشغّل سبوتيفاي</h3></div>
     <div class="spotify-box" id="spotifyBox">
       <div class="spotify-signedout" id="spotifySignedOut">
         <p>اربط حساب سبوتيفاي لعرض قوائم التشغيل الخاصة بك هنا.</p>
@@ -1378,30 +1637,20 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </div>
     </div>
   </section>
-</main>
+</div>
 </div>
 
+<!-- ==================== صفحة المصروفات ==================== -->
 <div class="tabpanel" id="tabExpenses" hidden>
-<main class="sheet">
-  <aside class="rail">
-    <div class="section-label">📊 ميزانية هذا الشهر</div>
-    <div class="budget-overall" id="budgetOverall"></div>
-    <div class="budget-list" id="budgetList"></div>
-    <div class="exp-sync-note" id="expSyncNote"></div>
-  </aside>
-
-  <section class="main">
-    <div class="masthead">
-      <svg class="mast-ic" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <circle cx="24" cy="24" r="17" stroke="currentColor" stroke-width="2.5"/>
-        <path d="M24 15v18M18 20a4 4 0 014-4h3a3.5 3.5 0 010 7h-2a3.5 3.5 0 000 7h3a4 4 0 004-4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <div>
-        <h1>المصروفات</h1>
-        <div class="tag">سجّل مصروفك، وتابع ما تبقّى من ميزانية الشهر.</div>
-      </div>
-    </div>
-
+<section class="card page-head">
+  <div class="page-head-text">
+    <h2 class="page-title">المصروفات</h2>
+    <p class="page-sub">سجّل مصروفك، وتابع ما تبقّى من ميزانية الشهر.</p>
+  </div>
+</section>
+<div class="exp-grid">
+  <section class="card exp-main">
+    <div class="card-head"><h3>سجّل مصروفًا</h3></div>
     <div class="exp-add">
       <input id="expAmount" type="text" inputmode="decimal" placeholder="المبلغ — ٍ أو مثل 15+7.5">
       <select id="expCategory" aria-label="التصنيف"><option value="">التصنيف</option></select>
@@ -1417,13 +1666,18 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </div>
     <div class="hint">اكتب رقمًا أو عملية حسابية بسيطة في خانة المبلغ — مثل <code>15+7.5</code> — وستُحسب تلقائيًا.</div>
 
-    <div class="head">
-      <h2>مصروفات هذا الشهر</h2>
-      <div class="note">الأحدث أولًا</div>
-    </div>
+    <div class="card-head sub-head"><h3>مصروفات هذا الشهر</h3><span class="card-note">الأحدث أولًا</span></div>
     <ol class="tasks" id="expList"></ol>
   </section>
-</main>
+  <aside class="exp-side">
+    <section class="card">
+      <div class="card-head"><h3>📊 ميزانية هذا الشهر</h3></div>
+      <div class="budget-overall" id="budgetOverall"></div>
+      <div class="budget-list" id="budgetList"></div>
+      <div class="exp-sync-note" id="expSyncNote"></div>
+    </section>
+  </aside>
+</div>
 </div>
 
 </div><!-- /content -->
@@ -1529,17 +1783,30 @@ document.querySelectorAll('.pswitch button').forEach(b=>{
 
 /* ---------- tabs ---------- */
 const TABKEY = 'daily-board-tab';
-const TAB_NAMES = ['board','flow','expenses'];
+const TAB_NAMES = ['board','tasks','flow','expenses'];
+/* رابط لكل صفحة (#today، #tasks…) — يعمل زر الرجوع، ويمكن فتح صفحة مباشرة بالرابط */
+const TAB_HASH = {board:'today', tasks:'tasks', flow:'habits', expenses:'expenses'};
+function tabFromHash(){
+  const hsh = (location.hash || '').replace('#','');
+  return Object.keys(TAB_HASH).find(k=>TAB_HASH[k]===hsh) || '';
+}
 function showTab(name){
   if(TAB_NAMES.indexOf(name)<0) name = 'board';
   TAB_NAMES.forEach(n=>{
     $('tab'+n[0].toUpperCase()+n.slice(1)).hidden = (n!==name);
-    $('tab'+n[0].toUpperCase()+n.slice(1)+'Btn').classList.toggle('active', n===name);
+    const b = $('tab'+n[0].toUpperCase()+n.slice(1)+'Btn');
+    b.classList.toggle('active', n===name);
+    if(n===name) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
   });
   try{ localStorage.setItem(TABKEY, name); }catch(e){}
+  if(location.hash.replace('#','') !== TAB_HASH[name]) history.pushState(null, '', '#' + TAB_HASH[name]);
   if(name==='expenses') loadExpenseTab();
+  if(name==='tasks') renderTasksPage();
+  window.scrollTo(0, 0);
 }
+window.addEventListener('popstate', ()=>{ const t = tabFromHash(); if(t) showTab(t); });
 $('tabBoardBtn').onclick = ()=>showTab('board');
+$('tabTasksBtn').onclick = ()=>showTab('tasks');
 $('tabFlowBtn').onclick = ()=>showTab('flow');
 $('tabExpensesBtn').onclick = ()=>showTab('expenses');
 
@@ -2090,109 +2357,7 @@ function render(){
   else if(!shown.length) list.innerHTML = '<li class="empty">'+EMPTY_ICON+'<span>'+FILTER_EMPTY[taskFilter]+'</span></li>';
 
   const priValues = [...document.querySelectorAll('.pri .field')].map(f=>f.value.trim());
-  shown.forEach(t=>{
-    const li = document.createElement('li');
-    li.className = 'task' + (t.done ? ' done' : '');
-
-    const chk = document.createElement('button');
-    chk.className='check'; chk.setAttribute('role','checkbox');
-    chk.setAttribute('aria-checked', String(!!t.done));
-    chk.setAttribute('aria-label','تعليم كمنجزة');
-    chk.onclick = ()=>{
-      t.done = !t.done;
-      if(t.done){ t.state=0; t.doneAt = new Date().toISOString(); }
-      else delete t.doneAt;
-      t.dirty = true;
-      sync();
-    };
-
-    const txt = document.createElement('div');
-    txt.className='t-text'; txt.textContent = t.text;
-    if(t.notes) txt.title = t.notes;
-    makeEditable(txt, ()=>t.text, v=>{ if(v) t.text = v; }, ()=>{ t.dirty = true; sync(); });
-
-    const proj = document.createElement('div');
-    proj.className='proj'; proj.textContent = [t.proj, t.donor].filter(Boolean).join(' · ');
-    makeEditable(proj, ()=>t.proj||'', v=>{ t.proj = v; }, ()=>{ t.dirty = true; sync(); });
-
-    const imp = document.createElement('div');
-    imp.className='imp '+(t.imp==='أ'?'a':t.imp==='ب'?'b':'');
-    imp.textContent = t.imp; imp.title='الأهمية';
-
-    const age = document.createElement('div');
-    age.className='age';
-    let ageText = '';
-    if(!t.done){
-      if(t.due){
-        const diff = dayNum(t.due) - dayNum(new Date());
-        if(diff<0){ ageText = 'متأخرة '+fmtDays(-diff); age.classList.add('late'); age.title = 'هذه المهمة تنتظر قرارك'; }
-        else if(diff===0){ ageText = 'مستحقة اليوم'; }
-        else { ageText = 'خلال '+fmtDays(diff); }
-      }else{
-        const od = openDays(t);
-        if(od>0) ageText = 'مفتوحة '+fmtDays(od);
-      }
-    }
-    age.textContent = ageText;
-
-    let fifth;
-    if(t.done){
-      fifth = document.createElement('input');
-      fifth.className='actual'; fifth.type='number'; fifth.min='0'; fifth.step='5';
-      fifth.placeholder='الفعلي';
-      fifth.value = t.actual||'';
-      fifth.title = 'الوقت الفعلي بالدقائق';
-      fifth.onchange = ()=>{ t.actual = fifth.value; t.dirty = true; save(); queuePush(); };
-    }else{
-      const states=['لم تبدأ','قيد التنفيذ','بانتظار رد'];
-      fifth = document.createElement('button');
-      fifth.className='state '+(t.state===1?'on-go':t.state===2?'on-wait':'');
-      fifth.textContent = states[t.state||0];
-      fifth.onclick = ()=>{ t.state=((t.state||0)+1)%3; t.dirty = true; sync(); };
-    }
-
-    const mins = document.createElement('div');
-    mins.className='mins'; mins.textContent = fmtMins(t.mins);
-
-    const pin = document.createElement('button');
-    pin.className='pin' + (priValues.includes(t.text.trim()) ? ' active' : '');
-    pin.type='button'; pin.title='ثبّت كهدف اليوم'; pin.innerHTML=PIN_ICON;
-    pin.onclick = ()=> pinAsGoal(t.text);
-
-    const exp = document.createElement('button');
-    exp.className='exp'; exp.type='button'; exp.title='تفاصيل';
-    exp.textContent = expandedIds.has(t.id) ? '▴' : '▾';
-    exp.onclick = ()=>{
-      if(expandedIds.has(t.id)) expandedIds.delete(t.id); else expandedIds.add(t.id);
-      render();
-    };
-
-    const kill = document.createElement('button');
-    kill.className='kill'; kill.textContent='×'; kill.title='احذف';
-    kill.onclick = ()=>{
-      const idx = tasks.findIndex(x=>x.id===t.id);
-      const removed = t;
-      tasks = tasks.filter(x=>x.id!==t.id);
-      sync();
-      let undone = false;
-      const label = removed.text.length>26 ? removed.text.slice(0,26)+'…' : removed.text;
-      showToast('حُذفت: '+label, ()=>{
-        undone = true;
-        tasks.splice(Math.min(idx, tasks.length), 0, removed);
-        sync();
-      });
-      setTimeout(()=>{
-        if(!undone && notionOK() && removed.notionId){
-          post({action:'delete', pageId: removed.notionId}).catch(()=>{});
-        }
-      }, 600300);
-    };
-
-    li.append(chk, txt, proj, imp, age, mins, fifth, pin, exp, kill);
-    list.appendChild(li);
-
-    if(expandedIds.has(t.id)) list.appendChild(renderDetailsRow(t));
-  });
+  shown.forEach(t=>appendTaskRow(list, t, priValues));
 
   const done = tasks.filter(t=>t.done).length;
   $('doneCount').textContent = AR(done);
@@ -2209,6 +2374,193 @@ function render(){
   renderTaskFilters();
   renderDaySummary();
   renderProjects();
+  renderTasksPage();
+}
+
+/* ---------- صفحة المهام الموسّعة: أقسام حسب الموعد، مرتّبة بالأهمية ---------- */
+const TP_GROUPS = [
+  {f:'overdue',  t:'المتأخرة', note:'هذه المهام تنتظر قرارك'},
+  {f:'today',    t:'اليوم'},
+  {f:'upcoming', t:'القادمة'},
+  {f:'nodate',   t:'بلا موعد'},
+  {f:'done',     t:'المكتملة'}
+];
+function renderTasksPage(){
+  const wrap = $('tpGroups');
+  if(!wrap || $('tabTasks').hidden) return;   /* تُرسم حين تكون ظاهرة فقط */
+  const q = ($('tpSearch').value || '').trim().toLowerCase();
+  /* قائمة المشاريع في الفلتر — مع الحفاظ على الاختيار الحالي */
+  const sel = $('tpProj'), cur = sel.value;
+  const projs = [...new Set(tasks.map(t=>(t.proj||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ar'));
+  sel.innerHTML = '<option value="">كل المشاريع</option>';
+  projs.forEach(p=>{ const o = document.createElement('option'); o.value = p; o.textContent = p; sel.appendChild(o); });
+  sel.value = projs.includes(cur) ? cur : '';
+  const pj = sel.value;
+  const match = t => (!pj || (t.proj||'').trim() === pj) &&
+    (!q || [t.text, t.proj, t.donor, t.notes].some(v=>(v||'').toLowerCase().includes(q)));
+  const impRank = {'أ':0, 'ب':1, 'ج':2};
+  const priValues = [...document.querySelectorAll('.pri .field')].map(f=>f.value.trim());
+  wrap.innerHTML = '';
+  let shownAny = false;
+  TP_GROUPS.forEach(g=>{
+    const items = tasks.filter(t=>taskMatches(t, g.f) && match(t))
+      .sort((a,b)=>((impRank[a.imp] ?? 1) - (impRank[b.imp] ?? 1)) || String(a.due||'').localeCompare(String(b.due||'')));
+    if(!items.length) return;
+    shownAny = true;
+    const mins = items.filter(t=>!t.done).reduce((s,t)=>s+(Number(t.mins)||0), 0);
+    const card = document.createElement('section'); card.className = 'card tp-group tp-' + g.f;
+    const head = document.createElement('div'); head.className = 'card-head';
+    const h = document.createElement('h3'); h.textContent = g.t;
+    const c = document.createElement('span'); c.className = 'tp-count'; c.textContent = AR(items.length);
+    h.appendChild(c);
+    const meta = document.createElement('span'); meta.className = 'card-note';
+    meta.textContent = g.note || (mins ? fmtMins(mins) + ' مقدّرة' : '');
+    head.append(h, meta); card.appendChild(head);
+    const ol = document.createElement('ol'); ol.className = 'tasks';
+    items.forEach(t=>appendTaskRow(ol, t, priValues));
+    card.appendChild(ol); wrap.appendChild(card);
+  });
+  if(!shownAny){
+    const e = document.createElement('section'); e.className = 'card tp-empty';
+    e.innerHTML = EMPTY_ICON + '<p></p>';
+    e.querySelector('p').textContent = (q || pj) ? 'لا شيء يطابق بحثك.' : 'يومك هادئ حتى الآن. خطوة واحدة تكفي للبدء.';
+    wrap.appendChild(e);
+  }
+  /* نظرة سريعة */
+  const open = tasks.filter(t=>!t.done);
+  const stats = [
+    [AR(open.length), 'مفتوحة'],
+    [AR(tasks.filter(t=>taskMatches(t,'overdue')).length), 'متأخرة'],
+    [AR(tasks.filter(t=>t.done).length), 'منجزة'],
+    [(m => m ? fmtMins(m) : '—')(open.reduce((s,t)=>s+(Number(t.mins)||0),0)), 'وقت متبقٍّ']
+  ];
+  const st = $('tpStats'); st.innerHTML = '';
+  stats.forEach(([v,l])=>{ const d = document.createElement('div'); d.className = 'sum-item';
+    const b = document.createElement('b'); b.textContent = v; const s = document.createElement('span'); s.textContent = l;
+    d.append(b, s); st.appendChild(d); });
+  /* حسب المشروع: اضغط لتصفية الصفحة به */
+  const tp = $('tpProjects'); tp.innerHTML = '';
+  const counts = {};
+  open.forEach(t=>{ const p = (t.proj||'').trim() || 'بلا مشروع'; counts[p] = (counts[p]||0) + 1; });
+  const rows = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  if(!rows.length){ tp.innerHTML = '<div class="empty-sm">لا مهام مفتوحة.</div>'; }
+  rows.forEach(([p,n])=>{
+    const b = document.createElement('button'); b.type = 'button';
+    b.className = 'tp-proj' + (pj === p ? ' active' : '');
+    const nm = document.createElement('span'); nm.textContent = p;
+    const ct = document.createElement('b'); ct.textContent = AR(n);
+    b.append(nm, ct);
+    b.onclick = ()=>{ if(p === 'بلا مشروع') return; sel.value = (pj === p ? '' : p); renderTasksPage(); };
+    tp.appendChild(b);
+  });
+}
+$('tpSearch').addEventListener('input', renderTasksPage);
+$('tpProj').addEventListener('change', renderTasksPage);
+$('tpAdd').onclick = ()=>{ showTab('board'); const i = $('tText'); i.scrollIntoView({block:'center'}); i.focus(); };
+
+/* سطر مهمة واحد — تستخدمه صفحة «اليوم» وصفحة «المهام» معًا، فلا يتكرر الكود */
+function appendTaskRow(list, t, priValues){
+  const li = document.createElement('li');
+  li.className = 'task' + (t.done ? ' done' : '');
+
+  const chk = document.createElement('button');
+  chk.className='check'; chk.setAttribute('role','checkbox');
+  chk.setAttribute('aria-checked', String(!!t.done));
+  chk.setAttribute('aria-label','تعليم كمنجزة');
+  chk.onclick = ()=>{
+    t.done = !t.done;
+    if(t.done){ t.state=0; t.doneAt = new Date().toISOString(); }
+    else delete t.doneAt;
+    t.dirty = true;
+    sync();
+  };
+
+  const txt = document.createElement('div');
+  txt.className='t-text'; txt.textContent = t.text;
+  if(t.notes) txt.title = t.notes;
+  makeEditable(txt, ()=>t.text, v=>{ if(v) t.text = v; }, ()=>{ t.dirty = true; sync(); });
+
+  const proj = document.createElement('div');
+  proj.className='proj'; proj.textContent = [t.proj, t.donor].filter(Boolean).join(' · ');
+  makeEditable(proj, ()=>t.proj||'', v=>{ t.proj = v; }, ()=>{ t.dirty = true; sync(); });
+
+  const imp = document.createElement('div');
+  imp.className='imp '+(t.imp==='أ'?'a':t.imp==='ب'?'b':'');
+  imp.textContent = t.imp; imp.title='الأهمية';
+
+  const age = document.createElement('div');
+  age.className='age';
+  let ageText = '';
+  if(!t.done){
+    if(t.due){
+      const diff = dayNum(t.due) - dayNum(new Date());
+      if(diff<0){ ageText = 'متأخرة '+fmtDays(-diff); age.classList.add('late'); age.title = 'هذه المهمة تنتظر قرارك'; }
+      else if(diff===0){ ageText = 'مستحقة اليوم'; }
+      else { ageText = 'خلال '+fmtDays(diff); }
+    }else{
+      const od = openDays(t);
+      if(od>0) ageText = 'مفتوحة '+fmtDays(od);
+    }
+  }
+  age.textContent = ageText;
+
+  let fifth;
+  if(t.done){
+    fifth = document.createElement('input');
+    fifth.className='actual'; fifth.type='number'; fifth.min='0'; fifth.step='5';
+    fifth.placeholder='الفعلي';
+    fifth.value = t.actual||'';
+    fifth.title = 'الوقت الفعلي بالدقائق';
+    fifth.onchange = ()=>{ t.actual = fifth.value; t.dirty = true; save(); queuePush(); };
+  }else{
+    const states=['لم تبدأ','قيد التنفيذ','بانتظار رد'];
+    fifth = document.createElement('button');
+    fifth.className='state '+(t.state===1?'on-go':t.state===2?'on-wait':'');
+    fifth.textContent = states[t.state||0];
+    fifth.onclick = ()=>{ t.state=((t.state||0)+1)%3; t.dirty = true; sync(); };
+  }
+
+  const mins = document.createElement('div');
+  mins.className='mins'; mins.textContent = fmtMins(t.mins);
+
+  const pin = document.createElement('button');
+  pin.className='pin' + (priValues.includes(t.text.trim()) ? ' active' : '');
+  pin.type='button'; pin.title='ثبّت كهدف اليوم'; pin.innerHTML=PIN_ICON;
+  pin.onclick = ()=> pinAsGoal(t.text);
+
+  const exp = document.createElement('button');
+  exp.className='exp'; exp.type='button'; exp.title='تفاصيل';
+  exp.textContent = expandedIds.has(t.id) ? '▴' : '▾';
+  exp.onclick = ()=>{
+    if(expandedIds.has(t.id)) expandedIds.delete(t.id); else expandedIds.add(t.id);
+    render();
+  };
+
+  const kill = document.createElement('button');
+  kill.className='kill'; kill.textContent='×'; kill.title='احذف';
+  kill.onclick = ()=>{
+    const idx = tasks.findIndex(x=>x.id===t.id);
+    const removed = t;
+    tasks = tasks.filter(x=>x.id!==t.id);
+    sync();
+    let undone = false;
+    const label = removed.text.length>26 ? removed.text.slice(0,26)+'…' : removed.text;
+    showToast('حُذفت: '+label, ()=>{
+      undone = true;
+      tasks.splice(Math.min(idx, tasks.length), 0, removed);
+      sync();
+    });
+    setTimeout(()=>{
+      if(!undone && notionOK() && removed.notionId){
+        post({action:'delete', pageId: removed.notionId}).catch(()=>{});
+      }
+    }, 600300);
+  };
+
+  li.append(chk, txt, proj, imp, age, mins, fifth, pin, exp, kill);
+  list.appendChild(li);
+
+  if(expandedIds.has(t.id)) list.appendChild(renderDetailsRow(t));
 }
 
 /* ---------- ملخص اليوم (داخل ختام اليوم) ----------
@@ -2835,8 +3187,47 @@ function renderFlow(){
   $('waterCount').textContent = AR(flow.water||0);
   renderHabitsMini();
   renderDaySummary();
+  renderHabitWeek();
 }
-function saveFlow(){ try{ localStorage.setItem(FKEY, JSON.stringify(flow)); }catch(e){} touchState(); }
+/* سجل العادات: نسبة إنجاز الروتين لكل يوم (آخر ٦٠ يومًا) — يُحفظ مع Daily Flow ويتزامن معه */
+function recordHabitDay(){
+  const hs = (flow.amRoutine||[]).concat(flow.pmRoutine||[]);
+  if(!hs.length) return;
+  flow.history = flow.history || {};
+  flow.history[iso(new Date())] = [hs.filter(h=>h.done).length, hs.length];
+  const keys = Object.keys(flow.history).sort();
+  while(keys.length > 60) delete flow.history[keys.shift()];
+}
+function habitStreak(){
+  const hist = flow.history || {};
+  const full = d => { const r = hist[iso(d)]; return !!(r && r[1] && r[0] >= r[1]); };
+  const d = new Date();
+  if(!full(d)) d.setDate(d.getDate() - 1);   /* اليوم لم يكتمل بعد؟ تُحسب السلسلة حتى أمس */
+  let n = 0;
+  while(full(d) && n < 60){ n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function renderHabitWeek(){
+  const box = $('habitWeek'); if(!box) return;
+  const hist = flow.history || {};
+  box.innerHTML = '';
+  for(let i = 6; i >= 0; i--){
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const r = hist[iso(d)];
+    const pct = r && r[1] ? Math.round(r[0] / r[1] * 100) : 0;
+    const cell = document.createElement('div');
+    cell.className = 'hw-day' + (i === 0 ? ' today' : '') + (pct === 100 ? ' full' : '');
+    cell.title = r ? AR(r[0]) + ' من ' + AR(r[1]) : 'لا سجل';
+    const bar = document.createElement('div'); bar.className = 'hw-bar';
+    const fill = document.createElement('i'); fill.style.height = pct + '%'; bar.appendChild(fill);
+    const lbl = document.createElement('span');
+    lbl.textContent = d.toLocaleDateString('ar-EG', {weekday:'short'});
+    cell.append(bar, lbl); box.appendChild(cell);
+  }
+  const s = habitStreak();
+  $('habitStreak').textContent = s ? '🔥 ' + AR(s) + (s === 1 ? ' يوم' : ' أيام') + ' متتالية' : '';
+}
+function saveFlow(){ recordHabitDay(); try{ localStorage.setItem(FKEY, JSON.stringify(flow)); }catch(e){} touchState(); }
 function syncFlow(){ renderFlow(); saveFlow(); }
 function resetFlowIfNewDay(){
   const today = iso(new Date());
@@ -3325,7 +3716,7 @@ $('spotifyDisconnectBtn').onclick = ()=>{
   else spotifyShowSignedOut();
 })();
 
-let startTab = ''; try{ startTab = localStorage.getItem(TABKEY) || ''; }catch(e){}
+let startTab = tabFromHash(); if(!startTab){ try{ startTab = localStorage.getItem(TABKEY) || ''; }catch(e){} }
 showTab(startTab);
 
 /* ---------- لوحة الإعدادات ---------- */
