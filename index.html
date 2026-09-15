@@ -435,7 +435,8 @@ table.arc tr:nth-child(even) td{background:var(--stripe)}
 body{padding:0}
 .app{display:grid;grid-template-columns:224px minmax(0,1fr);min-height:100vh}
 .sidenav{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:20px;padding:22px 14px 18px;background:var(--paper);border-inline-end:1px solid var(--rule);overflow-y:auto;z-index:20}
-.sidenav-brand{display:flex;align-items:center;gap:10px;padding:2px 8px 16px;border-bottom:1px solid var(--rule)}
+.sidenav-brand{display:flex;align-items:center;gap:10px;padding:2px 8px 16px;border-bottom:1px solid var(--rule);color:inherit;text-decoration:none;border-radius:10px}
+.sidenav-brand:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
 .sidenav-brand .brand-mark{width:40px;height:40px}
 .sidenav-brand-text{display:flex;flex-direction:column;line-height:1.1}
 .brand-name{font-family:var(--font-head);font-size:25px;font-weight:700;color:var(--brand,var(--ink))}
@@ -468,7 +469,8 @@ body{padding:0}
 .greet-media{position:relative;width:72%;max-width:900px;flex:none;display:flex;align-items:flex-end;justify-content:flex-end;padding:12px}
 .greet-card:not(.has-photo) .greet-media{width:auto}
 .greet-card.has-photo{min-height:280px}
-.greet-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-start-end-radius:0;border-end-end-radius:0}
+.greet-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-start-end-radius:0;border-end-end-radius:0;transition:opacity .6s ease}
+.greet-media img.swapping{opacity:0;transition-duration:.15s}
 .greet-media .hero-empty{position:static;inset:auto;border:1px dashed var(--rule);border-radius:999px;background:transparent;padding:6px 14px;font:inherit;font-size:12.5px}
 .greet-card.has-photo .hero-tools{display:flex}
 
@@ -1400,12 +1402,15 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     linear-gradient(to top,var(--board) 0%,color-mix(in srgb,var(--board) 55%,transparent) 8%,transparent 24%),
     linear-gradient(to bottom,rgba(8,9,20,.4),transparent 16%)}
 :root[data-palette="nasaq360"][data-tab="board"] .greet-media{position:absolute;inset:0;width:auto;max-width:none;height:auto;padding:0;z-index:auto;display:block}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-media img{z-index:0;border-radius:0;
+/* الصورة: تملأ الواجهة من أعلاها (تحت الشريط الشفاف)، وموضوعها يميل إلى اليسار بعيدًا عن النص
+   كواجهة «360»، مع تكبير سينمائي بطيء وانزياح خفيف مع التمرير، وتلاشٍ ناعم عند تبديل الصورة */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-media img{z-index:0;border-radius:0;object-position:32% 28%;
   translate:0 calc(var(--hp) * 70px);animation:hero-kenburns 22s ease-out both}
 @keyframes hero-kenburns{from{scale:1.12}to{scale:1.02}}
-/* أدوات الصورة أعلى الجهة اليسرى، كأزرار الشريط العلوي في «360» */
-:root[data-palette="nasaq360"][data-tab="board"] :is(.greet-media .hero-empty,.hero-tools){position:absolute;top:22px;inset-inline-end:26px;inset-inline-start:auto;bottom:auto;z-index:4}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-media .hero-empty{inset:22px 26px auto auto;inset-inline-start:auto;inset-inline-end:26px;
+/* أدوات الصورة: أسفل الجهة اليسرى فوق الستارة، بعيدًا عن الشريط العلوي والنص */
+:root[data-palette="nasaq360"][data-tab="board"] :is(.greet-media .hero-empty,.hero-tools){position:absolute;top:auto;bottom:clamp(96px,14vh,140px);
+  inset-inline-end:clamp(20px,4.5vw,64px);inset-inline-start:auto;z-index:4;opacity:calc(1 - var(--hp) * 2)}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-media .hero-empty{
   border:1px solid rgba(255,255,255,.45);border-radius:4px;background:rgba(8,9,20,.35);color:#fff;padding:9px 16px;font-size:13px;backdrop-filter:blur(6px)}
 :root[data-palette="nasaq360"][data-tab="board"] .greet-media .hero-empty:hover{background:#fff;color:#14162A}
 :root[data-palette="nasaq360"][data-tab="board"] :is(.hero-add,.hero-del){border-radius:4px;padding:8px 14px;font-size:13px;backdrop-filter:blur(6px)}
@@ -1455,6 +1460,9 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     linear-gradient(to top,var(--board) 0%,color-mix(in srgb,var(--board) 55%,transparent) 7%,rgba(8,9,20,.78) 26%,rgba(8,9,20,.35) 58%,rgba(8,9,20,.45) 100%)}
   :root[data-palette="nasaq360"][data-tab="board"] .plan-day{width:100%}
   :root[data-palette="nasaq360"][data-tab="board"] .hero-cue{bottom:90px}
+  /* الجوال: موضوع الصورة في الأعلى، والأدوات تحت الشريط العلوي */
+  :root[data-palette="nasaq360"][data-tab="board"] .greet-media img{object-position:50% 22%}
+  :root[data-palette="nasaq360"][data-tab="board"] :is(.greet-media .hero-empty,.hero-tools){top:calc(var(--tb-h) + 12px);bottom:auto;inset-inline-end:14px}
   :root[data-palette="nasaq360"][data-tab="board"] .hero-dots:not(:empty){bottom:128px}
 }
 @media (prefers-reduced-motion:reduce){
@@ -1463,6 +1471,108 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   :root[data-palette="nasaq360"] .rv{opacity:1;translate:none;transition:none}
 }
 @media print{ .rv{opacity:1 !important;translate:none !important} }
+
+/* ==================== شريط «مَدار» العلوي — بدل الشريط الجانبي في طابع «نَسَق 360» ====================
+   ثلاث حالات للطبقة: شفاف بتدرّج ليلي فوق أعلى الواجهة ← زجاج داكن ما دام فوق الواجهة (tb-over)
+   ← زجاج بلون الطابع بعدها (tb-solid). يختفي عند النزول (٣٢٠ms، تسارع ناعم) ويعود عند الصعود أسرع (٢٢٠ms).
+   الخلفية والتمويه في ::before لا في الشريط نفسه، كي لا ينكسر التنقّل السفلي الثابت في الجوال. */
+.top-add{display:none}
+:root[data-palette="nasaq360"]{--tb-h:72px}
+:root[data-palette="nasaq360"] .app{display:block}
+:root[data-palette="nasaq360"] .sidenav{position:fixed;top:0;inset-inline:0;height:var(--tb-h);z-index:60;
+  flex-direction:row;align-items:center;gap:clamp(14px,2.4vw,36px);padding:0 clamp(20px,4.5vw,64px);
+  background:transparent;border:0;overflow:visible;color:#fff;
+  transition:top .32s cubic-bezier(.4,0,.2,1)}
+:root[data-palette="nasaq360"] .sidenav::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(8,9,20,.72),rgba(8,9,20,.25) 70%,transparent);transition:background-color .3s,opacity .3s}
+:root[data-palette="nasaq360"] .sidenav.tb-over::before{background:rgba(8,9,20,.55);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
+:root[data-palette="nasaq360"] .sidenav.tb-solid::before{background:color-mix(in srgb,var(--paper) 80%,transparent);
+  -webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:0 1px 0 var(--rule)}
+:root[data-palette="nasaq360"] .sidenav.tb-hidden{top:calc(-1 * var(--tb-h) - 4px);transition-duration:.32s}
+:root[data-palette="nasaq360"] .sidenav:not(.tb-hidden){transition-duration:.22s;transition-timing-function:cubic-bezier(0,0,.2,1)}
+/* العلامة */
+:root[data-palette="nasaq360"] .sidenav-brand{border:0;padding:0;flex:none}
+:root[data-palette="nasaq360"] .sidenav .brand-latin{display:none}
+:root[data-palette="nasaq360"] .sidenav .brand-name{color:#fff;font-size:24px}
+:root[data-palette="nasaq360"] .sidenav .orbit{width:46px;height:46px}
+:root[data-palette="nasaq360"] .sidenav .orbit .brand-mark{width:28px;height:28px}
+:root[data-palette="nasaq360"] .sidenav .brand-mark .bm-1{fill:#fff}
+/* الروابط: نص فقط كقائمة «360» — الحالي بالسماوي */
+:root[data-palette="nasaq360"] .sidenav .tabbar{flex-direction:row;gap:4px}
+:root[data-palette="nasaq360"] .sidenav .tab{width:auto;padding:10px 14px;border-radius:4px;background:transparent;color:rgba(255,255,255,.86);font-size:15px;font-weight:500}
+:root[data-palette="nasaq360"] .sidenav .tab .ic{display:none}
+:root[data-palette="nasaq360"] .sidenav .tab:hover{background:transparent;color:#fff}
+:root[data-palette="nasaq360"] .sidenav .tab.active{background:transparent;color:#00B7D4;font-weight:600}
+:root[data-palette="nasaq360"] .side-today{display:none}
+/* الجهة اليسرى: الحالة والأزرار */
+:root[data-palette="nasaq360"] .sidenav-foot{margin:0;margin-inline-start:auto;flex-direction:row;align-items:center;gap:12px;min-width:0}
+:root[data-palette="nasaq360"] .sidenav .tabbar-sync{max-width:240px;padding:6px 12px;flex-wrap:nowrap;border-radius:4px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#E3E6F0}
+:root[data-palette="nasaq360"] .sidenav .tabbar-sync #syncMsg{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+:root[data-palette="nasaq360"] .sidenav .tabbar-sync :is(#syncTime,#stateNote){display:none}
+:root[data-palette="nasaq360"] .sidenav-actions{align-items:center;gap:8px}
+:root[data-palette="nasaq360"] .sidenav .icon-btn{width:38px;height:38px;border-radius:4px;background:transparent;border-color:transparent;color:#fff}
+:root[data-palette="nasaq360"] .sidenav .icon-btn:hover{background:rgba(255,255,255,.12)}
+:root[data-palette="nasaq360"] .top-add{display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border:0;border-radius:4px;
+  background:#00B7D4;color:#14162A;font:inherit;font-family:var(--font-head);font-size:14px;font-weight:700;cursor:pointer;transition:background-color .18s,color .18s}
+:root[data-palette="nasaq360"] .top-add:hover{background:#fff;color:#14162A}
+:root[data-palette="nasaq360"] .sidenav :is(.tab,.icon-btn,.top-add):focus-visible{outline:2px solid #7FE3F5;outline-offset:2px}
+/* بعد الواجهة: الشريط بلون الطابع، فالنص بلونه (مهم في الوضع الفاتح) */
+:root[data-palette="nasaq360"] .sidenav.tb-solid{color:var(--ink)}
+:root[data-palette="nasaq360"] .sidenav.tb-solid .brand-name{color:var(--ink)}
+:root[data-palette="nasaq360"] .sidenav.tb-solid .brand-mark .bm-1{fill:var(--bm-1)}
+:root[data-palette="nasaq360"] .sidenav.tb-solid .tab{color:var(--ink-2)}
+:root[data-palette="nasaq360"] .sidenav.tb-solid .tab:hover{color:var(--ink)}
+:root[data-palette="nasaq360"] .sidenav.tb-solid .tab.active{color:var(--focus)}
+:root[data-palette="nasaq360"] .sidenav.tb-solid .icon-btn{color:var(--ink)}
+:root[data-palette="nasaq360"] .sidenav.tb-solid .icon-btn:hover{background:var(--stripe)}
+:root[data-palette="nasaq360"] .sidenav.tb-solid .tabbar-sync{background:var(--stripe);border-color:var(--rule);color:var(--ink-2)}
+/* المحتوى: الصفحات الأخرى تبدأ تحت الشريط؛ صفحة اليوم تبدأ بالواجهة تحته مباشرة */
+:root[data-palette="nasaq360"] .content{padding-top:calc(var(--tb-h) + 24px)}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card{padding-top:calc(var(--tb-h) + 48px)}
+@media (max-width:1180px){
+  :root[data-palette="nasaq360"] .sidenav .tabbar-sync{display:none}
+}
+@media (max-width:999px){
+  :root[data-palette="nasaq360"]{--tb-h:56px}
+  :root[data-palette="nasaq360"] .sidenav{padding:0 14px;gap:10px}
+  :root[data-palette="nasaq360"] .sidenav .orbit{width:38px;height:38px}
+  :root[data-palette="nasaq360"] .sidenav .orbit .brand-mark{width:23px;height:23px}
+  :root[data-palette="nasaq360"] .sidenav .brand-name{font-size:20px}
+  :root[data-palette="nasaq360"] .top-add{display:none}
+  /* التنقّل السفلي في الجوال يبقى كما هو (زجاجي بلون الطابع) */
+  :root[data-palette="nasaq360"] .sidenav .tabbar{flex-direction:row;background:color-mix(in srgb,var(--paper) 88%,transparent);
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+  :root[data-palette="nasaq360"] .sidenav .tab{flex:1;flex-direction:column;gap:3px;padding:7px 4px;font-size:11.5px;color:var(--ink-2)}
+  :root[data-palette="nasaq360"] .sidenav .tab .ic{display:block}
+  :root[data-palette="nasaq360"] .sidenav .tab.active{color:var(--focus)}
+  :root[data-palette="nasaq360"] .content{padding-top:calc(var(--tb-h) + 14px)}
+  :root[data-palette="nasaq360"][data-tab="board"] .content{padding-top:0}
+  :root[data-palette="nasaq360"][data-tab="board"] .greet-card{min-height:100svh;padding-top:calc(var(--tb-h) + 36px)}
+}
+@media (prefers-reduced-motion:reduce){ :root[data-palette="nasaq360"] .sidenav{transition:none} }
+
+/* ---------- لوحات تنبض بالحياة («نَسَق 360» فقط): مشهد أعلى اللوحة يكتسب لونه كلما امتلأت ----------
+   --vivid من 0 (فارغة: رمادي باهت) إلى 1 (مكتملة: لون كامل وتوهّج خفيف). المزاج يتبع الوضع كالملصقات. */
+.card-art{display:none}
+:root[data-palette="nasaq360"] .card-art{--vivid:0;display:block;position:relative;height:96px;flex:none;
+  margin:calc(-1 * var(--pad)) calc(-1 * var(--pad)) 16px;border-radius:var(--r) var(--r) 0 0;overflow:hidden;
+  border-bottom:1px solid var(--rule);
+  filter:grayscale(calc(1 - var(--vivid))) opacity(calc(.55 + var(--vivid) * .45));transition:filter .9s ease}
+:root[data-palette="nasaq360"] .card-art .ca-svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+:root[data-palette="nasaq360"] .card-art .ca-svg.is-dark{display:none}
+@media (prefers-color-scheme:dark){
+  :root[data-palette="nasaq360"]:not([data-theme="light"]) .card-art .ca-svg.is-dark{display:block}
+  :root[data-palette="nasaq360"]:not([data-theme="light"]) .card-art .ca-svg.is-light{display:none} }
+:root[data-palette="nasaq360"][data-theme="dark"] .card-art .ca-svg.is-dark{display:block}
+:root[data-palette="nasaq360"][data-theme="dark"] .card-art .ca-svg.is-light{display:none}
+/* مكتملة: لون مشبع وخط سفلي مضيء */
+:root[data-palette="nasaq360"] .card-art.full{filter:saturate(1.15)}
+:root[data-palette="nasaq360"] .card-art.full::after{content:"";position:absolute;inset:auto 0 0 0;height:2px;
+  background:var(--grad-line);box-shadow:0 0 14px 1px rgba(0,183,212,.55)}
+:root[data-palette="nasaq360"] .card-art .ob-arc{transition:stroke-dasharray .9s linear}
+@media (max-width:999px){ :root[data-palette="nasaq360"] .card-art{height:84px;margin:-16px -16px 14px} }
+@media (prefers-reduced-motion:reduce){ :root[data-palette="nasaq360"] .card-art,:root[data-palette="nasaq360"] .card-art .ob-arc{transition:none} }
+@media print{ .card-art{display:none !important} }
 @media (max-width:999px){
   :root[data-palette="nasaq360"] .sidenav-brand .orbit{width:42px;height:42px}
   :root[data-palette="nasaq360"] .sidenav-brand .orbit .brand-mark{width:26px;height:26px}
@@ -1627,7 +1737,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <!-- ==================== هيكل التطبيق: شريط جانبي + محتوى ==================== -->
 <div class="app">
 <aside class="sidenav" aria-label="التنقل الرئيسي">
-  <div class="sidenav-brand">
+  <a class="sidenav-brand" id="brandHome" href="#today" aria-label="نَسَق — الصفحة الرئيسية" title="الصفحة الرئيسية">
     <span class="orbit"><svg class="brand-mark" viewBox="18 12 76 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path class="bm-1" d="M47 92 L47 22 C25 46 25 74 47 92 Z"/>
       <path class="bm-2" d="M53 92 L53 46 C74 62 74 82 53 92 Z"/>
@@ -1637,7 +1747,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <span class="brand-name">نَسَق</span>
       <span class="brand-latin">NASAQ</span>
     </div>
-  </div>
+  </a>
 
   <nav class="tabbar" aria-label="الأقسام">
     <button class="tab active" id="tabBoardBtn" type="button">
@@ -1668,6 +1778,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <span id="stateNote"></span>
     </div>
     <div class="sidenav-actions">
+      <!-- زر الفعل في الشريط العلوي لطابع «نَسَق 360» فقط (كزر «إنشاء حساب» في «الجزيرة 360») -->
+      <button id="topAddBtn" class="top-add" type="button">＋ مهمة جديدة</button>
       <button id="paletteBtn" class="icon-btn" type="button" aria-label="بحث وأوامر سريعة (Ctrl+K)" title="بحث وأوامر سريعة — Ctrl+K"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></button>
       <button id="themeQuickBtn" class="icon-btn" type="button" aria-label="تبديل الوضع الداكن" title="الوضع الداكن"></button>
       <button id="settingsBtn" class="icon-btn" type="button" aria-label="الإعدادات" title="الإعدادات">
@@ -1725,6 +1837,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </section>
 
     <section class="card c-tasks">
+      <div class="card-art" data-art="task" aria-hidden="true"></div>
       <div class="card-head">
         <h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8 12 3 3 5-6"/></svg>مهام اليوم</h2>
         <div class="meter"><span id="doneCount">٠</span> من <span id="totalCount">٠</span> منجزة · <b id="load">—</b></div>
@@ -1767,6 +1880,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </section>
 
     <section class="card c-habits">
+      <div class="card-art" data-art="habit" aria-hidden="true"></div>
       <div class="card-head">
         <h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c0-9 5-15 15-16-1 10-7 15-16 15"/><path d="M5 21c3-6 7-9 11-11"/></svg>عاداتي اليوم</h2>
         <button type="button" class="card-link" id="habitsMore">عرض الكل</button>
@@ -1786,6 +1900,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </section>
 
     <section class="card c-ideas">
+      <div class="card-art" data-art="idea" aria-hidden="true"></div>
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>أفكار عابرة</h2></div>
       <textarea class="braindump" id="brainDump" placeholder="ما الذي يشغلك؟ اتركه هنا الآن، ورتّبه لاحقًا."></textarea>
       <button type="button" class="card-link idea-to-task" id="ideaToTask">↩ حوّل السطر الحالي إلى مهمة</button>
@@ -1827,6 +1942,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </section>
 
     <section class="card c-focus">
+      <div class="card-art" data-art="focus" aria-hidden="true"></div>
       <div class="card-head"><h2 id="pomoTitle"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M10 2h4"/></svg>التركيز</h2>
         <button type="button" class="card-link" id="focusModeBtn" title="وضع التركيز بملء الشاشة">⛶ وضع التركيز</button></div>
       <div class="pomodoro">
@@ -2171,6 +2287,7 @@ function applyPalette(p){
     b.classList.toggle('active', (b.dataset.palette||'')===p);
   });
   syncThemeColor();
+  try{ topbarUpdate(); heroScroll(); }catch(e){}   /* «نَسَق 360» يبدّل الشريط الجانبي إلى علوي */
 }
 applyPalette(palette);
 document.querySelectorAll('.pswitch button').forEach(b=>{
@@ -2204,6 +2321,7 @@ function showTab(name){
   if(name==='expenses') loadExpenseTab();
   if(name==='tasks') renderTasksPage();
   window.scrollTo(0, 0);
+  try{ topbarUpdate(); }catch(e){}   /* حالة الشريط العلوي تتبع الصفحة (بواجهة أو بدونها) */
 }
 window.addEventListener('popstate', ()=>{ const t = tabFromHash(); if(t) showTab(t); });
 $('tabBoardBtn').onclick = ()=>showTab('board');
@@ -2826,6 +2944,7 @@ function render(){
   renderEnergyHint();
   try{ renderOnboard(); }catch(e){}   /* رسوم الملصقات تُعرَّف لاحقًا في الملف */
   try{ updatePomoLive(); }catch(e){}   /* قد يُرسم اللوح قبل تهيئة المؤقّت */
+  try{ updateCardArts(); }catch(e){}
 }
 
 /* ---------- ساعات العمل (سعة اليوم) — افتراضيًا ٨ ساعات، محفوظة على الجهاز ---------- */
@@ -3263,15 +3382,68 @@ const OB_ART = {
     '<circle cx="138" cy="92" r="10" fill="'+H+'" opacity="'+(.45*P.soft)+'" filter="url(#'+id+'-bl)"/>'},
   /* حلقة المدار ٣٣٠° حول «٢٥» — مؤقّت جلسة التركيز */
   focus: {art:{dark:'#B69CF5', light:'#7C55D0'}, text:{dark:'#C9B5FF', light:'#6A43B8'}, glowY:.32,
-    scene:(P, H, id)=>
+    /* o.banner: نسخة لوحة «التركيز» — بلا نص، والحلقة (ob-arc) يملؤها المؤقّت الحيّ */
+    scene:(P, H, id, o)=>
     '<defs><linearGradient id="'+id+'-ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1FC99A"/><stop offset=".5" stop-color="#00A5C2"/><stop offset="1" stop-color="'+H+'"/></linearGradient></defs>' +
     '<circle cx="120" cy="116" r="60" fill="none" stroke="'+P.track+'" stroke-opacity=".1" stroke-width="10"/>' +
-    '<path d="M135.5 58A60 60 0 1 1 104.5 58" fill="none" stroke="'+H+'" stroke-opacity="'+(.5*P.soft)+'" stroke-width="12" stroke-linecap="round" filter="url(#'+id+'-bl)"/>' +
-    '<path d="M135.5 58A60 60 0 1 1 104.5 58" fill="none" stroke="url(#'+id+'-ring)" stroke-width="8" stroke-linecap="round"/>' +
+    '<path class="ob-arc" pathLength="100" d="M135.5 58A60 60 0 1 1 104.5 58" fill="none" stroke="'+H+'" stroke-opacity="'+(.5*P.soft)+'" stroke-width="12" stroke-linecap="round" filter="url(#'+id+'-bl)"/>' +
+    '<path class="ob-arc" pathLength="100" d="M135.5 58A60 60 0 1 1 104.5 58" fill="none" stroke="url(#'+id+'-ring)" stroke-width="8" stroke-linecap="round"/>' +
+    (o && o.banner ? '<circle cx="120" cy="116" r="7" fill="'+H+'" opacity=".8"/><path d="M120 116V84M120 116l16 10" stroke="'+P.txt+'" stroke-width="4" stroke-linecap="round"/>' :
     '<circle cx="135.5" cy="58" r="6" fill="'+P.txt+'"/>' +
     '<text x="120" y="130" text-anchor="middle" font-family="Alexandria, Readex Pro, sans-serif" font-weight="800" font-size="40" fill="'+P.txt+'">٢٥</text>' +
-    '<text x="120" y="150" text-anchor="middle" font-family="Readex Pro, sans-serif" font-size="11" fill="'+P.txt2+'">دقيقة</text>'}
+    '<text x="120" y="150" text-anchor="middle" font-family="Readex Pro, sans-serif" font-size="11" fill="'+P.txt2+'">دقيقة</text>')},
+  /* مصباح فكرة تحوم حوله خواطر صغيرة — للوحة «أفكار عابرة» */
+  idea: {art:{dark:'#FFC35A', light:'#D68A12'}, text:{dark:'#FFC35A', light:'#8A5A00'}, glowY:.32,
+    scene:(P, H, id)=>
+    '<circle cx="120" cy="96" r="44" fill="'+H+'" opacity="'+(.55*P.soft)+'" filter="url(#'+id+'-bl)"/>' +
+    '<path d="M120 56a36 36 0 0 0-21 65c5 4 7 9 7 15h28c0-6 2-11 7-15a36 36 0 0 0-21-65z" fill="'+H+'"/>' +
+    '<path d="M110 104q10-14 20 0" fill="none" stroke="'+P.hollow+'" stroke-width="2.6" stroke-linecap="round"/>' +
+    '<path d="M120 104v30" stroke="'+P.hollow+'" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>' +
+    '<rect x="106" y="142" width="28" height="7" rx="3.5" fill="'+P.line+'" opacity=".55"/><rect x="109" y="152" width="22" height="7" rx="3.5" fill="'+P.line+'" opacity=".4"/>' +
+    '<g stroke="'+H+'" stroke-width="2.4" stroke-linecap="round" opacity=".75"><path d="M120 36v-10M78 52l-7-7M162 52l7-7M62 94H52M178 94h10"/></g>' +
+    '<rect x="44" y="120" width="30" height="16" rx="8" fill="none" stroke="'+H+'" stroke-width="1.6" opacity=".6"/>' +
+    '<rect x="170" y="128" width="26" height="14" rx="7" fill="none" stroke="'+H+'" stroke-width="1.6" opacity=".5"/>' +
+    '<circle cx="186" cy="70" r="4" fill="'+H+'" opacity=".6"/><circle cx="56" cy="70" r="3" fill="'+H+'" opacity=".5"/>'}
 };
+/* ---------- لوحات تنبض بالحياة: مشهد أعلى اللوحة، باهت رمادي وهي فارغة، ويكتسب لونه كلما امتلأت ----------
+   في طابع «نَسَق 360» فقط. الخلفية ممتدة خارج إطار الرسم كي تملأ أي عرض دون قصّ المشهد. */
+const OB_BANNER_BASE = (id, hue, P)=>{
+  const bg = P.tint ? P.tint.map(t=>obTint(hue, t)) : P.bg;
+  const ring = P.ring || hue, star = P.star || hue;
+  return '<defs><linearGradient id="'+id+'-bg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="120"><stop offset="0" stop-color="'+bg[0]+'"/><stop offset=".6" stop-color="'+bg[1]+'"/><stop offset="1" stop-color="'+bg[2]+'"/></linearGradient>' +
+    '<radialGradient id="'+id+'-gl" gradientUnits="userSpaceOnUse" cx="240" cy="58" r="190"><stop offset="0" stop-color="'+hue+'" stop-opacity="'+P.glow+'"/><stop offset=".5" stop-color="'+hue+'" stop-opacity="'+P.glowMid+'"/><stop offset="1" stop-color="'+hue+'" stop-opacity="0"/></radialGradient>' +
+    '<filter id="'+id+'-bl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="'+(P.tint ? 10 : 7)+'"/></filter></defs>' +
+    '<rect x="-1200" y="-200" width="2880" height="520" fill="url(#'+id+'-bg)"/><rect x="-1200" y="-200" width="2880" height="520" fill="url(#'+id+'-gl)"/>' +
+    '<g fill="none" stroke="'+ring+'" stroke-opacity="'+P.ringOp+'">' + [70,130,190,250,310,370,430].map(r=>'<circle cx="560" cy="-20" r="'+r+'"/>').join('') + '</g>' +
+    '<g fill="'+star+'" opacity="'+P.starOp+'"><circle cx="40" cy="30" r="1.2" opacity=".6"/><circle cx="120" cy="92" r=".9" opacity=".5"/><circle cx="360" cy="24" r="1.1" opacity=".55"/><circle cx="430" cy="88" r=".8" opacity=".45"/><circle cx="-60" cy="70" r="1" opacity=".5"/><circle cx="560" cy="60" r="1" opacity=".5"/></g>';
+};
+const caSvgCache = {};
+function obBannerSvg(key){
+  if(caSvgCache[key]) return caSvgCache[key];
+  const a = OB_ART[key];
+  return caSvgCache[key] = ['dark', 'light'].map(m=>{
+    const id = 'ca' + key + '-' + m, H = a.art[m], P = OB_MOODS[m];
+    return '<svg class="ca-svg is-' + m + '" viewBox="0 0 480 120" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' +
+      OB_BANNER_BASE(id, H, P) + '<g transform="translate(174 -8) scale(.55)">' + a.scene(P, H, id, {banner:true}) + '</g></svg>';
+  }).join('');
+}
+document.querySelectorAll('.card-art[data-art]').forEach(el=>{ el.innerHTML = obBannerSvg(el.dataset.art); });
+/* درجة الحياة (0..1) لكل لوحة: المهام بنسبة الإنجاز، والعادات بنسبة الروتين، والأفكار بعددها، والتركيز بالجلسة */
+function updateCardArts(){
+  const set = (key, v)=>{ const el = document.querySelector('.card-art[data-art="' + key + '"]'); if(!el) return;
+    v = Math.max(0, Math.min(1, v || 0)); el.style.setProperty('--vivid', v.toFixed(2)); el.classList.toggle('full', v >= 1); };
+  set('task', tasks.length ? tasks.filter(t=>t.done).length / tasks.length : 0);
+  set('idea', (($('brainDump').value || '').split('\n').filter(l=>l.trim()).length) / 3);
+  try{ const hs = (flow.amRoutine || []).concat(flow.pmRoutine || []); set('habit', hs.length ? hs.filter(h=>h.done).length / hs.length : 0); }catch(e){}
+  try{
+    const running = pomoRunning, started = pomoRemaining < POMO_DEFAULT;
+    const pp = started ? (POMO_DEFAULT - pomoRemaining) / POMO_DEFAULT : 1;   /* قبل البدء: حلقة كاملة باهتة */
+    set('focus', running ? 1 : started ? .55 : 0);
+    document.querySelectorAll('.card-art[data-art="focus"] .ob-arc').forEach(p=>p.setAttribute('stroke-dasharray', (pp * 100).toFixed(1) + ' 100'));
+  }catch(e){}
+}
+$('brainDump').addEventListener('input', updateCardArts);
+try{ updateCardArts(); }catch(e){}
 /* الملصق يحمل النسختين معًا، ويُظهر الـCSS ما يطابق الوضع — فلا يحتاج إعادة رسم عند تبديل الوضع */
 const obSvgCache = {};
 function obPosterSvg(key){
@@ -3985,6 +4157,7 @@ function updatePomoLive(){
       li.querySelector('.mins')?.prepend(b);
     });
   }
+  try{ updateCardArts(); }catch(e){}   /* حلقة لوحة «التركيز» تمتلئ مع الجلسة */
 }
 function pomoFinish(){
   clearInterval(pomoInterval); pomoRunning = false;
@@ -4470,7 +4643,7 @@ function drawHabitWeek(box){
   }
 }
 function saveFlow(){ recordHabitDay(); try{ localStorage.setItem(FKEY, JSON.stringify(flow)); }catch(e){} touchState(); }
-function syncFlow(){ renderFlow(); saveFlow(); }
+function syncFlow(){ renderFlow(); saveFlow(); try{ updateCardArts(); }catch(e){} }
 function resetFlowIfNewDay(){
   const today = iso(new Date());
   if(flow.lastDate === today) return false;
@@ -4590,8 +4763,14 @@ function showPhoto(){
   $('heroEmpty').hidden = has;
   $('heroImg').hidden = !has;
   if(has){
-    const cur = photoList[photoIdx % photoList.length];
-    $('heroImg').src = cur.url;
+    const cur = photoList[photoIdx % photoList.length], img = $('heroImg');
+    if(img.getAttribute('src') !== cur.url){
+      /* تلاشٍ ناعم: تختفي الصورة الحالية ثم تظهر الجديدة حين تكتمل */
+      img.classList.add('swapping');
+      img.onload = ()=>img.classList.remove('swapping');
+      img.onerror = ()=>img.classList.remove('swapping');
+      img.src = cur.url;
+    }
     $('heroDelBtn').hidden = !cur.dbId;
   }
   /* نقاط التنقّل بين صورك (تظهر في واجهة «360» حين تكون أكثر من صورة) */
@@ -4663,6 +4842,39 @@ function heroScroll(){
   el.style.setProperty('--hp', p.toFixed(3));
 }
 window.addEventListener('scroll', ()=>{ if(!heroTick){ heroTick = true; requestAnimationFrame(heroScroll); } }, {passive:true});
+
+/* شريط «مَدار» العلوي: شفاف فوق أعلى الواجهة، زجاج داكن فوقها، زجاج بلون الطابع بعدها؛
+   يختفي عند النزول ويعود عند الصعود، أو حين يقترب المؤشر من الحافة، أو حين يصله التركيز بالكيبورد */
+let tbLastY = scrollY, tbTick = false;
+function topbarUpdate(){
+  tbTick = false;
+  const nav = document.querySelector('.sidenav'); if(!nav) return;
+  if(document.documentElement.dataset.palette !== 'nasaq360'){ nav.classList.remove('tb-over','tb-solid','tb-hidden'); return; }
+  const y = scrollY, barH = nav.offsetHeight;
+  const heroEnd = heroMode() ? $('heroBanner').offsetHeight - barH : 0;
+  const solid = !heroMode() ? y > 4 : y > heroEnd;
+  nav.classList.toggle('tb-solid', solid);
+  nav.classList.toggle('tb-over', !solid && y > 24);
+  if(!heroMode() && y <= 4) nav.classList.add('tb-solid');   /* الصفحات بلا واجهة: خلفية بلون الطابع من البداية */
+  const dy = y - tbLastY;
+  if(Math.abs(dy) >= 8){
+    const busy = nav.contains(document.activeElement) || !$('paletteOverlay').hidden;
+    nav.classList.toggle('tb-hidden', dy > 0 && y > 140 && !busy);
+    tbLastY = y;
+  }
+  if(y < 60) nav.classList.remove('tb-hidden');
+}
+window.addEventListener('scroll', ()=>{ if(!tbTick){ tbTick = true; requestAnimationFrame(topbarUpdate); } }, {passive:true});
+document.addEventListener('mousemove', e=>{ if(e.clientY < 14){ const nav = document.querySelector('.sidenav.tb-hidden'); if(nav) nav.classList.remove('tb-hidden'); } }, {passive:true});
+document.querySelector('.sidenav').addEventListener('focusin', e=>e.currentTarget.classList.remove('tb-hidden'));
+/* الشعار يعيدك إلى الصفحة الرئيسية («اليوم») من أعلاها */
+$('brandHome').onclick = e=>{
+  e.preventDefault();
+  showTab('board');
+  window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+};
+$('topAddBtn').onclick = ()=>{ showTab('board'); const i = $('tText'); i.scrollIntoView({block:'center'}); i.focus(); };
+topbarUpdate();
 $('heroCue').onclick = ()=>{
   const target = $('tabBoard');
   const bar = matchMedia('(max-width:999px)').matches ? document.querySelector('.sidenav').offsetHeight : 0;   /* الشريط العلوي في الجوال */
