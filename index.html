@@ -1382,7 +1382,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 :root[data-palette="nasaq360"][data-tab="board"] .content{padding-top:0}
 :root[data-palette="nasaq360"][data-tab="board"] .greet-card{
   --hp:0;   /* تقدّم التمرير عبر الواجهة (0..1) — يضبطه الـJS */
-  min-height:100vh;min-height:100svh;margin:0 -28px var(--gap);
+  /* بعرض الصفحة كاملًا: يتجاوز حدّ ١٥٦٠px العام للمحتوى (.content > *) وحشوة الجانبين */
+  min-height:100vh;min-height:100svh;max-width:none;margin:0 -28px var(--gap);
   /* النص في مجرى الصفحة (لا تموضع مطلق): إن طال عن الشاشة كبرت الواجهة ولم يُقصّ */
   display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;
   padding:96px clamp(24px,6vw,96px) clamp(130px,20vh,210px);
