@@ -381,6 +381,21 @@ li.details textarea{resize:vertical;min-height:34px}
 .mini li{display:flex;gap:6px;align-items:flex-start;font-size:13.5px;color:var(--ink-2);padding:5px 0;border-bottom:1px dotted var(--rule)}
 .mini li span{flex:1}
 .mini .kill{font-size:15px}
+/* «بانتظار رد»: النص وعمره، وأفعال صغيرة تظهر عند المرور (ودائمًا على اللمس) */
+.mini li.wait-item{align-items:center}
+.wait-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.mini li .wait-body span{flex:none}
+.wait-age{font-size:11.5px;color:var(--muted)}
+.wait-item.stale .wait-age{color:var(--hold-ink);font-weight:600}
+.wait-item.stale{border-inline-start:3px solid var(--hold);padding-inline-start:8px;background:color-mix(in srgb,var(--hold-bg) 60%,transparent);border-radius:6px}
+.wait-acts{display:flex;align-items:center;gap:2px;flex:none;opacity:.35;transition:opacity .15s}
+.wait-item:hover .wait-acts,.wait-item:focus-within .wait-acts,.wait-item.stale .wait-acts{opacity:1}
+@media (hover:none){ .wait-acts{opacity:1} }
+.wait-acts button{border:0;background:none;cursor:pointer;font:inherit;font-size:13px;min-width:28px;min-height:28px;border-radius:6px;color:var(--ink-2)}
+.wait-acts button:hover{background:var(--stripe)}
+.wait-acts .wait-done{color:var(--done);font-weight:700}
+.wait-badge{margin-inline-start:8px;padding:1px 8px;border-radius:999px;background:var(--hold-bg);color:var(--hold-ink);font-size:11px;font-weight:600;font-family:"IBM Plex Sans Arabic",sans-serif;vertical-align:1px}
+.plan-tag.stale{background:var(--hold-bg);color:var(--hold-ink)}
 .mini-row{display:flex;gap:6px;margin-top:7px;min-width:0}
 .mini-add{flex:1;min-width:0;border:1px dashed var(--rule);border-radius:8px;background:transparent;font:inherit;font-size:13px;padding:7px 9px;color:inherit}
 .mini-add:focus{outline:none;border-style:solid;border-color:var(--focus)}
@@ -2227,6 +2242,10 @@ function dayNum(d){
 }
 
 let tasks = [], waits = [], laters = [], archive = [], timeline = {};
+/* متابعة «بانتظار رد»: waits تبقى نصوصًا كما كانت (يقرؤها الإصدار المنشور القديم بلا خلل)،
+   وتواريخها في سجل موازٍ باسم النص: {at: يوم الإضافة، nudged: آخر تذكير} */
+let waitMeta = {};
+const WAIT_STALE_DAYS = 3;
 const expandedIds = new Set();
 const AR_DIGITS = '٠١٢٣٤٥٦٧٨٩';
 const arDigits = s => String(s).replace(/[0-9]/g, d=>AR_DIGITS[d]);
@@ -2390,6 +2409,7 @@ const KEY = 'daily-board-v2';
 function snapshot(){
   return {
     tasks, waits, laters, archive, timeline,
+    waitMeta: pruneWaitMeta(),
     pri:[...document.querySelectorAll('.pri .field')].map(f=>f.value),
     rev:['r1','r2','r3'].map(id=>$(id).value),
     pinned: $('pinnedEvent').value,
@@ -2397,9 +2417,51 @@ function snapshot(){
   };
 }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(snapshot())); }catch(e){} touchState(); }
+/* كل بند بلا تاريخ (قديم، أو أضافه الإصدار المنشور) يبدأ عدّه من اليوم */
+function ensureWaitMeta(){
+  const today = iso(new Date());
+  waits.forEach(w=>{ if(!waitMeta[w] || !waitMeta[w].at) waitMeta[w] = Object.assign({}, waitMeta[w], {at: today}); });
+}
+/* لا يُحفظ إلا ما يخصّ البنود الحالية */
+function pruneWaitMeta(){
+  ensureWaitMeta();
+  const out = {};
+  waits.forEach(w=>{ if(waitMeta[w]) out[w] = waitMeta[w]; });
+  waitMeta = out;
+  return out;
+}
+/* عمر البند بالأيام منذ إضافته، ومنذ آخر تذكير (يُعاد العدّ بعد «ذكّرني») */
+function waitAge(w){ const m = waitMeta[w] || {}; return m.at ? dayNum(new Date()) - dayNum(m.at) : 0; }
+function waitStale(w){
+  const m = waitMeta[w] || {};
+  const since = m.nudged || m.at;
+  return since ? dayNum(new Date()) - dayNum(since) >= WAIT_STALE_DAYS : false;
+}
+function waitAgeText(d){ return d <= 0 ? 'اليوم' : d === 1 ? 'منذ أمس' : 'منذ ' + fmtDays(d); }
+/* «وصل الرد» أو الحذف: يُزال البند مع إمكان التراجع */
+function waitResolve(i, how){
+  const w = waits[i]; if(w == null) return;
+  const meta = waitMeta[w];
+  waits.splice(i, 1); delete waitMeta[w]; sync();
+  showToast((how === 'reply' ? 'وصل الرد: ' : 'حُذف: ') + (w.length > 28 ? w.slice(0, 28) + '…' : w), ()=>{
+    waits.splice(Math.min(i, waits.length), 0, w); if(meta) waitMeta[w] = meta; sync();
+  });
+}
+/* «ذكّرني»: مهمة متابعة لليوم، ويبقى البند منتظرًا ويُعاد عدّ أيامه */
+function waitNudge(i){
+  const w = waits[i]; if(w == null) return;
+  const today = iso(new Date());
+  tasks.push({id:Date.now()+Math.random(), text:'تابِع: ' + w, proj:'', donor:'', imp:'ب', due:today, mins:'10', actual:'', notes:'بانتظار رد منذ ' + (waitMeta[w] && waitMeta[w].at ? arDate(waitMeta[w].at) : 'اليوم'),
+    done:false, state:0, createdAt:new Date().toISOString(), dirty:true});
+  waitMeta[w] = Object.assign({}, waitMeta[w], {nudged: today});
+  sync();
+  showToast('أُضيفت مهمة متابعة لليوم: ' + (w.length > 24 ? w.slice(0, 24) + '…' : w));
+}
 function apply(d){
   tasks = (d.tasks||[]).map(t=>({createdAt:t.createdAt||new Date().toISOString(), ...t}));
   waits = d.waits||[]; laters = d.laters||[]; archive = d.archive||[];
+  waitMeta = d.waitMeta || {};
+  ensureWaitMeta();
   timeline = d.timeline || {};
   (d.pri||[]).forEach((v,i)=>{const f=document.querySelectorAll('.pri .field')[i]; if(f) f.value=v;});
   (d.rev||[]).forEach((v,i)=>{const f=$('r'+(i+1)); if(f) f.value=v;});
@@ -2940,7 +3002,7 @@ function render(){
     cw.append(s, b);
   } else cw.hidden = true;
 
-  renderMini('waitList', waits, i=>{waits.splice(i,1);sync();});
+  renderWaits();
   renderMini('laterList', laters, i=>{laters.splice(i,1);sync();});
   renderArchive();
   renderCalendar();
@@ -3034,7 +3096,11 @@ function openPlanDay(){
 
     if(step === 2){
       const late = tasks.filter(t=>taskMatches(t, 'overdue'));
-      const items = late.map(t=>({kind:'task', t})).concat(laters.map((text, i)=>({kind:'later', text, i})));
+      /* وما ينتظر ردًا منذ أمس أو قبله — الأقدم أولًا */
+      const waiting = waits.filter(w=>waitAge(w) >= 1 && (waitMeta[w] || {}).nudged !== today)   /* ما ذُكّرت به اليوم لا يتكرر */
+        .sort((a,b)=>waitAge(b) - waitAge(a));
+      const items = late.map(t=>({kind:'task', t})).concat(laters.map((text, i)=>({kind:'later', text, i})))
+        .concat(waiting.map(text=>({kind:'wait', text})));
       if(!items.length){
         body.appendChild(el('p', 'plan-lead', 'لا شيء متأخر ولا مؤجّل — كل شيء في مكانه.'));
       } else {
@@ -3043,10 +3109,15 @@ function openPlanDay(){
         items.forEach(it=>{
           const li = el('li', 'plan-item');
           li.appendChild(el('span', 'plan-text', it.kind === 'task' ? it.t.text : it.text));
-          li.appendChild(el('span', 'plan-tag', it.kind === 'task' ? 'متأخرة' : 'مؤجّلة'));
+          li.appendChild(el('span', 'plan-tag' + (it.kind === 'wait' && waitStale(it.text) ? ' stale' : ''),
+            it.kind === 'task' ? 'متأخرة' : it.kind === 'later' ? 'مؤجّلة' : 'بانتظار رد ' + waitAgeText(waitAge(it.text))));
           const acts = el('span', 'plan-acts');
           const act = (label, fn) => { const b = el('button', '', label); b.type = 'button'; b.onclick = ()=>{ fn(); draw(); }; acts.appendChild(b); };
-          if(it.kind === 'task'){
+          if(it.kind === 'wait'){
+            act('وصل الرد', ()=>waitResolve(waits.indexOf(it.text), 'reply'));
+            act('ذكّرني',   ()=>waitNudge(waits.indexOf(it.text)));
+            act('احذف',     ()=>waitResolve(waits.indexOf(it.text), 'delete'));
+          } else if(it.kind === 'task'){
             act('اليوم', ()=>{ it.t.due = today; it.t.dirty = true; sync(); });
             act('غدًا',  ()=>{ it.t.due = tomorrow; it.t.dirty = true; sync(); });
           } else {
@@ -3123,6 +3194,8 @@ function renderSideToday(){
   const sm = document.createElement('small'); sm.textContent = total ? 'من ' + AR(total) + ' منجزة' : 'لا مهام بعد'; num.appendChild(sm);
   const bar = add('st-bar'); const f = document.createElement('i'); f.style.width = pct + '%'; bar.appendChild(f);
   if(late) add('st-late', AR(late) + (late === 1 ? ' مهمة تنتظر قرارك' : ' مهام تنتظر قرارك'));
+  const staleWaits = waits.filter(waitStale).length;
+  if(staleWaits) add('st-late', AR(staleWaits) + ' بانتظار رد منذ أكثر من ' + AR(WAIT_STALE_DAYS) + ' أيام');
   if(first){ const p = add('st-pri'); const b = document.createElement('b'); b.textContent = 'الأولوية الأولى'; p.append(b, document.createTextNode(first)); }
   /* لمحة اليوم في واجهة «360» الكاملة */
   const hm = $('heroMeta');
@@ -3133,6 +3206,7 @@ function renderSideToday(){
     chip(total ? AR(done) + ' من ' + AR(total) + ' منجزة' : 'لا مهام بعد — ابدأ بواحدة');
     if(dueToday) chip(AR(dueToday) + ' مستحقة اليوم');
     if(late) chip(AR(late) + ' متأخرة', 'late');
+    if(staleWaits) chip(AR(staleWaits) + ' بانتظار رد تحتاج متابعة', 'late');
     if(first){ const p = document.createElement('p'); p.className = 'hm-pri'; const b = document.createElement('b'); b.textContent = 'أولويتك الأولى'; p.append(b, document.createTextNode(first)); hm.appendChild(p); }
   }
 }
@@ -3844,6 +3918,38 @@ function renderDetailsRow(t){
   return li;
 }
 
+/* «بانتظار رد»: كل بند بعمره، وتنبيه لما تجاوز ٣ أيام، وثلاثة أفعال: وصل الرد · ذكّرني · احذف */
+function renderWaits(){
+  const ul = $('waitList'); ul.innerHTML = '';
+  ensureWaitMeta();
+  waits.forEach((w, i)=>{
+    const li = document.createElement('li'); li.className = 'wait-item' + (waitStale(w) ? ' stale' : '');
+    const body = document.createElement('span'); body.className = 'wait-body';
+    const tx = document.createElement('span'); tx.className = 'wait-text'; tx.textContent = w;
+    const age = document.createElement('small'); age.className = 'wait-age';
+    const d = waitAge(w);
+    age.textContent = waitAgeText(d) + (waitStale(w) ? ' — حان وقت المتابعة' : '');
+    body.append(tx, age);
+    const acts = document.createElement('span'); acts.className = 'wait-acts';
+    const btn = (cls, label, title, fn)=>{ const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = label;
+      b.title = title; b.setAttribute('aria-label', title + ': ' + w); b.onclick = fn; acts.appendChild(b); };
+    btn('wait-done', '✓', 'وصل الرد', ()=>waitResolve(i, 'reply'));
+    btn('wait-nudge', '🔔', 'ذكّرني — مهمة متابعة لليوم', ()=>waitNudge(i));
+    btn('kill', '×', 'احذف', ()=>waitResolve(i, 'delete'));
+    li.append(body, acts); ul.appendChild(li);
+  });
+  /* شارة بجانب العنوان: كم بندًا تجاوز ٣ أيام بلا رد */
+  const h = ul.previousElementSibling;
+  if(h){
+    let badge = h.querySelector('.wait-badge');
+    const n = waits.filter(waitStale).length;
+    if(n){
+      if(!badge){ badge = document.createElement('span'); badge.className = 'wait-badge'; h.appendChild(badge); }
+      badge.textContent = AR(n) + ' تحتاج متابعة';
+    } else if(badge) badge.remove();
+  }
+}
+
 function renderMini(id, arr, del){
   const ul=$(id); ul.innerHTML='';
   arr.forEach((v,i)=>{
@@ -4484,7 +4590,7 @@ function miniAdd(inputId, btnId, getArr){
   el.addEventListener('keydown', e=>{ if(e.key==='Enter') commit(); });
   $(btnId).addEventListener('click', commit);
 }
-miniAdd('waitInput','waitAddBtn', ()=>waits);
+miniAdd('waitInput','waitAddBtn', ()=>waits);   /* تاريخ الإضافة يُسجَّل تلقائيًا في ensureWaitMeta عند الحفظ */
 miniAdd('laterInput','laterAddBtn', ()=>laters);
 
 /* ---------- new day ---------- */
