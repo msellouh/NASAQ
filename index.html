@@ -3692,20 +3692,35 @@ function renderDaySummary(){
   });
 }
 
-/* ---------- مشاريعي: مشتقة من المهام والأرشيف، بلا قاعدة جديدة ---------- */
+/* ---------- مشاريعي: من مهام اللوح والأرشيف، ومن مهام نوشن المحفوظة للتقويم (آخر ٦ أشهر) ----------
+   مهام نوشن تحمل «المشروع / الجهة» حتى لو خلت مهام اليوم منه، فلا تبقى البطاقة فارغة.
+   المهمة الواحدة تُحسب مرة: ما في اللوح يُستبعد من نسخة نوشن بمعرّفه. */
 function renderProjects(){
   const box = $('projectsMini'); if(!box) return;
   const map = {};
-  tasks.concat(archive).forEach(t=>{
-    const p = (t.proj||'').trim(); if(!p) return;
+  const add = (name, done)=>{
+    const p = (name||'').trim(); if(!p) return;
     const r = map[p] || (map[p] = {name:p, total:0, done:0, open:0});
-    r.total++; if(t.done) r.done++; else r.open++;
-  });
+    r.total++; if(done) r.done++; else r.open++;
+  };
+  const local = tasks.concat(archive);
+  local.forEach(t=>add(t.proj, t.done));
+  let fromNotion = 0;
+  try{
+    const seen = new Set(local.map(t=>t.notionId).filter(Boolean));
+    Object.values(notionMonthCache).forEach(rows=>(rows || []).forEach(r=>{
+      if(!r || !r.project || seen.has(r.pageId)) return;
+      seen.add(r.pageId); fromNotion++;
+      add(r.project, notionState(r.status) === 'done');
+    }));
+  }catch(e){}   /* قد تُرسم البطاقة قبل تهيئة ذاكرة التقويم */
   const rows = Object.values(map).sort((a,b)=> b.open - a.open || b.total - a.total).slice(0, 5);
   box.innerHTML = '';
   if(!rows.length){
     const e = document.createElement('div'); e.className = 'empty-sm';
-    e.textContent = 'تظهر مشاريعك هنا حين تربط مهمة بمشروع (#المشروع).';
+    e.textContent = notionOK()
+      ? 'لا مهام مرتبطة بمشروع بعد. أضف مهمة باختصار #المشروع، أو اختر «المشروع / الجهة» لمهامك في نوشن.'
+      : 'تظهر مشاريعك هنا حين تربط مهمة بمشروع (#المشروع).';
     box.appendChild(e); return;
   }
   rows.forEach(r=>{
@@ -3722,6 +3737,11 @@ function renderProjects(){
     meta.textContent = r.open ? AR(r.open) + ' مفتوحة من ' + AR(r.total) : 'مكتمل — ' + AR(r.total) + ' مهام';
     row.append(top, bar, meta); box.appendChild(row);
   });
+  if(fromNotion){
+    const note = document.createElement('div'); note.className = 'card-note proj-src';
+    note.textContent = 'تشمل مهام نوشن في آخر الأشهر التي فتحتها في التقويم.';
+    box.appendChild(note);
+  }
 }
 
 /* ---------- عاداتي اليوم: من روتين Daily Flow، بضغطة تُعلَّم منجزة ---------- */
@@ -3982,7 +4002,7 @@ function fetchNotionMonth(){
     });
 }
 function refreshCalendarFromNotion(){
-  fetchNotionMonth().then(()=>{ renderCalendar(); if(calShownDay) showDueForDay(calShownDay); });
+  fetchNotionMonth().then(()=>{ renderCalendar(); if(calShownDay) showDueForDay(calShownDay); renderProjects(); renderWeekStrip(); });
 }
 function renderCalendar(){
   const grid = $('calGrid'); grid.innerHTML='';
@@ -4456,14 +4476,16 @@ function addTask(){
 $('addBtn').onclick = addTask;
 ['tText','tProj','tMins'].forEach(id=>$(id).addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); }));
 
-function miniAdd(inputId, btnId, arr){
+/* getArr دالة لا مصفوفة: apply() وقراءة السحابة تستبدلان waits/laters بمصفوفات جديدة،
+   فلو أُمسك المرجع القديم هنا لذهب ما يُضاف إلى نسخة لا تُعرض ولا تُحفظ (وبدا أنه اختفى). */
+function miniAdd(inputId, btnId, getArr){
   const el = $(inputId);
-  const commit = ()=>{ if(el.value.trim()){ arr.push(el.value.trim()); el.value=''; sync(); el.focus(); } };
+  const commit = ()=>{ if(el.value.trim()){ getArr().push(el.value.trim()); el.value=''; sync(); el.focus(); } };
   el.addEventListener('keydown', e=>{ if(e.key==='Enter') commit(); });
   $(btnId).addEventListener('click', commit);
 }
-miniAdd('waitInput','waitAddBtn', waits);
-miniAdd('laterInput','laterAddBtn', laters);
+miniAdd('waitInput','waitAddBtn', ()=>waits);
+miniAdd('laterInput','laterAddBtn', ()=>laters);
 
 /* ---------- new day ---------- */
 $('newDay').onclick = ()=>{
