@@ -752,32 +752,42 @@ ol.tasks li.task.flash{animation:task-flash 1.6s ease-out}
 @media (prefers-reduced-motion:reduce){ .ob-poster,.ob-poster .ob-art{transition:none} .ob-poster:hover:not(:disabled),.ob-poster:hover .ob-art{transform:none} .ob-poster.fresh{animation:none} }
 
 /* ---------- وضع التركيز بملء الشاشة ---------- */
-.focus-overlay{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px 20px;text-align:center;
-  background:#174C4F;color:#fff}   /* لون ثابت داكن في كل الطوابع والأوضاع: النص الأبيض يبقى مقروءًا */
+/* لا مساحات صلبة في المنصة: الخلفية لون الصفحة نفسه مع نقشة الدوائر وهالة خفيفة خلف الساعة،
+   فتتبع الطابع والوضع الفاتح/الداكن. max-width:none لأن الطبقة داخل .content المحدودة بـ١٥٦٠px */
+.focus-overlay{position:fixed;inset:0;z-index:300;max-width:none;margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px 20px;text-align:center;
+  color:var(--ink);
+  background:
+    radial-gradient(ellipse 46% 42% at 50% 50%,color-mix(in srgb,var(--accent,var(--focus)) 16%,transparent),transparent 72%),
+    repeating-radial-gradient(circle at 0 0,transparent 0 56px,var(--pattern) 56px 57px),
+    repeating-radial-gradient(circle at 100% 100%,transparent 0 56px,var(--pattern) 56px 57px),
+    var(--board)}
 .focus-overlay[hidden]{display:none}
 .focus-overlay{overflow-y:auto}
 .focus-overlay > *{flex:none}
 body.focus-open{overflow:hidden}
-.fm-mark{width:54px;height:60px;opacity:.9}
-.fm-mark .bm-1,.fm-mark .bm-2{fill:#fff}
-.fm-mark .bm-dot{fill:var(--accent,#D6A84F)}
-.fm-label{margin:0;font-size:13px;letter-spacing:.5px;opacity:.75}
+.fm-mark{width:54px;height:60px}
+.fm-mark .bm-1{fill:var(--bm-1,var(--ink))}
+.fm-mark .bm-2{fill:var(--bm-2,var(--focus))}
+.fm-mark .bm-dot{fill:var(--bm-dot,var(--accent,#D6A84F))}
+.fm-label{margin:0;font-size:13px;letter-spacing:.5px;color:var(--muted)}
 .fm-task{margin:0;max-width:760px;font-size:clamp(20px,3.2vw,30px);font-weight:600;line-height:1.5;overflow-wrap:anywhere}
-.fm-time{font-size:clamp(72px,16vw,168px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:2px}
-.fm-bar{width:min(420px,80vw);height:6px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden}
-.fm-bar i{display:block;height:100%;width:0;background:var(--accent,#D6A84F);border-radius:999px;transition:width 1s linear}
+.fm-time{font-family:var(--font-head);font-size:clamp(72px,16vw,168px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:2px;color:var(--brand,var(--ink))}
+.fm-bar{width:min(420px,80vw);height:6px;border-radius:999px;background:color-mix(in srgb,var(--ink) 12%,transparent);overflow:hidden}
+.fm-bar i{display:block;height:100%;width:0;background:var(--grad-line,var(--accent,var(--focus)));border-radius:999px;transition:width 1s linear}
 .fm-controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px}
-.fm-controls button{font:inherit;font-size:15px;padding:11px 22px;min-height:46px;border-radius:999px;border:1px solid rgba(255,255,255,.45);background:transparent;color:#fff;cursor:pointer}
-.fm-controls button:hover{background:rgba(255,255,255,.12)}
-.fm-controls button:focus-visible{outline:3px solid var(--accent,#D6A84F);outline-offset:2px}
-.fm-controls .fm-go{background:#fff;color:#174C4F;border-color:#fff;font-weight:700;min-width:150px}
-.fm-controls .fm-go:hover{background:rgba(255,255,255,.9)}
-.fm-controls kbd{font:inherit;font-size:11px;opacity:.7;border:1px solid rgba(255,255,255,.4);border-radius:4px;padding:0 4px;margin-inline-start:4px}
-.fm-note{margin:10px 0 0;max-width:460px;font-size:13px;opacity:.7;line-height:1.7}
+.fm-controls button{font:inherit;font-size:15px;padding:11px 22px;min-height:46px;border-radius:999px;border:1px solid color-mix(in srgb,var(--ink) 30%,transparent);
+  background:color-mix(in srgb,var(--paper) 55%,transparent);color:var(--ink);cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.fm-controls button:hover{background:var(--paper);border-color:var(--ink-2)}
+.fm-controls button:focus-visible{outline:3px solid var(--accent,var(--focus));outline-offset:2px}
+.fm-controls .fm-go{background:var(--cta,var(--focus));color:var(--on-cta,var(--paper));border-color:transparent;font-weight:700;min-width:150px}
+.fm-controls .fm-go:hover{background:var(--cta-hover,var(--ink));color:var(--on-cta-hover,var(--paper));border-color:transparent}
+.fm-controls kbd{font:inherit;font-size:11px;color:var(--muted);border:1px solid var(--rule);border-radius:4px;padding:0 4px;margin-inline-start:4px}
+.fm-note{margin:10px 0 0;max-width:460px;font-size:13px;color:var(--muted);line-height:1.7}
+:root[data-palette="nasaq360"] .fm-controls button{border-radius:4px}
 @media (prefers-reduced-motion:reduce){ .fm-bar i,.ob-bar i{transition:none} ol.tasks li.task.flash{animation:none;outline:2px solid var(--hold)} }
 
 /* ---------- لوحة الأوامر ---------- */
-.palette-overlay{position:fixed;inset:0;z-index:290;background:var(--overlay);display:flex;align-items:flex-start;justify-content:center;padding:12vh 16px 16px}
+.palette-overlay{position:fixed;inset:0;z-index:290;max-width:none;margin:0;background:var(--overlay);display:flex;align-items:flex-start;justify-content:center;padding:12vh 16px 16px}
 .palette-overlay[hidden]{display:none}
 .palette{width:min(620px,100%);background:var(--paper);color:var(--ink);border:1px solid var(--rule);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;max-height:70vh}
 .palette input{border:0;border-bottom:1px solid var(--rule);background:transparent;color:inherit;font:inherit;font-size:16px;padding:16px 18px;outline:none}
