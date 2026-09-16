@@ -474,6 +474,9 @@ body{padding:0}
 .greet-title{font-family:var(--font-head);font-size:32px;font-weight:700;line-height:1.2;margin:0;color:var(--brand,var(--ink))}
 .greet-tagline{margin:2px 0 0;font-size:18px;color:var(--ink-2);font-weight:500}
 .greet-date{margin-top:10px;font-size:13.5px;color:var(--muted)}
+/* التاريخ الهجري بجانب الميلادي، يفصلهما خط رفيع */
+.greet-hijri{margin-inline-start:10px;padding-inline-start:10px;border-inline-start:1px solid currentColor;border-inline-start-color:color-mix(in srgb,currentColor 35%,transparent)}
+.greet-hijri[hidden]{display:none}
 /* نقشة نَسَق: الشعار مكرّرًا بإزاحة متناوبة، بلون الهوية وشفافية ١٠٪ — بدل التدرّج.
    تُرسم كقناع (mask) فيأخذ لونها من المتغيّر، فتصلح لكل طابع وللوضع الداكن. */
 .greet-card::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.1;background:var(--brand,var(--ink));
@@ -1821,7 +1824,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <div class="greet-text">
     <h1 class="greet-title" id="heroGreet">صباح الخير</h1>
     <p class="greet-tagline">لكل شيء مكان، ولكل يوم نَسَق.</p>
-    <div class="greet-date"><span id="weekday">—</span>، <span id="date">—</span></div>
+    <div class="greet-date"><span id="weekday">—</span>، <span id="date">—</span><span class="greet-hijri" id="hijriDate" hidden></span></div>
     <!-- لمحة اليوم: تظهر في واجهة «360» الكاملة فقط -->
     <div class="hero-meta" id="heroMeta"></div>
     <button class="plan-day" id="planDayBtn" type="button">☀️ خطّط يومك</button>
@@ -2261,8 +2264,21 @@ const SUN_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
   '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg>';
 
 const now = new Date();
-$('date').textContent = now.toLocaleDateString('ar-EG-u-nu-arab',{day:'numeric',month:'long',year:'numeric'});
-$('weekday').textContent = now.toLocaleDateString('ar-EG',{weekday:'long'});
+/* التاريخ الميلادي والهجري (تقويم أم القرى المدمج في المتصفح، بلا خدمة خارجية).
+   يُعاد حسابه مع تحديث التحية، فيتبدّل بعد منتصف الليل والصفحة مفتوحة. */
+function renderDates(){
+  const d = new Date();
+  $('date').textContent = d.toLocaleDateString('ar-EG-u-nu-arab',{day:'numeric',month:'long',year:'numeric'});
+  $('weekday').textContent = d.toLocaleDateString('ar-EG',{weekday:'long'});
+  const h = $('hijriDate'); if(!h) return;
+  try{
+    const f = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-arab',{day:'numeric',month:'long',year:'numeric'});
+    if(f.resolvedOptions().calendar !== 'islamic-umalqura') throw 0;   /* متصفح لا يدعم أم القرى: لا نعرض تاريخًا تقريبيًا */
+    h.textContent = f.format(d).replace(/\s*هـ$/, '') + ' هـ';
+    h.hidden = false;
+  }catch(e){ h.hidden = true; }
+}
+renderDates();
 
 /* ---------- theme ---------- */
 const TKEY = 'daily-board-theme';
@@ -4360,12 +4376,15 @@ $('focusModeBtn').onclick = openFocusMode;
 $('fmToggle').onclick = pomoToggle;
 $('fmReset').onclick = pomoReset;
 $('fmExit').onclick = closeFocusMode;
-$('focusOverlay').addEventListener('keydown', e=>{
-  if(e.key === 'Escape'){ e.preventDefault(); closeFocusMode(); }
+/* على مستوى الصفحة لا الطبقة: الضغط على الخلفية يُخرج التركيز من الأزرار فلا يصل Esc إلى الطبقة */
+document.addEventListener('keydown', e=>{
+  if($('focusOverlay').hidden) return;
+  if(e.key === 'Escape'){ e.preventDefault(); closeFocusMode(); return; }
   if(e.key === 'Tab'){   /* يبقى التنقّل داخل وضع التركيز */
     const f = [...$('focusOverlay').querySelectorAll('button')];
     const i = f.indexOf(document.activeElement);
-    if(e.shiftKey && i <= 0){ e.preventDefault(); f[f.length-1].focus(); }
+    if(i < 0){ e.preventDefault(); f[0].focus(); }
+    else if(e.shiftKey && i === 0){ e.preventDefault(); f[f.length-1].focus(); }
     else if(!e.shiftKey && i === f.length-1){ e.preventDefault(); f[0].focus(); }
   }
 });
@@ -4928,7 +4947,7 @@ function showPhoto(){
   updateGreeting();
 }
 /* التحية ظاهرة دائمًا في بطاقة الترحيب، بصورة أو بدونها، وتتبدّل مع وقت اليوم */
-function updateGreeting(){ $('heroGreet').textContent = greetingNow(); }
+function updateGreeting(){ $('heroGreet').textContent = greetingNow(); try{ renderDates(); }catch(e){} }
 updateGreeting();
 setInterval(updateGreeting, 10*60*1000);
 async function loadAllPhotos(){
