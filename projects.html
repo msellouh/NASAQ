@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نَسَق — المشاريع</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800;900&family=Readex+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>
+/* الوضع المحفوظ في نَسَق — قبل الرسم حتى لا يومض */
+(function(){ try{
+  var t = localStorage.getItem('daily-board-theme');
+  if(t==='light'||t==='dark') document.documentElement.setAttribute('data-theme', t);
+}catch(e){} })();
+</script>
+<style>
+/* ==================== طابع «نَسَق 360» — هوية «مَدار» ====================
+   ليل كحلي، ونعناعي للإنجاز، وسماوي للفعل، وبنفسجي للانتظار، وأحمر للعاجل.
+   الرموز منسوخة من index.html حتى يُدمج التبويب لاحقًا دون تغيير في الشكل. */
+:root{
+  --ink:#14162A; --ink-2:#3A3F62; --paper:#FFFFFF; --board:#EEF1F7;
+  --rule:#DCE0EC; --done:#087F5D; --hold:#6A43B8; --urgent:#C42B2E;
+  --muted:#5E6485; --focus:#007A99; --r:14px;
+  --stripe:#F5F7FB;
+  --hold-bg:#EEE8FA; --hold-ink:#5A3A9E;
+  --focus-bg:#E0F4F8; --focus-ink:#005F78;
+  --done-bg:#E2F3EC; --urgent-bg:#FBE8E8;
+  --shadow:0 1px 2px rgba(20,22,42,.06),0 10px 28px rgba(20,22,42,.08);
+  --overlay:rgba(20,22,42,.45);
+  --pattern:rgba(0,122,153,.08);
+  --font-head:Alexandria,"Readex Pro",Tahoma,sans-serif;
+  --font-body:"Readex Pro","Segoe UI",Tahoma,sans-serif;
+  --field-bg:#F3F5FA; --field-line:#8F92A6; --field-hover:#757991;
+  --ring:rgba(0,183,212,.25); --btn-soft:#E6E9F3; --btn-soft-hover:#DADEEC;
+  --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#14162A; --on-cta-hover:#EEF1F7;
+  --bm-1:#14162A; --bm-2:#087F5D; --bm-dot:#007A99;
+  --orbit:conic-gradient(from 15deg,#0E9E74 0deg,#0086A8 150deg,#6A43B8 300deg,#6A43B8 330deg,transparent 330deg);
+  --grad-line:linear-gradient(to left,#0E9E74,#0086A8 55%,#6A43B8);
+  --grad-text:linear-gradient(90deg,#0E9E74,#0086A8 55%,#6A43B8);
+  --aura-1:rgba(106,67,184,.12); --aura-2:rgba(14,158,116,.10); --orbit-line:rgba(0,122,153,.16);
+  /* ألوان المخططات: التنفيذ، الإدارية، التشغيلية، غير المباشرة، والمعتمد الخافت */
+  --c-exec:#007A99; --c-admin:#6A43B8; --c-ops:#087F5D; --c-ind:#C42B2E; --c-soft:#CDE9F0;
+  --tb-h:72px; --gut:clamp(16px,4vw,56px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#EEF1F7; --ink-2:#C4C9DD; --paper:#1D2040; --board:#14162A;
+    --rule:#2C3058; --done:#34F5B5; --hold:#B69CF5; --urgent:#FF6B6E;
+    --muted:#9AA1BE; --focus:#00B7D4; --stripe:#22264A;
+    --hold-bg:#2A2350; --hold-ink:#C9B5FF; --focus-bg:#0F3246; --focus-ink:#7FE3F5;
+    --done-bg:#10362F; --urgent-bg:#3B1E2A;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 30px rgba(0,0,0,.35);
+    --overlay:rgba(8,9,20,.72); --pattern:rgba(0,183,212,.07);
+    --field-bg:#171A31; --field-line:#686C87; --field-hover:#80849D;
+    --ring:rgba(0,183,212,.3); --btn-soft:#262A4F; --btn-soft-hover:#30355F;
+    --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#EEF1F7; --on-cta-hover:#14162A;
+    --bm-1:#EEF1F7; --bm-2:#34F5B5; --bm-dot:#00B7D4;
+    --orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg);
+    --grad-line:linear-gradient(to left,#34F5B5,#00B7D4 55%,#7B55CC);
+    --grad-text:linear-gradient(90deg,#34F5B5,#00B7D4 55%,#7B55CC);
+    --aura-1:rgba(123,85,204,.32); --aura-2:rgba(52,245,181,.14); --orbit-line:rgba(0,183,212,.2);
+    --c-exec:#00B7D4; --c-admin:#B69CF5; --c-ops:#34F5B5; --c-ind:#FF6B6E; --c-soft:#26405E;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#EEF1F7; --ink-2:#C4C9DD; --paper:#1D2040; --board:#14162A;
+  --rule:#2C3058; --done:#34F5B5; --hold:#B69CF5; --urgent:#FF6B6E;
+  --muted:#9AA1BE; --focus:#00B7D4; --stripe:#22264A;
+  --hold-bg:#2A2350; --hold-ink:#C9B5FF; --focus-bg:#0F3246; --focus-ink:#7FE3F5;
+  --done-bg:#10362F; --urgent-bg:#3B1E2A;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 30px rgba(0,0,0,.35);
+  --overlay:rgba(8,9,20,.72); --pattern:rgba(0,183,212,.07);
+  --field-bg:#171A31; --field-line:#686C87; --field-hover:#80849D;
+  --ring:rgba(0,183,212,.3); --btn-soft:#262A4F; --btn-soft-hover:#30355F;
+  --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#EEF1F7; --on-cta-hover:#14162A;
+  --bm-1:#EEF1F7; --bm-2:#34F5B5; --bm-dot:#00B7D4;
+  --orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg);
+  --grad-line:linear-gradient(to left,#34F5B5,#00B7D4 55%,#7B55CC);
+  --grad-text:linear-gradient(90deg,#34F5B5,#00B7D4 55%,#7B55CC);
+  --aura-1:rgba(123,85,204,.32); --aura-2:rgba(52,245,181,.14); --orbit-line:rgba(0,183,212,.2);
+  --c-exec:#00B7D4; --c-admin:#B69CF5; --c-ops:#34F5B5; --c-ind:#FF6B6E; --c-soft:#26405E;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--board);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+/* نقشة المدار: دوائر متحدة المركز من الزاوية، طبقة ثابتة مستقلة كي لا يُعاد رسمها مع التمرير */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:repeating-radial-gradient(circle at 0 0,transparent 0 56px,var(--pattern) 56px 57px);transform:translateZ(0)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--cta);outline-offset:2px;border-radius:4px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
+h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing:0}
+
+/* ---------- الأزرار ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:0 16px;border-radius:4px;border:1px solid transparent;
+  font-family:var(--font-head);font-size:13.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:background-color .18s,color .18s,border-color .18s}
+.btn.cta{background:var(--cta);color:var(--on-cta)}
+.btn.cta:hover{background:var(--cta-hover);color:var(--on-cta-hover)}
+.btn.soft{background:var(--btn-soft);color:var(--ink)}
+.btn.soft:hover{background:var(--btn-soft-hover)}
+.btn.ghost{background:transparent;border-color:var(--rule);color:var(--ink-2)}
+.btn.ghost:hover{border-color:var(--field-hover);color:var(--ink)}
+.btn.danger{background:transparent;color:var(--urgent);border-color:color-mix(in srgb,var(--urgent) 40%,transparent)}
+.btn.danger:hover{background:var(--urgent-bg)}
+.btn.sm{min-height:32px;padding:0 12px;font-size:12.5px}
+.btn svg{width:16px;height:16px;flex:none}
+.icon-btn{width:38px;height:38px;border-radius:4px;border:0;background:transparent;color:var(--ink);display:inline-grid;place-items:center;transition:background-color .18s}
+.icon-btn:hover{background:var(--stripe)}
+.icon-btn svg{width:19px;height:19px}
+.icon-btn.sm{width:30px;height:30px}
+.icon-btn.sm svg{width:15px;height:15px}
+.link{color:var(--focus-ink);text-decoration:none;font-weight:600;font-size:13.5px}
+.link:hover{text-decoration:underline}
+
+/* ---------- شريط «مَدار» العلوي ---------- */
+.tb{position:sticky;top:0;z-index:40;height:var(--tb-h);display:flex;align-items:center;gap:clamp(12px,2.4vw,36px);padding:0 var(--gut);
+  transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.tb::before{content:"";position:absolute;inset:0;z-index:-1;background:color-mix(in srgb,var(--paper) 82%,transparent);
+  -webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:0 1px 0 var(--rule)}
+.tb.hide{transform:translateY(calc(-100% - 4px))}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex:none}
+.orbit{display:inline-grid;place-items:center;position:relative;flex:none;border-radius:50%;width:46px;height:46px}
+.orbit::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--orbit);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px))}
+.brand-mark{width:28px;height:28px}
+.brand-mark .bm-1{fill:var(--bm-1)} .brand-mark .bm-2{fill:var(--bm-2)} .brand-mark .bm-dot{fill:var(--bm-dot)}
+.brand-name{font-family:var(--font-head);font-weight:800;font-size:24px;color:var(--ink);line-height:1}
+.brand-name::after{content:"360";display:inline-block;direction:ltr;font-family:Alexandria,sans-serif;font-weight:900;font-size:.5em;
+  margin-inline-start:.3em;vertical-align:.8em;background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent}
+.orgs{display:inline-flex;gap:2px;background:var(--field-bg);border:1px solid var(--rule);border-radius:6px;padding:3px;flex:none}
+.orgs a{padding:5px 12px;border-radius:4px;font-family:var(--font-head);font-size:13px;font-weight:600;text-decoration:none;color:var(--ink-2);transition:background-color .18s,color .18s}
+.orgs a:hover{color:var(--ink)}
+.orgs a.on{background:var(--cta);color:var(--on-cta)}
+.tb-nav{display:flex;gap:4px}
+.tb-nav button{position:relative;border:0;background:transparent;padding:10px 14px;border-radius:4px;font-size:15px;font-weight:500;color:var(--ink-2)}
+.tb-nav button:hover{color:var(--ink)}
+.tb-nav button.on{color:var(--focus);font-weight:600}
+.tb-nav button.on::after{content:"";position:absolute;inset-inline:14px;bottom:3px;height:2px;border-radius:2px;background:var(--grad-line)}
+.tb-end{margin-inline-start:auto;display:flex;align-items:center;gap:8px;min-width:0}
+.src{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-2);padding:5px 11px;border-radius:4px;background:var(--stripe);border:1px solid var(--rule);white-space:nowrap}
+.src i{width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.src.live i{background:var(--done)}
+.src.local i{background:var(--hold)}
+
+/* ---------- الصفحة ---------- */
+.wrap{max-width:1560px;margin:0 auto;padding:26px var(--gut) 72px}
+.page-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 24px;margin-bottom:20px}
+.page-head h1{font-size:clamp(28px,3vw,40px);font-weight:800;line-height:1.15;color:var(--ink)}
+.page-head p{margin:6px 0 0;color:var(--muted);font-size:14px}
+
+/* الفلاتر */
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px}
+.search{flex:1 1 280px;min-width:200px;position:relative}
+.search input,.filters select,.fld input,.fld select,.fld textarea{width:100%;border-radius:8px;background:var(--field-bg);border:1px solid var(--field-line);transition:border-color .15s,box-shadow .15s,background-color .15s}
+.search input{padding:10px 40px 10px 12px}
+.search svg{position:absolute;right:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--muted)}
+.filters select{width:auto;max-width:230px;padding:9px 34px 9px 12px;appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA1BE' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:left 12px center}
+:is(.search input,.filters select,.fld input,.fld select,.fld textarea):hover{border-color:var(--field-hover)}
+:is(.search input,.filters select,.fld input,.fld select,.fld textarea):focus{outline:none;border-color:var(--focus);box-shadow:0 0 0 3px var(--ring);background-color:var(--paper)}
+.seg{display:inline-flex;background:var(--field-bg);border:1px solid var(--rule);border-radius:6px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:4px;font-size:13.5px;color:var(--ink-2);white-space:nowrap}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--cta);color:var(--on-cta);font-weight:600}
+
+/* ---------- البطاقات ---------- */
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:22px 24px;box-shadow:var(--shadow);min-width:0}
+.card-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:16px}
+.card-h h2{font-size:17px;color:var(--ink)}
+.card-h small{font-size:12.5px;color:var(--muted)}
+.card-h .end{margin-inline-start:auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.note{font-size:13px;color:var(--muted);margin:12px 0 0}
+.rise{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
+
+/* الشارات */
+.code{font-family:var(--font-head);font-size:11.5px;font-weight:700;color:var(--focus-ink);background:var(--focus-bg);border-radius:4px;padding:2px 7px;direction:ltr;font-variant-numeric:tabular-nums;white-space:nowrap}
+.code.h{color:var(--hold-ink);background:var(--hold-bg)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:4px;background:var(--stripe);color:var(--ink-2);border:1px solid var(--rule);white-space:nowrap}
+.pill i{width:6px;height:6px;border-radius:50%;background:currentColor}
+.st-run{color:var(--focus-ink);background:var(--focus-bg);border-color:transparent}
+.st-done{color:var(--done);background:var(--done-bg);border-color:transparent}
+.st-plan{color:var(--hold-ink);background:var(--hold-bg);border-color:transparent}
+.st-late{color:var(--urgent);background:var(--urgent-bg);border-color:transparent}
+.flag{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.flag.late{color:var(--urgent);background:var(--urgent-bg)}
+.flag.due{color:var(--hold-ink);background:var(--hold-bg)}
+
+/* ---------- ملخص سريع ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.kpi{position:relative;overflow:hidden;background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:16px 18px 15px;box-shadow:var(--shadow);min-width:0}
+.kpi::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--grad-line)}
+.kpi span{display:block;font-size:12.5px;color:var(--muted)}
+.kpi b{display:block;font-family:var(--font-head);font-size:24px;font-weight:800;color:var(--ink);line-height:1.35;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.meter{height:5px;border-radius:999px;background:var(--rule);margin-top:10px;overflow:hidden}
+.meter i{display:block;height:100%;border-radius:999px;background:var(--grad-line)}
+
+/* ---------- القائمة والتفاصيل ---------- */
+.split{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:20px;align-items:start}
+.list{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);
+  position:sticky;top:calc(var(--tb-h) + 16px);max-height:calc(100vh - var(--tb-h) - 32px);display:flex;flex-direction:column;min-width:0}
+.list-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--rule);font-size:13px;color:var(--muted)}
+.list-head select{border:0;background:transparent;font-size:13px;color:var(--ink-2);padding:2px}
+.items{overflow:auto;padding:8px;flex:1}
+.item{display:block;width:100%;text-align:right;border:1px solid transparent;background:transparent;border-radius:10px;padding:11px 12px;margin-bottom:2px;transition:background-color .15s}
+.item:hover{background:var(--stripe)}
+.item.on{background:var(--focus-bg);border-color:color-mix(in srgb,var(--focus) 30%,transparent)}
+.item .row1{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.item .row1 .flag{margin-inline-start:auto}
+.item.on .code{background:var(--paper)}
+.item .nm{font-weight:600;font-size:14px;line-height:1.5;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.item .meta{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:12px;color:var(--muted);margin-top:4px}
+.mini{height:4px;border-radius:999px;background:var(--rule);margin-top:9px;overflow:hidden}
+.mini i{display:block;height:100%;background:var(--grad-line);border-radius:999px}
+.empty{padding:32px 16px;text-align:center;color:var(--muted);font-size:14px}
+.loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:80px 20px;color:var(--muted)}
+.spin{width:18px;height:18px;border-radius:50%;border:2px solid var(--rule);border-top-color:var(--cta);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.err{background:var(--urgent-bg);color:var(--urgent);border-radius:8px;padding:12px 14px;font-size:14px}
+.detail{min-width:0;display:grid;gap:18px}
+
+/* بطاقة المشروع الرئيسية: هالة أثير ومدارات 360 */
+.hero{position:relative;overflow:hidden;padding:26px 28px}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 36% 95% at 6% 20%,var(--aura-1),transparent 70%),
+    radial-gradient(ellipse 30% 80% at 22% 115%,var(--aura-2),transparent 70%),
+    repeating-radial-gradient(circle at -60px 50%,transparent 0 26px,var(--orbit-line) 26px 27px);
+  -webkit-mask:linear-gradient(to right,#000,transparent 62%);mask:linear-gradient(to right,#000,transparent 62%)}
+.hero > *{position:relative}
+.hero .tags{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.hero h3{margin:12px 0 0;font-size:clamp(20px,2vw,26px);font-weight:800;line-height:1.35;color:var(--ink)}
+.hero .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px 22px;margin-top:18px}
+.fact span{display:block;font-size:12px;color:var(--muted)}
+.fact b{font-weight:500;font-size:14px}
+.brief{margin-top:14px;font-size:14px;color:var(--ink-2);background:var(--stripe);border-radius:8px;padding:11px 14px}
+
+/* ---------- خطة التنفيذ ---------- */
+.prog{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.prog .bar{flex:1;height:8px;border-radius:999px;background:var(--rule);overflow:hidden}
+.prog .bar i{display:block;height:100%;background:var(--grad-line);border-radius:999px}
+.prog b{font-family:var(--font-head);font-size:15px;font-variant-numeric:tabular-nums}
+.steps{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);position:relative;margin:4px 0 6px}
+.steps::before{content:"";position:absolute;top:14px;inset-inline:6%;height:2px;background:var(--rule)}
+.steps .fill{position:absolute;top:14px;inset-inline-start:6%;height:2px;background:var(--grad-line);transition:width .4s}
+.step{position:relative;text-align:center;font-size:12px;color:var(--muted);padding:0 3px;line-height:1.45}
+.step .dot{width:30px;height:30px;margin:0 auto 7px;border-radius:50%;background:var(--paper);border:2px solid var(--rule);
+  display:grid;place-items:center;font-family:var(--font-head);font-size:12px;font-weight:700;color:var(--muted);position:relative;z-index:1}
+.step.done .dot{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
+.step.done{color:var(--ink-2)}
+.step.now .dot{border-color:var(--cta);color:var(--focus-ink);box-shadow:0 0 0 5px var(--ring)}
+.step.now{color:var(--ink);font-weight:600}
+.step small{display:block;font-size:11px;font-weight:400;color:var(--muted)}
+.stage{margin-top:18px;border-top:1px solid var(--rule);padding-top:14px}
+.stage-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.stage-h .no{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-head);font-size:12px;font-weight:700;background:var(--stripe);color:var(--ink-2);border:1px solid var(--rule)}
+.stage.done .stage-h .no{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
+.stage.now .stage-h .no{border-color:var(--cta);color:var(--focus-ink)}
+.stage-h h3{font-size:15px}
+.stage-h small{color:var(--muted);font-size:12.5px}
+.stage-h .end{margin-inline-start:auto}
+.pis{list-style:none;margin:8px 0 0;padding:0}
+.pi{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:8px 6px;border-radius:8px}
+.pi:hover{background:var(--stripe)}
+.chk{width:22px;height:22px;border-radius:6px;border:2px solid var(--field-line);background:var(--paper);padding:0;display:grid;place-items:center;transition:background-color .15s,border-color .15s}
+.chk:hover{border-color:var(--focus)}
+.chk svg{width:13px;height:13px;opacity:0}
+.pi.is-done .chk{background:var(--done);border-color:var(--done)}
+.pi.is-done .chk svg{opacity:1;color:#fff}
+.pi-title{font-size:14px;font-weight:500}
+.pi.is-done .pi-title{color:var(--muted);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--muted) 60%,transparent)}
+.pi-meta{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:12px;color:var(--muted);margin-top:1px}
+.pi.is-late .pi-title{color:var(--urgent)}
+.empty-plan{margin-top:18px;border:1px dashed var(--field-line);border-radius:10px;padding:18px 20px;background:var(--stripe)}
+.empty-plan p{margin:0 0 12px;font-size:14px;color:var(--ink-2)}
+.empty-plan .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.empty-plan select{padding:8px 34px 8px 12px;border-radius:8px;background:var(--paper);border:1px solid var(--field-line);appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA1BE' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:left 12px center}
+.tpl-preview{margin:12px 0 0;display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px;color:var(--muted)}
+.tpl-preview span{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:2px 8px}
+.dev-note{display:block;margin-top:14px;font-size:12px;color:var(--hold-ink)}
+
+/* ---------- المخطط الزمني ---------- */
+.tl{position:relative;margin:28px 6px 6px;height:98px}
+.tl.lanes{height:124px}
+.tl-track{position:absolute;top:40px;inset-inline:0;height:10px;border-radius:999px;background:var(--stripe);border:1px solid var(--rule)}
+.tl-span{position:absolute;top:40px;height:10px;border-radius:999px;background:var(--c-soft)}
+.tl-done{position:absolute;top:40px;height:10px;border-radius:999px;background:var(--grad-line)}
+.tl-today{position:absolute;top:22px;height:48px;width:2px;background:var(--urgent);transform:translateX(50%)}
+.tl-today span{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11.5px;font-weight:600;color:var(--urgent);white-space:nowrap}
+.tl-mark{position:absolute;top:34px;width:22px;height:22px;transform:translateX(50%);border:0;background:transparent;padding:0}
+.tl-mark i{display:block;width:12px;height:12px;margin:5px auto;transform:rotate(45deg);border-radius:2px;background:var(--muted);border:2px solid var(--paper)}
+.tl-mark.ok i{background:var(--done)} .tl-mark.prep i{background:var(--hold)} .tl-mark.late i{background:var(--urgent)}
+.tl-st{position:absolute;top:60px;height:20px;border-radius:4px;background:var(--stripe);border:1px solid var(--rule);overflow:hidden;
+  font-size:11px;line-height:18px;padding:0 6px;color:var(--ink-2);white-space:nowrap;text-overflow:ellipsis}
+.tl-st.done{background:var(--done-bg);border-color:transparent;color:var(--done)}
+.tl-st.now{background:var(--focus-bg);border-color:color-mix(in srgb,var(--focus) 45%,transparent);color:var(--focus-ink);font-weight:600}
+.tl-edge{position:absolute;top:62px;font-size:11.5px;color:var(--muted);white-space:nowrap}
+.tl.lanes .tl-edge{top:88px}
+.tl-edge b{display:block;color:var(--ink-2);font-weight:600}
+.tl-tick{position:absolute;top:0;font-size:11px;color:var(--muted);transform:translateX(50%);white-space:nowrap}
+.tl-tick::after{content:"";display:block;width:1px;height:10px;background:var(--rule);margin:2px auto 0}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:9px;height:9px;transform:rotate(45deg);border-radius:2px;margin-inline-end:6px;vertical-align:1px}
+.tbl-wrap{overflow-x:auto}
+.dl{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:10px}
+.dl th{font-weight:500;color:var(--muted);font-size:12px;text-align:right;padding:7px 8px;border-bottom:1px solid var(--rule)}
+.dl td{padding:9px 8px;border-bottom:1px solid var(--rule);vertical-align:middle}
+.dl tr:last-child td{border-bottom:0}
+.delay{font-size:12px;font-weight:600}
+.delay.late{color:var(--urgent)} .delay.early{color:var(--done)}
+
+/* ---------- المالية ---------- */
+.money{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px}
+.m{border:1px solid var(--rule);border-radius:10px;padding:12px 14px;background:var(--stripe)}
+.m span{display:block;font-size:12px;color:var(--muted)}
+.m b{font-family:var(--font-head);font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.m small{display:block;font-size:12px;color:var(--muted)}
+.m.warn{border-color:color-mix(in srgb,var(--hold) 45%,transparent);background:var(--hold-bg)}
+.m.warn b{color:var(--hold-ink)}
+.sbar{height:10px;border-radius:999px;background:var(--rule);overflow:hidden;display:flex;margin:16px 0 8px}
+.sbar i{display:block;height:100%}
+.sbar.thin{height:6px;margin:8px 0 4px}
+.b-exec{background:var(--c-exec)} .b-admin{background:var(--c-admin)} .b-ops{background:var(--c-ops)} .b-ind{background:var(--c-ind)} .b-recv{background:var(--done)}
+.bar-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--ink-2)}
+.bar-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:6px;vertical-align:-1px}
+.bar-legend.small{font-size:12px;margin-top:12px}
+.recv{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule)}
+.recv-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;font-size:13.5px;color:var(--ink-2)}
+.recv-head b{font-variant-numeric:tabular-nums}
+.recv-head b.due{color:var(--hold-ink)} .recv-head b.ok{color:var(--done)}
+.recv small{font-size:12px;color:var(--muted)}
+
+/* ---------- المستندات والملفات ---------- */
+.dring{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;background:conic-gradient(var(--done) calc(var(--p)*1%),var(--rule) 0)}
+.dring b{width:36px;height:36px;border-radius:50%;background:var(--paper);display:grid;place-items:center;font-family:var(--font-head);font-size:11px;font-weight:700;color:var(--ink-2)}
+.dgroup{margin-top:16px}
+.dgroup h4{font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:6px;font-family:var(--font-body)}
+.slot{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:start;padding:10px 12px;border-radius:10px;border:1px solid var(--rule);margin-bottom:6px;background:var(--paper)}
+.slot .ic{width:20px;height:20px;border-radius:50%;border:2px solid var(--field-hover);margin-top:2px;display:grid;place-items:center}
+.slot .ic svg{width:11px;height:11px;color:#fff;opacity:0}
+.slot.ok .ic{background:var(--done);border-color:var(--done)}
+.slot.ok .ic svg{opacity:1}
+.slot.miss{border-color:color-mix(in srgb,var(--urgent) 40%,transparent);background:color-mix(in srgb,var(--urgent-bg) 60%,var(--paper))}
+.slot.miss .ic{border-color:var(--urgent)}
+.slot.later{opacity:.6;border-style:dashed}
+.slot-h{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:14px;font-weight:500}
+.slot-h em{font-style:normal;font-size:12px;font-weight:600;color:var(--muted)}
+.slot.ok .slot-h em{color:var(--done)} .slot.miss .slot-h em{color:var(--urgent)}
+.slot-h a{margin-inline-start:auto;font-size:12px}
+.files{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.file{display:inline-flex;align-items:center;gap:7px;max-width:100%;min-height:32px;padding:4px 10px 4px 6px;border-radius:4px;border:1px solid var(--rule);background:var(--stripe);
+  font-size:12.5px;color:var(--ink);text-decoration:none;transition:border-color .15s,background-color .15s}
+.file:hover{border-color:var(--focus);background:var(--focus-bg)}
+.file b{flex:none;font-family:var(--font-head);font-size:9.5px;font-weight:800;letter-spacing:.2px;padding:2px 5px;border-radius:3px;color:#fff;background:var(--muted);direction:ltr}
+.file span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px}
+.file.pdf b{background:#C42B2E} .file.doc b{background:#1F5FBF} .file.xls b{background:#087F5D} .file.img b{background:#6A43B8} .file.vid b{background:#B4541A}
+.more{border:1px dashed var(--field-line);background:transparent;border-radius:4px;padding:4px 10px;font-size:12px;color:var(--ink-2)}
+.more:hover{border-color:var(--focus);color:var(--focus-ink)}
+.folder{unicode-bidi:plaintext}
+
+/* ---------- الإحصائيات ---------- */
+.stats{display:grid;gap:18px}
+.counters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.donut-wrap{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.donut{width:176px;height:176px;border-radius:50%;flex:none;position:relative}
+.donut::after{content:"";position:absolute;inset:26px;border-radius:50%;background:var(--paper)}
+.donut>span{position:absolute;inset:0;display:grid;place-items:center;text-align:center;z-index:1;font-size:12px;color:var(--muted);line-height:1.4}
+.donut span b{display:block;font-family:var(--font-head);font-size:20px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.dlegend{flex:1;min-width:210px;display:grid;gap:8px;font-size:13.5px}
+.dlegend div{display:flex;align-items:center;gap:8px}
+.dlegend i{width:11px;height:11px;border-radius:3px;flex:none}
+.dlegend b{margin-inline-start:auto;font-weight:600;font-variant-numeric:tabular-nums}
+.dlegend small{color:var(--muted);min-width:46px;text-align:left;font-variant-numeric:tabular-nums}
+.hbars{display:grid;gap:10px}
+.hb{display:grid;grid-template-columns:minmax(90px,170px) minmax(0,1fr) auto;align-items:center;gap:12px;font-size:13px}
+.hb .lb{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2)}
+.hb .tr{position:relative;height:12px;border-radius:999px;background:var(--stripe);overflow:hidden}
+.hb .tr i{position:absolute;inset-block:0;inset-inline-start:0;border-radius:999px}
+.hb .tr .a{background:var(--c-soft)} .hb .tr .e{background:var(--c-exec)} .hb .tr .r{background:var(--c-ops)} .hb .tr .w{background:var(--c-ind)}
+.hb .vl{font-variant-numeric:tabular-nums;color:var(--ink-2);white-space:nowrap;font-size:12.5px}
+.hb .vl small{color:var(--muted)}
+button.hb{border:0;background:transparent;padding:0;text-align:right;width:100%}
+button.hb:hover .lb{color:var(--focus-ink);text-decoration:underline}
+.cols{display:flex;align-items:flex-end;gap:6px;height:196px;padding-top:6px;border-bottom:1px solid var(--rule)}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.col i{display:block;width:70%;max-width:40px;border-radius:5px 5px 0 0;background:linear-gradient(to top,var(--c-exec),color-mix(in srgb,var(--c-exec) 55%,var(--c-ops)));min-height:2px}
+.col em{font-style:normal;font-size:11px;color:var(--muted);margin-bottom:3px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.col-lbls{display:flex;gap:6px;margin-top:6px}
+.col-lbls span{flex:1;min-width:0;text-align:center;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden}
+.st-scroll{max-height:560px;overflow:auto;margin:0 -24px -22px;border-top:1px solid var(--rule)}
+.st-table{width:100%;border-collapse:collapse;font-size:13px}
+.st-table th{position:sticky;top:0;z-index:1;background:var(--focus-bg);font-weight:600;color:var(--focus-ink);font-size:12px;text-align:right;padding:10px;white-space:nowrap}
+.st-table th:first-child,.st-table td:first-child{padding-inline-start:24px}
+.st-table th button{border:0;background:transparent;padding:0;color:inherit;font:inherit}
+.st-table th button.on{text-decoration:underline;text-underline-offset:4px}
+.st-table td{padding:10px;border-bottom:1px solid var(--rule);white-space:nowrap;font-variant-numeric:tabular-nums}
+.st-table td.nm{white-space:normal;min-width:230px;max-width:360px}
+.st-table td.nm a{color:var(--focus-ink);text-decoration:none;font-weight:500}
+.st-table td.nm a:hover{text-decoration:underline}
+.st-table tbody tr{cursor:pointer;transition:background-color .12s}
+.st-table tbody tr:hover{background:var(--stripe)}
+.st-table .hi{color:var(--urgent);font-weight:600}
+.st-table .ok{color:var(--done);font-weight:600}
+
+/* ---------- النوافذ ---------- */
+dialog{border:0;padding:0;border-radius:var(--r);background:var(--paper);color:var(--ink);box-shadow:0 30px 80px rgba(8,9,20,.35);width:min(540px,calc(100% - 32px));max-height:calc(100vh - 48px)}
+dialog::backdrop{background:var(--overlay);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+dialog form{display:grid;gap:14px;padding:24px 26px}
+dialog h2{font-size:19px}
+dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
+.fld{display:grid;gap:6px;font-size:13px;color:var(--ink-2)}
+.fld input,.fld select,.fld textarea{padding:9px 12px}
+.fld textarea{min-height:70px;resize:vertical}
+.owner-row{display:flex;gap:8px;align-items:center}
+.owner-edit{flex:none;border:1px solid var(--field-line);background:var(--field-bg);color:var(--ink-2)}
+.owner-edit:hover{border-color:var(--focus);color:var(--focus-ink);background:var(--paper)}
+.owner-edit[aria-expanded="true"]{background:var(--focus-bg);border-color:var(--focus);color:var(--focus-ink)}
+.owner-row select{flex:1;min-width:0;appearance:none;-webkit-appearance:none;padding-left:34px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA1BE' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:left 12px center}
+.people{margin-top:8px;border:1px solid var(--rule);border-radius:10px;padding:10px 12px;background:var(--stripe)}
+.people-list{list-style:none;margin:0;padding:0;display:grid;gap:6px;max-height:210px;overflow:auto}
+.people-list li{display:flex;gap:6px;align-items:center}
+.people-list input{flex:1;min-width:0;padding:6px 10px;border-radius:6px;background:var(--paper);border:1px solid var(--rule)}
+.people-list input:focus{outline:none;border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
+.people-list small{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.people-add{display:flex;gap:6px;margin-top:8px}
+.people-add input{flex:1;min-width:0;padding:6px 10px;border-radius:6px;background:var(--paper);border:1px solid var(--field-line)}
+.people-add input:focus{outline:none;border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
+.fld-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.dlg-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.dlg-acts .push{margin-inline-start:auto}
+.toast{position:fixed;bottom:22px;left:50%;translate:-50% 20px;opacity:0;z-index:80;background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:6px;font-size:13.5px;
+  box-shadow:var(--shadow);transition:opacity .2s,translate .2s;pointer-events:none;max-width:calc(100% - 32px)}
+.toast.on{opacity:1;translate:-50% 0}
+.toast.bad{background:var(--urgent);color:#fff}
+
+@media (max-width:1280px){ .counters{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:1100px){ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} .sgrid{grid-template-columns:1fr} }
+@media (max-width:880px){
+  :root{--tb-h:58px}
+  .split{grid-template-columns:1fr}
+  .list{position:static;max-height:none}
+  .items{max-height:48vh}
+  .steps{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));row-gap:14px}
+  .steps::before,.steps .fill{display:none}
+  .counters{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .orbit{width:38px;height:38px} .brand-mark{width:23px;height:23px} .brand-name{font-size:20px}
+  .tb-nav button{padding:8px 10px;font-size:14px}
+  .src span{display:none}
+  .card{padding:18px}
+  .st-scroll{margin:0 -18px -18px}
+}
+@media (max-width:560px){
+  .brand-name{display:none}
+  .hb{grid-template-columns:96px minmax(0,1fr)} .hb .vl{grid-column:2}
+  .kpis{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
+</style>
+</head>
+<body>
+<header class="tb" id="tb">
+  <a class="brand" href="index.html" title="العودة إلى لوح اليوم" aria-label="نَسَق — العودة إلى لوح اليوم">
+    <span class="orbit"><svg class="brand-mark" viewBox="18 12 76 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path class="bm-1" d="M47 92 L47 22 C25 46 25 74 47 92 Z"/>
+      <path class="bm-2" d="M53 92 L53 46 C74 62 74 82 53 92 Z"/>
+      <rect class="bm-dot" x="63" y="19" width="15" height="15" transform="rotate(45 70.5 26.5)"/>
+    </svg></span>
+    <span class="brand-name">نَسَق</span>
+  </a>
+  <nav class="orgs" id="orgs" aria-label="المؤسسة">
+    <a href="projects.html" data-org="medics">مديكس</a>
+    <a href="projects.html?org=humera" data-org="humera">هيوميرا</a>
+  </nav>
+  <nav class="tb-nav" id="views" aria-label="الأقسام">
+    <button type="button" data-view="list">المشاريع</button>
+    <button type="button" data-view="stats">الإحصائيات</button>
+  </nav>
+  <div class="tb-end">
+    <span class="src" id="src" hidden><i></i><span></span></span>
+    <button class="icon-btn" id="driveBtn" type="button" title="أرشيف المشاريع في درايف" aria-label="أرشيف المشاريع في درايف">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z"/><path d="M12 11.5v4M10 13.5h4"/></svg>
+    </button>
+    <button class="icon-btn" id="reloadBtn" type="button" title="تحديث البيانات" aria-label="تحديث البيانات">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 5v6h-6"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <div><h1 id="pageTitle">المشاريع</h1><p id="pageSub">جارٍ التحميل…</p></div>
+  </div>
+
+  <div class="filters" role="search">
+    <label class="search"><span class="sr">ابحث في المشاريع</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="اسم المشروع، الكود، المانح…" autocomplete="off">
+    </label>
+    <div class="seg" id="yearSeg" role="group" aria-label="السنة"></div>
+    <label><span class="sr">الحالة</span><select id="fStatus"></select></label>
+    <label><span class="sr">الجهة الممولة</span><select id="fDonor"></select></label>
+    <label><span class="sr">نوع المشروع</span><select id="fType"></select></label>
+    <label><span class="sr">المنسق</span><select id="fCoord"></select></label>
+  </div>
+
+  <section class="stats" id="stats" aria-label="إحصائيات المشاريع المعروضة" hidden></section>
+
+  <div id="listView">
+    <section class="kpis" id="kpis" aria-label="ملخص المشاريع المعروضة"></section>
+    <div class="split">
+      <nav class="list" aria-label="قائمة المشاريع">
+        <div class="list-head"><span id="count"></span>
+          <label><span class="sr">الترتيب</span>
+            <select id="sort">
+              <option value="smart">الأهم أولًا</option>
+              <option value="end">الأقرب انتهاءً</option>
+              <option value="recent">الأحدث اعتمادًا</option>
+              <option value="amount">الأكبر مبلغًا</option>
+              <option value="code">حسب الكود</option>
+            </select>
+          </label>
+        </div>
+        <div class="items" id="items"><div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div></div>
+      </nav>
+      <section class="detail" id="detail" aria-live="polite"></section>
+    </div>
+  </div>
+</main>
+
+<!-- نافذة بند الخطة -->
+<dialog id="planDlg" aria-labelledby="planDlgTitle">
+  <form id="planForm" method="dialog">
+    <h2 id="planDlgTitle">بند جديد</h2>
+    <p class="sub" id="planDlgSub"></p>
+    <label class="fld">البند<input name="title" required maxlength="300" placeholder="مثال: التعاقد مع المورد"></label>
+    <div class="fld-row">
+      <label class="fld">المرحلة<input name="stage" list="stageList" maxlength="120" placeholder="اسم مرحلة خاصة بهذا المشروع"></label>
+      <label class="fld">الحالة<select name="status"><option>لم يبدأ</option><option>جارٍ</option><option>منجز</option><option>متوقف</option></select></label>
+    </div>
+    <datalist id="stageList"></datalist>
+    <div class="fld-row">
+      <label class="fld">البداية المخططة<input name="start" type="date"></label>
+      <label class="fld">النهاية المخططة<input name="end" type="date"></label>
+    </div>
+    <div class="fld"><label for="ownerSel">المسؤول</label>
+      <div class="owner-row">
+        <select name="owner" id="ownerSel"></select>
+        <button class="icon-btn owner-edit" type="button" id="peopleToggle" aria-expanded="false" aria-controls="peoplePanel" title="تعديل قائمة المسؤولين" aria-label="تعديل قائمة المسؤولين">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>
+        </button>
+      </div>
+      <div class="people" id="peoplePanel" hidden>
+        <ul class="people-list" id="peopleList"></ul>
+        <div class="people-add">
+          <input id="peopleNew" maxlength="120" placeholder="اسم جديد" aria-label="اسم مسؤول جديد">
+          <button class="btn soft sm" type="button" id="peopleAddBtn">إضافة</button>
+        </div>
+        <p class="note" style="margin:8px 0 0">تعديل الاسم يُطبَّق على كل بنود الخطط المسندة إليه في مشاريع هذه المؤسسة، وحذفه يُفرغه منها.</p>
+      </div>
+    </div>
+    <label class="fld">ملاحظات<textarea name="notes" maxlength="1500"></textarea></label>
+    <div class="dlg-acts">
+      <button class="btn cta" type="submit" value="save">حفظ</button>
+      <button class="btn ghost" type="button" data-close>إلغاء</button>
+      <button class="btn danger push" type="button" id="planDel" hidden>حذف البند</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- نافذة ربط أرشيف درايف -->
+<dialog id="driveDlg" aria-labelledby="driveDlgTitle">
+  <form id="driveForm" method="dialog">
+    <h2 id="driveDlgTitle">أرشيف المشاريع في درايف</h2>
+    <p class="sub">الصفحة تقرأ مجلد كل مشروع من هذا الأرشيف ملفًا ملفًا، وتفتح كل ملف من زرّه مباشرة.</p>
+    <p id="driveNow" class="note" style="margin:0"></p>
+    <label class="fld">رابط مجلد الأرشيف<input name="root" dir="ltr" placeholder="https://drive.google.com/drive/folders/…"></label>
+    <div class="dlg-acts">
+      <button class="btn cta" type="submit" value="save">ربط المجلد</button>
+      <button class="btn ghost" type="button" data-close>إغلاق</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const AR = n => Number(n).toLocaleString('ar-EG');
+const money = n => (n == null || n === '') ? '—' : AR(Math.round(Number(n))) + ' $';
+const pct = x => (x == null || !isFinite(x)) ? '—' : AR(Math.round(x * 1000) / 10) + '٪';
+const DAY = 86400000;
+const today = (()=>{ const d = new Date(); d.setHours(0,0,0,0); return d; })();
+const toDate = s => s ? new Date(s + 'T00:00:00') : null;
+const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const fmtDate = (s, withYear) => s ? toDate(s).toLocaleDateString('ar-EG', withYear === false ? {day:'numeric',month:'short'} : {day:'numeric',month:'short',year:'numeric'}) : '—';
+const days = (a, b) => Math.round((b - a) / DAY);
+function num(x){ return typeof x === 'number' && isFinite(x) ? x : 0; }
+/* العدد مع معدوده بحسب قواعد العربية: [المفرد، المثنى، جمع ٣–١٠، تمييز ١١–٩٩، مئة فأكثر] */
+const W_PROJ = ['مشروع واحد','مشروعان','مشاريع','مشروعًا','مشروع'];
+const W_DAY = ['يوم واحد','يومان','أيام','يومًا','يوم'];
+const W_TASK = ['مهمة واحدة','مهمتان','مهام','مهمة','مهمة'];
+const W_ENT = ['جهة واحدة','جهتان','جهات','جهة','جهة'];
+const W_ITEM = ['بند واحد','بندان','بنود','بندًا','بند'];
+const W_FILE = ['ملف واحد','ملفان','ملفات','ملفًا','ملف'];
+function cnt(n, w){
+  if(n === 1) return w[0];
+  if(n === 2) return w[1];
+  const r = n % 100;
+  return AR(n) + ' ' + (r >= 3 && r <= 10 ? w[2] : r >= 11 ? w[3] : w[4]);
+}
+const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const ICON_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
+const ICON_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+
+/* المؤسستان منفصلتان: لكل منهما قواعدها في نوشن وأرشيفها وصفحتها (projects.html و projects.html?org=humera) */
+const ORGS = {
+  medics: { name: 'مديكس', full: 'جمعية الإغاثة الطبية الدولية — مديكس', codes: 'G وE', fixture: 'projects.local.json' },
+  humera: { name: 'هيوميرا', full: 'مؤسسة هيوميرا', codes: 'H', fixture: 'humera.local.json' }
+};
+const ORG = new URLSearchParams(location.search).get('org') === 'humera' ? 'humera' : 'medics';
+const ORG_INFO = ORGS[ORG];
+document.documentElement.dataset.org = ORG;
+
+const PHASES = ['الاعتماد','التعاقد','التنفيذ','الاستلام الابتدائي','الافتتاح','التقارير','الإغلاق المالي','إغلاق المشروع'];
+const ACTIVE = new Set(['قيد التنفيذ','نشط','مخطط له']);
+/* خانات قالب مجلد المشروع (١١ مجلدًا ← ١٥ خانة). الرقم = أول مرحلة يُنتظر فيها المستند،
+   فما قبلها يظهر «لاحقًا» لا «ناقصًا». تُستبدل بقالب كل نوع مشروع حين تصل القوائم. */
+const DOC_GROUPS = [
+  ['الاعتماد', [['اعتماد التسويق',0],['اعتماد التنفيذ',0]]],
+  ['التعاقد', [['البروتوكولات والاتفاقيات',1],['ملفات الشركات والمؤسسات',1],['طلبات الاحتياج ومحاضر الاستلام',3]]],
+  ['الملف المالي', [['طلب الصرف',2],['إشعار التحويل',2],['الفاتورة',3],['سند القبض',3]]],
+  ['التوثيق والتقارير', [['المواد الإعلامية',2],['صور التنفيذ',2],['مستندات المشروع',2],['تقرير مرحلي',2],['تقرير ختامي',5],['ملف المشروع',7]]]
+];
+/* قالب هيوميرا يضيف مجلد «12- كشف المستفيدين» */
+if(ORG === 'humera') DOC_GROUPS[3][1].splice(4, 0, ['كشف المستفيدين', 2]);
+const DOCS_N = DOC_GROUPS.reduce((t, g) => t + g[1].length, 0);
+
+/* قوالب خطط التنفيذ — نقطة بداية فقط؛ لكل مشروع مراحله الخاصة تُعدَّل بعد الإنشاء.
+   البند الثاني في كل عنصر (اختياري) خانة المستند التي تثبت إنجازه، فيُعلَّم منجزًا إن كان مرفقًا. */
+const TEMPLATES = [
+  { key:'cash', label:'مساعدات نقدية', test: p => /^H/.test(p.code || '') || /نقدي|زكاة|كفالات/.test(p.name || ''), stages:[
+    ['الاعتماد', [['استلام الاعتماد','اعتماد التسويق'], ['اعتماد التنفيذ','اعتماد التنفيذ']]],
+    ['التجهيز', [['حصر المستفيدين وإعداد الكشوف'], ['التحقق من الكشوف واعتمادها']]],
+    ['التوزيع', [['صرف المساعدات'], ['توقيعات الاستلام والتوثيق','صور التنفيذ']]],
+    ['الإغلاق', [['التقرير الختامي','تقرير ختامي'], ['الإغلاق المالي','سند القبض']]] ]},
+  { key:'surgery', label:'عمليات جراحية / ختان', test: p => /عمليات|جراح|ختان|نبض/.test(p.name || ''), stages:[
+    ['الاعتماد', [['استلام اعتماد التسويق','اعتماد التسويق'], ['اعتماد التنفيذ','اعتماد التنفيذ']]],
+    ['التجهيز', [['الاتفاق مع المستشفى','البروتوكولات والاتفاقيات'], ['إعداد كشوف المرضى المستفيدين'], ['جدولة العمليات']]],
+    ['التنفيذ', [['إجراء العمليات'], ['التوثيق المصور','صور التنفيذ'], ['تقرير مرحلي للمانح','تقرير مرحلي']]],
+    ['الإغلاق', [['التقرير الختامي','تقرير ختامي'], ['الفاتورة وسند القبض',['الفاتورة','سند القبض']], ['الإغلاق المالي']]] ]},
+  { key:'clinic', label:'عيادة / فريق طبي / خدمات', test: p => /عيادة|كلينك|clinic|فريق|كير|care|خدمات|علاج|تشغيل/i.test(p.name || ''), stages:[
+    ['الاعتماد', [['استلام اعتماد التسويق','اعتماد التسويق'], ['اعتماد التنفيذ','اعتماد التنفيذ']]],
+    ['التشغيل', [['تجهيز الفريق والمكان'], ['بدء تقديم الخدمة'], ['إحصائية المراجعين الشهرية','مستندات المشروع']]],
+    ['الإغلاق', [['التقرير الختامي','تقرير ختامي'], ['الفاتورة وسند القبض',['الفاتورة','سند القبض']], ['الإغلاق المالي']]] ]},
+  { key:'distribution', label:'توزيع (حليب، طرود، مياه، وجبات، أدوية)', test: p => /توزيع|حليب|طرود|طرد|مياه|مياة|سقيا|وجبات|مطبخ|زيوت|أدوية|مصاحف/.test(p.name || ''), stages:[
+    ['الاعتماد', [['استلام اعتماد التسويق','اعتماد التسويق'], ['اعتماد التنفيذ','اعتماد التنفيذ']]],
+    ['الشراء', [['عروض الأسعار'], ['أمر الشراء والتعاقد مع المورد','ملفات الشركات والمؤسسات'], ['استلام البضاعة وفحصها','طلبات الاحتياج ومحاضر الاستلام']]],
+    ['التوزيع', [['اعتماد كشف المستفيدين'], ['التوزيع الميداني','صور التنفيذ'], ['محاضر التسليم والتوثيق']]],
+    ['الإغلاق', [['التقرير الختامي','تقرير ختامي'], ['الفاتورة وسند القبض',['الفاتورة','سند القبض']], ['الإغلاق المالي']]] ]},
+  { key:'construction', label:'تأهيل / إنشاء / توريد أجهزة', test: p => /تأهيل|إنشاء|توسعة|تطوير|صيانة|توريد|تأثيث|مولد|بئر|أسرة|سماعات/.test(p.name || ''), stages:[
+    ['الاعتماد', [['استلام اعتماد التسويق','اعتماد التسويق'], ['اعتماد التنفيذ','اعتماد التنفيذ']]],
+    ['التعاقد', [['طرح العروض وتقييمها'], ['اختيار المقاول أو المورد','ملفات الشركات والمؤسسات'], ['توقيع العقد','البروتوكولات والاتفاقيات']]],
+    ['التنفيذ', [['بدء الأعمال أو التوريد'], ['تقرير مرحلي للمانح','تقرير مرحلي'], ['الاستلام الابتدائي','طلبات الاحتياج ومحاضر الاستلام']]],
+    ['التسليم', [['الافتتاح'], ['محضر الاستلام النهائي']]],
+    ['الإغلاق', [['التقرير الختامي','تقرير ختامي'], ['الإغلاق المالي','سند القبض'], ['إغلاق المشروع','ملف المشروع']]] ]},
+  { key:'general', label:'عام — المراحل الثماني', test: () => true, stages: PHASES.map(ph => [ph, [[ph]]]) }
+];
+const PLAN_STATUSES = ['لم يبدأ','جارٍ','منجز','متوقف'];
+
+let DATA = { projects: [], deliverables: [], plan: [], files: {}, driveRoot: '', people: [] };
+let SOURCE = '';
+const FILES = {};                 /* قوائم الملفات المقروءة من الجسر، حسب الكود */
+const filesLoading = new Set();
+const EXPANDED = new Set();       /* خانات مستندات فُتحت كل ملفاتها */
+const S = { q:'', year:'2026', status:'', donor:'', type:'', coord:'', sort:'smart', sel:null, view:'list', tsort:'approved', tdir:-1 };
+
+/* ================= الاتصال بالجسر (نفس قناة نَسَق) ================= */
+const DEFAULT_BRIDGE = 'https://script.google.com/macros/s/AKfycbwwrcb-T-vBdPd2u94XfiFspyDwBKXec-NNeUzZiJMCupbUp91dFwZM2Wfj-F3dncw/exec';
+let bridge = ''; try{ bridge = localStorage.getItem('daily-board-bridge') || ''; }catch(e){}
+if(!bridge) bridge = DEFAULT_BRIDGE;
+let auth = null; try{ auth = JSON.parse(localStorage.getItem('daily-board-auth') || 'null'); }catch(e){}
+
+let rpcWin = null, rpcOrigin = '', rpcReady = null, rpcReadyDone = null, rpcSeq = 0;
+const rpcPending = new Map();
+window.addEventListener('message', ev=>{
+  const m = ev.data; if(!m || m.__nasaq !== 1) return;
+  let host = ''; try{ host = new URL(ev.origin).hostname; }catch(e){ return; }
+  if(!/\.googleusercontent\.com$/.test(host)) return;
+  if(m.type === 'ready'){ rpcWin = ev.source; rpcOrigin = ev.origin; if(rpcReadyDone) rpcReadyDone(); return; }
+  if(m.type === 'result' && ev.origin === rpcOrigin){
+    const p = rpcPending.get(m.id); if(!p) return;
+    rpcPending.delete(m.id); clearTimeout(p.timer);
+    m.ok ? p.resolve(m.body) : p.reject(new Error(m.error || 'خطأ في الجسر'));
+  }
+});
+function rpcInit(){
+  if(rpcReady) return rpcReady;
+  rpcReady = new Promise((resolve, reject)=>{
+    const t = setTimeout(()=>reject(new Error('لم يستجب الجسر')), 15000);
+    rpcReadyDone = ()=>{ clearTimeout(t); resolve(); };
+    const f = document.createElement('iframe');
+    f.setAttribute('aria-hidden','true'); f.tabIndex = -1; f.title = 'nasaq-bridge';
+    f.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden';
+    f.src = bridge + (bridge.indexOf('?') < 0 ? '?' : '&') + 'frame=1&o=' + encodeURIComponent(location.origin);
+    document.body.appendChild(f);
+  });
+  return rpcReady;
+}
+function post(body){
+  const payload = Object.assign({}, body, auth && auth.token ? {token: auth.token} : {});
+  return rpcInit().then(()=>new Promise((resolve, reject)=>{
+    const id = ++rpcSeq;
+    const timer = setTimeout(()=>{ rpcPending.delete(id); reject(new Error('لم يردّ الجسر خلال 90 ثانية')); }, 90000);
+    rpcPending.set(id, {resolve, reject, timer});
+    rpcWin.postMessage({__nasaq:1, type:'call', id, payload: JSON.stringify(payload)}, rpcOrigin);
+  })).then(t=>{ const d = JSON.parse(t); if(!d || !d.ok) throw new Error((d && d.error) || 'خطأ غير معروف'); return d; });
+}
+
+/* نوشن أولًا لصاحب اللوح؛ وإن لم يُنشر الجسر الجديد بعد، فالملف المحلي (خارج المستودع) */
+async function load(){
+  $('items').innerHTML = '<div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div>';
+  let bridgeErr = '';
+  if(/^https?:$/.test(location.protocol) && bridge && auth && auth.isOwner){
+    try{ const d = await post({action:'projects_list', org: ORG}); return use(d, 'live'); }
+    catch(e){ bridgeErr = e.message; }
+  }
+  try{
+    const r = await fetch(ORG_INFO.fixture, {cache:'no-store'});
+    if(!r.ok) throw new Error(r.status);
+    return use(await r.json(), 'local', bridgeErr);
+  }catch(e){
+    $('items').innerHTML = '';
+    $('pageSub').textContent = '';
+    $('detail').innerHTML = '<div class="card"><div class="err">تعذّر تحميل المشاريع. '
+      + (bridgeErr ? 'الجسر: ' + esc(bridgeErr) + '. ' : (auth && auth.isOwner ? '' : 'سجّل الدخول في نَسَق بحساب صاحب اللوح أولًا. '))
+      + 'إن كان هذا أول تشغيل، فانشر نسخة الجسر الجديدة من Apps Script.</div></div>';
+  }
+}
+/* خطة نسخة التطوير تُحفظ في هذا المتصفح فقط — لتجربة الإدخال قبل نشر الجسر */
+const LOCAL_PLAN_KEY = 'daily-board-projects-plan-dev-' + ORG;
+const LOCAL_PEOPLE_KEY = 'daily-board-projects-people-dev-' + ORG;
+function localPlanRead(){ try{ return JSON.parse(localStorage.getItem(LOCAL_PLAN_KEY) || '[]'); }catch(e){ return []; } }
+function localPlanWrite(){ try{ localStorage.setItem(LOCAL_PLAN_KEY, JSON.stringify(DATA.plan.filter(x => /^lp-/.test(x.id)))); }catch(e){} }
+function localPeopleRead(){ try{ return JSON.parse(localStorage.getItem(LOCAL_PEOPLE_KEY) || 'null'); }catch(e){ return null; } }
+function localPeopleWrite(){ try{ localStorage.setItem(LOCAL_PEOPLE_KEY, JSON.stringify(DATA.people)); }catch(e){} }
+const uniqNames = list => [...new Set(list.map(n => String(n || '').trim()).filter(Boolean))];
+function use(d, src, note){
+  DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [] };
+  SOURCE = src;
+  if(src === 'local'){
+    DATA.plan = DATA.plan.concat(localPlanRead());
+    /* أول مرة في نسخة التطوير: القائمة من منسقي المشاريع ومسؤولي البنود، كما يبنيها الجسر */
+    DATA.people = localPeopleRead() || uniqNames(DATA.projects.map(p => p.coordinator).concat(DATA.plan.map(x => x.owner)));
+  }
+  const el = $('src'); el.hidden = false; el.className = 'src ' + src;
+  el.querySelector('span').textContent = src === 'live' ? 'مباشر من نوشن' : 'نسخة محلية للتطوير';
+  el.title = note ? 'الجسر لم يستجب: ' + note : '';
+  buildFilters(); readHash(); render();
+}
+
+/* ================= الحسابات ================= */
+const delsOf = p => DATA.deliverables.filter(d => d.project === p.id).sort((a, b) => (a.due || '9') < (b.due || '9') ? -1 : 1);
+function lateDels(p){ return delsOf(p).filter(d => d.status !== 'صدر' && d.due && toDate(d.due) < today); }
+function isLate(p){ return ACTIVE.has(p.status) && p.end && toDate(p.end) < today; }
+const planOf = p => DATA.plan.filter(x => x.project === p.id)
+  .sort((a, b) => (num(a.order) - num(b.order)) || String(a.title).localeCompare(String(b.title), 'ar'));
+const itemLate = it => it.status !== 'منجز' && it.end && toDate(it.end) < today;
+function stagesOf(p){
+  const m = new Map();
+  planOf(p).forEach(it => { const k = it.stage || 'بلا مرحلة'; if(!m.has(k)) m.set(k, []); m.get(k).push(it); });
+  let open = false;
+  return [...m.entries()].map(([name, items]) => {
+    const done = items.filter(x => x.status === 'منجز').length;
+    const dates = items.flatMap(x => [x.start, x.end]).filter(Boolean).sort();
+    const s = { name, items, done, total: items.length, start: dates[0] || null, end: dates[dates.length - 1] || null };
+    s.state = done === s.total ? 'done' : open ? 'todo' : (open = true, 'now');
+    return s;
+  });
+}
+/* الإنجاز: من الخطة إن وُجدت، وإلا من «نسبة الإنجاز» في نوشن */
+function progressOf(p){
+  const it = planOf(p);
+  if(it.length) return it.filter(x => x.status === 'منجز').length / it.length;
+  return p.progress != null ? num(p.progress) : null;
+}
+function spanOf(p){
+  const pd = planOf(p).flatMap(x => [x.start, x.end]).filter(Boolean).sort();
+  const s = p.start || p.approvalDate || p.execDate || pd[0];
+  let e = p.end;
+  const dd = delsOf(p).map(d => d.due).filter(Boolean).concat(pd).sort();
+  if(!e && dd.length) e = dd[dd.length - 1];
+  return { s, e };
+}
+
+/* ================= الفلاتر ================= */
+function uniq(key){
+  const m = new Map();
+  DATA.projects.forEach(p => { const v = p[key]; if(v) m.set(v, (m.get(v) || 0) + 1); });
+  return [...m.entries()].sort((a, b) => b[1] - a[1]).map(x => x[0]);
+}
+function fillSelect(el, label, vals, cur){
+  el.innerHTML = '<option value="">' + label + '</option>' + vals.map(v => '<option' + (v === cur ? ' selected' : '') + '>' + esc(v) + '</option>').join('');
+}
+function segHtml(vals, cur, attr, labelOf){
+  return vals.map(v => '<button type="button" data-' + attr + '="' + esc(v) + '" class="' + (cur === v ? 'on' : '') + '" aria-pressed="' + (cur === v) + '">' + labelOf(v) + '</button>').join('');
+}
+function buildFilters(){
+  $('yearSeg').innerHTML = segHtml(['', ...uniq('year').sort().reverse()], S.year, 'y', v => v ? AR(v).replace(/٬/g, '') : 'كل السنوات');
+  fillSelect($('fStatus'), 'كل الحالات', uniq('status'), S.status);
+  fillSelect($('fDonor'), 'كل الجهات الممولة', uniq('donor'), S.donor);
+  fillSelect($('fType'), 'كل الأنواع', uniq('type'), S.type);
+  fillSelect($('fCoord'), 'كل المنسقين', uniq('coordinator'), S.coord);
+}
+function filtered(){
+  const q = S.q.trim().toLowerCase();
+  const rows = DATA.projects.filter(p =>
+    (!S.year || p.year === S.year) && (!S.status || p.status === S.status) &&
+    (!S.donor || p.donor === S.donor) && (!S.type || p.type === S.type) && (!S.coord || p.coordinator === S.coord) &&
+    (!q || [p.name, p.code, p.donor, p.place, p.entities, p.contractor].some(v => v && String(v).toLowerCase().includes(q))));
+  const endKey = p => p.end || '9999';
+  const alarms = p => lateDels(p).length + isLate(p) + planOf(p).filter(itemLate).length;
+  const cmp = {
+    smart: (a, b) => (ACTIVE.has(b.status) - ACTIVE.has(a.status)) || (alarms(b) - alarms(a)) || (endKey(a) < endKey(b) ? -1 : 1),
+    end: (a, b) => endKey(a) < endKey(b) ? -1 : 1,
+    recent: (a, b) => (b.approvalDate || '') > (a.approvalDate || '') ? 1 : -1,
+    amount: (a, b) => num(b.approved || b.exec) - num(a.approved || a.exec),
+    code: (a, b) => String(a.code || '~').localeCompare(String(b.code || '~'), 'en', {numeric: true})
+  }[S.sort];
+  return rows.sort(cmp);
+}
+
+/* ================= العرض ================= */
+function statusPill(s){
+  if(!s) return '<span class="pill">غير محددة</span>';
+  const cls = s === 'مكتمل' ? 'st-done' : s === 'مخطط له' ? 'st-plan' : ACTIVE.has(s) ? 'st-run' : '';
+  return '<span class="pill ' + cls + '"><i></i>' + esc(s) + '</span>';
+}
+const codeChip = p => p.code ? '<span class="code' + (ORG === 'humera' ? ' h' : '') + '">' + esc(p.code) + '</span>' : '';
+function render(){
+  const rows = filtered();
+  const st = S.view === 'stats';
+  $('stats').hidden = !st; $('listView').hidden = st;
+  document.querySelectorAll('#views button').forEach(b => {
+    const on = b.dataset.view === S.view; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on);
+  });
+  $('pageTitle').textContent = (st ? 'إحصائيات ' : 'مشاريع ') + ORG_INFO.name;
+  document.title = 'نَسَق — ' + $('pageTitle').textContent;
+  const scope = [ORG_INFO.full, S.year ? 'سنة ' + AR(S.year).replace(/٬/g, '') : 'كل السنوات'].join(' · ');
+  $('pageSub').textContent = cnt(rows.length, W_PROJ) + ' · ' + scope + (st ? ' · الأرقام تتبع الفلاتر' : '');
+  document.querySelectorAll('#orgs a').forEach(a => {
+    const on = a.dataset.org === ORG;
+    a.classList.toggle('on', on); a.toggleAttribute('aria-current', on);
+    a.href = 'projects.html' + (a.dataset.org === 'humera' ? '?org=humera' : '') + (st ? '#stats' : '');
+  });
+  if(st){ renderStats(rows); return; }
+  if(S.sel && !rows.some(p => p.id === S.sel)) S.sel = null;
+  if(!S.sel && rows.length) S.sel = rows[0].id;
+  renderKpis(rows); renderList(rows); renderDetail();
+}
+function renderKpis(rows){
+  const approved = rows.reduce((t, p) => t + num(p.approved), 0);
+  const exec = rows.reduce((t, p) => t + num(p.exec), 0);
+  const benef = rows.reduce((t, p) => t + num(p.benef), 0);
+  const active = rows.filter(p => ACTIVE.has(p.status)).length;
+  const late = rows.filter(p => isLate(p) || lateDels(p).length).length;
+  const withRecv = rows.filter(p => p.received != null && num(p.approved));
+  const recv = withRecv.reduce((t, p) => t + num(p.received), 0), recvOf = withRecv.reduce((t, p) => t + num(p.approved), 0);
+  $('kpis').innerHTML =
+    kpiBox('المشاريع', AR(rows.length), AR(active) + ' جارية · ' + AR(late) + ' تحتاج متابعة') +
+    kpiBox('المبلغ المعتمد', money(approved), recvOf ? 'المستلم ' + money(recv) + ' من ' + money(recvOf) : 'للمشاريع المسجّل لها اعتماد') +
+    kpiBox('مبلغ التنفيذ', money(exec), approved ? 'نسبة الصرف ' + pct(exec / approved) : '', approved ? exec / approved : null) +
+    kpiBox('المستفيدون', AR(Math.round(benef)), 'من الأعداد المسجّلة رقمًا');
+}
+function renderList(rows){
+  const box = $('items'), top = box.scrollTop;
+  $('count').textContent = cnt(rows.length, W_PROJ);
+  if(!rows.length){ box.innerHTML = '<div class="empty">لا توجد مشاريع تطابق هذه الفلاتر.</div>'; return; }
+  box.innerHTML = rows.map(p => {
+    const ld = lateDels(p).length, lp = planOf(p).filter(itemLate).length;
+    const flag = isLate(p) ? '<span class="flag late">تجاوز الموعد</span>' : (ld + lp) ? '<span class="flag due">' + cnt(ld + lp, W_ITEM) + ' متأخر</span>' : '';
+    const pr = progressOf(p);
+    return '<button type="button" class="item' + (p.id === S.sel ? ' on' : '') + '" data-id="' + esc(p.id) + '" aria-current="' + (p.id === S.sel) + '">' +
+      '<div class="row1">' + codeChip(p) + statusPill(p.status) + flag + '</div>' +
+      '<div class="nm">' + esc(p.name) + '</div>' +
+      '<div class="meta"><span>' + esc(p.donor || 'بلا جهة ممولة') + '</span>' +
+        (p.end ? '<span>ينتهي ' + fmtDate(p.end, false) + '</span>' : p.approvalDate ? '<span>اعتماد ' + fmtDate(p.approvalDate, false) + '</span>' : '') +
+        ((p.approved || p.exec) ? '<span class="num">' + money(p.approved || p.exec) + '</span>' : '') +
+        (p.docsChecked ? '<span title="المستندات المرفقة">مستندات ' + AR((p.docsDone || []).length) + '/' + AR(DOCS_N) + '</span>' : '') + '</div>' +
+      (pr != null ? '<div class="mini" aria-hidden="true"><i style="width:' + Math.round(pr * 100) + '%"></i></div>' : '') +
+    '</button>';
+  }).join('');
+  box.scrollTop = top;
+}
+function renderDetail(){
+  const p = DATA.projects.find(x => x.id === S.sel);
+  if(!p){ $('detail').innerHTML = '<div class="card empty">اختر مشروعًا من القائمة لعرض تفاصيله.</div>'; return; }
+  $('detail').innerHTML = heroCard(p) + planCard(p) + timelineCard(p) + moneyCard(p) + docsCard(p);
+  $('detail').querySelectorAll('.card').forEach((c, i) => { c.classList.add('rise'); c.style.animationDelay = (i * 50) + 'ms'; });
+  if(SOURCE === 'live' && DATA.driveRoot && p.code && !FILES[p.code] && !filesLoading.has(p.code)) fetchFiles(p);
+}
+function refreshCard(id, html){
+  const el = $(id); if(!el) return;
+  const t = document.createElement('div'); t.innerHTML = html; el.replaceWith(t.firstElementChild);
+}
+
+function heroCard(p){
+  const f = (k, v) => v ? '<div class="fact"><span>' + k + '</span><b>' + esc(v) + '</b></div>' : '';
+  const benef = p.benef ? AR(Math.round(p.benef)) + (p.benefText ? ' · ' + p.benefText : '') : p.benefText;
+  const drive = (filesOf(p) || {}).url || p.drive;
+  return '<article class="card hero">' +
+    '<div class="tags">' + codeChip(p) + statusPill(p.status) +
+      (p.type ? '<span class="pill">' + esc(p.type) + '</span>' : '') + (p.year ? '<span class="pill">' + esc(p.year) + '</span>' : '') + '</div>' +
+    '<h3>' + esc(p.name) + '</h3>' +
+    '<div class="facts">' +
+      f('الجهة الممولة', p.donor) + f('المنسق', p.coordinator) + f('مكان التنفيذ', p.place || p.country) +
+      f('الجهات المستفيدة', p.entities) + f('المستفيدون', benef) + f('جهة التعاقد', p.contractor) +
+      f('المسوق', p.marketer) + f('المهام المرتبطة', p.tasks ? cnt(p.tasks, W_TASK) : '') +
+    '</div>' +
+    (p.brief ? '<div class="brief">' + esc(p.brief) + '</div>' : '') +
+    (p.notes ? '<div class="brief">ملاحظة: ' + esc(p.notes) + '</div>' : '') +
+    '<div class="acts">' +
+      (drive ? '<a class="btn cta sm" href="' + esc(drive) + '" target="_blank" rel="noopener">مجلد المشروع في درايف</a>' : '') +
+      (p.url ? '<a class="btn soft sm" href="' + esc(p.url) + '" target="_blank" rel="noopener">فتح في نوشن</a>' : '') +
+    '</div>' +
+  '</article>';
+}
+
+/* ---------- خطة التنفيذ ---------- */
+function phaseStepper(p){
+  const idx = PHASES.indexOf(p.phase);
+  const fillW = idx < 0 ? 0 : (idx / (PHASES.length - 1)) * 88;
+  return '<div class="steps"><span class="fill" style="width:' + fillW + '%"></span>' + PHASES.map((ph, i) => {
+    const cls = idx < 0 ? '' : i < idx ? 'done' : i === idx ? 'now' : '';
+    return '<div class="step ' + cls + '"' + (i === idx ? ' aria-current="step"' : '') + '><div class="dot">' + (i < idx ? '✓' : AR(i + 1)) + '</div>' + ph + '</div>';
+  }).join('') + '</div>';
+}
+const suggestTpl = p => TEMPLATES.find(t => t.test(p)).key;
+function tplPreview(key){
+  const t = TEMPLATES.find(x => x.key === key);
+  return t.stages.map(([s, items]) => '<span>' + esc(s) + ' · ' + cnt(items.length, W_ITEM) + '</span>').join('');
+}
+const devNote = () => SOURCE === 'local' ? '<span class="dev-note">نسخة التطوير: ما تُدخله هنا يُحفظ في هذا المتصفح فقط، وبعد نشر الجسر يُحفظ في نوشن.</span>' : '';
+function planCard(p){
+  const items = planOf(p);
+  if(!items.length){
+    const k = suggestTpl(p);
+    return '<article class="card" id="planCard"><div class="card-h"><h2>خطة التنفيذ</h2>' +
+        '<small>' + (PHASES.indexOf(p.phase) >= 0 ? 'المرحلة الحالية حسب نوشن: ' + esc(p.phase) : 'لم تُحدَّد المرحلة في نوشن') + '</small></div>' +
+      phaseStepper(p) +
+      '<div class="empty-plan"><p><b>لا خطة تنفيذ لهذا المشروع بعد.</b> لكل مشروع مراحله الخاصة: ابدأ من قالب قريب من طبيعته ثم عدّل مراحله وبنوده، أو ابنِ الخطة بندًا بندًا.</p>' +
+        '<div class="row"><label class="sr" for="tplSel">القالب</label><select id="tplSel">' +
+          TEMPLATES.map(t => '<option value="' + t.key + '"' + (t.key === k ? ' selected' : '') + '>' + esc(t.label) + '</option>').join('') + '</select>' +
+          '<button class="btn cta" type="button" data-act="tpl">إنشاء الخطة من القالب</button>' +
+          '<button class="btn ghost" type="button" data-act="add" data-stage="">خطة فارغة</button></div>' +
+        '<div class="tpl-preview" id="tplPreview">' + tplPreview(k) + '</div>' +
+        '<p class="note">تُوزَّع المراحل على مدة المشروع، ويُعلَّم منجزًا كل بند مستنده مرفق في الأرشيف.</p>' +
+      '</div>' + devNote() + '</article>';
+  }
+  const st = stagesOf(p);
+  const done = items.filter(x => x.status === 'منجز').length, late = items.filter(itemLate).length;
+  const nowIdx = st.findIndex(s => s.state === 'now');
+  const fillW = st.length > 1 ? ((nowIdx < 0 ? st.length - 1 : nowIdx) / (st.length - 1)) * 88 : 0;
+  const stepper = '<div class="steps"><span class="fill" style="width:' + fillW + '%"></span>' + st.map((s, i) =>
+    '<div class="step ' + (s.state === 'todo' ? '' : s.state) + '"' + (s.state === 'now' ? ' aria-current="step"' : '') + '><div class="dot">' +
+      (s.state === 'done' ? '✓' : AR(i + 1)) + '</div>' + esc(s.name) + '<small>' + AR(s.done) + ' من ' + AR(s.total) + '</small></div>').join('') + '</div>';
+  const range = s => s.start || s.end ? (s.start && s.end && s.start !== s.end ? fmtDate(s.start, false) + ' – ' + fmtDate(s.end, false) : 'حتى ' + fmtDate(s.end || s.start, false)) : '';
+  const groups = st.map((s, i) => '<section class="stage ' + s.state + '">' +
+    '<div class="stage-h"><span class="no">' + (s.state === 'done' ? '✓' : AR(i + 1)) + '</span><h3>' + esc(s.name) + '</h3>' +
+      '<small>' + AR(s.done) + ' من ' + AR(s.total) + (range(s) ? ' · ' + range(s) : '') + '</small>' +
+      '<span class="end"><button class="btn ghost sm" type="button" data-act="add" data-stage="' + esc(s.name) + '">' + ICON_PLUS + 'بند</button></span></div>' +
+    '<ul class="pis">' + s.items.map(planRow).join('') + '</ul></section>').join('');
+  return '<article class="card" id="planCard"><div class="card-h"><h2>خطة التنفيذ</h2>' +
+      '<small>' + cnt(items.length, W_ITEM) + ' في ' + AR(st.length) + ' مراحل خاصة بهذا المشروع</small>' +
+      '<span class="end"><button class="btn ghost sm" type="button" data-act="add-stage">' + ICON_PLUS + 'مرحلة</button>' +
+      '<button class="btn cta sm" type="button" data-act="add" data-stage="' + esc((st[nowIdx] || st[st.length - 1]).name) + '">' + ICON_PLUS + 'بند</button></span></div>' +
+    '<div class="prog"><div class="bar" aria-hidden="true"><i style="width:' + Math.round(done / items.length * 100) + '%"></i></div>' +
+      '<b>' + pct(done / items.length) + '</b></div>' +
+    '<p class="note" style="margin:-8px 0 14px">منجز ' + AR(done) + ' · المتبقي ' + AR(items.length - done) + (late ? ' · <span style="color:var(--urgent);font-weight:600">متأخر ' + AR(late) + '</span>' : '') + '</p>' +
+    stepper + groups + devNote() + '</article>';
+}
+function planRow(it){
+  const done = it.status === 'منجز', late = itemLate(it);
+  const when = done ? (it.done ? 'أُنجز ' + fmtDate(it.done, false) : 'منجز') :
+    it.start && it.end ? fmtDate(it.start, false) + ' – ' + fmtDate(it.end, false) : it.end ? 'حتى ' + fmtDate(it.end, false) : it.start ? 'يبدأ ' + fmtDate(it.start, false) : '';
+  const st = !done && it.status && it.status !== 'لم يبدأ' ? '<span class="pill ' + (it.status === 'متوقف' ? 'st-late' : 'st-run') + '">' + esc(it.status) + '</span>' : '';
+  return '<li class="pi' + (done ? ' is-done' : '') + (late ? ' is-late' : '') + '">' +
+    '<button class="chk" type="button" data-act="toggle" data-id="' + esc(it.id) + '" aria-pressed="' + done + '" aria-label="' + (done ? 'إلغاء الإنجاز: ' : 'تعليم كمنجز: ') + esc(it.title) + '">' + ICON_CHECK + '</button>' +
+    '<div><div class="pi-title">' + esc(it.title) + '</div><div class="pi-meta">' +
+      (when ? '<span>' + when + '</span>' : '') + (late ? '<span class="flag late">متأخر ' + cnt(days(toDate(it.end), today), W_DAY) + '</span>' : '') +
+      st + (it.owner ? '<span>' + esc(it.owner) + '</span>' : '') + (it.notes ? '<span title="' + esc(it.notes) + '">ملاحظة</span>' : '') + '</div></div>' +
+    '<button class="icon-btn sm" type="button" data-act="edit" data-id="' + esc(it.id) + '" title="تعديل البند" aria-label="تعديل: ' + esc(it.title) + '">' + ICON_EDIT + '</button>' +
+  '</li>';
+}
+
+/* ---------- المخطط الزمني ---------- */
+function timelineCard(p){
+  const dels = delsOf(p);
+  const stages = stagesOf(p).filter(s => s.start || s.end);
+  const { s, e } = spanOf(p);
+  if(!(s && e && toDate(e) > toDate(s))){
+    return '<article class="card"><div class="card-h"><h2>المخطط الزمني</h2></div><p class="note" style="margin:0">لا يكفي ما هو مسجّل لرسم المخطط: يحتاج تاريخ بداية ونهاية' +
+      (p.approvalDate ? ' (المسجّل تاريخ الاعتماد ' + fmtDate(p.approvalDate) + ' فقط)' : '') + '. أضف تواريخ لبنود الخطة ليُرسم منها.</p>' + delsTable(dels) + '</article>';
+  }
+  const pts = [toDate(s), toDate(e), ...dels.map(d => toDate(d.due)).filter(Boolean), ...stages.flatMap(x => [x.start, x.end]).filter(Boolean).map(toDate)];
+  let lo = new Date(Math.min(...pts)), hi = new Date(Math.max(...pts));
+  if(today > hi && days(hi, today) < 120) hi = today;
+  if(today < lo && days(today, lo) < 60) lo = today;
+  const span = hi - lo || DAY;
+  const pos = d => ((d - lo) / span) * 100;
+  const ps = pos(toDate(s)), pe = pos(toDate(e));
+  const doneTo = Math.min(Math.max(today, toDate(s)), toDate(e));
+  let ticks = '';
+  const m = new Date(lo.getFullYear(), lo.getMonth() + 1, 1);
+  const step = Math.round(span / (30 * DAY)) > 10 ? 2 : 1;
+  for(let i = 0; m <= hi && i < 24; i++, m.setMonth(m.getMonth() + step))
+    ticks += '<span class="tl-tick" style="inset-inline-start:' + pos(m) + '%">' + m.toLocaleDateString('ar-EG', {month:'short'}) + '</span>';
+  const marks = dels.filter(d => d.due).map(d => {
+    const late = d.status !== 'صدر' && toDate(d.due) < today;
+    const cls = d.status === 'صدر' ? 'ok' : late ? 'late' : d.status === 'قيد الإعداد' ? 'prep' : '';
+    return '<button type="button" class="tl-mark ' + cls + '" style="inset-inline-start:' + pos(toDate(d.due)) + '%" title="' +
+      esc(d.title + ' · ' + fmtDate(d.due) + ' · ' + (d.status || '')) + '"><i></i><span class="sr">' + esc(d.title) + '</span></button>';
+  }).join('');
+  const lanes = stages.map(x => {
+    const a = pos(toDate(x.start || x.end)), b = pos(toDate(x.end || x.start));
+    return '<span class="tl-st ' + (x.state === 'todo' ? '' : x.state) + '" style="inset-inline-start:' + a + '%;width:' + Math.max(b - a, 1.5) + '%" title="' +
+      esc(x.name + ' · ' + AR(x.done) + ' من ' + AR(x.total)) + '">' + esc(x.name) + '</span>';
+  }).join('');
+  const todayMark = today >= lo && today <= hi ? '<div class="tl-today" style="inset-inline-start:' + pos(today) + '%"><span>اليوم</span></div>' : '';
+  const left = days(today, toDate(e));
+  const tail = p.status === 'مكتمل' ? 'مكتمل' : left === 0 ? 'ينتهي اليوم' : left > 0 ? 'باقي ' + cnt(left, W_DAY) : 'تجاوز الموعد بـ ' + cnt(-left, W_DAY);
+  return '<article class="card"><div class="card-h"><h2>المخطط الزمني</h2>' + (p.start ? '' : '<small>البداية تقديرية من تاريخ الاعتماد</small>') +
+      '<span class="end"><span class="pill ' + (left < 0 && p.status !== 'مكتمل' ? 'st-late' : 'st-run') + '">' + tail + '</span></span></div>' +
+    '<div class="tl' + (lanes ? ' lanes' : '') + '" role="img" aria-label="المخطط الزمني من ' + fmtDate(s) + ' إلى ' + fmtDate(e) + '">' + ticks +
+      '<div class="tl-track"></div><div class="tl-span" style="inset-inline-start:' + ps + '%;width:' + (pe - ps) + '%"></div>' +
+      '<div class="tl-done" style="inset-inline-start:' + ps + '%;width:' + Math.max(0, pos(doneTo) - ps) + '%"></div>' +
+      todayMark + marks + lanes +
+      /* مشروع قصير على محور طويل: تسمية واحدة للمدة بدل تسميتين متراكبتين */
+      (pe - ps < 16
+        ? '<div class="tl-edge" style="inset-inline-start:' + Math.min(ps, 70) + '%"><b>مدة المشروع</b>' + fmtDate(s, false) + ' – ' + fmtDate(e) + '</div>'
+        : '<div class="tl-edge" style="inset-inline-start:' + ps + '%"><b>البداية</b>' + fmtDate(s) + '</div>' +
+          '<div class="tl-edge" style="inset-inline-start:' + pe + '%;transform:translateX(100%)"><b>النهاية</b>' + fmtDate(e) + '</div>') +
+    '</div>' +
+    '<div class="legend"><span><i style="background:var(--done)"></i>صدر</span><span><i style="background:var(--hold)"></i>قيد الإعداد</span>' +
+      '<span><i style="background:var(--muted)"></i>لم يبدأ</span><span><i style="background:var(--urgent)"></i>متأخر</span>' +
+      (lanes ? '<span>والشرائط تحت المحور مراحل الخطة</span>' : '') + '</div>' +
+    delsTable(dels) + '</article>';
+}
+function delsTable(dels){
+  if(!dels.length) return '<p class="note">لا استحقاقات مسجّلة لهذا المشروع في قاعدة «استحقاقات المشاريع».</p>';
+  return '<div class="tbl-wrap"><table class="dl"><thead><tr><th>الاستحقاق</th><th>الموعد</th><th>الحالة</th><th>التسليم</th></tr></thead><tbody>' +
+    dels.map(d => {
+      let delay = '';
+      if(d.issued && d.due){ const n = days(toDate(d.due), toDate(d.issued));
+        delay = n > 0 ? '<span class="delay late">متأخر ' + cnt(n, W_DAY) + '</span>' : '<span class="delay early">في موعده</span>'; }
+      else if(d.due && d.status !== 'صدر' && toDate(d.due) < today) delay = '<span class="delay late">متأخر ' + cnt(days(toDate(d.due), today), W_DAY) + '</span>';
+      const cls = d.status === 'صدر' ? 'st-done' : d.status === 'قيد الإعداد' ? 'st-plan' : '';
+      return '<tr><td>' + esc(d.kind || d.title) + (d.num && d.kind === 'تقرير مرحلي' ? ' ' + AR(d.num) : '') + '</td><td>' + fmtDate(d.due) + '</td>' +
+        '<td><span class="pill ' + cls + '">' + esc(d.status || '—') + '</span></td><td>' + (d.issued ? fmtDate(d.issued, false) + ' · ' : '') + delay + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+
+/* ---------- المالية ---------- */
+/* معادلة المبالغ: الكلي − الإدارية = مبلغ التنفيذ حسب الاعتماد = مبلغ التنفيذ الفعلي + المصاريف التشغيلية
+   ومبلغ التنفيذ حسب الترسية أو التعاقد مستقل عنها */
+const hasVal = v => v != null && v !== '';
+function fin(p){
+  const A = num(p.approved), ADM = num(p.admin), E = num(p.exec), OPS = num(p.otherOps);
+  const F = hasVal(p.net) ? num(p.net) : (E ? E - OPS : 0);
+  const C = hasVal(p.contract) ? num(p.contract) : null;
+  const issues = [];
+  if(A && E && hasVal(p.admin) && Math.abs(A - ADM - E) >= 1)
+    issues.push('الكلي − الإدارية = ' + money(A - ADM) + '، ومبلغ التنفيذ حسب الاعتماد ' + money(E));
+  if(E && hasVal(p.net) && Math.abs(E - F - OPS) >= 1)
+    issues.push('الفعلي + التشغيلية = ' + money(F + OPS) + '، ومبلغ التنفيذ حسب الاعتماد ' + money(E));
+  return {A, ADM, E, OPS, F, C, issues};
+}
+function moneyCard(p){
+  const {A, ADM, E, OPS, F, C, issues} = fin(p);
+  const base = A || (E + ADM) || 0;
+  const m = (k, v, sub, cls) => '<div class="m' + (cls ? ' ' + cls : '') + '"><span>' + k + '</span><b>' + v + '</b>' + (sub ? '<small>' + sub + '</small>' : '') + '</div>';
+  let bar = '';
+  if(base){
+    const w = x => Math.max(0, Math.min(100, x / base * 100)) + '%';
+    bar = '<div class="sbar" aria-hidden="true"><i class="b-exec" style="width:' + w(F) + '"></i><i class="b-ops" style="width:' + w(OPS) + '"></i>' +
+        '<i class="b-admin" style="width:' + w(ADM) + '"></i></div>' +
+      '<div class="bar-legend"><span><i class="b-exec"></i>التنفيذ الفعلي ' + pct(F / base) + '</span>' +
+      (OPS ? '<span><i class="b-ops"></i>التشغيلية ' + pct(OPS / base) + '</span>' : '') +
+      '<span><i class="b-admin"></i>الإدارية ' + pct(ADM / base) + '</span></div>';
+  }
+  let recv = '';
+  if(p.received != null && A){
+    const R = num(p.received), left = A - R;
+    recv = '<div class="recv"><div class="recv-head"><span>المستلم من المانح <b>' + money(R) + '</b></span>' +
+        '<span>' + (left > 0 ? 'المتبقي <b class="due">' + money(left) + '</b>' : left < 0 ? 'زيادة <b>' + money(-left) + '</b>' : '<b class="ok">مُستلم بالكامل</b>') + '</span></div>' +
+      '<div class="sbar thin" aria-hidden="true"><i class="b-recv" style="width:' + Math.min(100, R / A * 100) + '%"></i></div>' +
+      '<small>' + pct(R / A) + ' من المبلغ الكلي</small></div>';
+  }
+  const payPill = p.payAtApproval ? '<span class="pill ' + (/^(مستلم|تم التحويل)$/.test(p.payAtApproval) ? 'st-done' : p.payAtApproval === 'غير مستلم' ? 'st-late' : 'st-plan') +
+    '" title="حالة المبلغ عند الاعتماد">عند الاعتماد: ' + esc(p.payAtApproval) + '</span>' : '';
+  const opsParts = [num(p.printing) ? 'مطبوعات ' + money(p.printing) : '', num(p.transport) ? 'مواصلات ' + money(p.transport) : '']
+    .concat(p.indirectTypes || []).filter(Boolean);
+  if(p.inBudget) opsParts.push(p.inBudget === 'نعم' ? 'ضمن ميزانية المانح' : 'خارج ميزانية المانح');
+  const cDiff = C != null && F ? F - C : null;
+  return '<article class="card"><div class="card-h"><h2>المالية</h2><span class="end">' + payPill + (p.payStatus ? '<span class="pill">' + esc(p.payStatus) + '</span>' : '') + '</span></div>' +
+    '<div class="money">' +
+      m('المبلغ الكلي', money(p.approved), 'حسب الاعتماد') +
+      m('النسبة الإدارية', money(hasVal(p.admin) ? ADM : null), base && hasVal(p.admin) ? pct(ADM / base) + ' من المبلغ الكلي' : '') +
+      m('مبلغ التنفيذ حسب الاعتماد', money(E || null), 'الكلي − الإدارية' + (A && E ? ' · ' + pct(E / A) : '')) +
+      m('المصاريف التشغيلية', money(hasVal(p.otherOps) ? OPS : null), opsParts.join(' · ')) +
+      m('مبلغ التنفيذ الفعلي', money(E || hasVal(p.net) ? F : null), 'حسب الاعتماد − التشغيلية') +
+      m('حسب الترسية أو التعاقد', money(C), cDiff == null ? 'مبلغ التنفيذ بعد الترسية أو التعاقد' : Math.abs(cDiff) < 1 ? 'مطابق للفعلي' : (cDiff > 0 ? 'وفر ' : 'زيادة ') + money(Math.abs(cDiff)) + ' عن الفعلي', cDiff != null && cDiff <= -1 ? 'warn' : '') +
+      (A && E ? m('المعادلة', issues.length ? 'غير متوازنة' : 'متوازنة', issues.length ? issues.join(' · ') : 'الكلي − الإدارية = الفعلي + التشغيلية', issues.length ? 'warn' : '') : '') +
+    '</div>' + bar + recv +
+    (!A ? '<p class="note">لم يُسجَّل المبلغ الكلي لهذا المشروع، فالنسب محسوبة من مبلغ التنفيذ والإدارية.</p>' : '') +
+    (p.donorRequests ? '<div class="brief"><b>طلبات المانح:</b> ' + esc(p.donorRequests) + '</div>' : '') +
+  '</article>';
+}
+
+/* ---------- المستندات والملفات ---------- */
+function filesOf(p){ return SOURCE === 'live' ? FILES[p.code] : (DATA.files || {})[p.code]; }
+async function fetchFiles(p){
+  filesLoading.add(p.code);
+  try{
+    const d = await post({action:'project_files', org: ORG, code: p.code, pageId: p.id});
+    FILES[p.code] = d.files || {none: true};
+    if(d.files){ Object.assign(p, {docsDone: d.files.done, docsChecked: d.files.checked, folder: d.files.folder, drive: d.files.url}); }
+  }catch(e){ FILES[p.code] = {error: e.message}; }
+  filesLoading.delete(p.code);
+  if(S.sel === p.id && S.view === 'list'){ refreshCard('docsCard', docsCard(p)); }
+}
+function docsPhase(p){ const i = PHASES.indexOf(p.phase); return i >= 0 ? i : PHASES.length - 1; }
+function fileKind(name){
+  const x = (String(name).split('.').pop() || '').toLowerCase();
+  if(x === 'pdf') return ['pdf', 'PDF'];
+  if(/^docx?$/.test(x)) return ['doc', 'DOC'];
+  if(/^(xlsx?|xlsm|csv)$/.test(x)) return ['xls', 'XLS'];
+  if(/^(jpe?g|png|heic|webp|gif)$/.test(x)) return ['img', x === 'png' ? 'PNG' : 'IMG'];
+  if(/^(mp4|mov|avi|mkv)$/.test(x)) return ['vid', 'VID'];
+  return ['', x ? x.slice(0, 4).toUpperCase() : 'FILE'];
+}
+function fileChip(f){
+  const [cls, lbl] = fileKind(f.name);
+  const base = String(f.name).replace(/\.[^.]+$/, '');
+  return '<a class="file ' + cls + '" href="' + esc(f.url) + '" target="_blank" rel="noopener" title="' +
+    esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' · ' + fmtDate(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></a>';
+}
+function docsCard(p){
+  const f = filesOf(p);
+  const loading = SOURCE === 'live' && filesLoading.has(p.code);
+  const done = new Set(f && f.done ? f.done : (p.docsDone || []));
+  const slots = new Map(((f && f.slots) || []).map(s => [s.slot, s]));
+  const at = docsPhase(p), phaseKnown = PHASES.indexOf(p.phase) >= 0;
+  let nDone = 0, nMissing = 0;
+  const groups = DOC_GROUPS.map(([g, items]) => '<div class="dgroup"><h4>' + g + '</h4>' + items.map(([d, from]) => {
+    const ok = done.has(d), later = !ok && from > at;
+    if(ok) nDone++; else if(!later) nMissing++;
+    const sl = slots.get(d), list = sl ? sl.files : [];
+    const key = p.code + '|' + d, open = EXPANDED.has(key), shown = open ? list : list.slice(0, 4);
+    return '<div class="slot ' + (ok ? 'ok' : later ? 'later' : 'miss') + '"><span class="ic">' + ICON_CHECK + '</span><div>' +
+      '<div class="slot-h">' + d + '<em>' + (ok ? 'مرفق' + (list.length ? ' · ' + cnt(list.length, W_FILE) : '') : later ? 'لاحقًا' : 'ناقص') + '</em>' +
+        (sl && sl.url ? '<a class="link" href="' + esc(sl.url) + '" target="_blank" rel="noopener">فتح المجلد</a>' : '') + '</div>' +
+      (shown.length ? '<div class="files">' + shown.map(fileChip).join('') +
+        (list.length > 4 ? '<button class="more" type="button" data-act="more" data-key="' + esc(key) + '">' + (open ? 'عرض أقل' : '+ ' + cnt(list.length - 4, W_FILE)) + '</button>' : '') + '</div>' : '') +
+    '</div></div>';
+  }).join('') + '</div>').join('');
+  const checked = (f && f.checked) || p.docsChecked;
+  const ratio = nDone / DOCS_N;
+  const driveUrl = (f && f.url) || p.drive;
+  const head = '<article class="card" id="docsCard"><div class="card-h"><span class="dring" style="--p:' + Math.round(ratio * 100) + '" aria-hidden="true"><b>' + AR(Math.round(ratio * 100)) + '٪</b></span>' +
+      '<div><h2>مستندات المشروع</h2><small>' + (!checked && !f ? (DATA.driveRoot ? 'لم يُفحص المجلد بعد' : 'الأرشيف غير مربوط') :
+        AR(nDone) + ' من ' + AR(DOCS_N) + ' مرفقة' + (nMissing ? ' · ' + AR(nMissing) + ' ناقصة حتى هذه المرحلة' : '')) + '</small></div>' +
+      '<span class="end">' + (driveUrl ? '<a class="btn soft sm" href="' + esc(driveUrl) + '" target="_blank" rel="noopener">المجلد في درايف</a>' : '') +
+        (SOURCE === 'live' ? '<button class="btn ghost sm" type="button" data-act="files-refresh">' + (loading ? 'جارٍ القراءة…' : 'قراءة الملفات من درايف') + '</button>' : '') + '</span></div>';
+  if(!checked && !f && !DATA.driveRoot) return head + '<p class="note" style="margin:0">لم يُربط أرشيف درايف لمؤسسة ' + ORG_INFO.name +
+    ' بعد. اربطه من زر الأرشيف أعلى الصفحة، فتُقرأ مجلدات مشاريعها (المسماة بالكود مثل ' + (ORG === 'humera' ? 'H001-' : 'G050-') + ') ملفًا ملفًا.</p></article>';
+  if(!checked && !f) return head + '<p class="note" style="margin:0">' + (loading ? 'جارٍ قراءة مجلد المشروع من درايف…' :
+    'لم يُفحص مجلد هذا المشروع في الأرشيف بعد' + (p.year === '2025' ? '، ومشاريع ٢٠٢٥ مؤرشفة خارج هذا القالب' : '') + '.') + '</p></article>';
+  return head + groups +
+    '<p class="note">' + (f && f.error ? '<span style="color:var(--urgent)">تعذّرت قراءة الملفات: ' + esc(f.error) + '</span> · ' : '') +
+      'آخر فحص للمجلد ' + fmtDate(checked) + (p.folder || (f && f.folder) ? ' · <span class="folder">' + esc(p.folder || f.folder) + '</span>' : '') +
+      (phaseKnown ? ' · «لاحقًا» يعني أن وقته لم يحن في مرحلة «' + esc(p.phase) + '»' : '') + '.' +
+      (SOURCE === 'local' ? ' في نسخة التطوير يفتح زر الملف بحثًا عنه في درايف، وبعد نشر الجسر يفتح الملف نفسه مباشرة.' : '') + '</p>' +
+  '</article>';
+}
+
+/* ================= الإحصائيات ================= */
+/* النسب تُحسب على المشاريع المسجّل لها مبلغ معتمد فقط، حتى لا يضخّمها ما لا اعتماد له */
+function agg(rows){
+  const t = {n: rows.length, A:0, E:0, F:0, ADM:0, OPS:0, EA:0, FA:0, ADMA:0, OPSA:0, R:0, RA:0, benef:0, active:0, late:0, bad:0};
+  rows.forEach(p => {
+    const {A, E, F, ADM, OPS, issues} = fin(p);
+    t.A += A; t.E += E; t.F += F; t.ADM += ADM; t.OPS += OPS;
+    if(A){ t.EA += E; t.FA += F; t.ADMA += ADM; t.OPSA += OPS; }
+    if(issues.length) t.bad++;
+    if(p.received != null && A){ t.R += num(p.received); t.RA += A; }
+    t.benef += num(p.benef);
+    if(ACTIVE.has(p.status)) t.active++;
+    if(isLate(p) || lateDels(p).length) t.late++;
+  });
+  return t;
+}
+function groupBy(rows, key){
+  const m = new Map();
+  rows.forEach(p => { const k = (typeof key === 'function' ? key(p) : p[key]) || 'غير محدد'; if(!m.has(k)) m.set(k, []); m.get(k).push(p); });
+  return [...m.entries()].map(([k, rs]) => Object.assign({key: k, rows: rs}, agg(rs)));
+}
+function expectedDocs(p){ const at = docsPhase(p); return DOC_GROUPS.flatMap(g => g[1]).filter(([, from]) => from <= at).map(([d]) => d); }
+const card = (title, body, sub, extra) => '<article class="card' + (extra ? ' ' + extra : '') + '"><div class="card-h"><h2>' + title + '</h2>' + (sub ? '<small>' + sub + '</small>' : '') + '</div>' + body + '</article>';
+const kpiBox = (k, v, sub, meter) => '<div class="kpi"><span>' + k + '</span><b>' + v + '</b>' + (sub ? '<small>' + sub + '</small>' : '') +
+  (meter != null && isFinite(meter) ? '<div class="meter" aria-hidden="true"><i style="width:' + Math.min(100, Math.max(0, meter * 100)) + '%"></i></div>' : '') + '</div>';
+
+function renderStats(rows){
+  if(!rows.length){ $('stats').innerHTML = '<div class="card empty">لا توجد مشاريع تطابق هذه الفلاتر.</div>'; return; }
+  const t = agg(rows);
+  const scanned = rows.filter(p => p.docsChecked);
+  const docsAvg = scanned.length ? scanned.reduce((s, p) => s + (p.docsDone || []).length, 0) / (scanned.length * DOCS_N) : null;
+  const ids = new Set(rows.map(p => p.id));
+  const plan = DATA.plan.filter(x => ids.has(x.project));
+  const planDone = plan.filter(x => x.status === 'منجز').length, planLate = plan.filter(itemLate).length;
+  const withPlan = new Set(plan.map(x => x.project)).size;
+
+  const counters = '<section class="counters">' +
+    kpiBox('المشاريع', AR(t.n), AR(t.active) + ' جارية · ' + AR(t.late) + ' تحتاج متابعة' + (t.bad ? ' · ' + AR(t.bad) + ' تخالف معادلة المبالغ' : '')) +
+    kpiBox('المبلغ الكلي', money(t.A), 'مسجّل الاعتماد في ' + cnt(rows.filter(p => num(p.approved)).length, W_PROJ)) +
+    kpiBox('التنفيذ حسب الاعتماد', money(t.E), t.A ? pct(t.EA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.EA / t.A : null) +
+    kpiBox('مبلغ التنفيذ الفعلي', money(t.F), t.A ? pct(t.FA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.FA / t.A : null) +
+    kpiBox('النسبة الإدارية', money(t.ADM), t.A ? pct(t.ADMA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.ADMA / t.A : null) +
+    kpiBox('المصاريف التشغيلية', money(t.OPS), t.A ? pct(t.OPSA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.OPSA / t.A : null) +
+    kpiBox('المستلم من المانحين', money(t.R), t.RA ? pct(t.R / t.RA) + ' من المعتمد المسجّل تحصيله' : 'لا تحصيل مسجّل', t.RA ? t.R / t.RA : null) +
+    kpiBox('المتبقي تحصيله', money(t.RA - t.R), t.RA ? 'على ' + cnt(rows.filter(p => p.received != null && num(p.approved) > num(p.received)).length, W_PROJ) : '') +
+    kpiBox('المستفيدون', AR(Math.round(t.benef)), 'من الأعداد المسجّلة رقمًا') +
+    kpiBox('اكتمال المستندات', docsAvg == null ? '—' : pct(docsAvg), 'المجلدات المفحوصة: ' + AR(scanned.length), docsAvg) +
+    kpiBox('تقدّم خطط التنفيذ', plan.length ? pct(planDone / plan.length) : '—',
+      plan.length ? 'منجز ' + AR(planDone) + ' من ' + AR(plan.length) + (planLate ? ' · متأخر ' + AR(planLate) : '') + ' · ' + cnt(withPlan, W_PROJ) + ' بخطة' : 'لا خطط بعد', plan.length ? planDone / plan.length : null) +
+  '</section>';
+
+  let donut = '<p class="note">لا مبالغ معتمدة مسجّلة ضمن هذه الفلاتر.</p>';
+  if(t.A){
+    const rest = t.A - t.FA - t.ADMA - t.OPSA;
+    const parts = [['التنفيذ الفعلي', t.FA, 'var(--c-exec)'], ['المصاريف التشغيلية', t.OPSA, 'var(--c-ops)'], ['الإدارية', t.ADMA, 'var(--c-admin)'],
+      [rest >= 0 ? 'غير موزّع' : 'تجاوز المبلغ الكلي', Math.abs(rest), 'var(--rule)']].filter(x => x[1] > 0);
+    const tot = parts.reduce((s, x) => s + x[1], 0);
+    let acc = 0;
+    const grad = parts.map(x => { const a = acc / tot * 100; acc += x[1]; return x[2] + ' ' + a + '% ' + (acc / tot * 100) + '%'; }).join(',');
+    donut = '<div class="donut-wrap"><div class="donut" style="background:conic-gradient(' + grad + ')" role="img" aria-label="تركيبة المبلغ الكلي">' +
+        '<span><span><b>' + pct(t.EA / t.A) + '</b>التنفيذ حسب الاعتماد</span></span></div>' +
+      '<div class="dlegend">' + parts.map(x => '<div><i style="background:' + x[2] + '"></i>' + x[0] + '<b>' + money(x[1]) + '</b><small>' + pct(x[1] / t.A) + '</small></div>').join('') + '</div></div>';
+  }
+  const hbars = (items, opt) => {
+    if(!items.length) return '<p class="note">لا بيانات.</p>';
+    const max = Math.max(...items.map(opt.max)) || 1;
+    return '<div class="hbars">' + items.map(g => {
+      const open = opt.filter ? 'button type="button" data-f="' + opt.filter + '" data-v="' + esc(g.key) + '"' : 'div';
+      return '<' + open + ' class="hb" title="' + esc(g.key) + '"><span class="lb">' + esc(g.key) + '</span><span class="tr">' + opt.layers(g, max) + '</span><span class="vl">' + opt.value(g) + '</span></' + open.split(' ')[0] + '>';
+    }).join('') + '</div>';
+  };
+  const L = (cls, v, max) => '<i class="' + cls + '" style="width:' + Math.min(100, v / max * 100) + '%"></i>';
+  const byAmount = (a, b) => (b.A || b.E) - (a.A || a.E);
+  const legend = (...xs) => '<div class="bar-legend small">' + xs.map(([c, l]) => '<span><i style="background:' + c + '"></i>' + l + '</span>').join('') + '</div>';
+
+  const donors = groupBy(rows, 'donor').sort(byAmount);
+  const donorCard = card('حسب الجهة الممولة', hbars(donors.slice(0, 12), {
+      filter: 'donor', max: g => Math.max(g.A, g.E), layers: (g, m) => L('a', g.A, m) + L('e', g.E, m),
+      value: g => money(g.A || g.E) + ' <small>· ' + AR(g.n) + (g.A ? ' · صرف ' + pct(g.EA / g.A) : '') + '</small>' }) +
+    legend(['var(--c-soft)', 'المعتمد'], ['var(--c-exec)', 'التنفيذ']), donors.length > 12 ? 'أعلى ١٢ من ' + AR(donors.length) : cnt(donors.length, W_ENT));
+  const types = groupBy(rows, 'type').sort(byAmount);
+  const typeCard = card('حسب نوع المشروع', hbars(types, {
+    filter: 'type', max: g => Math.max(g.A, g.E), layers: (g, m) => L('a', g.A, m) + L('e', g.E, m),
+    value: g => money(g.A || g.E) + ' <small>· ' + cnt(g.n, W_PROJ) + '</small>' }));
+  const coords = groupBy(rows, 'coordinator').sort((a, b) => b.active - a.active || b.n - a.n);
+  const coordCard = card('حسب المنسق', hbars(coords, {
+    filter: 'coord', max: g => g.n, layers: (g, m) => L('a', g.n, m) + L('e', g.active, m) + L('w', g.late, m),
+    value: g => AR(g.n) + ' <small>· ' + AR(g.active) + ' جارية' + (g.late ? ' · ' + AR(g.late) + ' متأخرة' : '') + '</small>' }) +
+    legend(['var(--c-soft)', 'الكل'], ['var(--c-exec)', 'جارية'], ['var(--c-ind)', 'تحتاج متابعة']));
+  const coll = donors.filter(g => g.RA).sort((a, b) => (b.RA - b.R) - (a.RA - a.R)).slice(0, 12);
+  const collCard = card('التحصيل من المانحين', coll.length ? hbars(coll, {
+      filter: 'donor', max: g => g.RA, layers: (g, m) => L('a', g.RA, m) + L('r', g.R, m),
+      value: g => pct(g.R / g.RA) + ' <small>· المتبقي ' + money(g.RA - g.R) + '</small>' }) + legend(['var(--c-soft)', 'المعتمد'], ['var(--c-ops)', 'المستلم'])
+    : '<p class="note">لا تحصيل مسجّل ضمن هذه الفلاتر، ويُملأ من ملف «متابعة دفعات المانحين».</p>', coll.length ? 'الأكثر متبقيًا أولًا' : '');
+
+  const months = new Map();
+  rows.forEach(p => { const d = p.approvalDate || p.start; if(!d) return; const k = d.slice(0, 7);
+    const o = months.get(k) || {n: 0, v: 0}; o.n++; o.v += num(p.approved) || num(p.exec); months.set(k, o); });
+  const mk = [...months.keys()].sort().slice(-18);
+  const mmax = Math.max(1, ...mk.map(k => months.get(k).v));
+  const multiYear = new Set(mk.map(k => k.slice(0, 4))).size > 1;
+  const monthCard = card('الاعتمادات حسب الشهر', mk.length ?
+    '<div class="cols" role="img" aria-label="المبالغ المعتمدة شهريًا">' + mk.map(k => { const o = months.get(k);
+      return '<div class="col" title="' + esc(fmtDate(k + '-01') + ' · ' + cnt(o.n, W_PROJ) + ' · ' + money(o.v)) + '"><em>' + AR(o.n) + '</em><i style="height:' + (o.v / mmax * 84) + '%"></i></div>'; }).join('') + '</div>' +
+    '<div class="col-lbls">' + mk.map(k => '<span>' + toDate(k + '-01').toLocaleDateString('ar-EG', {month: 'short'}) + (multiYear ? ' ' + AR(k.slice(2, 4)).replace(/٬/g, '') : '') + '</span>').join('') + '</div>' +
+    '<p class="note">ارتفاع العمود المبلغ المعتمد (أو مبلغ التنفيذ إن لم يُسجَّل)، والرقم فوقه عدد المشاريع.</p>'
+    : '<p class="note">لا تواريخ اعتماد مسجّلة.</p>', 'بتاريخ الاعتماد');
+
+  const miss = new Map();
+  scanned.forEach(p => { const done = new Set(p.docsDone || []); expectedDocs(p).forEach(d => { if(!done.has(d)) miss.set(d, (miss.get(d) || 0) + 1); }); });
+  const missItems = [...miss.entries()].sort((a, b) => b[1] - a[1]).map(([key, n]) => ({key, n}));
+  const missCard = card('المستندات الأكثر نقصًا', scanned.length ? hbars(missItems, {
+      max: () => scanned.length, layers: (g, m) => L('w', g.n, m), value: g => cnt(g.n, W_PROJ) })
+    : '<p class="note">لم يُفحص أي مجلد ضمن هذه الفلاتر.</p>', scanned.length ? 'المجلدات المفحوصة: ' + AR(scanned.length) + ' · بحسب مرحلة كل مشروع' : '');
+  const act = rows.filter(p => ACTIVE.has(p.status));
+  const phases = [...PHASES, 'غير محددة'].map(ph => ({key: ph, n: act.filter(p => (PHASES.includes(p.phase) ? p.phase : 'غير محددة') === ph).length})).filter(g => g.n);
+  const phaseCard = card('مراحل المشاريع الجارية', act.length ? hbars(phases, {
+    max: g => g.n, layers: (g, m) => L('e', g.n, m), value: g => AR(g.n) }) : '<p class="note">لا مشاريع جارية.</p>', 'الجارية: ' + AR(act.length));
+
+  $('stats').innerHTML = counters + projTable(rows) +
+    '<div class="sgrid">' + card('تركيبة المبلغ الكلي', donut, 'على المشاريع المسجّل لها اعتماد') + monthCard +
+      donorCard + collCard + typeCard + coordCard + missCard + phaseCard + '</div>';
+  $('stats').querySelectorAll(':scope > *, .sgrid > *').forEach((c, i) => { c.classList.add('rise'); c.style.animationDelay = Math.min(i, 10) * 40 + 'ms'; });
+}
+
+/* جدول المشاريع — يُرتَّب بالنقر على العنوان، والنقر على الصف يفتح المشروع */
+const TCOLS = [
+  ['code', 'الكود', p => p.code || ''], ['name', 'المشروع', p => p.name || ''], ['donor', 'الجهة الممولة', p => p.donor || ''],
+  ['coord', 'المنسق', p => p.coordinator || ''], ['end', 'النهاية', p => p.end || ''], ['status', 'الحالة', p => p.status || ''],
+  ['approved', 'الكلي', p => num(p.approved)], ['exec', 'التنفيذ', p => num(p.exec)], ['net', 'الفعلي', p => fin(p).F],
+  ['spend', 'الصرف', p => num(p.approved) ? num(p.exec) / num(p.approved) : -1],
+  ['adminP', 'الإدارية', p => num(p.approved) ? num(p.admin) / num(p.approved) : -1],
+  ['recv', 'المستلم', p => p.received != null && num(p.approved) ? num(p.received) / num(p.approved) : -1],
+  ['docs', 'المستندات', p => p.docsChecked ? (p.docsDone || []).length : -1],
+  ['plan', 'الخطة', p => { const pr = planOf(p); return pr.length ? pr.filter(x => x.status === 'منجز').length / pr.length : -1; }]
+];
+const TEXT_COLS = ['code', 'name', 'donor', 'coord', 'end', 'status'];
+function projTable(rows){
+  const col = TCOLS.find(c => c[0] === S.tsort) || TCOLS[6];
+  const sorted = rows.slice().sort((a, b) => { const x = col[2](a), y = col[2](b);
+    return (typeof x === 'string' ? x.localeCompare(y, 'ar', {numeric: true}) : x - y) * S.tdir; });
+  const P = x => x < 0 ? '—' : pct(x);
+  const V = k => TCOLS.find(c => c[0] === k)[2];
+  const body = sorted.map(p => {
+    const sp = V('spend')(p), rc = V('recv')(p), pl = V('plan')(p);
+    const link = (filesOf(p) || {}).url || p.drive;
+    return '<tr data-id="' + esc(p.id) + '"><td>' + codeChip(p) + '</td>' +
+      '<td class="nm">' + (link ? '<a href="' + esc(link) + '" target="_blank" rel="noopener" data-stop title="فتح مجلد المشروع">' + esc(p.name) + '</a>' : esc(p.name)) + '</td>' +
+      '<td>' + esc(p.donor || '—') + '</td><td>' + esc(p.coordinator || '—') + '</td><td>' + (p.end ? fmtDate(p.end, false) : '—') + '</td><td>' + statusPill(p.status) + '</td>' +
+      '<td>' + money(p.approved) + '</td><td>' + money(p.exec) + '</td>' +
+      (f => '<td class="' + (f.issues.length ? 'hi' : '') + '"' + (f.issues.length ? ' title="' + esc(f.issues.join(' · ')) + '"' : '') + '>' + (f.F ? money(f.F) : '—') + (f.issues.length ? ' ⚠' : '') + '</td>')(fin(p)) +
+      '<td class="' + (sp > 1.0001 ? 'hi' : '') + '">' + P(sp) + '</td><td>' + P(V('adminP')(p)) + '</td>' +
+      '<td class="' + (rc >= 0.9999 ? 'ok' : '') + '">' + P(rc) + '</td>' +
+      '<td>' + (p.docsChecked ? AR((p.docsDone || []).length) + '/' + AR(DOCS_N) : '—') + '</td><td>' + P(pl) + '</td></tr>';
+  }).join('');
+  const head = TCOLS.map(c => '<th><button type="button" data-sort="' + c[0] + '" class="' + (c[0] === S.tsort ? 'on' : '') + '">' + c[1] +
+    (c[0] === S.tsort ? (S.tdir < 0 ? ' ↓' : ' ↑') : '') + '</button></th>').join('');
+  return card('جدول المشاريع', '<div class="st-scroll"><table class="st-table"><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table></div>',
+    cnt(rows.length, W_PROJ) + ' · انقر عنوان العمود للترتيب، والصف لفتح المشروع، واسم المشروع لفتح مجلده');
+}
+
+/* ================= خطة التنفيذ: الحفظ ================= */
+const isTmp = id => /^(tmp|lp)-/.test(String(id || ''));
+const newId = pre => pre + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const planPayload = it => ({ id: isTmp(it.id) ? null : it.id, project: it.project, title: it.title, stage: it.stage, order: it.order,
+  status: it.status, start: it.start || '', end: it.end || '', done: it.done || '', owner: it.owner || '', notes: it.notes || '', localId: it.id });
+let toastT;
+function toast(msg, bad){
+  const t = $('toast'); t.textContent = msg; t.className = 'toast on' + (bad ? ' bad' : '');
+  clearTimeout(toastT); toastT = setTimeout(() => { t.className = 'toast' + (bad ? ' bad' : ''); }, bad ? 5200 : 2600);
+}
+function rerender(){ if(S.view === 'list'){ renderList(filtered()); renderDetail(); } }
+async function saveItem(it, prev){
+  try{
+    if(SOURCE === 'live'){
+      const d = await post({action: 'plan_save', org: ORG, item: planPayload(it)});
+      Object.assign(it, d.item);
+      toast('حُفظ في نوشن');
+    }else{
+      if(!/^lp-/.test(it.id)) it.id = newId('lp');
+      localPlanWrite(); toast('حُفظ في هذا المتصفح (نسخة التطوير)');
+    }
+  }catch(e){
+    if(prev) Object.assign(it, prev); else DATA.plan = DATA.plan.filter(x => x !== it);
+    toast('تعذّر الحفظ: ' + e.message, true);
+  }
+  rerender();
+}
+function toggleItem(id){
+  const it = DATA.plan.find(x => x.id === id); if(!it) return;
+  const prev = Object.assign({}, it);
+  it.status = it.status === 'منجز' ? 'لم يبدأ' : 'منجز';
+  it.done = it.status === 'منجز' ? iso(today) : null;
+  rerender(); saveItem(it, prev);
+}
+async function createFromTemplate(p, key){
+  const tpl = TEMPLATES.find(t => t.key === key); if(!tpl) return;
+  const s = p.start || p.approvalDate, e = p.end;
+  const span = s && e && toDate(e) > toDate(s) ? toDate(e) - toDate(s) : 0;
+  const docs = new Set(p.docsDone || []), n = tpl.stages.length, items = [];
+  tpl.stages.forEach(([stage, list], si) => {
+    const a = span ? iso(new Date(toDate(s).getTime() + span * si / n)) : '';
+    const b = span ? iso(new Date(toDate(s).getTime() + span * (si + 1) / n)) : '';
+    list.forEach(([title, doc], ii) => {
+      const done = doc ? [].concat(doc).every(d => docs.has(d)) : false;
+      items.push({ id: newId(SOURCE === 'live' ? 'tmp' : 'lp'), project: p.id, title, stage, order: si * 100 + ii * 10,
+        status: done ? 'منجز' : 'لم يبدأ', start: a, end: b, done: done ? (p.docsChecked || iso(today)) : '', owner: p.coordinator || '', notes: '' });
+    });
+  });
+  DATA.plan.push(...items); rerender();
+  try{
+    if(SOURCE === 'live'){
+      const d = await post({action: 'plan_bulk', org: ORG, items: items.map(planPayload)});
+      d.items.forEach(r => { const it = items.find(x => x.id === r.localId); if(it) Object.assign(it, r); });
+      toast('أُنشئت الخطة في نوشن: ' + cnt(items.length, W_ITEM));
+    }else{ localPlanWrite(); toast('أُنشئت الخطة في هذا المتصفح: ' + cnt(items.length, W_ITEM)); }
+  }catch(err){
+    DATA.plan = DATA.plan.filter(x => !items.includes(x));
+    toast('تعذّر إنشاء الخطة: ' + err.message, true);
+  }
+  rerender();
+}
+
+/* نافذة البند */
+let dlgItem = null, dlgProject = null;
+function openPlanDlg(p, it, stage, newStage){
+  dlgProject = p; dlgItem = it || null;
+  const f = $('planForm');
+  $('planDlgTitle').textContent = it ? 'تعديل البند' : newStage ? 'مرحلة جديدة' : 'بند جديد';
+  $('planDlgSub').textContent = (p.code ? p.code + ' · ' : '') + p.name;
+  f.title.value = it ? it.title : ''; f.stage.value = it ? (it.stage || '') : (newStage ? '' : (stage || ''));
+  f.status.value = it ? (it.status || 'لم يبدأ') : 'لم يبدأ';
+  f.start.value = it ? (it.start || '') : ''; f.end.value = it ? (it.end || '') : '';
+  fillOwners(it ? (it.owner || '') : (p.coordinator || '')); f.notes.value = it ? (it.notes || '') : '';
+  $('peoplePanel').hidden = true; $('peopleToggle').setAttribute('aria-expanded', 'false');
+  $('stageList').innerHTML = stagesOf(p).map(s => '<option value="' + esc(s.name) + '">').join('');
+  const del = $('planDel'); del.hidden = !it; del.textContent = 'حذف البند'; del.dataset.armed = '';
+  $('planDlg').showModal();
+  (newStage ? f.stage : f.title).focus();
+}
+$('planForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target, p = dlgProject; if(!p) return;
+  const vals = { title: f.title.value.trim(), stage: f.stage.value.trim(), status: f.status.value, start: f.start.value, end: f.end.value,
+    owner: $('ownerSel').value, notes: f.notes.value.trim() };
+  if(!vals.title){ f.title.focus(); return; }
+  if(vals.end && vals.start && vals.end < vals.start){ toast('النهاية المخططة قبل البداية', true); f.end.focus(); return; }
+  $('planDlg').close();
+  if(dlgItem){
+    const prev = Object.assign({}, dlgItem);
+    if(vals.status === 'منجز' && dlgItem.status !== 'منجز') vals.done = iso(today);
+    if(vals.status !== 'منجز') vals.done = '';
+    Object.assign(dlgItem, vals); rerender(); saveItem(dlgItem, prev);
+  }else{
+    const same = planOf(p).filter(x => (x.stage || '') === vals.stage);
+    const order = same.length ? Math.max(...same.map(x => num(x.order))) + 10 : (planOf(p).length ? Math.max(...planOf(p).map(x => num(x.order))) + 100 : 0);
+    const it = Object.assign({ id: newId(SOURCE === 'live' ? 'tmp' : 'lp'), project: p.id, order, done: vals.status === 'منجز' ? iso(today) : '' }, vals);
+    DATA.plan.push(it); rerender(); saveItem(it, null);
+  }
+});
+$('planDel').addEventListener('click', async e => {
+  const b = e.currentTarget, it = dlgItem; if(!it) return;
+  if(!b.dataset.armed){ b.dataset.armed = '1'; b.textContent = 'تأكيد الحذف'; return; }
+  $('planDlg').close();
+  const idx = DATA.plan.indexOf(it); DATA.plan.splice(idx, 1); rerender();
+  try{
+    if(SOURCE === 'live' && !isTmp(it.id)){ await post({action: 'plan_delete', org: ORG, id: it.id}); toast('نُقل البند إلى سلة نوشن'); }
+    else{ localPlanWrite(); toast('حُذف البند'); }
+  }catch(err){ DATA.plan.splice(idx, 0, it); rerender(); toast('تعذّر الحذف: ' + err.message, true); }
+});
+document.querySelectorAll('dialog [data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
+
+/* ---------- قائمة المسؤولين: اختيار، وإضافة، وتعديل يُطبَّق على كل البنود، وحذف ---------- */
+const ownerCount = name => DATA.plan.filter(x => x.owner === name).length;
+function fillOwners(selected){
+  const sel = $('ownerSel'), cur = selected != null ? selected : sel.value;
+  const names = DATA.people.slice();
+  if(cur && !names.includes(cur)) names.unshift(cur);   /* اسم قديم خارج القائمة يبقى ظاهرًا في بنده */
+  sel.innerHTML = '<option value="">— بلا مسؤول —</option>' + names.map(n =>
+    '<option' + (n === cur ? ' selected' : '') + '>' + esc(n) + (DATA.people.includes(n) ? '' : ' (خارج القائمة)') + '</option>').join('');
+  sel.value = cur || '';
+  $('peopleList').innerHTML = DATA.people.length ? DATA.people.map(n => {
+    const c = ownerCount(n);
+    return '<li><input value="' + esc(n) + '" data-name="' + esc(n) + '" maxlength="120" aria-label="اسم المسؤول">' +
+      '<small>' + (c ? cnt(c, W_ITEM) : 'بلا بنود') + '</small>' +
+      '<button class="icon-btn sm" type="button" data-del="' + esc(n) + '" title="حذف من القائمة" aria-label="حذف ' + esc(n) + ' من القائمة">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg></button></li>';
+  }).join('') : '<li class="note" style="margin:0">القائمة فارغة — أضف أول اسم.</li>';
+}
+async function peopleOp(kind, args){
+  const prevPeople = DATA.people.slice(), prevOwners = DATA.plan.map(x => [x, x.owner]);
+  if(kind === 'add') DATA.people = uniqNames(DATA.people.concat(args.name));
+  if(kind === 'rename'){
+    DATA.people = uniqNames(DATA.people.map(n => n === args.from ? args.to : n));
+    DATA.plan.forEach(x => { if(x.owner === args.from) x.owner = args.to; });
+  }
+  if(kind === 'remove'){
+    DATA.people = DATA.people.filter(n => n !== args.name);
+    DATA.plan.forEach(x => { if(x.owner === args.name) x.owner = ''; });
+  }
+  const sel = $('ownerSel').value;
+  fillOwners(kind === 'rename' && sel === args.from ? args.to : kind === 'remove' && sel === args.name ? '' : kind === 'add' ? args.name : sel);
+  rerender();
+  try{
+    if(SOURCE === 'live'){
+      const d = await post(Object.assign({action: 'people_' + kind, org: ORG}, args));
+      DATA.people = d.people;
+      toast(kind === 'rename' ? 'عُدِّل الاسم' + (d.updated ? ' في ' + cnt(d.updated, W_ITEM) : '') :
+            kind === 'remove' ? 'حُذف من القائمة' + (d.cleared ? ' وأُفرغ من ' + cnt(d.cleared, W_ITEM) : '') : 'أُضيف إلى القائمة');
+    }else{
+      localPeopleWrite(); if(kind !== 'add') localPlanWrite();
+      toast(kind === 'rename' ? 'عُدِّل الاسم في كل بنوده' : kind === 'remove' ? 'حُذف من القائمة' : 'أُضيف إلى القائمة');
+    }
+  }catch(e){
+    DATA.people = prevPeople; prevOwners.forEach(([x, o]) => { x.owner = o; });
+    toast('تعذّر تعديل القائمة: ' + e.message, true);
+  }
+  fillOwners(); rerender();
+}
+$('peopleToggle').addEventListener('click', e => {
+  const panel = $('peoplePanel'), open = panel.hidden;
+  panel.hidden = !open; e.currentTarget.setAttribute('aria-expanded', String(open));
+  if(open) $('peopleNew').focus();
+});
+function addPerson(){
+  const inp = $('peopleNew'), name = inp.value.trim();
+  if(!name) { inp.focus(); return; }
+  if(DATA.people.includes(name)){ toast('الاسم موجود في القائمة', true); return; }
+  inp.value = ''; peopleOp('add', {name});
+}
+$('peopleAddBtn').addEventListener('click', addPerson);
+$('peopleNew').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); addPerson(); } });
+/* التعديل يُحفظ عند مغادرة الحقل أو Enter */
+$('peopleList').addEventListener('change', e => {
+  const inp = e.target.closest('input[data-name]'); if(!inp) return;
+  const from = inp.dataset.name, to = inp.value.trim();
+  if(!to || to === from){ inp.value = from; return; }
+  if(DATA.people.includes(to)){ toast('الاسم موجود في القائمة', true); inp.value = from; return; }
+  peopleOp('rename', {from, to});
+});
+$('peopleList').addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.matches('input[data-name]')){ e.preventDefault(); e.target.blur(); } });
+$('peopleList').addEventListener('click', e => {
+  const b = e.target.closest('[data-del]'); if(!b) return;
+  const name = b.dataset.del, c = ownerCount(name);
+  if(c && !b.dataset.armed){ b.dataset.armed = '1'; b.title = 'تأكيد: سيُفرغ من ' + cnt(c, W_ITEM); b.style.color = 'var(--urgent)'; toast('اضغط مرة أخرى للتأكيد — سيُفرغ الاسم من ' + cnt(c, W_ITEM), true); return; }
+  peopleOp('remove', {name});
+});
+
+/* نافذة أرشيف درايف */
+$('driveBtn').addEventListener('click', () => {
+  const root = DATA.driveRoot;
+  $('driveNow').innerHTML = root ? 'المجلد المربوط الآن: <a class="link" href="https://drive.google.com/drive/folders/' + esc(root) + '" target="_blank" rel="noopener">فتح مجلد الأرشيف ↗</a>' : 'لم يُربط أرشيف ' + ORG_INFO.name + ' بعد.';
+  $('driveForm').root.value = '';
+  $('driveDlg').showModal();
+});
+$('driveForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const v = e.target.root.value.trim();
+  if(!/[-\w]{20,}/.test(v)){ toast('ألصق رابط مجلد درايف صحيحًا', true); return; }
+  if(SOURCE !== 'live'){ toast('ربط الأرشيف يتم عبر الجسر، فانشر نسخته الجديدة أولًا', true); return; }
+  try{
+    const d = await post({action: 'projects_config', org: ORG, driveRoot: v});
+    DATA.driveRoot = d.driveRoot; Object.keys(FILES).forEach(k => delete FILES[k]);
+    $('driveDlg').close(); toast('رُبط المجلد «' + d.name + '»'); rerender();
+  }catch(err){ toast('تعذّر الربط: ' + err.message, true); }
+});
+
+/* ================= التفاعل ================= */
+function readHash(){
+  const h = decodeURIComponent(location.hash.slice(1));
+  if(h === 'stats'){ S.view = 'stats'; return; }
+  S.view = 'list';
+  if(!h) return;
+  const p = DATA.projects.find(x => x.code === h || x.id === h);
+  if(p){ S.sel = p.id; if(S.year && p.year !== S.year) S.year = p.year || ''; }
+}
+function openProject(id){
+  const p = DATA.projects.find(x => x.id === id); if(!p) return;
+  S.sel = id; S.view = 'list';
+  history.replaceState(null, '', '#' + encodeURIComponent(p.code || id));
+  render(); scrollTo({top: 0});
+}
+$('items').addEventListener('click', e => {
+  const b = e.target.closest('.item'); if(!b) return;
+  S.sel = b.dataset.id;
+  const p = DATA.projects.find(x => x.id === S.sel);
+  history.replaceState(null, '', '#' + encodeURIComponent((p && p.code) || S.sel));
+  renderList(filtered()); renderDetail();
+  if(matchMedia('(max-width:880px)').matches) $('detail').scrollIntoView({behavior: 'smooth', block: 'start'});
+});
+$('detail').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if(!b) return;
+  const p = DATA.projects.find(x => x.id === S.sel); if(!p) return;
+  const act = b.dataset.act;
+  if(act === 'toggle') toggleItem(b.dataset.id);
+  else if(act === 'edit') openPlanDlg(p, DATA.plan.find(x => x.id === b.dataset.id));
+  else if(act === 'add') openPlanDlg(p, null, b.dataset.stage);
+  else if(act === 'add-stage') openPlanDlg(p, null, '', true);
+  else if(act === 'tpl') createFromTemplate(p, $('tplSel').value);
+  else if(act === 'more'){ const k = b.dataset.key; EXPANDED.has(k) ? EXPANDED.delete(k) : EXPANDED.add(k); refreshCard('docsCard', docsCard(p)); }
+  else if(act === 'files-refresh'){ delete FILES[p.code]; fetchFiles(p); refreshCard('docsCard', docsCard(p)); }
+});
+$('detail').addEventListener('change', e => { if(e.target.id === 'tplSel') $('tplPreview').innerHTML = tplPreview(e.target.value); });
+$('views').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b || b.dataset.view === S.view) return;
+  S.view = b.dataset.view;
+  const p = DATA.projects.find(x => x.id === S.sel);
+  history.replaceState(null, '', S.view === 'stats' ? '#stats' : p ? '#' + encodeURIComponent(p.code || p.id) : location.pathname + location.search);
+  render(); scrollTo({top: 0});
+});
+$('stats').addEventListener('click', e => {
+  if(e.target.closest('[data-stop]')) return;
+  const sb = e.target.closest('[data-sort]');
+  if(sb){ const k = sb.dataset.sort; S.tdir = S.tsort === k ? -S.tdir : (TEXT_COLS.includes(k) ? 1 : -1); S.tsort = k; render(); return; }
+  const f = e.target.closest('[data-f]');
+  if(f){ const k = f.dataset.f, v = f.dataset.v === 'غير محدد' ? '' : f.dataset.v; S[k] = S[k] === v ? '' : v; buildFilters(); render(); return; }
+  const tr = e.target.closest('tr[data-id]');
+  if(tr) openProject(tr.dataset.id);
+});
+$('yearSeg').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; S.year = b.dataset.y; buildFilters(); render(); });
+let qT; $('q').addEventListener('input', e => { clearTimeout(qT); qT = setTimeout(() => { S.q = e.target.value; render(); }, 120); });
+[['fStatus','status'],['fDonor','donor'],['fType','type'],['fCoord','coord'],['sort','sort']].forEach(([id, k]) =>
+  $(id).addEventListener('change', e => { S[k] = e.target.value; render(); }));
+$('reloadBtn').addEventListener('click', load);
+window.addEventListener('hashchange', () => { readHash(); render(); });
+
+/* الشريط العلوي يختفي عند النزول ويعود عند الصعود، كشريط «مَدار» في نَسَق */
+let lastY = scrollY;
+addEventListener('scroll', () => {
+  const y = scrollY, tb = $('tb');
+  if(y > lastY + 6 && y > 140 && !document.querySelector('dialog[open]')) tb.classList.add('hide');
+  else if(y < lastY - 6) tb.classList.remove('hide');
+  lastY = y;
+}, {passive: true});
+
+load();
+</script>
+</body>
+</html>
