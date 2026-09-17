@@ -491,6 +491,24 @@ body{padding:0}
 .hero-scene{position:absolute;inset:0;z-index:0}
 .hero-scene[hidden]{display:none}
 .hero-scene svg{width:100%;height:100%;display:block}
+/* وقفة */
+.c-waqfa[hidden]{display:none}
+.waqfa-tools{display:flex;gap:10px}
+.waqfa-body{display:flex;flex-direction:column;gap:8px}
+.waqfa-type{align-self:flex-start;font-size:11.5px;font-weight:600;padding:2px 10px;border-radius:6px;background:var(--focus-bg);color:var(--focus-ink)}
+.waqfa-text{font-family:Amiri,"Traditional Arabic",serif;font-size:21px;line-height:1.95;color:var(--ink);margin:0}
+.waqfa-text.ayah{font-family:"Amiri Quran",Amiri,serif;font-size:22px;line-height:2.2}
+.waqfa-src{font-size:12.5px;color:var(--muted)}
+.waqfa-lesson{font-size:14px;color:var(--ink-2);line-height:1.7;border-top:1px dashed var(--rule);padding-top:8px}
+.waqfa-lesson b{color:var(--done);font-weight:600;margin-inline-end:4px}
+.waqfa-pending{font-size:13.5px;color:var(--ink-2);line-height:1.7}
+.rev-list{display:flex;flex-direction:column;gap:10px;max-height:52vh;overflow-y:auto;margin-top:10px}
+.rev-item{border:1px solid var(--rule);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.rev-item.approved{border-color:var(--done);background:var(--focus-bg)}
+.rev-item .rev-acts{display:flex;gap:8px;margin-top:2px}
+.rev-item .rev-acts button{font:inherit;font-size:12.5px;padding:5px 12px;min-height:32px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);cursor:pointer}
+.rev-item .rev-acts button.ok{border-color:var(--done);color:var(--done)}
+.rev-item .rev-acts button.on{background:var(--done);color:var(--paper);border-color:var(--done)}
 .tag-pick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .tag-opt{font:inherit;font-size:13px;padding:7px 14px;min-height:36px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);cursor:pointer}
 .tag-opt:hover{border-color:var(--ink-2)}
@@ -508,13 +526,14 @@ body{padding:0}
   grid-template-areas:
     "pri    sched  cal"
     "tasks  tasks  ideas"
-    "habits focus  projects"
+    "habits focus  waqfa"
+    "projects projects projects"
     "review review review"
     "archive archive archive"}
 .col{display:contents}
 .c-pri{grid-area:pri}.c-sched{grid-area:sched}.c-cal{grid-area:cal}.c-tasks{grid-area:tasks}
 .c-ideas{grid-area:ideas}.c-focus{grid-area:focus}.c-habits{grid-area:habits}.c-projects{grid-area:projects}
-.c-review{grid-area:review}.dash > .archive{grid-area:archive}
+.c-review{grid-area:review}.dash > .archive{grid-area:archive}.c-waqfa{grid-area:waqfa}
 .card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:var(--pad);min-width:0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
 /* البطاقات تملأ ارتفاع صفّها بمحتوى مفيد بدل فراغ في الأسفل */
 .c-ideas,.c-sched,.c-focus,.c-pri{display:flex;flex-direction:column}
@@ -903,7 +922,7 @@ body.focus-open{overflow:hidden}
       "tasks    tasks"
       "cal      ideas"
       "focus    habits"
-      "projects projects"
+      "waqfa    projects"
       "review   review"
       "archive  archive"}
   .closing-band{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}
@@ -936,7 +955,7 @@ body.focus-open{overflow:hidden}
   .dash{display:flex;flex-direction:column;gap:14px}
   .col{display:contents}
   .c-pri{order:1}.c-tasks{order:2}.c-sched{order:3}.c-ideas{order:4}
-  .c-focus{order:5}.c-habits{order:6}.c-cal{order:7}.c-projects{order:8}.c-review{order:9}.archive{order:10}
+  .c-focus{order:5}.c-habits{order:6}.c-waqfa{order:7}.c-cal{order:8}.c-projects{order:9}.c-review{order:10}.archive{order:11}
   .card{padding:16px}
   /* الصفحات الأخرى: عمود واحد */
   .page-head{padding:16px}
@@ -2020,6 +2039,13 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="tl-wrap" id="tlWrap"><div id="timelineList"></div></div>
       <datalist id="tlTasks"></datalist>
       <div class="tl-foot" id="tlFoot"></div>
+    </section>
+
+    <!-- وقفة: نص موثّق بحسب وقتك وسياقك، مع عبرة تطبيقية -->
+    <section class="card c-waqfa" id="waqfaCard" hidden>
+      <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V8"/><path d="M5 8a7 7 0 0 1 14 0"/><path d="M4 21h16"/><path d="M8 4.5 12 3l4 1.5"/></svg>وقفة</h2>
+        <span class="waqfa-tools"><button type="button" class="card-link" id="waqfaNext">وقفة أخرى</button><button type="button" class="card-link" id="waqfaReview" hidden>راجع الدفعة</button></span></div>
+      <div class="waqfa-body" id="waqfaBody"></div>
     </section>
 
     <section class="card c-ideas">
@@ -3142,6 +3168,7 @@ function render(){
   renderWeekStrip();
   renderEnergyHint();
   try{ renderOnboard(); }catch(e){}   /* رسوم الملصقات تُعرَّف لاحقًا في الملف */
+  try{ renderWaqfa(); }catch(e){}
   try{ updatePomoLive(); }catch(e){}   /* قد يُرسم اللوح قبل تهيئة المؤقّت */
   try{ updateCardArts(); }catch(e){}
 }
@@ -5450,6 +5477,7 @@ function applyHeroPhrase(){
   if(tag) tag.textContent = (PHRASE_SPECIAL[c.ctx] && c.sub) ? c.sub : BRAND_TAGLINE;
   $('heroBanner').dataset.ctx = c.ctx;
   try{ applyHeroVisual(c.ctx); }catch(e){}
+  try{ renderWaqfa(); }catch(e){}   /* الوقفة تتبع السياق أيضًا */
 }
 
 /* ==================== المرحلة ٣: صورة الواجهة تتبع السياق ====================
@@ -5539,6 +5567,132 @@ function applyHeroVisual(ctx){
   scene.hidden = false;
   heroVisual = {ctx, kind:'scene', url:''};
 }
+/* ==================== المرحلة ٤: «وقفة» ====================
+   الدفعة الأولى — لا يظهر نص حتى تعتمده من «راجع الدفعة».
+   المصادر: نص الآيات من المصحف، والأحاديث من الصحيحين وما صححه أهل الحديث،
+   والآثار منسوبة بصيغة «يُروى عن» حتى يُتحقّق من إسنادها. الدفعات التالية تُبنى من
+   الدرر السنية وموسوعة الأحاديث النبوية كما في دراسة «نَسَق الحيّ». */
+const WAQFA_KEY = 'daily-board-waqfa';
+const WAQFA = [
+  {id:'a1', t:'ayah', x:'﴿فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ إِنَّ مَعَ الْعُسْرِ يُسْرًا﴾', s:'سورة الشرح، الآيتان ٥–٦', k:['صبر','مساء'], l:'ما تعثّر اليوم ليس نهاية الطريق؛ أجّله في «مؤجّلة للغد» وابدأ بأصغره غدًا.'},
+  {id:'a2', t:'ayah', x:'﴿وَقُل رَّبِّ زِدْنِي عِلْمًا﴾', s:'سورة طه، الآية ١١٤', k:['علم','قراءة'], l:'اجعل لنفسك صفحةً كل يوم؛ العلم يُبنى بالقليل المتصل.'},
+  {id:'a3', t:'ayah', x:'﴿وَأَن لَّيْسَ لِلْإِنسَانِ إِلَّا مَا سَعَىٰ﴾', s:'سورة النجم، الآية ٣٩', k:['عمل'], l:'النتيجة ثمرة السعي لا النية وحدها؛ اختر مهمة واحدة وابدأ بها الآن.'},
+  {id:'a4', t:'ayah', x:'﴿إِنَّ اللَّهَ لَا يُغَيِّرُ مَا بِقَوْمٍ حَتَّىٰ يُغَيِّرُوا مَا بِأَنفُسِهِمْ﴾', s:'سورة الرعد، الآية ١١', k:['عادات'], l:'التغيير يبدأ من عادة صغيرة في روتينك، لا من قرار كبير.'},
+  {id:'a5', t:'ayah', x:'﴿وَتَعَاوَنُوا عَلَى الْبِرِّ وَالتَّقْوَىٰ﴾', s:'سورة المائدة، الآية ٢', k:['عمل','اجتماع'], l:'ما يثقل عليك وحدك يخفّ بشريك؛ من يمكن أن تشركه في مهمتك اليوم؟'},
+  {id:'a6', t:'ayah', x:'﴿وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا﴾', s:'سورة الطلاق، الآية ٢', k:['صبر'], l:'حين تضيق الخيارات، ابدأ بالصواب لا بالأسهل.'},
+  {id:'a7', t:'ayah', x:'﴿فَإِذَا فَرَغْتَ فَانصَبْ ۝ وَإِلَىٰ رَبِّكَ فَارْغَب﴾', s:'سورة الشرح، الآيتان ٧–٨', k:['عمل','ختام'], l:'إتمام مهمة بابٌ لبدء أخرى؛ لا تترك الفراغ يتسع.'},
+  {id:'a8', t:'ayah', x:'﴿وَقُلِ اعْمَلُوا فَسَيَرَى اللَّهُ عَمَلَكُمْ وَرَسُولُهُ وَالْمُؤْمِنُونَ﴾', s:'سورة التوبة، الآية ١٠٥', k:['إتقان'], l:'أتقِن ما لا يراه أحد؛ فالعمل يُرى ولو بعد حين.'},
+  {id:'h1', t:'hadith', x:'«إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى»', s:'متفق عليه — رواه البخاري ومسلم', k:['نية','صباح'], l:'قبل أن تفتح اللوح، اسأل: لماذا أعمل اليوم؟ النية تُحوّل العمل إلى عبادة.'},
+  {id:'h2', t:'hadith', x:'«أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ»', s:'متفق عليه — رواه البخاري ومسلم', k:['عادات'], l:'عادة صغيرة لا تنقطع أنفع من عادة كبيرة تتوقف بعد أسبوع.'},
+  {id:'h3', t:'hadith', x:'«نِعْمَتَانِ مَغْبُونٌ فِيهِمَا كَثِيرٌ مِنَ النَّاسِ: الصِّحَّةُ وَالْفَرَاغُ»', s:'رواه البخاري', k:['وقت'], l:'ساعةٌ فارغة اليوم تستحق خطة؛ ضعها في «جدول اليوم» قبل أن تضيع.'},
+  {id:'h4', t:'hadith', x:'«الْمُؤْمِنُ الْقَوِيُّ خَيْرٌ وَأَحَبُّ إِلَى اللَّهِ مِنَ الْمُؤْمِنِ الضَّعِيفِ، وَفِي كُلٍّ خَيْرٌ، احْرِصْ عَلَى مَا يَنْفَعُكَ وَاسْتَعِنْ بِاللَّهِ وَلَا تَعْجَزْ»', s:'رواه مسلم', k:['همة','عمل'], l:'«ولا تعجز» أمرٌ عمليّ: ابدأ بأصعب مهمة عشر دقائق فقط.'},
+  {id:'h5', t:'hadith', x:'«اللَّهُمَّ بَارِكْ لِأُمَّتِي فِي بُكُورِهَا»', s:'رواه أبو داود والترمذي وابن ماجه، وصححه الألباني', k:['صباح'], l:'أهم مهمة في يومك مكانها الساعة الأولى، قبل أن يزدحم.'},
+  {id:'h6', t:'hadith', x:'«مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ»', s:'رواه مسلم', k:['علم','قراءة'], l:'اجعل للقراءة موعدًا ثابتًا في جدولك، لا وقتًا فاضلًا.'},
+  {id:'h7', t:'hadith', x:'«مَنْ لَا يَشْكُرِ النَّاسَ لَا يَشْكُرِ اللَّهَ»', s:'رواه أبو داود والترمذي، وصححه الألباني', k:['شكر','اجتماع'], l:'رسالة شكر قصيرة اليوم لمن أعانك — دقيقة تصنع علاقة.'},
+  {id:'h8', t:'hadith', x:'«الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ»', s:'متفق عليه — رواه البخاري ومسلم', k:['أخلاق','اجتماع'], l:'في اجتماعك اليوم: ابدأ بكلمة تُطيّب، فالقرارات تأتي بعدها أسهل.'},
+  {id:'t1', t:'athar', x:'«حَاسِبُوا أَنْفُسَكُمْ قَبْلَ أَنْ تُحَاسَبُوا»', s:'يُروى عن عمر بن الخطاب رضي الله عنه — ذكره الترمذي في سننه', k:['محاسبة','ختام'], l:'دقيقتان في «ختام اليوم»: ماذا أنجزت؟ وما الذي تحسّنه غدًا؟'},
+  {id:'t2', t:'athar', x:'«قِيمَةُ كُلِّ امْرِئٍ مَا يُحْسِنُهُ»', s:'يُنسب إلى علي بن أبي طالب رضي الله عنه', k:['إتقان'], l:'أتقِن مهارة واحدة هذا الشهر بدل أن تلمس عشرًا.'},
+  {id:'t3', t:'athar', x:'«ابنَ آدمَ، إنما أنت أيامٌ، كلما ذهب يومٌ ذهب بعضُك»', s:'يُنسب إلى الحسن البصري رحمه الله', k:['وقت','ختام'], l:'اليوم الذي مرّ بلا إنجاز لا يعود؛ اجعل لغدٍ أولوية واحدة واضحة.'},
+  {id:'t4', t:'athar', x:'«مَن أمضى يومًا من عمره في غير حقٍّ قضاه، أو فرضٍ أدّاه، أو مجدٍ أثّله، أو حمدٍ حصّله، أو خيرٍ أسّسه، أو علمٍ اقتبسه، فقد عقّ يومه وظلم نفسه»', s:'يُنسب إلى عبد الله بن المبارك رحمه الله', k:['وقت'], l:'اختر من هذه الستة واحدة لهذا اليوم، وسجّلها أولوية أولى.'},
+  {id:'v1', t:'value', x:'«الأمورُ بمقاصدِها»', s:'قاعدة فقهية كبرى، أصلها حديث «إنما الأعمال بالنيات»', k:['نية'], l:'العمل نفسه يختلف أجره باختلاف قصدك؛ اكتب نيتك في أول اليوم.'},
+  {id:'v2', t:'value', x:'«المشقّةُ تجلبُ التيسير»', s:'قاعدة فقهية كبرى', k:['صبر'], l:'إن ثقل اليوم فخفّف عن نفسك: أنقص مهمة، ولا تُنقص المبدأ.'},
+  {id:'s1', t:'seerah', x:'سُئلت عائشة رضي الله عنها: ما كان النبي ﷺ يصنع في بيته؟ قالت: «كان يكون في مِهْنَةِ أهلِه، فإذا حضرت الصلاةُ خرج إلى الصلاة»', s:'رواه البخاري', k:['أسرة','مساء'], l:'ساعةٌ لأهلك اليوم ليست خصمًا من إنتاجك، بل جزء من نَسَقه.'},
+  {id:'s2', t:'seerah', x:'قالت عائشة رضي الله عنها عن عمل النبي ﷺ: «وكان عملُه دِيمةً» أي دائمًا مستمرًّا', s:'رواه البخاري', k:['عادات'], l:'الاستمرار أهم من الاندفاع؛ سلسلتك في «العادات» أصدق من يوم حماسي.'}
+];
+const WAQFA_TYPES = {ayah:'آية', hadith:'حديث', athar:'أثر', value:'قاعدة', seerah:'من السيرة'};
+function waqfaState(){ try{ return Object.assign({approved:[], removed:[], slot:'', id:''}, JSON.parse(localStorage.getItem(WAQFA_KEY) || '{}')); }catch(e){ return {approved:[], removed:[], slot:'', id:''}; } }
+function saveWaqfa(s){ try{ localStorage.setItem(WAQFA_KEY, JSON.stringify(s)); }catch(e){} }
+/* ثلاث وقفات في اليوم: صباحًا وظهرًا ومساءً، وتُختار بترتيب ثابت يتقدّم مع الأيام،
+   مع تفضيل ما يناسب سياقك حين يوجد. */
+function waqfaSlotKey(d = new Date()){
+  const h = d.getHours(), part = h < 12 ? 'm' : h < 17 ? 'n' : 'e';
+  return iso(d) + ':' + part;
+}
+function pickWaqfa(){
+  const st = waqfaState(), pool = WAQFA.filter(w=>st.approved.includes(w.id) && !st.removed.includes(w.id));
+  if(!pool.length) return null;
+  const slot = waqfaSlotKey();
+  if(st.slot === slot && st.id){ const cur = pool.find(w=>w.id === st.id); if(cur) return cur; }
+  const ctx = $('heroBanner').dataset.ctx || periodNow();
+  const wanted = {reading:'قراءة', meeting:'اجتماع', writing:'إتقان', work:'عمل', focus:'همة', night:'ختام', evening:'ختام', maghrib:'ختام', morning:'صباح', fajr:'صباح'}[ctx];
+  const day = dayNum(new Date());
+  const ordered = pool.slice().sort((a, b)=>a.id.localeCompare(b.id));
+  const fit = wanted ? ordered.filter(w=>w.k.includes(wanted)) : [];
+  const list = fit.length ? fit : ordered;
+  const pick = list[(day * 3 + {m:0, n:1, e:2}[slot.slice(-1)]) % list.length];
+  saveWaqfa(Object.assign(st, {slot, id:pick.id}));
+  return pick;
+}
+function renderWaqfa(){
+  const card = $('waqfaCard'); if(!card) return;
+  const st = waqfaState(), pendingCount = WAQFA.filter(w=>!st.approved.includes(w.id) && !st.removed.includes(w.id)).length;
+  card.hidden = false;
+  $('waqfaReview').hidden = !pendingCount;
+  $('waqfaReview').textContent = pendingCount ? 'راجع الدفعة (' + AR(pendingCount) + ')' : 'راجع الدفعة';
+  const body = $('waqfaBody'); body.innerHTML = '';
+  const w = pickWaqfa();
+  if(!w){
+    const p = document.createElement('p'); p.className = 'waqfa-pending';
+    p.textContent = 'الدفعة الأولى جاهزة: ' + AR(WAQFA.length) + ' نصًّا من القرآن والسنة وآثار السلف، كلٌّ بمصدره وعبرته. لا يظهر منها شيء قبل أن تعتمده.';
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'btn-primary'; b.textContent = 'راجع الدفعة واعتمد';
+    b.onclick = openWaqfaReview;
+    body.append(p, b);
+    $('waqfaNext').hidden = true;
+    return;
+  }
+  $('waqfaNext').hidden = false;
+  const type = document.createElement('span'); type.className = 'waqfa-type'; type.textContent = WAQFA_TYPES[w.t];
+  const tx = document.createElement('p'); tx.className = 'waqfa-text' + (w.t === 'ayah' ? ' ayah' : ''); tx.textContent = w.x;
+  const src = document.createElement('div'); src.className = 'waqfa-src'; src.textContent = w.s;
+  body.append(type, tx, src);
+  if(w.l){ const l = document.createElement('div'); l.className = 'waqfa-lesson'; const b = document.createElement('b'); b.textContent = 'عبرة:'; l.append(b, document.createTextNode(w.l)); body.appendChild(l); }
+}
+$('waqfaNext').onclick = ()=>{
+  const st = waqfaState(), pool = WAQFA.filter(w=>st.approved.includes(w.id) && !st.removed.includes(w.id));
+  if(pool.length < 2) return;
+  const i = pool.findIndex(w=>w.id === st.id);
+  saveWaqfa(Object.assign(st, {slot: waqfaSlotKey(), id: pool[(i + 1 + pool.length) % pool.length].id}));
+  renderWaqfa();
+};
+function openWaqfaReview(){
+  const st = waqfaState();
+  const m = openModal({
+    title:'الدفعة الأولى من «وقفة»',
+    bodyHTML:'<p>اعتمد ما تراه صحيحًا، واحذف ما تريد. لن يظهر في اللوح إلا ما اعتمدته. الآيات بنص المصحف، والأحاديث من الصحيحين أو ممّا صححه أهل الحديث، والآثار منسوبة بصيغة «يُروى عن» حتى يُتحقّق من إسنادها.</p><div class="rev-list"></div>',
+    actions:[{label:'إغلاق'}, {label:'اعتمد الكل', primary:true, onClick:({close})=>{
+      const s = waqfaState(); s.approved = WAQFA.map(w=>w.id).filter(id=>!s.removed.includes(id)); saveWaqfa(s); close(); renderWaqfa(); playSound('done');
+      showToast('اعتُمدت الدفعة — تظهر «وقفة» ثلاث مرات في اليوم.');
+    }}]
+  });
+  const box = m.bodyEl.querySelector('.rev-list');
+  WAQFA.forEach(w=>{
+    const s0 = waqfaState();
+    const item = document.createElement('div'); item.className = 'rev-item' + (s0.approved.includes(w.id) ? ' approved' : '');
+    const type = document.createElement('span'); type.className = 'waqfa-type'; type.textContent = WAQFA_TYPES[w.t];
+    const tx = document.createElement('p'); tx.className = 'waqfa-text' + (w.t === 'ayah' ? ' ayah' : ''); tx.style.fontSize = '17px'; tx.textContent = w.x;
+    const src = document.createElement('div'); src.className = 'waqfa-src'; src.textContent = w.s;
+    const les = document.createElement('div'); les.className = 'waqfa-lesson'; const lb = document.createElement('b'); lb.textContent = 'عبرة:'; les.append(lb, document.createTextNode(w.l));
+    const acts = document.createElement('div'); acts.className = 'rev-acts';
+    const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'ok' + (s0.approved.includes(w.id) ? ' on' : ''); ok.textContent = s0.approved.includes(w.id) ? '✓ معتمد' : 'اعتمد';
+    const no = document.createElement('button'); no.type = 'button'; no.textContent = 'احذف';
+    ok.onclick = ()=>{
+      const s = waqfaState();
+      if(s.approved.includes(w.id)){ s.approved = s.approved.filter(x=>x !== w.id); ok.className = 'ok'; ok.textContent = 'اعتمد'; item.classList.remove('approved'); }
+      else { s.approved.push(w.id); s.removed = s.removed.filter(x=>x !== w.id); ok.className = 'ok on'; ok.textContent = '✓ معتمد'; item.classList.add('approved'); }
+      saveWaqfa(s); renderWaqfa();
+    };
+    no.onclick = ()=>{
+      const s = waqfaState();
+      s.removed.push(w.id); s.approved = s.approved.filter(x=>x !== w.id); saveWaqfa(s);
+      item.remove(); renderWaqfa();
+    };
+    acts.append(ok, no);
+    item.append(type, tx, src, les, acts);
+    if(!s0.removed.includes(w.id)) box.appendChild(item);
+  });
+}
+$('waqfaReview').onclick = openWaqfaReview;
+
 function openPhotoTagsModal(){
   const cur = photoList[photoIdx % (photoList.length || 1)];
   if(!cur || !cur.dbId) return;
