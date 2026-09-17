@@ -1829,6 +1829,11 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <div class="set-actions"><button type="button" id="setNotifAsk">اسمح بالإشعارات</button><button type="button" id="setNotifTest">جرّب إشعارًا</button></div>
         <div class="set-hint">تظهر خارج المتصفح حين يكون نَسَق في الخلفية. على iPhone تعمل بعد إضافة نَسَق إلى الشاشة الرئيسية.</div>
 
+        <div class="set-sub">تنبيهات تيليجرام — تصلك والمنصة مغلقة</div>
+        <div class="set-row"><span>الحالة</span><b id="setTgState">—</b></div>
+        <div class="set-actions"><button type="button" id="setTgCheck">افحص</button><button type="button" id="setTgTest">أرسل تجربة</button></div>
+        <div class="set-hint">الإعداد مرة واحدة في Apps Script: أنشئ بوتًا من ‎@BotFather، وضع رمزه في خصائص السكربت باسم <code>TELEGRAM_BOT_TOKEN</code> (لا ترسله لأحد)، ثم اضغط Start في محادثة البوت وشغّل <code>SETUP_telegram</code> ثم <code>SETUP_telegram_trigger</code>. يُرسل البوت مواعيد التقويم قبل ١٠ دقائق وملخصًا صباحيًا.</div>
+
         <div class="set-sub">ساعات الهدوء — لا أصوات تنبيه ولا إشعارات نظام (مواعيد التقويم مستثناة)، وتبقى كلها في سجل الإشعارات</div>
         <div class="set-row"><label for="setQuietFrom">من</label><input type="time" class="set-time" id="setQuietFrom"></div>
         <div class="set-row"><label for="setQuietTo">إلى</label><input type="time" class="set-time" id="setQuietTo"></div>
@@ -2854,7 +2859,7 @@ function rpcCall(payload){
 }
 
 /* عمليات يصحّ تكرارها إن ضاع ردّها — لا تُنشئ شيئًا مرتين ولا ترسل بريدًا */
-const RETRY_SAFE = new Set(['auth_login','auth_me','boot','ping','options','search','state_get','state_set','calendar_today',
+const RETRY_SAFE = new Set(['auth_login','auth_me','boot','ping','options','search','state_get','state_set','calendar_today','telegram_status',
   'expense_options','expense_summary','admin_list_users','set_status','delete']);
 function jsonpWithRetry(payload){
   const tries = RETRY_SAFE.has(payload.action) ? 3 : 1;
@@ -4947,6 +4952,24 @@ $('setPrayerOn').onchange = ()=>{ alive.prayer = $('setPrayerOn').checked; saveA
 document.querySelectorAll('#setHeroImages button').forEach(b=>{
   b.onclick = ()=>{ alive.heroImages = b.dataset.hero; saveAlive(); renderAliveSettings(); try{ heroVisual = {ctx:'', kind:'', url:''}; showPhoto(); }catch(e){} };
 });
+/* تيليجرام: الحالة والتجربة عبر الجسر (الرمز يبقى في خصائص السكربت ولا يمرّ من هنا) */
+function tgStateText(d){
+  if(!d.token) return 'لم يُضَف رمز البوت بعد';
+  if(!d.chat) return 'الرمز موجود — اضغط Start في محادثة البوت ثم شغّل SETUP_telegram';
+  return d.trigger ? 'يعمل ✓' : 'مربوط — ينقصه تشغيل SETUP_telegram_trigger';
+}
+$('setTgCheck').onclick = ()=>{
+  if(!notionOK()){ $('setTgState').textContent = 'متاح لصاحب اللوح فقط'; return; }
+  $('setTgState').textContent = 'يُفحص…';
+  post({action:'telegram_status'}).then(d=>{ $('setTgState').textContent = tgStateText(d); })
+    .catch(e=>{ $('setTgState').textContent = /أمر غير معروف/.test(e.message) ? 'حدّث الجسر: انشر نسخة جديدة' : 'تعذّر الفحص: ' + e.message; });
+};
+$('setTgTest').onclick = ()=>{
+  if(!notionOK()){ $('setTgState').textContent = 'متاح لصاحب اللوح فقط'; return; }
+  $('setTgState').textContent = 'يُرسل…';
+  post({action:'telegram_test'}).then(()=>{ $('setTgState').textContent = 'أُرسلت رسالة تجربة — افتح تيليجرام'; playSound('notify'); })
+    .catch(e=>{ $('setTgState').textContent = e.message; });
+};
 $('setSoundTest').onclick = ()=>playSound('done');
 $('setNotifAsk').onclick = ()=>askNotifPermission();
 $('setNotifTest').onclick = ()=>{
