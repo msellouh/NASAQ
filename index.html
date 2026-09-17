@@ -471,7 +471,7 @@ body{padding:0}
 /* بطاقة الترحيب */
 .greet-card{position:relative;display:flex;align-items:stretch;min-height:150px;margin:0 auto var(--gap);border:1px solid var(--rule);border-radius:var(--r);background:var(--paper);overflow:hidden;box-shadow:var(--shadow-sm,0 1px 2px rgba(0,0,0,.04))}
 .greet-text{flex:1;min-width:0;padding:26px 30px;display:flex;flex-direction:column;justify-content:center;gap:4px}
-.greet-title{font-family:var(--font-head);font-size:32px;font-weight:700;line-height:1.2;margin:0;color:var(--brand,var(--ink))}
+.greet-title{font-family:var(--font-head);font-size:32px;font-weight:700;line-height:1.35;margin:0;color:var(--brand,var(--ink));text-wrap:balance}
 .greet-tagline{margin:2px 0 0;font-size:18px;color:var(--ink-2);font-weight:500}
 .greet-date{margin-top:10px;font-size:13.5px;color:var(--muted)}
 /* التاريخ الهجري بجانب الميلادي، يفصلهما خط رفيع */
@@ -509,6 +509,13 @@ body{padding:0}
 .rev-item .rev-acts button{font:inherit;font-size:12.5px;padding:5px 12px;min-height:32px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);cursor:pointer}
 .rev-item .rev-acts button.ok{border-color:var(--done);color:var(--done)}
 .rev-item .rev-acts button.on{background:var(--done);color:var(--paper);border-color:var(--done)}
+.photo-mgr{display:flex;flex-direction:column;gap:12px;max-height:56vh;overflow-y:auto;margin-top:10px}
+.pm-row{display:grid;grid-template-columns:96px minmax(0,1fr) 28px;gap:12px;align-items:start;padding-bottom:12px;border-bottom:1px solid var(--rule)}
+.pm-row:last-child{border-bottom:0}
+.pm-row img{width:96px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--rule)}
+.pm-row .tag-pick{margin-top:0}
+.pm-row .kill{align-self:center}
+@media (max-width:520px){ .pm-row{grid-template-columns:72px minmax(0,1fr) 24px} .pm-row img{width:72px;height:52px} }
 .tag-pick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .tag-opt{font:inherit;font-size:13px;padding:7px 14px;min-height:36px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);cursor:pointer}
 .tag-opt:hover{border-color:var(--ink-2)}
@@ -1507,7 +1514,9 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 /* النص: يمين الشاشة، ويتلاشى ويرتفع قليلًا مع التمرير */
 :root[data-palette="nasaq360"][data-tab="board"] .greet-text{position:relative;z-index:2;flex:none;width:min(600px,100%);padding:0;gap:10px;
   opacity:calc(1 - var(--hp) * 1.35);translate:0 calc(var(--hp) * -46px)}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-title{color:#fff;font-size:clamp(40px,5.4vw,78px);font-weight:800;line-height:1.08;text-shadow:0 4px 30px rgba(0,0,0,.45)}
+/* العنوان: مقاسٌ يتنفّس مع عرض الشاشة، وسطرٌ يسع التشكيل، وكسرٌ متوازن لا يترك كلمة وحدها */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-title{color:#fff;font-size:clamp(26px,5.2vw,72px);font-weight:800;line-height:1.35;
+  text-wrap:balance;max-width:16ch;padding-top:.08em;text-shadow:0 4px 30px rgba(0,0,0,.45)}
 :root[data-palette="nasaq360"][data-tab="board"] .greet-tagline{color:#E3E6F0;font-size:clamp(16px,1.5vw,21px);text-shadow:0 2px 14px rgba(0,0,0,.5)}
 :root[data-palette="nasaq360"][data-tab="board"] .greet-date{color:#C4C9DD;margin-top:2px}
 :root[data-palette="nasaq360"][data-tab="board"] .hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
@@ -1545,7 +1554,9 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   :root[data-palette="nasaq360"][data-tab="board"] .greet-card{margin:0 -12px 14px;min-height:calc(100svh - 56px);padding:84px 20px 150px}
   :root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo{flex-direction:column}
   :root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo .greet-media{height:auto}
-  :root[data-palette="nasaq360"][data-tab="board"] .greet-text{width:100%}
+  :root[data-palette="nasaq360"][data-tab="board"] .greet-text{width:100%;gap:8px}
+  :root[data-palette="nasaq360"][data-tab="board"] .greet-title{font-size:clamp(26px,7.4vw,42px);line-height:1.4;max-width:14ch}
+  :root[data-palette="nasaq360"][data-tab="board"] .greet-tagline{font-size:15px;line-height:1.7}
   :root[data-palette="nasaq360"][data-tab="board"] .greet-card::after{background:
     linear-gradient(to top,var(--board) 0%,color-mix(in srgb,var(--board) 55%,transparent) 7%,rgba(8,9,20,.78) 26%,rgba(8,9,20,.35) 58%,rgba(8,9,20,.45) 100%)}
   :root[data-palette="nasaq360"][data-tab="board"] .plan-day{width:100%}
@@ -1950,7 +1961,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <img id="heroImg" alt="" hidden>
     <button class="hero-empty" id="heroEmpty" type="button">🖼️ أضف صورة</button>
     <div class="hero-tools">
-      <button class="hero-add" id="heroTagBtn" type="button" title="متى تناسب هذه الصورة؟" hidden>وسوم</button>
+      <button class="hero-add" id="heroTagBtn" type="button" title="صورك ومتى تناسب كل واحدة" hidden>صورك</button>
       <button class="hero-add" id="heroAddBtn" type="button" title="أضف صورة">+ صورة</button>
       <button class="hero-del" id="heroDelBtn" type="button" title="احذف هذه الصورة" hidden>×</button>
     </div>
@@ -5566,10 +5577,13 @@ function applyHeroVisual(ctx){
   const mode = alive.heroImages || 'mix';
   const tag = CTX_TAG[ctx] || 'morning';
   const tagged = photoList.filter(p=>Array.isArray(p.tags) && p.tags.includes(tag));
-  const usePhoto = mode !== 'scenes' && (tagged.length || (mode === 'photos' && photoList.length));
+  /* بلا صورة موسومة للسياق: تُعرض صورك غير الموسومة (تصلح لأي وقت)، ثم المشهد */
+  const anytime = photoList.filter(p=>!Array.isArray(p.tags) || !p.tags.length);
+  const usePhoto = mode !== 'scenes' && (tagged.length || anytime.length || (mode === 'photos' && photoList.length));
   const scene = $('heroScene'); if(!scene) return;
+  $('heroTagBtn').hidden = !photoList.length;   /* «صورك» متاح ما دامت لديك صورة */
   if(usePhoto){
-    const pool = tagged.length ? tagged : photoList;
+    const pool = tagged.length ? tagged : (anytime.length ? anytime : photoList);
     const cur = pool[Math.floor(Date.now() / (25 * 60 * 1000)) % pool.length];   /* تتبدّل كل ٢٥ دقيقة */
     photoIdx = Math.max(0, photoList.indexOf(cur));
     scene.hidden = true; scene.innerHTML = '';
@@ -5577,12 +5591,12 @@ function applyHeroVisual(ctx){
     const img = $('heroImg');
     img.hidden = false;
     if(img.getAttribute('src') !== cur.url){ img.classList.add('swapping'); img.onload = img.onerror = ()=>img.classList.remove('swapping'); img.src = cur.url; }
-    $('heroDelBtn').hidden = !cur.dbId; $('heroTagBtn').hidden = !cur.dbId;
+    $('heroDelBtn').hidden = !cur.dbId;
     heroVisual = {ctx, kind:'photo', url:cur.url};
     return;
   }
   /* مشهد نَسَق */
-  $('heroImg').hidden = true; $('heroDelBtn').hidden = true; $('heroTagBtn').hidden = true;
+  $('heroImg').hidden = true; $('heroDelBtn').hidden = true;
   $('heroBanner').classList.add('has-photo');   /* الواجهة بملء الشاشة تتعامل معه كصورة */
   if(heroVisual.kind !== 'scene' || heroVisual.ctx !== ctx || scene.dataset.theme !== themeHex('--accent', '')){
     scene.innerHTML = heroSceneSVG(ctx); scene.dataset.theme = themeHex('--accent', '');
@@ -5716,26 +5730,37 @@ function openWaqfaReview(){
 }
 $('waqfaReview').onclick = openWaqfaReview;
 
+/* صورك: كل صورة بوسومها — الوسم يُحفظ فور الضغط */
 function openPhotoTagsModal(){
-  const cur = photoList[photoIdx % (photoList.length || 1)];
-  if(!cur || !cur.dbId) return;
-  const chosen = new Set(Array.isArray(cur.tags) ? cur.tags : []);
+  if(!photoList.length) return openAddPhotoModal();
   openModal({
-    title:'متى تناسب هذه الصورة؟',
-    bodyHTML:'<p>اختر السياقات التي تظهر فيها. بلا اختيار تُعرض في أي وقت حين لا توجد صورة موسومة.</p><div class="tag-pick"></div>',
+    title:'صورك ومتى تناسب',
+    bodyHTML:'<p>اختر لكل صورة السياقات التي تظهر فيها. الصورة بلا وسوم تُعرض في أي وقت حين لا توجد صورة موسومة للسياق.</p><div class="photo-mgr"></div>',
     onRender: body=>{
-      const box = body.querySelector('.tag-pick');
-      Object.entries(PHOTO_TAGS).forEach(([k, label])=>{
-        const b = document.createElement('button'); b.type = 'button'; b.className = 'tag-opt' + (chosen.has(k) ? ' on' : '');
-        b.textContent = label; b.setAttribute('aria-pressed', String(chosen.has(k)));
-        b.onclick = ()=>{ chosen.has(k) ? chosen.delete(k) : chosen.add(k); b.classList.toggle('on'); b.setAttribute('aria-pressed', String(chosen.has(k))); };
-        box.appendChild(b);
+      const box = body.querySelector('.photo-mgr');
+      photoList.forEach(p=>{
+        if(!p.dbId) return;
+        const row = document.createElement('div'); row.className = 'pm-row';
+        const im = document.createElement('img'); im.src = p.url; im.alt = '';
+        const tags = document.createElement('div'); tags.className = 'tag-pick';
+        const chosen = new Set(Array.isArray(p.tags) ? p.tags : []);
+        Object.entries(PHOTO_TAGS).forEach(([k, label])=>{
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'tag-opt' + (chosen.has(k) ? ' on' : '');
+          b.textContent = label; b.setAttribute('aria-pressed', String(chosen.has(k)));
+          b.onclick = ()=>{
+            chosen.has(k) ? chosen.delete(k) : chosen.add(k);
+            b.classList.toggle('on'); b.setAttribute('aria-pressed', String(chosen.has(k)));
+            p.tags = [...chosen];
+            setPhotoTags(p.dbId, p.tags).then(()=>{ heroVisual = {ctx:'', kind:'', url:''}; showPhoto(); }).catch(()=>{});
+          };
+          tags.appendChild(b);
+        });
+        const del = document.createElement('button'); del.type = 'button'; del.className = 'kill'; del.textContent = '×'; del.title = 'احذف الصورة';
+        del.onclick = ()=>{ if(!p.dbId) return; row.remove(); deletePhotoRecord(p.dbId).then(loadAllPhotos).catch(()=>{}); };
+        row.append(im, tags, del); box.appendChild(row);
       });
     },
-    actions:[{label:'إلغاء'}, {label:'احفظ الوسوم', primary:true, onClick:({close})=>{
-      close();
-      setPhotoTags(cur.dbId, [...chosen]).then(loadAllPhotos).catch(()=>{});
-    }}]
+    actions:[{label:'أضف صورة', onClick:({close})=>{ close(); openAddPhotoModal(); }}, {label:'تم', primary:true}]
   });
 }
 function greetingNow(){ return heroPhrase.text || PHRASES[periodNow()][0]; }
