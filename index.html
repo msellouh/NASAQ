@@ -1155,6 +1155,38 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .set-actions button:hover{border-color:var(--ink-2)}
 .set-actions button.danger{color:var(--urgent);border-color:var(--urgent)}
 .set-hint{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.6}
+/* عناصر «الأصوات والإشعارات»: تُستثنى من عرض الحقول الكامل */
+.settings-body input.set-toggle{width:20px;height:20px;margin:0;accent-color:var(--focus);flex:none;cursor:pointer}
+.settings-body input.set-range{width:180px;margin:0;padding:0;border:0;background:none;accent-color:var(--focus)}
+.settings-body input.set-time{width:120px;margin:0;font-variant-numeric:tabular-nums}
+.set-row label{cursor:pointer}
+.prayer-times{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:6px}
+.prayer-times div{text-align:center;padding:6px 4px;border:1px solid var(--rule);border-radius:8px;font-size:12px;color:var(--muted)}
+.prayer-times b{display:block;font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
+.prayer-times .next{border-color:var(--focus);background:var(--focus-bg)}
+.prayer-times .next b{color:var(--focus-ink)}
+/* مركز الإشعارات */
+.notif-btn{position:relative}
+.notif-badge{position:absolute;top:-4px;inset-inline-end:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--urgent);color:#fff;font-size:10.5px;font-weight:700;line-height:18px;text-align:center;font-variant-numeric:tabular-nums}
+.notif-badge[hidden]{display:none}
+.notif-panel{position:fixed;z-index:280;top:64px;inset-inline-end:16px;width:min(380px,calc(100vw - 32px));max-height:min(70vh,560px);display:flex;flex-direction:column;
+  background:var(--paper);color:var(--ink);border:1px solid var(--rule);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;max-width:none;margin:0}
+.notif-panel[hidden]{display:none}
+.np-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;border-bottom:1px solid var(--rule)}
+.np-head h2{font-family:var(--font-head);font-size:16px;margin:0}
+.np-head .card-link{font-size:12.5px}
+.np-list{list-style:none;margin:0;padding:4px 0;overflow-y:auto}
+.np-item{display:grid;grid-template-columns:10px minmax(0,1fr);gap:4px 10px;padding:10px 14px;border-bottom:1px solid var(--rule)}
+.np-item:last-child{border-bottom:0}
+.np-item i{width:8px;height:8px;border-radius:50%;margin-top:8px;background:var(--rule)}
+.np-item.unread i{background:var(--focus)}
+.np-item.k-warn i{background:var(--urgent)} .np-item.k-done i{background:var(--done)}
+.np-item b{font-weight:600;font-size:14px;line-height:1.5}
+.np-item p{grid-column:2;margin:0;font-size:13px;color:var(--ink-2);line-height:1.5}
+.np-item time{grid-column:2;font-size:11.5px;color:var(--muted)}
+.np-item button{grid-column:2;justify-self:start;margin-top:2px}
+.np-empty{padding:26px 14px;text-align:center;color:var(--muted);font-size:13.5px}
+@media (max-width:999px){ .notif-panel{top:60px;inset-inline:12px;width:auto} }
 .set-msg{font-size:12px;margin-top:8px;min-height:16px}
 .set-msg.err{color:var(--urgent)}
 .set-msg.ok{color:var(--done)}
@@ -1691,6 +1723,18 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </div>
 </div>
 
+<!-- مركز الإشعارات: سجل بما فات، يبقى على الجهاز -->
+<div class="notif-panel" id="notifPanel" role="dialog" aria-labelledby="npTitle" hidden>
+  <div class="np-head">
+    <h2 id="npTitle">الإشعارات</h2>
+    <span>
+      <button type="button" class="card-link" id="npReadAll">تحديد الكل كمقروء</button>
+      <button type="button" class="card-link" id="npClear">مسح السجل</button>
+    </span>
+  </div>
+  <ul class="np-list" id="npList"></ul>
+</div>
+
 <div class="settings-overlay" id="settingsOverlay" hidden>
   <div class="settings-panel">
     <div class="settings-head">
@@ -1732,6 +1776,29 @@ li.exp-row:nth-child(even){background:var(--stripe)}
           </span>
         </div>
         <div class="set-row"><span>الوضع الداكن</span><button id="setThemeBtn" type="button">🌙</button></div>
+      </section>
+
+      <section id="setAlive">
+        <h3>🔔 الأصوات والإشعارات</h3>
+        <div class="set-row"><label for="setSoundOn">الأصوات</label><input type="checkbox" class="set-toggle" id="setSoundOn"></div>
+        <div class="set-row"><label for="setClickOn">صوت النقر على الأزرار</label><input type="checkbox" class="set-toggle" id="setClickOn"></div>
+        <div class="set-row"><label for="setVolume">مستوى الصوت</label><input type="range" class="set-range" id="setVolume" min="0" max="100" step="5"></div>
+        <div class="set-actions"><button type="button" id="setSoundTest">اسمع صوت الإنجاز</button></div>
+
+        <div class="set-sub">إشعارات النظام</div>
+        <div class="set-row"><span>الحالة</span><b id="setNotifState">—</b></div>
+        <div class="set-actions"><button type="button" id="setNotifAsk">اسمح بالإشعارات</button><button type="button" id="setNotifTest">جرّب إشعارًا</button></div>
+        <div class="set-hint">تظهر خارج المتصفح حين يكون نَسَق في الخلفية. على iPhone تعمل بعد إضافة نَسَق إلى الشاشة الرئيسية.</div>
+
+        <div class="set-sub">ساعات الهدوء — لا أصوات تنبيه ولا إشعارات نظام (مواعيد التقويم مستثناة)، وتبقى كلها في سجل الإشعارات</div>
+        <div class="set-row"><label for="setQuietFrom">من</label><input type="time" class="set-time" id="setQuietFrom"></div>
+        <div class="set-row"><label for="setQuietTo">إلى</label><input type="time" class="set-time" id="setQuietTo"></div>
+        <div class="set-row"><label for="setWorkEnd">نهاية يوم العمل (تذكير «أغلق يومك»)</label><input type="time" class="set-time" id="setWorkEnd"></div>
+
+        <div class="set-sub">أوقات الصلاة — مدينة غزة</div>
+        <div class="set-row"><label for="setPrayerOn">هدوء ٢٠ دقيقة من دخول كل صلاة</label><input type="checkbox" class="set-toggle" id="setPrayerOn"></div>
+        <div class="prayer-times" id="setPrayerTimes"></div>
+        <div class="set-hint">تُحسب على جهازك بطريقة الهيئة المصرية العامة للمساحة (الفجر ١٩٫٥°، العشاء ١٧٫٥°، العصر على المذهب الشافعي). قارنها بتقويم وزارة الأوقاف في غزة، وأخبرني إن اختلفت.</div>
       </section>
 
       <section>
@@ -1809,6 +1876,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <div class="sidenav-actions">
       <!-- زر الفعل في الشريط العلوي لطابع «نَسَق 360» فقط (كزر «إنشاء حساب» في «الجزيرة 360») -->
       <button id="topAddBtn" class="top-add" type="button">＋ مهمة جديدة</button>
+      <button id="notifBtn" class="icon-btn notif-btn" type="button" aria-label="الإشعارات" aria-haspopup="dialog" aria-expanded="false" title="الإشعارات"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 7 2 7H4s2-2 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="notif-badge" id="notifBadge" hidden>٠</span></button>
       <button id="paletteBtn" class="icon-btn" type="button" aria-label="بحث وأوامر سريعة (Ctrl+K)" title="بحث وأوامر سريعة — Ctrl+K"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></button>
       <button id="themeQuickBtn" class="icon-btn" type="button" aria-label="تبديل الوضع الداكن" title="الوضع الداكن"></button>
       <button id="settingsBtn" class="icon-btn" type="button" aria-label="الإعدادات" title="الإعدادات">
@@ -2329,14 +2397,14 @@ try{ const saved = localStorage.getItem(PKEY); if(saved !== null) palette = save
 function applyPalette(p){
   if(p) document.documentElement.setAttribute('data-palette', p);
   else document.documentElement.removeAttribute('data-palette');
-  document.querySelectorAll('.pswitch button').forEach(b=>{
+  document.querySelectorAll('#setPalette button').forEach(b=>{   /* أزرار الطابع وحدها — في الإعدادات مبدّلات أخرى بالشكل نفسه */
     b.classList.toggle('active', (b.dataset.palette||'')===p);
   });
   syncThemeColor();
   try{ topbarUpdate(); heroScroll(); }catch(e){}   /* «نَسَق 360» يبدّل الشريط الجانبي إلى علوي */
 }
 applyPalette(palette);
-document.querySelectorAll('.pswitch button').forEach(b=>{
+document.querySelectorAll('#setPalette button').forEach(b=>{
   b.onclick = ()=>{
     palette = b.dataset.palette || '';
     try{ localStorage.setItem(PKEY, palette); }catch(e){}
@@ -2637,6 +2705,8 @@ function statusOf(t){ return t.done ? 'Done' : (t.state===1 ? 'In progress' : t.
 function setDot(cls, msg){
   $('dot').className = 'dot ' + (cls||'');
   $('syncMsg').textContent = msg;
+  /* انقطاع الاتصال يدخل مركز الإشعارات — مرة كل ساعة على الأكثر، بلا صوت */
+  if(cls === 'err'){ try{ notify('warn', 'تعذّر الاتصال بالجسر', msg, {key:'bridge-err:' + new Date().getHours(), noSound:true, noToast:true, action:'settings'}); }catch(e){} }
 }
 function markSynced(){
   const t = new Date();
@@ -3655,6 +3725,7 @@ function appendTaskRow(list, t, priValues){
     t.done = !t.done;
     if(t.done){ t.state=0; t.doneAt = new Date().toISOString(); }
     else delete t.doneAt;
+    if(t.done) playSound(tasks.every(x=>x.done) ? 'all' : 'done');   /* آخر مهمة: «اكتمل يومك» */
     t.dirty = true;
     sync();
   };
@@ -3908,7 +3979,7 @@ function renderDetailsRow(t){
     const c = document.createElement('button');
     c.type = 'button'; c.className = 'sub-check'; c.setAttribute('role','checkbox');
     c.setAttribute('aria-checked', String(!!s.done)); c.setAttribute('aria-label', s.text);
-    c.onclick = ()=>{ s.done = !s.done; sync(); };
+    c.onclick = ()=>{ s.done = !s.done; if(s.done) playSound('sub'); sync(); };
     const tx = document.createElement('span'); tx.textContent = s.text;
     const k = document.createElement('button');
     k.type = 'button'; k.className = 'kill'; k.textContent = '×'; k.title = 'احذف الخطوة';
@@ -4262,7 +4333,7 @@ function dayDoneBtn(isDone, onClick){
   b.textContent = isDone ? '✓' : '○';
   b.title = isDone ? 'منجزة' : 'علّمها كمنجزة';
   b.setAttribute('aria-label', b.title);
-  b.onclick = onClick;
+  b.onclick = e=>{ if(!isDone) playSound('done'); onClick(e); };
   return b;
 }
 $('calPrev').onclick = ()=>{ calMonth.setMonth(calMonth.getMonth()-1); calShownDay=null; $('calDayList').innerHTML=''; renderCalendar(); refreshCalendarFromNotion(); };
@@ -4312,6 +4383,10 @@ function updatePomoLive(){
   }
   try{ updateCardArts(); }catch(e){}   /* حلقة لوحة «التركيز» تمتلئ مع الجلسة */
 }
+/* الدقة: الوقت المتبقي يُحسب من لحظة الانتهاء الفعلية (pomoEndAt) لا من عدّ النبضات؛
+   المتصفح يُبطئ المؤقتات في التبويبات المخفية فكانت الجلسة تطول. والجرس مجدول على ساعة الصوت. */
+let pomoEndAt = 0, pomoBellCancel = null, pomoBreakTimer = null;
+function pomoCancelBell(){ if(pomoBellCancel){ try{ pomoBellCancel(); }catch(e){} pomoBellCancel = null; } }
 function pomoFinish(){
   clearInterval(pomoInterval); pomoRunning = false;
   const t = pomoTaskObj();
@@ -4323,28 +4398,46 @@ function pomoFinish(){
     $('pomoHint').textContent = 'انتهت الجلسة.';
   }
   pomoRemaining = POMO_DEFAULT;
-  try{ navigator.vibrate && navigator.vibrate([200, 100, 200]); }catch(e){}
-  showToast('انتهت جلسة التركيز — خذ استراحة قصيرة.');
+  if(pomoBellCancel) pomoBellCancel = null;   /* الجرس المجدول رنّ في موعده */
+  else playSound('end');
+  notify('done', 'انتهت جلسة التركيز', t ? 'أُضيفت ٢٥ دقيقة إلى: ' + t.text + ' — خذ استراحة ٥ دقائق' : 'خذ استراحة ٥ دقائق', {noSound:true, urgent:true, action:'focus'});
+  clearTimeout(pomoBreakTimer);
+  pomoBreakTimer = setTimeout(()=>{ if(!pomoRunning) notify('remind', 'انتهت الاستراحة', 'جاهز لجلسة أخرى؟', {action:'focus'}); }, 5 * 60 * 1000);
   if(t) sync(); else updatePomoLive();
+  flushDeferredNotifs();   /* ما تأجّل أثناء التركيز يصل الآن */
+}
+function pomoTick(){
+  pomoRemaining = Math.max(0, Math.ceil((pomoEndAt - Date.now()) / 1000));
+  if(pomoRemaining <= 0) pomoFinish(); else updatePomoLive();
 }
 function pomoStart(){
   if(pomoRunning) return;
   pomoRunning = true;
+  clearTimeout(pomoBreakTimer);
   if(!onboardState().focus){ setOnboard({focus:true}); renderOnboard(); }
-  pomoInterval = setInterval(()=>{
-    pomoRemaining--;
-    if(pomoRemaining <= 0) pomoFinish(); else updatePomoLive();
-  }, 1000);
+  pomoEndAt = Date.now() + pomoRemaining * 1000;
+  playSound('start');
+  try{ pomoCancelBell(); pomoBellCancel = window.NasaqSound.scheduleBell(pomoRemaining); }catch(e){ pomoBellCancel = null; }
+  pomoInterval = setInterval(pomoTick, 1000);
   updatePomoLive();
+  try{ maybeAskNotifPermission(); }catch(e){}
 }
-function pomoPause(){ clearInterval(pomoInterval); pomoRunning = false; updatePomoLive(); }
+function pomoPause(){
+  clearInterval(pomoInterval);
+  if(pomoRunning) pomoRemaining = Math.max(1, Math.ceil((pomoEndAt - Date.now()) / 1000));
+  pomoRunning = false; pomoCancelBell(); updatePomoLive();
+  flushDeferredNotifs();
+}
 function pomoToggle(){ if(pomoRunning) pomoPause(); else pomoStart(); }
 function pomoReset(){
-  clearInterval(pomoInterval); pomoRunning = false;
+  clearInterval(pomoInterval); pomoRunning = false; pomoCancelBell();
   pomoRemaining = POMO_DEFAULT;
   $('pomoHint').textContent = '';
   updatePomoLive();
+  try{ flushDeferredNotifs(); }catch(e){}
 }
+/* العودة إلى التبويب: حدّث العدّاد فورًا بدل انتظار النبضة التالية */
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && pomoRunning) pomoTick(); });
 /* ابدأ جلسة لمهمة بعينها — من سطرها أو تفاصيلها أو لوحة الأوامر */
 function focusOnTask(t){
   if(String($('pomoTask').value) !== String(t.id)){ pomoReset(); renderPomoOptions(); $('pomoTask').value = String(t.id); }
@@ -4503,6 +4596,293 @@ document.addEventListener('focusin', e=>{
   el.setAttribute('enterkeyhint', fields.indexOf(el) < fields.length - 1 ? 'next' : 'done');
 });
 $('paletteBtn').onclick = openPalette;
+
+/* ==================== نَسَق الحيّ — المرحلة ١: الأصوات والإشعارات وساعات الهدوء ====================
+   الإعدادات على الجهاز. الأصوات من هوية «مَدار» (D:\03- Claude Sestem\هوية مدار\madar-sounds.js). */
+const ALIVE_KEY = 'daily-board-alive';
+const ALIVE_DEF = {sound:true, click:true, volume:40, quietFrom:'20:00', quietTo:'07:00', workEnd:'17:00', prayer:true, askedNotif:false};
+let alive = (()=>{ try{ return Object.assign({}, ALIVE_DEF, JSON.parse(localStorage.getItem(ALIVE_KEY) || '{}')); }catch(e){ return Object.assign({}, ALIVE_DEF); } })();
+function saveAlive(){ try{ localStorage.setItem(ALIVE_KEY, JSON.stringify(alive)); }catch(e){} }
+
+/* ---------- الأصوات: عائلة واحدة تُولَّد في المتصفح بلا ملفات ---------- */
+window.NasaqSound = (()=>{
+  let ac = null, master = null;
+  function ctx(){
+    if(!ac){ const A = window.AudioContext || window.webkitAudioContext; if(!A) return null; ac = new A(); master = ac.createGain(); master.connect(ac.destination); }
+    if(ac.state === 'suspended') ac.resume();
+    master.gain.value = (alive.volume / 100) * 0.9;
+    return ac;
+  }
+  function tone(f, at, dur, o){
+    o = o || {}; const c = ctx(); if(!c) return null;
+    const osc = c.createOscillator(), g = c.createGain(), t = c.currentTime + at;
+    osc.type = o.type || 'sine'; osc.frequency.setValueAtTime(f, t);
+    const peak = o.gain || .22;
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + (o.attack || .008)); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    osc.connect(g); g.connect(master); osc.start(t); osc.stop(t + dur + .03);
+    return osc;
+  }
+  function bell(f, at){ return [[1,.26,2.2],[2.76,.09,1.2],[5.4,.05,.7],[2,.06,1.6]].map(p=>tone(f * p[0], at, p[2], {gain:p[1], attack:.004})); }
+  function tick(){
+    const c = ctx(); if(!c) return;
+    const len = Math.floor(c.sampleRate * .012), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+    for(let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+    const src = c.createBufferSource(), hp = c.createBiquadFilter(), gn = c.createGain();
+    hp.type = 'highpass'; hp.frequency.value = 2200; gn.gain.value = .3;
+    src.buffer = buf; src.connect(hp); hp.connect(gn); gn.connect(master); src.start();
+  }
+  const S = {
+    done:   ()=>{ tone(659.25, 0, .16, {type:'triangle'}); tone(987.77, .07, .22, {gain:.18}); },
+    sub:    ()=>tone(1760, 0, .05, {gain:.1}),
+    all:    ()=>{ [523.25, 659.25, 783.99, 1046.5].forEach((f, i)=>tone(f, i * .11, .5, {type:'triangle', gain:.16})); tone(2093, .44, .5, {gain:.05}); },
+    start:  ()=>{ tone(392, 0, .14, {gain:.16}); tone(523.25, .11, .14, {gain:.16}); tone(587.33, .22, .22, {gain:.18}); },
+    end:    ()=>{ bell(880, 0); bell(880, .75); bell(880, 1.5); },
+    remind: ()=>{ tone(783.99, 0, .16); tone(1046.5, .14, .22, {gain:.18}); tone(783.99, .4, .16); tone(1046.5, .54, .24, {gain:.18}); },
+    warn:   ()=>{ tone(440, 0, .18, {type:'triangle', gain:.2}); tone(349.23, .16, .26, {type:'triangle', gain:.2}); },
+    close:  ()=>[587.33, 880, 739.99, 1174.66].forEach((f, i)=>tone(f, i * .26, .7, {gain:.15})),
+    tick:   tick,
+    notify: ()=>{ tone(1046.5, 0, .12, {gain:.14}); tone(1318.5, .09, .2, {gain:.12}); }
+  };
+  const unlock = ()=>{ ctx(); removeEventListener('pointerdown', unlock, true); removeEventListener('keydown', unlock, true); };
+  addEventListener('pointerdown', unlock, true); addEventListener('keydown', unlock, true);
+  return {
+    play(name){ if(!alive.sound) return; if(name === 'tick' && !alive.click) return; try{ S[name] && S[name](); }catch(e){} },
+    /* جرس نهاية التركيز مجدولًا على ساعة الصوت: يرنّ في موعده والتبويب في الخلفية */
+    scheduleBell(sec){
+      if(!alive.sound || !ctx()) return null;
+      const nodes = [].concat(bell(880, sec), bell(880, sec + .75), bell(880, sec + 1.5));
+      return ()=>nodes.forEach(n=>{ try{ n && n.stop(); }catch(e){} });
+    },
+    volume(){ if(master) master.gain.value = (alive.volume / 100) * 0.9; }
+  };
+})();
+/* تُستدعى من أي مكان في الملف دون قلق من ترتيب التعريف */
+function playSound(name){ try{ window.NasaqSound && window.NasaqSound.play(name); }catch(e){} }
+/* نقرة على الأزرار — عدا ما له صوته الخاص */
+document.addEventListener('pointerdown', e=>{
+  const b = e.target.closest('button,[role="checkbox"],a.sidenav-brand');
+  if(!b || b.disabled || b.closest('.check,.sub-check,.day-done,#pomoToggle,#fmToggle,.focus-go,.key,[data-nosound]')) return;
+  playSound('tick');
+}, true);
+
+/* ---------- الوقت: ساعات الهدوء ومواقيت الصلاة (مدينة غزة) ---------- */
+const hmToMin = s=>{ const p = String(s || '0:0').split(':').map(Number); return (p[0] || 0) * 60 + (p[1] || 0); };
+const nowMin = (d = new Date())=>d.getHours() * 60 + d.getMinutes();
+function fmtMinAr(m){
+  const h = Math.floor(m / 60) % 24, mm = m % 60, h12 = h % 12 || 12;
+  return arDigits(h12 + ':' + String(mm).padStart(2, '0')) + ' ' + (h < 12 ? 'ص' : 'م');
+}
+function minutesAr(n){ return n === 1 ? 'دقيقة' : n === 2 ? 'دقيقتين' : AR(n) + (n <= 10 ? ' دقائق' : ' دقيقة'); }
+/* طريقة الهيئة المصرية العامة للمساحة: الفجر ١٩٫٥°، العشاء ١٧٫٥°، العصر شافعي. تحقّقتُ منها مقابل مواقيت القدس المنشورة */
+const PRAYER_CITY = {lat:31.5017, lng:34.4668};
+const prayerCache = {};
+function prayerTimes(date = new Date()){
+  const y = date.getFullYear(), mo = date.getMonth() + 1, d = date.getDate(), key = y + '-' + mo + '-' + d;
+  if(prayerCache[key]) return prayerCache[key];
+  const rad = Math.PI / 180, {lat, lng} = PRAYER_CITY;
+  let Y = y, M = mo; if(M <= 2){ Y -= 1; M += 12; }
+  const A = Math.floor(Y / 100), B = 2 - A + Math.floor(A / 4);
+  const jd = Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + d + B - 1524.5 + .5 - lng / 360;
+  const D = jd - 2451545.0;
+  const g = (357.529 + .98560028 * D) % 360, q = (280.459 + .98564736 * D) % 360;
+  const L = (q + 1.915 * Math.sin(g * rad) + .020 * Math.sin(2 * g * rad)) % 360;
+  const e = 23.439 - .00000036 * D;
+  const RA = Math.atan2(Math.cos(e * rad) * Math.sin(L * rad), Math.cos(L * rad)) / rad / 15;
+  const decl = Math.asin(Math.sin(e * rad) * Math.sin(L * rad)) / rad;
+  const eqt = q / 15 - ((RA % 24) + 24) % 24;
+  const tz = -new Date(y, mo - 1, d, 12).getTimezoneOffset() / 60;
+  const dhuhr = 12 + tz - lng / 15 - eqt;
+  const T = a=>Math.acos((-Math.sin(a * rad) - Math.sin(decl * rad) * Math.sin(lat * rad)) / (Math.cos(decl * rad) * Math.cos(lat * rad))) / rad / 15;
+  const asrA = -Math.atan(1 / (1 + Math.tan(Math.abs(lat - decl) * rad))) / rad;
+  const toMin = h=>Math.round((((h % 24) + 24) % 24) * 60);
+  return prayerCache[key] = {fajr:toMin(dhuhr - T(19.5)), sunrise:toMin(dhuhr - T(.833)), dhuhr:toMin(dhuhr), asr:toMin(dhuhr + T(asrA)), maghrib:toMin(dhuhr + T(.833)), isha:toMin(dhuhr + T(17.5))};
+}
+const PRAYER_NAMES = {fajr:'الفجر', dhuhr:'الظهر', asr:'العصر', maghrib:'المغرب', isha:'العشاء'};
+function inQuietHours(d = new Date()){
+  const f = hmToMin(alive.quietFrom), t = hmToMin(alive.quietTo), n = nowMin(d);
+  return f === t ? false : f < t ? (n >= f && n < t) : (n >= f || n < t);
+}
+function prayerNow(d = new Date()){
+  if(!alive.prayer) return null;
+  const p = prayerTimes(d), n = nowMin(d);
+  return Object.keys(PRAYER_NAMES).find(k=>n >= p[k] && n < p[k] + 20) || null;
+}
+function isHush(d = new Date()){ return inQuietHours(d) || !!prayerNow(d); }
+
+/* ---------- مركز الإشعارات ---------- */
+const NOTIF_KEY = 'daily-board-notifs', NOTIF_SENT = 'daily-board-notif-sent';
+let notifs = (()=>{ try{ return JSON.parse(localStorage.getItem(NOTIF_KEY) || '[]') || []; }catch(e){ return []; } })();
+let deferredNotifs = [];
+function saveNotifs(){ notifs = notifs.slice(0, 60); try{ localStorage.setItem(NOTIF_KEY, JSON.stringify(notifs)); }catch(e){} }
+function sentToday(key){
+  let s = {}; try{ s = JSON.parse(localStorage.getItem(NOTIF_SENT) || '{}') || {}; }catch(e){}
+  const today = iso(new Date());
+  if(s.date !== today) s = {date: today, keys: []};
+  if(s.keys.includes(key)) return true;
+  s.keys.push(key); try{ localStorage.setItem(NOTIF_SENT, JSON.stringify(s)); }catch(e){}
+  return false;
+}
+const NOTIF_ACTIONS = {
+  plan: ()=>openPlanDay(),
+  board: ()=>{ showTab('board'); document.querySelector('.c-sched')?.scrollIntoView({block:'center'}); },
+  tasks: ()=>{ showTab('board'); document.querySelector('.c-tasks')?.scrollIntoView({block:'start'}); },
+  close: ()=>{ showTab('board'); document.querySelector('.c-review')?.scrollIntoView({block:'center'}); },
+  focus: ()=>openFocusMode(),
+  settings: ()=>{ openSettings(); setTimeout(()=>$('setAlive')?.scrollIntoView({block:'start'}), 60); }
+};
+function focusBusy(){ try{ return pomoRunning; }catch(e){ return false; } }
+/* kind: remind | warn | done | info — o: key (مرة في اليوم)، urgent (يتجاوز الهدوء والتركيز)، noSound، noToast، action */
+function notify(kind, title, body, o = {}){
+  if(o.key && sentToday(o.key)) return;
+  if(focusBusy() && !o.urgent && !o.duringFocus){ deferredNotifs.push([kind, title, body, Object.assign({}, o, {key:null})]); return; }
+  const item = {id: Date.now() + '-' + Math.random().toString(36).slice(2, 6), at: Date.now(), kind, title, body: body || '', read: false, action: o.action || null};
+  notifs.unshift(item); saveNotifs(); renderNotifs();
+  const hush = isHush() && !o.urgent;
+  if(!hush && !o.noSound) playSound(kind === 'warn' ? 'warn' : kind === 'remind' ? 'remind' : 'notify');
+  if(!hush) systemNotify(title, body, item.id);
+  if(!o.noToast && !document.hidden) showToast(title + (body ? ' — ' + body : ''));
+  try{ navigator.vibrate && kind !== 'info' && navigator.vibrate(kind === 'warn' ? [120, 60, 120] : 90); }catch(e){}
+}
+function flushDeferredNotifs(){ const q = deferredNotifs; deferredNotifs = []; q.forEach(a=>notify(a[0], a[1], a[2], Object.assign(a[3], {noToast:true}))); }
+function systemNotify(title, body, tag){
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  if(!document.hidden && document.hasFocus()) return;   /* المنصة أمامك: يكفي التنبيه داخلها */
+  const opts = {body, tag, icon:'icons/icon-192.png', badge:'icons/icon-192.png', lang:'ar', dir:'rtl'};
+  const direct = ()=>{ try{ new Notification(title, opts); }catch(e){} };
+  if(navigator.serviceWorker && navigator.serviceWorker.getRegistration){
+    navigator.serviceWorker.getRegistration().then(reg=>reg ? reg.showNotification(title, opts) : direct()).catch(direct);
+  } else direct();
+}
+function notifAge(ms){
+  const m = Math.round((Date.now() - ms) / 60000);
+  if(m < 1) return 'الآن'; if(m < 60) return 'منذ ' + minutesAr(m);
+  const h = Math.round(m / 60); if(h < 24) return 'منذ ' + (h === 1 ? 'ساعة' : h === 2 ? 'ساعتين' : AR(h) + ' ساعات');
+  return new Date(ms).toLocaleDateString('ar-EG-u-nu-arab', {day:'numeric', month:'long'});
+}
+function renderNotifs(){
+  const unread = notifs.filter(n=>!n.read).length, badge = $('notifBadge');
+  if(badge){ badge.hidden = !unread; badge.textContent = unread > 9 ? '٩+' : AR(unread); }
+  $('notifBtn')?.setAttribute('aria-label', unread ? 'الإشعارات — ' + AR(unread) + ' غير مقروءة' : 'الإشعارات');
+  const ul = $('npList'); if(!ul || $('notifPanel').hidden) return;
+  ul.innerHTML = '';
+  if(!notifs.length){ const e = document.createElement('li'); e.className = 'np-empty'; e.textContent = 'لا إشعارات بعد. ستجد هنا المواعيد والتذكيرات وما فاتك.'; ul.appendChild(e); return; }
+  notifs.forEach(n=>{
+    const li = document.createElement('li'); li.className = 'np-item k-' + n.kind + (n.read ? '' : ' unread');
+    const dot = document.createElement('i'); dot.setAttribute('aria-hidden', 'true');
+    const b = document.createElement('b'); b.textContent = n.title;
+    li.append(dot, b);
+    if(n.body){ const p = document.createElement('p'); p.textContent = n.body; li.appendChild(p); }
+    const t = document.createElement('time'); t.textContent = notifAge(n.at); li.appendChild(t);
+    if(n.action && NOTIF_ACTIONS[n.action]){
+      const a = document.createElement('button'); a.type = 'button'; a.className = 'card-link';
+      a.textContent = {plan:'افتح «خطّط يومك»', board:'افتح جدول اليوم', tasks:'افتح المهام', close:'اذهب إلى ختام اليوم', focus:'افتح وضع التركيز', settings:'افتح الإعدادات'}[n.action];
+      a.onclick = ()=>{ closeNotifPanel(); NOTIF_ACTIONS[n.action](); };
+      li.appendChild(a);
+    }
+    ul.appendChild(li);
+  });
+}
+function openNotifPanel(){ $('notifPanel').hidden = false; $('notifBtn').setAttribute('aria-expanded', 'true'); renderNotifs(); }
+function closeNotifPanel(){
+  if($('notifPanel').hidden) return;
+  $('notifPanel').hidden = true; $('notifBtn').setAttribute('aria-expanded', 'false');
+  if(notifs.some(n=>!n.read)){ notifs.forEach(n=>n.read = true); saveNotifs(); renderNotifs(); }   /* فتحها يعني أنك رأيتها */
+}
+$('notifBtn').onclick = e=>{ e.stopPropagation(); $('notifPanel').hidden ? openNotifPanel() : closeNotifPanel(); };
+$('npReadAll').onclick = ()=>{ notifs.forEach(n=>n.read = true); saveNotifs(); renderNotifs(); };
+$('npClear').onclick = ()=>{ notifs = []; saveNotifs(); renderNotifs(); };
+document.addEventListener('click', e=>{ if(!$('notifPanel').hidden && !e.target.closest('#notifPanel,#notifBtn')) closeNotifPanel(); });
+document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && !$('notifPanel').hidden){ closeNotifPanel(); $('notifBtn').focus(); } });
+renderNotifs();
+
+/* ---------- المحرّك: يفحص كل ٣٠ ثانية ما يستحق التنبيه ---------- */
+function aliveTick(){
+  const now = new Date(), n = nowMin(now);
+  /* مواعيد تقويم Google: قبل ١٠ دقائق — تتجاوز الهدوء */
+  try{
+    gcalEvents.forEach(ev=>{
+      if(ev.allDay || !ev.start) return;
+      const s = hmToMin(ev.start), left = s - n;
+      if(left > 0 && left <= 10) notify('remind', 'بعد ' + minutesAr(left) + ': ' + ev.title, 'موعد في تقويم Google الساعة ' + fmtMinAr(s), {key:'gcal:' + ev.start + ':' + ev.title, urgent:true, action:'board'});
+    });
+  }catch(e){}
+  /* مهمة مربوطة بالساعة الحالية في «جدول اليوم»: خلال أول ١٥ دقيقة من الساعة */
+  try{
+    const hk = String(now.getHours()).padStart(2, '0') + ':00', txt = String(timeline[hk] || '').trim();
+    if(txt && now.getMinutes() < 15) notify('remind', 'حان وقت: ' + txt, 'من «جدول اليوم» — الساعة ' + fmtMinAr(now.getHours() * 60), {key:'tl:' + hk + ':' + txt, action:'board'});
+  }catch(e){}
+  const awake = !inQuietHours(now);
+  /* الملخص الصباحي: أول فحص بعد نهاية ساعات الهدوء، ما دام في اليوم ما يستحق */
+  let ready = true; try{ ready = stateReady || !bridge; }catch(e){}   /* بلا جسر: البيانات محلية وجاهزة */
+  if(awake && ready){
+    const due = tasks.filter(t=>taskMatches(t, 'today')).length, late = tasks.filter(t=>taskMatches(t, 'overdue')).length, stale = waits.filter(waitStale).length;
+    const parts = [];
+    if(due) parts.push(AR(due) + (due === 1 ? ' مهمة مستحقة اليوم' : ' مهام مستحقة اليوم'));
+    if(late) parts.push(AR(late) + ' متأخرة');
+    if(stale) parts.push(AR(stale) + ' بانتظار رد تحتاج متابعة');
+    if(parts.length) notify(late || stale ? 'warn' : 'info', 'يومك في لمحة', parts.join('، '), {key:'summary', action:'plan', noToast:true});
+    if(!plannedToday() && tasks.length) notify('info', 'خطّط يومك قبل أن يزدحم', 'أمس، ثم ما ينتظر قرارك، ثم أولوياتك', {key:'plan', action:'plan', noSound:true, noToast:true});
+  }
+  /* نهاية يوم العمل: «أغلق يومك» خلال الساعة التالية لنهايته */
+  const we = hmToMin(alive.workEnd);
+  if(ready && tasks.length && n >= we && n < we + 60){
+    const done = tasks.filter(t=>t.done).length;
+    notify('remind', 'انتهى يوم عملك — أغلق يومك بسلام', AR(done) + ' من ' + AR(tasks.length) + ' منجزة', {key:'closeday', action:'close'});
+  }
+  if(!focusBusy() && deferredNotifs.length) flushDeferredNotifs();
+}
+setTimeout(aliveTick, 20000);   /* بعد أن تصل بيانات السحابة */
+setInterval(aliveTick, 30000);
+
+/* ---------- الإذن بإشعارات النظام: يُطلب في لحظته (أول جلسة تركيز) لا عند فتح الصفحة ---------- */
+function askNotifPermission(){
+  if(!('Notification' in window)) return Promise.resolve('unsupported');
+  return Notification.requestPermission().then(p=>{ renderAliveSettings(); return p; });
+}
+function maybeAskNotifPermission(){
+  if(alive.askedNotif || !('Notification' in window) || Notification.permission !== 'default') return;
+  alive.askedNotif = true; saveAlive();
+  openModal({
+    title: 'أتريد أن نخبرك حين تنتهي الجلسة؟',
+    bodyHTML: '<p>يظهر إشعار خارج المتصفح إن كنت في نافذة أخرى، ومعه تذكيرات مواعيدك. لن نرسل شيئًا في ساعات الهدوء.</p>',
+    actions: [{label:'لاحقًا'}, {label:'نعم، اسمح بالإشعارات', primary:true, onClick:({close})=>{ close(); askNotifPermission(); }}]
+  });
+}
+
+/* ---------- الإعدادات ---------- */
+function renderAliveSettings(){
+  if(!$('setAlive')) return;
+  $('setSoundOn').checked = alive.sound; $('setClickOn').checked = alive.click; $('setClickOn').disabled = !alive.sound;
+  $('setVolume').value = alive.volume;
+  $('setQuietFrom').value = alive.quietFrom; $('setQuietTo').value = alive.quietTo; $('setWorkEnd').value = alive.workEnd;
+  $('setPrayerOn').checked = alive.prayer;
+  const perm = !('Notification' in window) ? 'unsupported' : Notification.permission;
+  $('setNotifState').textContent = {granted:'مسموحة', denied:'محظورة — غيّرها من إعدادات الموقع في المتصفح', default:'لم تُطلب بعد', unsupported:'غير مدعومة في هذا المتصفح'}[perm];
+  $('setNotifAsk').hidden = perm !== 'default';
+  const p = prayerTimes(), n = nowMin(), box = $('setPrayerTimes'); box.innerHTML = '';
+  const next = Object.keys(PRAYER_NAMES).find(k=>p[k] > n);
+  Object.keys(PRAYER_NAMES).forEach(k=>{
+    const d = document.createElement('div'); if(k === next) d.className = 'next';
+    const b = document.createElement('b'); b.textContent = fmtMinAr(p[k]).replace(/ [صم]$/, '');
+    d.append(b, document.createTextNode(PRAYER_NAMES[k])); box.appendChild(d);
+  });
+}
+$('setSoundOn').onchange = ()=>{ alive.sound = $('setSoundOn').checked; saveAlive(); renderAliveSettings(); };
+$('setClickOn').onchange = ()=>{ alive.click = $('setClickOn').checked; saveAlive(); };
+$('setVolume').oninput = ()=>{ alive.volume = Number($('setVolume').value); saveAlive(); NasaqSound.volume(); };
+$('setVolume').onchange = ()=>playSound('done');
+[['setQuietFrom','quietFrom'], ['setQuietTo','quietTo'], ['setWorkEnd','workEnd']].forEach(([id, k])=>{
+  $(id).onchange = ()=>{ if($(id).value){ alive[k] = $(id).value; saveAlive(); } };
+});
+$('setPrayerOn').onchange = ()=>{ alive.prayer = $('setPrayerOn').checked; saveAlive(); };
+$('setSoundTest').onclick = ()=>playSound('done');
+$('setNotifAsk').onclick = ()=>askNotifPermission();
+$('setNotifTest').onclick = ()=>{
+  if(!('Notification' in window) || Notification.permission !== 'granted'){ notify('info', 'هكذا يظهر الإشعار داخل نَسَق', 'اسمح بإشعارات النظام ليظهر أيضًا خارج المتصفح.', {}); return; }
+  const opts = {body:'إشعارات نَسَق تعمل.', icon:'icons/icon-192.png', lang:'ar', dir:'rtl'};
+  navigator.serviceWorker?.getRegistration().then(reg=>reg ? reg.showNotification('تجربة إشعار', opts) : new Notification('تجربة إشعار', opts)).catch(()=>{ try{ new Notification('تجربة إشعار', opts); }catch(e){} });
+  playSound('notify');
+};
 document.addEventListener('keydown', e=>{
   if((e.ctrlKey || e.metaKey) && !e.altKey && (e.key === 'k' || e.key === 'K' || e.code === 'KeyK')){
     if(!$('authOverlay').hidden) return;
@@ -4631,6 +5011,7 @@ $('newDay').onclick = ()=>{
         document.querySelectorAll('.pri .field').forEach(f=>f.value='');
         ['r1','r2','r3'].forEach(id=>$(id).value='');
         sync();
+        playSound('close');   /* توقيع نَسَق الصوتي */
         showToast(d.length ? 'يومك أخذ نَسَقه ✦ — بدأ يوم جديد.' : 'بدأ يوم جديد. خطوة واحدة تكفي للبدء.');
       }}
     ]
@@ -5425,6 +5806,7 @@ function openSettings(){
   $('setBridgeState').textContent = bridge ? (auth ? 'متصل' : 'غير مسجّل الدخول') : 'غير مفعّل';
   $('setSpotifyState').textContent = getSpotifyTokens() ? 'مربوط' : 'غير مربوط';
   setSetMsg('setAccountMsg',''); setSetMsg('setBridgeMsg','');
+  try{ renderAliveSettings(); }catch(e){}
   const showAdmin = !!(auth && auth.isOwner);
   $('setAdminSection').hidden = !showAdmin;
   if(showAdmin) loadAdminUsers();

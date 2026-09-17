@@ -1,8 +1,9 @@
 /* نَسَق — عامل الخدمة (Service Worker)
  *
- * وظيفتان فقط:
+ * ثلاث وظائف:
  *  ١. يجعل اللوح قابلًا للتثبيت كتطبيق على الهاتف والحاسوب.
  *  ٢. يفتح اللوح بآخر نسخة محفوظة إن انقطع الاتصال.
+ *  ٣. الضغط على إشعار من نَسَق يعيدك إلى اللوح المفتوح (أو يفتحه).
  *
  * الصفحة تُجلب "من الشبكة أولًا" دائمًا، كي يصل أي تعديل فور رفعه ولا يعلق أحد
  * على نسخة قديمة. ولا يتدخّل أبدًا في طلبات الجسر أو نوشن أو الخطوط (نطاقات أخرى).
@@ -53,4 +54,15 @@ self.addEventListener('fetch', e => {
 
   /* الأيقونات والملف التعريفي: من الذاكرة أولًا، ثم الشبكة */
   e.respondWith(caches.match(req).then(hit => hit || fetch(req)));
+});
+
+/* الضغط على إشعار: ركّز على تبويب نَسَق المفتوح، أو افتح اللوح */
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      const mine = list.find(c => new URL(c.url).origin === self.location.origin);
+      return mine ? mine.focus() : self.clients.openWindow('./');
+    })
+  );
 });
