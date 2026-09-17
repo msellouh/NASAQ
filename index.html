@@ -5288,14 +5288,115 @@ function deletePhotoRecord(id){
 }
 
 let photoList = [], photoIdx = 0, photoRotateTimer = null, prevUploadedUrls = [];
-function greetingNow(){
-  const h = new Date().getHours();
-  if(h < 5) return 'ليلة هادئة';
-  if(h < 12) return 'صباح الخير';
-  if(h < 17) return 'نهار موفَّق';
-  if(h < 21) return 'مساء الخير';
-  return 'مساء هادئ';
+/* ==================== المرحلة ٢: محرّك السياق وتنوّع العبارات ====================
+   لكل سياق عشر صيغ تُسحب كأوراق من كيس: لا تعود صيغة حتى تُسحب كل صيغ سياقها،
+   ولا تبدأ الجولة الجديدة بآخر ما ظهر. الكيس محفوظ على الجهاز. */
+const PHRASE_KEY = 'daily-board-phrasebag';
+const PHRASES = {
+  fajr:['فجرٌ جديد، وصفحةٌ بيضاء','بُورك لك في بكورك','أهدأ ساعة في يومك','ابدأ قبل أن يستيقظ الزحام','نيّةٌ صالحة تكفي للبداية','الفجر يفتح اليوم','خيرُ الوقت أوّله','صباحٌ لم يُكتب بعد','ساعةُ صفاء قبل الضجيج','خطوةٌ واحدة الآن تكفي'],
+  morning:['صباح الخير','صباحٌ مبارك','صباح النشاط','صباحُك نَسَق','يومٌ جديد بين يديك','ابدأ بالأهم','صباحٌ يليق بك','بسم الله نبدأ','الصباح للأشياء الثقيلة','صباحٌ هادئ ومُنتِج'],
+  noon:['مضى نصف اليوم','نصفٌ مضى، ونصفٌ لك','استرح دقيقة ثم أكمل','ظهيرةٌ في وسط الطريق','أنجزتَ شيئًا فأكمل','راجع خطتك بسرعة','لا تنسَ الماء','ما أهمّ ما تبقّى؟','الظهيرة تحتاج نفَسًا','خذ استراحة قصيرة'],
+  afternoon:['عصرٌ هادئ لإتمام ما بدأت','ما زال في اليوم بقية','أغلق المهام الصغيرة الآن','عصرٌ مناسب للمتابعات','اختر مهمة واحدة وأنهِها','نشاطٌ متأخر خيرٌ من لا شيء','راجع ما تبقّى','رتّب الغد من الآن','آخر دفعة قبل المغرب','ابدأ بالأسهل لتتحرّك'],
+  maghrib:['مساءٌ يليق بما أنجزت','مغربٌ هادئ','أنهِ يومك بسلام','وقتٌ للراحة والشكر','أغلق ما فُتح اليوم','المساء يبدأ','خفّف السرعة','ماذا أنجزتَ اليوم؟','أحسنتَ صنعًا','اترك العمل يستريح'],
+  evening:['مساء الخير','مساءٌ هادئ','وقتٌ لك ولأهلك','أغلق يومك على نَسَق','راجع يومك في دقيقتين','اجعل للغد نصيبًا','مساءٌ للقراءة','سجّل ما تعلّمته اليوم','خذ نفَسًا عميقًا','بقيت خطوة واحدة'],
+  night:['ليلة هادئة','نَم باكرًا يكن غدُك أخفّ','أغلق اللوح ونَم','لا شيء يستحق سهر الليل','راجع نيّتك ثم نَم','الليل للراحة','غدًا يومٌ جديد','أطفئ الشاشة','سلامٌ على ليلك','ما لم يُنجَز اليوم يُنجَز غدًا'],
+  focus:['شيءٌ واحد الآن','لا تلتفت','أنت في العمق','دقائق صافية','ركّز، والدنيا تنتظر','لا شيء غير هذا','أغلق ما سواه','عشر دقائق تكفي للبداية','هذا وقتك','أنجِز ثم استرح'],
+  meeting:['اجتماعك بعد قليل','استعدّ بهدوء','راجع نقاطك','خذ نفَسًا واستعدّ','موعدك يقترب','أحضِر ورقة وقلمًا','ابدأ بالنقطة الأهم','دوّن القرارات','وقتُ حضورٍ لا انشغال','اختصر واضبط الوقت'],
+  reading:['وقت القراءة','صفحةٌ تصنع فرقًا','اقرأ بتأنٍّ','علمٌ جديد ينتظرك','ضع الهاتف جانبًا','اقرأ وسجّل فائدة','صفحاتٌ هادئة','القراءة راحة','خُذ فائدة واحدة','اقرأ ثم لخّص'],
+  writing:['وقتُ الكتابة','اكتب المسودة أولًا','لا تنقّح الآن','الفكرة ثم الصياغة','جملةٌ واحدة تكفي للبدء','اكتب كما تتحدّث','أنهِ الفقرة','التقرير ينتظرك','ابدأ بالعنوان','اكتب ثم راجع'],
+  call:['مكالمتك الآن','اتصل قبل أن يزدحم يومه','ثلاث نقاط تكفي','اختصر وكن واضحًا','دوّن ما اتُّفق عليه','ردٌّ ينتظرك','مكالمةٌ قصيرة تحلّ الكثير','ابدأ بالسلام ثم الغرض','لا تنسَ التذكير بالموعد','أنهِ المكالمة بخطوة'],
+  work:['وقت العمل','مهمتك الآن','ابدأ بالأصعب','خطوة ثم خطوة','لا تفتح كل شيء','أغلق الإشعارات وانطلق','أنجِز ما بدأت','هذا وقتها المخصص','امضِ في المهمة','ركّز على واحدة'],
+  friday:['جمعة مباركة','يومٌ له نَسَقه الخاص','أكثِر من الصلاة على النبي ﷺ','لا تنسَ سورة الكهف','جمعةٌ هادئة','خفّف العمل اليوم','يومُ راحةٍ وبركة','اجعل لأهلك نصيبًا','جمعةٌ طيبة','ساعةُ إجابة في آخر النهار'],
+  ramadan:['رمضان كريم','صُمتَ وأنجزت','خفّف مهامك اليوم','رتّب يومك حول الصلاة','ما نصيبك من القرآن اليوم؟','رمضانٌ هادئ ومنظّم','اجعل لليل نصيبًا','نيّةٌ صالحة تكفي','أنجِز قبل الإفطار','شهرٌ يمرّ سريعًا'],
+  eid:['عيدٌ مبارك','كل عام وأنت بخير','أجّل ما يمكن تأجيله','اليوم للأهل','عيدٌ سعيد','تقبّل الله منا ومنكم','خفّف اللوح اليوم','فرحٌ يستحق الحضور','أجملُ الأيام أبسطها','عيدك مبارك'],
+  arafah:['يوم عرفة','خيرُ يومٍ طلعت فيه الشمس','أكثِر من الدعاء','أخفُّ يومٍ على اللوح','صيامٌ واحتساب','اجعل يومك دعاءً','يومٌ لا يُعوَّض','ادعُ لمن تحب','أفضل الدعاء دعاء عرفة','تفرّغ اليوم'],
+  prayer:['حان وقت {name}','{name} — استرح قليلًا','الصلاة أولًا','أوقف كل شيء لـ{name}','نداء {name}','توضّأ واذهب','{name} راحةٌ لا انقطاع','بعد {name} تُكمل','الصلاة عمود اليوم','اترك اللوح لـ{name}']
+};
+const PHRASE_SPECIAL = {focus:1, meeting:1, reading:1, writing:1, call:1, work:1, prayer:1};
+function phraseBag(){ try{ return JSON.parse(localStorage.getItem(PHRASE_KEY) || '{}') || {}; }catch(e){ return {}; } }
+function pickPhrase(ctx){
+  const list = PHRASES[ctx] || PHRASES.morning, bag = phraseBag();
+  let b = bag[ctx];
+  if(!b || !Array.isArray(b.order) || b.order.length !== list.length || b.i >= b.order.length){
+    const last = b && b.order ? b.order[b.order.length - 1] : -1;
+    const order = list.map((_, i)=>i);
+    for(let i = order.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    if(order[0] === last && order.length > 1){ [order[0], order[1]] = [order[1], order[0]]; }   /* لا تبدأ الجولة بآخر ما ظهر */
+    b = {order, i:0};
+  }
+  const text = list[b.order[b.i]];
+  b.i++;
+  bag[ctx] = b; try{ localStorage.setItem(PHRASE_KEY, JSON.stringify(bag)); }catch(e){}
+  return text;
 }
+/* التاريخ الهجري: الشهر واليوم لكشف المناسبات */
+function hijriParts(d = new Date()){
+  try{
+    const f = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', {month:'numeric', day:'numeric'});
+    if(f.resolvedOptions().calendar !== 'islamic-umalqura') return null;
+    const p = {}; f.formatToParts(d).forEach(x=>{ if(x.type !== 'literal') p[x.type] = Number(x.value); });
+    return p.month ? p : null;
+  }catch(e){ return null; }
+}
+function occasionNow(d = new Date()){
+  const h = hijriParts(d);
+  if(h){
+    if(h.month === 9) return 'ramadan';
+    if(h.month === 10 && h.day <= 3) return 'eid';
+    if(h.month === 12 && h.day >= 10 && h.day <= 13) return 'eid';
+    if(h.month === 12 && h.day === 9) return 'arafah';
+  }
+  if(d.getDay() === 5) return 'friday';
+  return null;
+}
+function periodNow(d = new Date()){
+  const h = d.getHours();
+  if(h >= 4 && h < 6) return 'fajr';
+  if(h < 11) return 'morning';
+  if(h < 14) return 'noon';
+  if(h < 17) return 'afternoon';
+  if(h < 19) return 'maghrib';
+  if(h < 22) return 'evening';
+  return 'night';
+}
+function taskKind(text){
+  const s = String(text || '');
+  if(/قراءة|اقرأ|كتاب|مطالعة|مراجعة نص|بحث/.test(s)) return 'reading';
+  if(/اجتماع|لقاء|زيارة|جلسة مع|مقابلة/.test(s)) return 'meeting';
+  if(/اتصال|مكالمة|كلّم|تواصل مع/.test(s)) return 'call';
+  if(/كتابة|اكتب|تقرير|مذكرة|صياغة|إعداد ورقة/.test(s)) return 'writing';
+  return 'work';
+}
+/* السياق بترتيب الأولوية: تركيز ← موعد ← صلاة ← مهمة الساعة ← مناسبة ← فترة اليوم */
+function heroContext(){
+  const d = new Date(), n = nowMin(d);
+  if(focusBusy()){ const t = (typeof pomoTaskObj === 'function') ? pomoTaskObj() : null; return {ctx:'focus', slot:'focus:' + (t ? t.id : '0'), sub: t ? t.text : 'شيءٌ واحد في كل مرة'}; }
+  try{
+    const soon = gcalEvents.filter(e=>!e.allDay && e.start).map(e=>({e, s:hmToMin(e.start)})).filter(x=>x.s - n <= 15 && n < x.s + 45).sort((a, b)=>a.s - b.s)[0];
+    if(soon) return {ctx:'meeting', slot:'meeting:' + soon.e.start + soon.e.title, sub: soon.e.title + ' — ' + fmtMinAr(soon.s)};
+  }catch(e){}
+  const pr = prayerNow(d);
+  if(pr) return {ctx:'prayer', slot:'prayer:' + pr, name: PRAYER_NAMES[pr], sub: 'دخل وقت ' + PRAYER_NAMES[pr] + ' — ' + fmtMinAr(prayerTimes(d)[pr])};
+  try{
+    const hk = String(d.getHours()).padStart(2, '0') + ':00', txt = String(timeline[hk] || '').trim();
+    if(txt) return {ctx: taskKind(txt), slot:'tl:' + hk + txt, sub: txt};
+  }catch(e){}
+  const occ = occasionNow(d);
+  if(occ) return {ctx:occ, slot:occ + ':' + iso(d)};
+  const p = periodNow(d);
+  return {ctx:p, slot:p + ':' + iso(d) + ':' + Math.floor(n / 30)};   /* داخل الفترة نفسها: صيغة كل نصف ساعة */
+}
+let heroPhrase = {slot:'', text:''};
+const BRAND_TAGLINE = 'لكل شيء مكان، ولكل يوم نَسَق.';
+function applyHeroPhrase(){
+  const c = heroContext();
+  if(heroPhrase.slot !== c.slot) heroPhrase = {slot:c.slot, text: pickPhrase(c.ctx).replace('{name}', c.name || '')};
+  $('heroGreet').textContent = heroPhrase.text;
+  const tag = document.querySelector('.greet-tagline');
+  if(tag) tag.textContent = (PHRASE_SPECIAL[c.ctx] && c.sub) ? c.sub : BRAND_TAGLINE;
+  $('heroBanner').dataset.ctx = c.ctx;   /* تستعمله المرحلة ٣ لاختيار الصورة */
+}
+function greetingNow(){ return heroPhrase.text || PHRASES[periodNow()][0]; }
 function showPhoto(){
   const has = photoList.length>0;
   $('heroBanner').classList.toggle('has-photo', has);
@@ -5328,9 +5429,9 @@ function showPhoto(){
   updateGreeting();
 }
 /* التحية ظاهرة دائمًا في بطاقة الترحيب، بصورة أو بدونها، وتتبدّل مع وقت اليوم */
-function updateGreeting(){ $('heroGreet').textContent = greetingNow(); try{ renderDates(); }catch(e){} }
+function updateGreeting(){ try{ applyHeroPhrase(); }catch(e){ $('heroGreet').textContent = greetingNow(); } try{ renderDates(); }catch(e){} }
 updateGreeting();
-setInterval(updateGreeting, 10*60*1000);
+setInterval(updateGreeting, 60 * 1000);   /* السياق يُفحص كل دقيقة، والعبارة لا تتبدّل إلا بتبدّله */
 async function loadAllPhotos(){
   prevUploadedUrls.forEach(u=>URL.revokeObjectURL(u));
   prevUploadedUrls = [];
