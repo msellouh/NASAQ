@@ -370,6 +370,11 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .file span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px}
 .file.pdf b{background:#C42B2E} .file.doc b{background:#1F5FBF} .file.xls b{background:#087F5D} .file.img b{background:#6A43B8} .file.vid b{background:#B4541A}
 .more{border:1px dashed var(--field-line);background:transparent;border-radius:4px;padding:4px 10px;font-size:12px;color:var(--ink-2)}
+.up{border:1px dashed var(--field-line);background:transparent;border-radius:4px;padding:4px 10px;font-size:12px;color:var(--focus-ink);display:inline-flex;align-items:center;gap:6px}
+.up:hover{border-color:var(--focus);background:var(--focus-bg)}
+.up[disabled]{opacity:.6}
+.slot.drop{border-color:var(--focus);background:var(--focus-bg)}
+.upnote{font-size:12px;color:var(--muted);margin-top:6px}
 .more:hover{border-color:var(--focus);color:var(--focus-ink)}
 .folder{unicode-bidi:plaintext}
 
@@ -472,6 +477,11 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
   .hb{grid-template-columns:96px minmax(0,1fr)} .hb .vl{grid-column:2}
   .kpis{grid-template-columns:1fr 1fr}
 }
+/* داخل تبويب «نَسَق»: الصفحة تُعرض في إطار، فالعلامة والرجوع في الشريط الجانبي للوح */
+:root.embed .brand{display:none}
+:root.embed .tb{padding-inline-start:18px}
+:root.embed .wrap{padding-top:18px}
+
 @media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
 </style>
 </head>
@@ -599,6 +609,7 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
   </form>
 </dialog>
 
+<input type="file" id="upInput" multiple hidden aria-hidden="true" tabindex="-1">
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -638,6 +649,15 @@ const ORGS = {
   humera: { name: 'هيوميرا', full: 'مؤسسة هيوميرا', codes: 'H', fixture: 'humera.local.json' }
 };
 const ORG = new URLSearchParams(location.search).get('org') === 'humera' ? 'humera' : 'medics';
+/* تُفتح داخل تبويب «المشاريع» في لوح نَسَق: نخفي العلامة، ونُبقي روابط المؤسسة داخل الإطار */
+const EMBED = new URLSearchParams(location.search).get('embed') === '1';
+if(EMBED){
+  document.documentElement.classList.add('embed');
+  const embedOrgs = () => document.querySelectorAll('#orgs a').forEach(a => {
+    a.href = a.dataset.org === 'humera' ? 'projects.html?org=humera&embed=1' : 'projects.html?embed=1';
+  });
+  if(document.readyState === 'loading') addEventListener('DOMContentLoaded', embedOrgs); else embedOrgs();
+}
 const ORG_INFO = ORGS[ORG];
 document.documentElement.dataset.org = ORG;
 
@@ -1164,8 +1184,44 @@ function fileChip(f){
   return '<a class="file ' + cls + '" href="' + esc(f.url) + '" target="_blank" rel="noopener" title="' +
     esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' · ' + fmtDate(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></a>';
 }
+/* رفع ملف إلى خانة: يُحفظ في مجلد الخانة داخل مجلد المشروع باسم موحّد «الكود- الخانة- التاريخ» */
+const UP_MAX = 25 * 1024 * 1024;
+const uploading = new Set();
+const b64 = file => new Promise((res, rej) => {
+  const r = new FileReader();
+  r.onload = () => res(String(r.result).split(',')[1] || '');
+  r.onerror = () => rej(new Error('تعذّرت قراءة الملف'));
+  r.readAsDataURL(file);
+});
+async function uploadToSlot(p, slot, files){
+  const list = [...files].filter(Boolean);
+  if(!list.length) return;
+  if(SOURCE !== 'live'){ toast('الرفع يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true); return; }
+  const key = p.code + '|' + slot;
+  uploading.add(key); refreshCard('docsCard', docsCard(p));
+  let ok = 0;
+  for(const file of list){
+    try{
+      if(file.size > UP_MAX) throw new Error('حجم «' + file.name + '» أكبر من ٢٥ ميجابايت');
+      const d = await post({action:'file_upload', org: ORG, code: p.code, slot, pageId: p.id,
+        file: {name: file.name, mime: file.type || '', data: await b64(file)}});
+      if(d.files){ FILES[p.code] = d.files; Object.assign(p, {docsDone: d.files.done, docsChecked: d.files.checked, folder: d.files.folder, drive: d.files.url}); }
+      ok++;
+    }catch(err){ toast(err.message || 'تعذّر رفع الملف', true); break; }
+  }
+  uploading.delete(key);
+  refreshCard('docsCard', docsCard(p));
+  if(ok) toast(ok === 1 ? 'رُفع الملف إلى «' + slot + '»' : 'رُفعت ' + cnt(ok, W_FILE) + ' إلى «' + slot + '»');
+}
+function pickFiles(p, slot){
+  const inp = $('upInput');
+  inp.value = '';
+  inp.onchange = () => { const f = inp.files; inp.value = ''; uploadToSlot(p, slot, f); };
+  inp.click();
+}
 function docsCard(p){
   const f = filesOf(p);
+  const canUpload = SOURCE === 'live' && !!DATA.driveRoot;
   const loading = SOURCE === 'live' && filesLoading.has(p.code);
   const done = new Set(f && f.done ? f.done : (p.docsDone || []));
   const slots = new Map(((f && f.slots) || []).map(s => [s.slot, s]));
@@ -1176,11 +1232,14 @@ function docsCard(p){
     if(ok) nDone++; else if(!later) nMissing++;
     const sl = slots.get(d), list = sl ? sl.files : [];
     const key = p.code + '|' + d, open = EXPANDED.has(key), shown = open ? list : list.slice(0, 4);
+    const busy = uploading.has(key);
+    const upBtn = canUpload ? '<button class="up" type="button" data-act="up" data-slot="' + esc(d) + '"' + (busy ? ' disabled' : '') + '>' +
+      (busy ? '<span class="spin"></span>جارٍ الرفع…' : '＋ أضف ملفًا') + '</button>' : '';
     return '<div class="slot ' + (ok ? 'ok' : later ? 'later' : 'miss') + '"><span class="ic">' + ICON_CHECK + '</span><div>' +
       '<div class="slot-h">' + d + '<em>' + (ok ? 'مرفق' + (list.length ? ' · ' + cnt(list.length, W_FILE) : '') : later ? 'لاحقًا' : 'ناقص') + '</em>' +
         (sl && sl.url ? '<a class="link" href="' + esc(sl.url) + '" target="_blank" rel="noopener">فتح المجلد</a>' : '') + '</div>' +
-      (shown.length ? '<div class="files">' + shown.map(fileChip).join('') +
-        (list.length > 4 ? '<button class="more" type="button" data-act="more" data-key="' + esc(key) + '">' + (open ? 'عرض أقل' : '+ ' + cnt(list.length - 4, W_FILE)) + '</button>' : '') + '</div>' : '') +
+      (shown.length || upBtn ? '<div class="files">' + shown.map(fileChip).join('') +
+        (list.length > 4 ? '<button class="more" type="button" data-act="more" data-key="' + esc(key) + '">' + (open ? 'عرض أقل' : '+ ' + cnt(list.length - 4, W_FILE)) + '</button>' : '') + upBtn + '</div>' : '') +
     '</div></div>';
   }).join('') + '</div>').join('');
   const checked = (f && f.checked) || p.docsChecked;
@@ -1199,6 +1258,7 @@ function docsCard(p){
     '<p class="note">' + (f && f.error ? '<span style="color:var(--urgent)">تعذّرت قراءة الملفات: ' + esc(f.error) + '</span> · ' : '') +
       'آخر فحص للمجلد ' + fmtDate(checked) + (p.folder || (f && f.folder) ? ' · <span class="folder">' + esc(p.folder || f.folder) + '</span>' : '') +
       (phaseKnown ? ' · «لاحقًا» يعني أن وقته لم يحن في مرحلة «' + esc(p.phase) + '»' : '') + '.' +
+      (canUpload ? ' يُرفع الملف إلى مجلد خانته باسم موحّد «' + esc(p.code || 'الكود') + '- اسم الخانة- التاريخ»، ويمكن سحبه وإفلاته على الخانة.' : '') +
       (SOURCE === 'local' ? ' في نسخة التطوير يفتح زر الملف بحثًا عنه في درايف، وبعد نشر الجسر يفتح الملف نفسه مباشرة.' : '') + '</p>' +
   '</article>';
 }
@@ -1604,6 +1664,21 @@ $('detail').addEventListener('click', e => {
   else if(act === 'tpl') createFromTemplate(p, $('tplSel').value);
   else if(act === 'more'){ const k = b.dataset.key; EXPANDED.has(k) ? EXPANDED.delete(k) : EXPANDED.add(k); refreshCard('docsCard', docsCard(p)); }
   else if(act === 'files-refresh'){ delete FILES[p.code]; fetchFiles(p); refreshCard('docsCard', docsCard(p)); }
+  else if(act === 'up') pickFiles(p, b.dataset.slot);
+});
+/* السحب والإفلات على الخانة نفسها */
+function slotOf(e){ return e.target.closest('#docsCard .slot'); }
+function slotName(el){ const h = el.querySelector('.slot-h'); return h ? h.childNodes[0].textContent.trim() : ''; }
+$('detail').addEventListener('dragover', e => {
+  const sl = slotOf(e); if(!sl || SOURCE !== 'live' || !DATA.driveRoot) return;
+  e.preventDefault(); sl.classList.add('drop');
+});
+$('detail').addEventListener('dragleave', e => { const sl = slotOf(e); if(sl) sl.classList.remove('drop'); });
+$('detail').addEventListener('drop', e => {
+  const sl = slotOf(e); if(!sl || SOURCE !== 'live' || !DATA.driveRoot) return;
+  e.preventDefault(); sl.classList.remove('drop');
+  const p = DATA.projects.find(x => x.id === S.sel);
+  if(p && e.dataTransfer && e.dataTransfer.files.length) uploadToSlot(p, slotName(sl), e.dataTransfer.files);
 });
 $('detail').addEventListener('change', e => { if(e.target.id === 'tplSel') $('tplPreview').innerHTML = tplPreview(e.target.value); });
 $('views').addEventListener('click', e => {

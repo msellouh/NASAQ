@@ -487,6 +487,14 @@ body{padding:0}
 .greet-media{position:relative;width:72%;max-width:900px;flex:none;display:flex;align-items:flex-end;justify-content:flex-end;padding:12px}
 .greet-card:not(.has-photo) .greet-media{width:auto}
 .greet-card.has-photo{min-height:280px}
+/* مشهد نَسَق: يُرسم بألوان الطابع، ويحل محل الصورة حين لا توجد صورة تناسب السياق */
+.hero-scene{position:absolute;inset:0;z-index:0}
+.hero-scene[hidden]{display:none}
+.hero-scene svg{width:100%;height:100%;display:block}
+.tag-pick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.tag-opt{font:inherit;font-size:13px;padding:7px 14px;min-height:36px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);cursor:pointer}
+.tag-opt:hover{border-color:var(--ink-2)}
+.tag-opt.on{background:var(--focus-bg);border-color:var(--focus);color:var(--focus-ink);font-weight:600}
 .greet-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-start-end-radius:0;border-end-end-radius:0;transition:opacity .6s ease}
 .greet-media img.swapping{opacity:0;transition-duration:.15s}
 .greet-media .hero-empty{position:static;inset:auto;border:1px dashed var(--rule);border-radius:999px;background:transparent;padding:6px 14px;font:inherit;font-size:12.5px}
@@ -952,6 +960,8 @@ body.focus-open{overflow:hidden}
 .pswitch button{font:inherit;font-size:12.5px;padding:5px 13px;border-radius:999px;border:0;background:transparent;color:var(--muted);cursor:pointer}
 .pswitch button.active{background:var(--ink);color:var(--paper)}
 .tabpanel[hidden]{display:none}
+.projects-panel{padding:0}
+.projects-panel iframe{display:block;width:100%;height:calc(100vh - 110px);min-height:520px;border:0;background:transparent;border-radius:12px}
 
 .tabbar-sync{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:6px 14px;background:var(--board)}
 .tabbar-sync #syncMsg{white-space:nowrap}
@@ -1785,6 +1795,16 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <div class="set-row"><label for="setVolume">مستوى الصوت</label><input type="range" class="set-range" id="setVolume" min="0" max="100" step="5"></div>
         <div class="set-actions"><button type="button" id="setSoundTest">اسمع صوت الإنجاز</button></div>
 
+        <div class="set-sub">صورة الواجهة</div>
+        <div class="set-row"><span>المصدر</span>
+          <span class="pswitch" id="setHeroImages">
+            <button data-hero="mix" type="button">مزيج</button>
+            <button data-hero="photos" type="button">صوري</button>
+            <button data-hero="scenes" type="button">مشاهد نَسَق</button>
+          </span>
+        </div>
+        <div class="set-hint">«مشاهد نَسَق» مناظر تُرسم في المتصفح بألوان الطابع الحالي وتتبع وقت اليوم وسياقك. و«مزيج» يقدّم صورك الموسومة، ويرسم مشهدًا حين لا توجد صورة تناسب السياق. وسم صورك من زر «وسوم» فوق الواجهة.</div>
+
         <div class="set-sub">إشعارات النظام</div>
         <div class="set-row"><span>الحالة</span><b id="setNotifState">—</b></div>
         <div class="set-actions"><button type="button" id="setNotifAsk">اسمح بالإشعارات</button><button type="button" id="setNotifTest">جرّب إشعارًا</button></div>
@@ -1858,6 +1878,10 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c0-9 5-15 15-16-1 10-7 15-16 15"/><path d="M5 21c3-6 7-9 11-11"/></svg>
       <span>العادات</span>
     </button>
+    <button class="tab" id="tabProjectsBtn" type="button">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z"/></svg>
+      <span>المشاريع</span>
+    </button>
     <button class="tab" id="tabExpensesBtn" type="button">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M3 10h18"/><circle cx="16.5" cy="15" r="1.2"/></svg>
       <span>المصروفات</span>
@@ -1898,9 +1922,11 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <button class="plan-day" id="planDayBtn" type="button">☀️ خطّط يومك</button>
   </div>
   <div class="greet-media">
+    <div class="hero-scene" id="heroScene" aria-hidden="true" hidden></div>
     <img id="heroImg" alt="" hidden>
     <button class="hero-empty" id="heroEmpty" type="button">🖼️ أضف صورة</button>
     <div class="hero-tools">
+      <button class="hero-add" id="heroTagBtn" type="button" title="متى تناسب هذه الصورة؟" hidden>وسوم</button>
       <button class="hero-add" id="heroAddBtn" type="button" title="أضف صورة">+ صورة</button>
       <button class="hero-del" id="heroDelBtn" type="button" title="احذف هذه الصورة" hidden>×</button>
     </div>
@@ -2254,6 +2280,11 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 </div>
 
 <!-- ==================== صفحة المصروفات ==================== -->
+<div class="tabpanel projects-panel" id="tabProjects" hidden>
+  <!-- صفحة المشاريع تعمل في إطار مستقل: أنماطها وبياناتها معزولة عن اللوح، والجسر والحساب مشتركان -->
+  <iframe id="projectsFrame" title="المشاريع" loading="lazy"></iframe>
+</div>
+
 <div class="tabpanel" id="tabExpenses" hidden>
 <section class="card page-head">
   <div class="page-head-text">
@@ -2368,6 +2399,7 @@ function applyTheme(t){
     qb.setAttribute('aria-pressed', String(dark));
   }
   syncThemeColor();
+  try{ heroVisual = {ctx:'', kind:'', url:''}; showPhoto(); }catch(e){}   /* المشهد يتبع الوضع الفاتح/الداكن */
 }
 /* لون شريط الحالة في الهاتف والتطبيق المثبَّت يتبع خلفية الطابع الحالي */
 function syncThemeColor(){
@@ -2402,6 +2434,7 @@ function applyPalette(p){
   });
   syncThemeColor();
   try{ topbarUpdate(); heroScroll(); }catch(e){}   /* «نَسَق 360» يبدّل الشريط الجانبي إلى علوي */
+  try{ heroVisual = {ctx:'', kind:'', url:''}; showPhoto(); }catch(e){}   /* مشهد الواجهة بألوان الطابع الجديد */
 }
 applyPalette(palette);
 document.querySelectorAll('#setPalette button').forEach(b=>{
@@ -2414,9 +2447,9 @@ document.querySelectorAll('#setPalette button').forEach(b=>{
 
 /* ---------- tabs ---------- */
 const TABKEY = 'daily-board-tab';
-const TAB_NAMES = ['board','tasks','flow','expenses'];
+const TAB_NAMES = ['board','tasks','flow','projects','expenses'];
 /* رابط لكل صفحة (#today، #tasks…) — يعمل زر الرجوع، ويمكن فتح صفحة مباشرة بالرابط */
-const TAB_HASH = {board:'today', tasks:'tasks', flow:'habits', expenses:'expenses'};
+const TAB_HASH = {board:'today', tasks:'tasks', flow:'habits', projects:'projects', expenses:'expenses'};
 function tabFromHash(){
   const hsh = (location.hash || '').replace('#','');
   return Object.keys(TAB_HASH).find(k=>TAB_HASH[k]===hsh) || '';
@@ -2432,6 +2465,7 @@ function showTab(name){
   document.documentElement.dataset.tab = name;   /* يعتمد عليه الـCSS: واجهة «360» الكاملة لصفحة اليوم فقط */
   try{ localStorage.setItem(TABKEY, name); }catch(e){}
   if(location.hash.replace('#','') !== TAB_HASH[name]) history.pushState(null, '', '#' + TAB_HASH[name]);
+  if(name==='projects') loadProjectsTab();
   if(name==='expenses') loadExpenseTab();
   if(name==='tasks') renderTasksPage();
   window.scrollTo(0, 0);
@@ -2441,7 +2475,13 @@ window.addEventListener('popstate', ()=>{ const t = tabFromHash(); if(t) showTab
 $('tabBoardBtn').onclick = ()=>showTab('board');
 $('tabTasksBtn').onclick = ()=>showTab('tasks');
 $('tabFlowBtn').onclick = ()=>showTab('flow');
+$('tabProjectsBtn').onclick = ()=>showTab('projects');
 $('tabExpensesBtn').onclick = ()=>showTab('expenses');
+/* الإطار يُحمَّل عند أول فتح للتبويب فقط */
+function loadProjectsTab(){
+  const f = $('projectsFrame');
+  if(!f.getAttribute('src')) f.setAttribute('src', 'projects.html?embed=1');
+}
 
 /* ---------- modal ---------- */
 function openModal({title, bodyHTML, onRender, actions}){
@@ -4488,6 +4528,7 @@ const PAL_COMMANDS = [
   {ic:'◧', t:'اذهب إلى: اليوم',      k:'اليوم لوح الرئيسية today', run:()=>showTab('board')},
   {ic:'☑', t:'اذهب إلى: المهام',     k:'المهام قائمة tasks',       run:()=>showTab('tasks')},
   {ic:'❋', t:'اذهب إلى: العادات',    k:'العادات روتين طاقة habits', run:()=>showTab('flow')},
+  {ic:'▤', t:'اذهب إلى: المشاريع',   k:'المشاريع مديكس هيوميرا projects', run:()=>showTab('projects')},
   {ic:'¤', t:'اذهب إلى: المصروفات',  k:'المصروفات ميزانية expenses', run:()=>showTab('expenses')},
   {ic:'☀', t:'خطّط يومك',            k:'خطط تخطيط الصباح plan',     run:()=>openPlanDay()},
   {ic:'⛶', t:'وضع التركيز',          k:'تركيز مؤقت بومودورو focus', run:()=>openFocusMode()},
@@ -4600,7 +4641,7 @@ $('paletteBtn').onclick = openPalette;
 /* ==================== نَسَق الحيّ — المرحلة ١: الأصوات والإشعارات وساعات الهدوء ====================
    الإعدادات على الجهاز. الأصوات من هوية «مَدار» (D:\03- Claude Sestem\هوية مدار\madar-sounds.js). */
 const ALIVE_KEY = 'daily-board-alive';
-const ALIVE_DEF = {sound:true, click:true, volume:40, quietFrom:'20:00', quietTo:'07:00', workEnd:'17:00', prayer:true, askedNotif:false};
+const ALIVE_DEF = {sound:true, click:true, volume:40, quietFrom:'20:00', quietTo:'07:00', workEnd:'17:00', prayer:true, askedNotif:false, heroImages:'mix'};
 let alive = (()=>{ try{ return Object.assign({}, ALIVE_DEF, JSON.parse(localStorage.getItem(ALIVE_KEY) || '{}')); }catch(e){ return Object.assign({}, ALIVE_DEF); } })();
 function saveAlive(){ try{ localStorage.setItem(ALIVE_KEY, JSON.stringify(alive)); }catch(e){} }
 
@@ -4856,6 +4897,7 @@ function renderAliveSettings(){
   $('setVolume').value = alive.volume;
   $('setQuietFrom').value = alive.quietFrom; $('setQuietTo').value = alive.quietTo; $('setWorkEnd').value = alive.workEnd;
   $('setPrayerOn').checked = alive.prayer;
+  document.querySelectorAll('#setHeroImages button').forEach(b=>b.classList.toggle('active', b.dataset.hero === (alive.heroImages || 'mix')));
   const perm = !('Notification' in window) ? 'unsupported' : Notification.permission;
   $('setNotifState').textContent = {granted:'مسموحة', denied:'محظورة — غيّرها من إعدادات الموقع في المتصفح', default:'لم تُطلب بعد', unsupported:'غير مدعومة في هذا المتصفح'}[perm];
   $('setNotifAsk').hidden = perm !== 'default';
@@ -4875,6 +4917,9 @@ $('setVolume').onchange = ()=>playSound('done');
   $(id).onchange = ()=>{ if($(id).value){ alive[k] = $(id).value; saveAlive(); } };
 });
 $('setPrayerOn').onchange = ()=>{ alive.prayer = $('setPrayerOn').checked; saveAlive(); };
+document.querySelectorAll('#setHeroImages button').forEach(b=>{
+  b.onclick = ()=>{ alive.heroImages = b.dataset.hero; saveAlive(); renderAliveSettings(); try{ heroVisual = {ctx:'', kind:'', url:''}; showPhoto(); }catch(e){} };
+});
 $('setSoundTest').onclick = ()=>playSound('done');
 $('setNotifAsk').onclick = ()=>askNotifPermission();
 $('setNotifTest').onclick = ()=>{
@@ -5286,6 +5331,15 @@ function deletePhotoRecord(id){
     tx.onerror = ()=>reject(tx.error);
   }));
 }
+/* وسوم الصورة: متى تناسب؟ (صباح، مساء، عمل، قراءة…) — تُحفظ مع السجل نفسه */
+function setPhotoTags(id, tags){
+  return openPhotoDB().then(db=>new Promise((resolve,reject)=>{
+    const tx = db.transaction(PHOTO_STORE,'readwrite'), st = tx.objectStore(PHOTO_STORE), req = st.get(id);
+    req.onsuccess = ()=>{ const rec = req.result; if(rec){ rec.tags = tags; st.put(rec); } };
+    tx.oncomplete = ()=>resolve();
+    tx.onerror = ()=>reject(tx.error);
+  }));
+}
 
 let photoList = [], photoIdx = 0, photoRotateTimer = null, prevUploadedUrls = [];
 /* ==================== المرحلة ٢: محرّك السياق وتنوّع العبارات ====================
@@ -5394,24 +5448,129 @@ function applyHeroPhrase(){
   $('heroGreet').textContent = heroPhrase.text;
   const tag = document.querySelector('.greet-tagline');
   if(tag) tag.textContent = (PHRASE_SPECIAL[c.ctx] && c.sub) ? c.sub : BRAND_TAGLINE;
-  $('heroBanner').dataset.ctx = c.ctx;   /* تستعمله المرحلة ٣ لاختيار الصورة */
+  $('heroBanner').dataset.ctx = c.ctx;
+  try{ applyHeroVisual(c.ctx); }catch(e){}
+}
+
+/* ==================== المرحلة ٣: صورة الواجهة تتبع السياق ====================
+   مصدران: صورك الموسومة، و«مشاهد نَسَق» — مناظر تُرسم في المتصفح بألوان الطابع الحالي،
+   فتتناسق مع كل طابع ومع الوضعين، بلا ملفات ولا حقوق. الاختيار من الإعدادات. */
+const PHOTO_TAGS = {
+  morning:'الصباح', noon:'الظهيرة', afternoon:'العصر', maghrib:'المغرب', evening:'المساء', night:'الليل',
+  work:'العمل', reading:'القراءة', meeting:'الاجتماعات', focus:'التركيز', occasion:'المناسبات'
+};
+const CTX_TAG = {fajr:'morning', morning:'morning', noon:'noon', afternoon:'afternoon', maghrib:'maghrib', evening:'evening', night:'night',
+  work:'work', writing:'work', call:'work', reading:'reading', meeting:'meeting', focus:'focus', prayer:'occasion',
+  friday:'occasion', ramadan:'occasion', eid:'occasion', arafah:'occasion'};
+function mixHex(a, b, t){
+  const p = h=>[1, 3, 5].map(i=>parseInt(h.slice(i, i + 2), 16)), A = p(a), B = p(b);
+  return '#' + A.map((v, i)=>Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join('');
+}
+function themeHex(name, fallback){
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return /^#[0-9a-f]{6}$/i.test(v) ? v : fallback;
+}
+/* سماء كل فترة: لونان يُمزجان بلون الطابع فتبقى المشاهد من عائلته */
+const SKY = {
+  fajr:['#2B2F66', '#C98A6B'], morning:['#9FD3E8', '#F2C98A'], noon:['#7FC3E3', '#CFE7F2'],
+  afternoon:['#8FC0DA', '#E8B24C'], maghrib:['#E08A4C', '#6A43B8'], evening:['#3E2F7A', '#1D2150'], night:['#141736', '#0B0D22']
+};
+function heroSceneSVG(ctx){
+  const period = ['fajr','morning','noon','afternoon','maghrib','evening','night'].includes(ctx) ? ctx : periodNow();
+  const accent = themeHex('--accent', themeHex('--focus', '#00B7D4'));
+  const ink = themeHex('--brand', themeHex('--ink', '#14162A'));
+  const dark = ['evening', 'night', 'fajr'].includes(period);
+  const sky = SKY[period].map(c=>mixHex(c, accent, .22));
+  const hill = [mixHex(ink, sky[1], .55), mixHex(ink, sky[1], .35), mixHex(ink, sky[1], .18)];
+  const glow = dark ? '#FFF6D8' : '#FFE9A8';
+  const stars = dark ? Array.from({length:26}, (_, i)=>{ const x = (i * 137.5) % 1200, y = (i * 61.8) % 300; return '<circle cx="' + x.toFixed(0) + '" cy="' + y.toFixed(0) + '" r="' + (i % 3 ? 1.4 : 2.2) + '" fill="#fff" opacity="' + (i % 3 ? .45 : .75) + '"/>'; }).join('') : '';
+  /* الشمس أو الهلال: موضعها يتبع الفترة */
+  const sunY = {fajr:430, morning:250, noon:140, afternoon:230, maghrib:420, evening:470, night:170}[period];
+  const crescent = ['night', 'evening'].includes(period) || ctx === 'ramadan' || ctx === 'eid';
+  const orb = crescent
+    /* الهلال: قرص مضيء يقتطعه قرصٌ مملوء بتدرّج السماء نفسه — بإحداثيات مطلقة كي يطابقه تمامًا */
+    ? '<circle cx="300" cy="' + (sunY - 40) + '" r="58" fill="' + glow + '" opacity=".9"/><circle cx="326" cy="' + (sunY - 56) + '" r="52" fill="url(#hs-sky)"/>'
+    : '<circle cx="300" cy="' + sunY + '" r="' + (period === 'noon' ? 46 : 62) + '" fill="' + glow + '" opacity=".92"/>';
+  /* لمحة السياق: كتاب، أو حلقة تركيز، أو طاولة اجتماع، أو فانوس */
+  const motif = {
+    reading:'<g transform="translate(250 470)" fill="' + hill[0] + '"><path d="M-90 40 L0 10 L90 40 L90 48 L0 20 L-90 48 Z"/><path d="M-86 -2 L-4 -28 L-4 12 L-86 38 Z" opacity=".85"/><path d="M4 -28 L86 -2 L86 38 L4 12 Z" opacity=".7"/></g>',
+    writing:'<g transform="translate(250 470)" fill="' + hill[0] + '"><rect x="-80" y="-30" width="160" height="90" rx="8" opacity=".85"/><rect x="-58" y="-6" width="110" height="7" rx="3.5" fill="' + glow + '" opacity=".5"/><rect x="-58" y="14" width="80" height="7" rx="3.5" fill="' + glow + '" opacity=".35"/></g>',
+    meeting:'<g transform="translate(250 480)" fill="' + hill[0] + '"><ellipse cx="0" cy="10" rx="105" ry="26" opacity=".9"/><rect x="-6" y="10" width="12" height="40" rx="4"/><g opacity=".85"><circle cx="-80" cy="-24" r="17"/><circle cx="0" cy="-34" r="17"/><circle cx="80" cy="-24" r="17"/></g></g>',
+    call:'<g transform="translate(250 470)" fill="' + hill[0] + '"><rect x="-40" y="-56" width="80" height="120" rx="14" opacity=".9"/><rect x="-26" y="-40" width="52" height="80" rx="6" fill="' + glow + '" opacity=".45"/></g>',
+    focus:'<g transform="translate(250 455)" fill="none" stroke="' + accent + '" stroke-width="16" stroke-linecap="round"><path d="M17 -62 A64 64 0 1 1 -17 -62"/></g>',
+    ramadan:'<g transform="translate(250 450)" fill="' + hill[0] + '"><path d="M-34 -50 h68 l-10 22 h-48 z"/><rect x="-30" y="-28" width="60" height="78" rx="14" opacity=".9"/><rect x="-16" y="-10" width="32" height="46" rx="10" fill="' + glow + '" opacity=".65"/><rect x="-8" y="52" width="16" height="12" rx="4"/></g>',
+    work:'<g transform="translate(250 480)" fill="' + hill[0] + '"><rect x="-100" y="0" width="200" height="14" rx="7" opacity=".9"/><rect x="-78" y="-56" width="86" height="56" rx="6" opacity=".85"/><rect x="18" y="-30" width="60" height="30" rx="5" opacity=".7"/></g>'
+  }[({reading:'reading', writing:'writing', meeting:'meeting', call:'call', focus:'focus', ramadan:'ramadan', eid:'ramadan', arafah:'ramadan', work:'work'})[ctx]] || '';
+  return '<svg class="hero-scene-svg" viewBox="0 0 1200 675" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    '<defs><linearGradient id="hs-sky" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="675"><stop offset="0" stop-color="' + sky[0] + '"/><stop offset="1" stop-color="' + sky[1] + '"/></linearGradient>' +
+    '<radialGradient id="hs-glow" cx=".25" cy="' + (sunY / 675).toFixed(2) + '" r=".45"><stop offset="0" stop-color="' + glow + '" stop-opacity=".55"/><stop offset="1" stop-color="' + glow + '" stop-opacity="0"/></radialGradient></defs>' +
+    '<rect width="1200" height="675" fill="url(#hs-sky)"/>' + stars + orb + '<rect width="1200" height="675" fill="url(#hs-glow)"/>' +
+    '<path d="M0 470 C 180 400 320 470 470 440 C 640 405 800 455 960 425 C 1080 402 1150 420 1200 410 L1200 675 L0 675 Z" fill="' + hill[2] + '" opacity=".75"/>' +
+    '<path d="M0 530 C 200 480 360 545 540 515 C 720 485 900 540 1060 505 C 1130 490 1170 500 1200 495 L1200 675 L0 675 Z" fill="' + hill[1] + '" opacity=".85"/>' +
+    motif +
+    '<path d="M0 600 C 220 560 420 620 640 596 C 860 572 1020 615 1200 590 L1200 675 L0 675 Z" fill="' + hill[0] + '"/></svg>';
+}
+let heroVisual = {ctx:'', kind:'', url:''};
+function applyHeroVisual(ctx){
+  const mode = alive.heroImages || 'mix';
+  const tag = CTX_TAG[ctx] || 'morning';
+  const tagged = photoList.filter(p=>Array.isArray(p.tags) && p.tags.includes(tag));
+  const usePhoto = mode !== 'scenes' && (tagged.length || (mode === 'photos' && photoList.length));
+  const scene = $('heroScene'); if(!scene) return;
+  if(usePhoto){
+    const pool = tagged.length ? tagged : photoList;
+    const cur = pool[Math.floor(Date.now() / (25 * 60 * 1000)) % pool.length];   /* تتبدّل كل ٢٥ دقيقة */
+    photoIdx = Math.max(0, photoList.indexOf(cur));
+    scene.hidden = true; scene.innerHTML = '';
+    $('heroBanner').classList.add('has-photo');
+    const img = $('heroImg');
+    img.hidden = false;
+    if(img.getAttribute('src') !== cur.url){ img.classList.add('swapping'); img.onload = img.onerror = ()=>img.classList.remove('swapping'); img.src = cur.url; }
+    $('heroDelBtn').hidden = !cur.dbId; $('heroTagBtn').hidden = !cur.dbId;
+    heroVisual = {ctx, kind:'photo', url:cur.url};
+    return;
+  }
+  /* مشهد نَسَق */
+  $('heroImg').hidden = true; $('heroDelBtn').hidden = true; $('heroTagBtn').hidden = true;
+  $('heroBanner').classList.add('has-photo');   /* الواجهة بملء الشاشة تتعامل معه كصورة */
+  if(heroVisual.kind !== 'scene' || heroVisual.ctx !== ctx || scene.dataset.theme !== themeHex('--accent', '')){
+    scene.innerHTML = heroSceneSVG(ctx); scene.dataset.theme = themeHex('--accent', '');
+  }
+  scene.hidden = false;
+  heroVisual = {ctx, kind:'scene', url:''};
+}
+function openPhotoTagsModal(){
+  const cur = photoList[photoIdx % (photoList.length || 1)];
+  if(!cur || !cur.dbId) return;
+  const chosen = new Set(Array.isArray(cur.tags) ? cur.tags : []);
+  openModal({
+    title:'متى تناسب هذه الصورة؟',
+    bodyHTML:'<p>اختر السياقات التي تظهر فيها. بلا اختيار تُعرض في أي وقت حين لا توجد صورة موسومة.</p><div class="tag-pick"></div>',
+    onRender: body=>{
+      const box = body.querySelector('.tag-pick');
+      Object.entries(PHOTO_TAGS).forEach(([k, label])=>{
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'tag-opt' + (chosen.has(k) ? ' on' : '');
+        b.textContent = label; b.setAttribute('aria-pressed', String(chosen.has(k)));
+        b.onclick = ()=>{ chosen.has(k) ? chosen.delete(k) : chosen.add(k); b.classList.toggle('on'); b.setAttribute('aria-pressed', String(chosen.has(k))); };
+        box.appendChild(b);
+      });
+    },
+    actions:[{label:'إلغاء'}, {label:'احفظ الوسوم', primary:true, onClick:({close})=>{
+      close();
+      setPhotoTags(cur.dbId, [...chosen]).then(loadAllPhotos).catch(()=>{});
+    }}]
+  });
 }
 function greetingNow(){ return heroPhrase.text || PHRASES[periodNow()][0]; }
 function showPhoto(){
-  const has = photoList.length>0;
-  $('heroBanner').classList.toggle('has-photo', has);
-  $('heroEmpty').hidden = has;
-  $('heroImg').hidden = !has;
-  if(has){
-    const cur = photoList[photoIdx % photoList.length], img = $('heroImg');
-    if(img.getAttribute('src') !== cur.url){
-      /* تلاشٍ ناعم: تختفي الصورة الحالية ثم تظهر الجديدة حين تكتمل */
-      img.classList.add('swapping');
-      img.onload = ()=>img.classList.remove('swapping');
-      img.onerror = ()=>img.classList.remove('swapping');
-      img.src = cur.url;
-    }
-    $('heroDelBtn').hidden = !cur.dbId;
+  /* الصورة أو المشهد يختارهما السياق (المرحلة ٣)؛ هنا نضبط الأزرار ونقاط التنقّل فقط */
+  /* في الواجهة دائمًا صورة أو مشهد، فزر «أضف صورة» الكبير لا لزوم له — يكفي «+ صورة» فوقها */
+  $('heroEmpty').hidden = true;
+  try{ applyHeroVisual($('heroBanner').dataset.ctx || heroContext().ctx); }
+  catch(e){
+    $('heroBanner').classList.toggle('has-photo', has);
+    $('heroImg').hidden = !has;
+    if(has){ const cur = photoList[photoIdx % photoList.length]; $('heroImg').src = cur.url; $('heroDelBtn').hidden = !cur.dbId; }
   }
   /* نقاط التنقّل بين صورك (تظهر في واجهة «360» حين تكون أكثر من صورة) */
   const dots = $('heroDots'); dots.innerHTML = '';
@@ -5439,8 +5598,8 @@ async function loadAllPhotos(){
   try{
     const recs = await getAllPhotoRecords();
     uploadedPhotos = recs.map(r=>{
-      if(r.blob){ const url = URL.createObjectURL(r.blob); prevUploadedUrls.push(url); return {url, dbId:r.id}; }
-      return {url:r.url, dbId:r.id};
+      if(r.blob){ const url = URL.createObjectURL(r.blob); prevUploadedUrls.push(url); return {url, dbId:r.id, tags:r.tags || []}; }
+      return {url:r.url, dbId:r.id, tags:r.tags || []};
     });
   }catch(e){}
   photoList = uploadedPhotos;
@@ -5470,6 +5629,7 @@ function openAddPhotoModal(){
 }
 $('heroEmpty').onclick = openAddPhotoModal;
 $('heroAddBtn').onclick = openAddPhotoModal;
+$('heroTagBtn').onclick = openPhotoTagsModal;
 
 /* ---------- واجهة «360»: حركة التمرير، ومؤشر «تابع يومك»، وظهور الأقسام تباعًا ---------- */
 function heroMode(){ const r = document.documentElement.dataset; return r.palette === 'nasaq360' && r.tab === 'board'; }
@@ -5540,6 +5700,7 @@ $('heroFileInput').addEventListener('change', async e=>{
   for(const f of files){ await addPhotoBlob(f).catch(()=>{}); }
   e.target.value = '';
   await loadAllPhotos();
+  if(files.length) setTimeout(openPhotoTagsModal, 300);   /* وسم الصورة فور إضافتها */
 });
 $('heroDelBtn').onclick = async ()=>{
   const cur = photoList[photoIdx % photoList.length];
