@@ -653,10 +653,6 @@ const ORG = new URLSearchParams(location.search).get('org') === 'humera' ? 'hume
 const EMBED = new URLSearchParams(location.search).get('embed') === '1';
 if(EMBED){
   document.documentElement.classList.add('embed');
-  const embedOrgs = () => document.querySelectorAll('#orgs a').forEach(a => {
-    a.href = a.dataset.org === 'humera' ? 'projects.html?org=humera&embed=1' : 'projects.html?embed=1';
-  });
-  if(document.readyState === 'loading') addEventListener('DOMContentLoaded', embedOrgs); else embedOrgs();
 }
 const ORG_INFO = ORGS[ORG];
 document.documentElement.dataset.org = ORG;
@@ -890,7 +886,8 @@ function render(){
   document.querySelectorAll('#orgs a').forEach(a => {
     const on = a.dataset.org === ORG;
     a.classList.toggle('on', on); a.toggleAttribute('aria-current', on);
-    a.href = 'projects.html' + (a.dataset.org === 'humera' ? '?org=humera' : '') + (st ? '#stats' : '');
+    const qs = [a.dataset.org === 'humera' ? 'org=humera' : '', EMBED ? 'embed=1' : ''].filter(Boolean).join('&');
+    a.href = 'projects.html' + (qs ? '?' + qs : '') + (st ? '#stats' : '');
   });
   if(st){ renderStats(rows); return; }
   if(S.sel && !rows.some(p => p.id === S.sel)) S.sel = null;
