@@ -987,6 +987,7 @@ body.focus-open{overflow:hidden}
 .pswitch button.active{background:var(--ink);color:var(--paper)}
 .tabpanel[hidden]{display:none}
 .projects-panel{padding:0}
+:root[data-tab="projects"] #heroBanner{display:none}   /* صفحة عمل: المشاريع تبدأ من أعلى الصفحة */
 .projects-panel iframe{display:block;width:100%;height:calc(100vh - 110px);min-height:520px;border:0;background:transparent;border-radius:12px}
 
 .tabbar-sync{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:6px 14px;background:var(--board)}
@@ -1816,6 +1817,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
           </span>
         </div>
         <div class="set-row"><span>الوضع الداكن</span><button id="setThemeBtn" type="button">🌙</button></div>
+        <div class="set-actions"><button id="setOnboardShow" type="button">أظهر «ابدأ مع نَسَق» من جديد</button></div>
+        <div class="set-hint">قائمة خطوات البداية تختفي وحدها حين تكتمل خطواتها الخمس أو حين تخفيها. هذا الزر يعيدها إلى صفحة «اليوم».</div>
       </section>
 
       <section id="setAlive">
@@ -3496,14 +3499,15 @@ function renderOnboard(){
     {key:'focus', done: !!st.focus, t:'جرّب جلسة تركيز', l1:'جرّب', l2:'جلسة تركيز', sub:'٢٥ دقيقة لشيء واحد', time:'٢٥ دقيقة', go: ()=>openFocusMode()}
   ];
   const n = steps.filter(s=>s.done).length;
-  if(n === steps.length){ setOnboard({hidden:true}); box.hidden = true; showToast('أكملت خطوات البداية كلها — يومك الآن على نَسَق ✨'); return; }
+  /* اكتملت الخطوات: تختفي القائمة — إلا إن أعدتها من الإعدادات (pinned) فتبقى متوهّجة كلها */
+  if(n === steps.length && !st.pinned){ setOnboard({hidden:true}); box.hidden = true; showToast('أكملت خطوات البداية كلها — يومك الآن على نَسَق ✨'); return; }
   box.hidden = false; box.innerHTML = '';
   const head = document.createElement('div'); head.className = 'card-head';
   const h = document.createElement('h2'); h.textContent = 'ابدأ مع نَسَق';
   const cnt = document.createElement('span'); cnt.className = 'ob-count'; cnt.textContent = AR(n) + ' من ' + AR(steps.length);
   h.appendChild(cnt);
   const x = document.createElement('button'); x.type = 'button'; x.className = 'card-link'; x.textContent = 'إخفاء القائمة';
-  x.onclick = ()=>{ setOnboard({hidden:true}); renderOnboard(); showToast('أُخفيت قائمة البداية.'); };
+  x.onclick = ()=>{ setOnboard({hidden:true, pinned:false}); renderOnboard(); showToast('أُخفيت قائمة البداية — تعيدها من الإعدادات ← المظهر.'); };
   head.append(h, x);
   const bar = document.createElement('div'); bar.className = 'ob-bar'; const f = document.createElement('i');
   f.style.width = (n / steps.length * 100) + '%'; bar.appendChild(f);
@@ -4982,6 +4986,13 @@ $('setTgTest').onclick = ()=>{
     .catch(e=>{ $('setTgState').textContent = e.message; });
 };
 $('setSoundTest').onclick = ()=>playSound('done');
+/* إعادة قائمة البداية: تبقى ظاهرة حتى لو اكتملت خطواتها، إلى أن تخفيها أنت */
+$('setOnboardShow').onclick = ()=>{
+  setOnboard({hidden:false, pinned:true});
+  $('settingsOverlay').hidden = true;
+  showTab('board'); renderOnboard();
+  setTimeout(()=>$('onboard')?.scrollIntoView({block:'start'}), 80);
+};
 $('setNotifAsk').onclick = ()=>askNotifPermission();
 $('setNotifTest').onclick = ()=>{
   if(!('Notification' in window) || Notification.permission !== 'granted'){ notify('info', 'هكذا يظهر الإشعار داخل نَسَق', 'اسمح بإشعارات النظام ليظهر أيضًا خارج المتصفح.', {}); return; }

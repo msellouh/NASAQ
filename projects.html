@@ -742,21 +742,33 @@ function rpcInit(){
   });
   return rpcReady;
 }
+/* من file:// (فتح اللوح بالنقر المزدوج) لا يعمل الإطار المخفي، فنرسل الطلب مباشرة كما يفعل اللوح */
+function fetchBridge(payload){
+  const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 90000);
+  return fetch(bridge, {method:'POST', redirect:'follow', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload), signal: ctl.signal})
+    .catch(err => { throw new Error(err && err.name === 'AbortError' ? 'لم يردّ الجسر خلال 90 ثانية' : 'تعذّر الوصول إلى الجسر: ' + err.message); })
+    .then(r => r.text()).finally(() => clearTimeout(timer));
+}
 function post(body){
   const payload = Object.assign({}, body, auth && auth.token ? {token: auth.token} : {});
-  return rpcInit().then(()=>new Promise((resolve, reject)=>{
+  const call = !/^https?:$/.test(location.protocol) ? fetchBridge(payload) : rpcInit().then(()=>new Promise((resolve, reject)=>{
     const id = ++rpcSeq;
     const timer = setTimeout(()=>{ rpcPending.delete(id); reject(new Error('لم يردّ الجسر خلال 90 ثانية')); }, 90000);
     rpcPending.set(id, {resolve, reject, timer});
     rpcWin.postMessage({__nasaq:1, type:'call', id, payload: JSON.stringify(payload)}, rpcOrigin);
-  })).then(t=>{ const d = JSON.parse(t); if(!d || !d.ok) throw new Error((d && d.error) || 'خطأ غير معروف'); return d; });
+  }));
+  return call.then(t=>{
+    let d; try{ d = JSON.parse(t); }catch(e){ throw new Error('ردّ غير مفهوم من الجسر — تأكد من نشر نسخته الأخيرة'); }
+    if(!d || !d.ok) throw new Error((d && d.error) || 'خطأ غير معروف'); return d;
+  });
 }
 
 /* نوشن أولًا لصاحب اللوح؛ وإن لم يُنشر الجسر الجديد بعد، فالملف المحلي (خارج المستودع) */
 async function load(){
   $('items').innerHTML = '<div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div>';
   let bridgeErr = '';
-  if(/^https?:$/.test(location.protocol) && bridge && auth && auth.isOwner){
+  if(bridge && auth && auth.isOwner){
     try{ const d = await post({action:'projects_list', org: ORG}); return use(d, 'live'); }
     catch(e){ bridgeErr = e.message; }
   }
@@ -1181,7 +1193,7 @@ function fileChip(f){
   return '<a class="file ' + cls + '" href="' + esc(f.url) + '" target="_blank" rel="noopener" title="' +
     esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' · ' + fmtDate(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></a>';
 }
-/* رفع ملف إلى خانة: يُحفظ في مجلد الخانة داخل مجلد المشروع باسم موحّد «الكود- الخانة- التاريخ» */
+/* رفع ملف إلى خانة: يُحفظ في مجلد الخانة داخل مجلد المشروع باسم موحّد «الكود- نوع المستند- اسم المشروع» */
 const UP_MAX = 25 * 1024 * 1024;
 const uploading = new Set();
 const b64 = file => new Promise((res, rej) => {
@@ -1201,7 +1213,7 @@ async function uploadToSlot(p, slot, files){
     try{
       if(file.size > UP_MAX) throw new Error('حجم «' + file.name + '» أكبر من ٢٥ ميجابايت');
       const d = await post({action:'file_upload', org: ORG, code: p.code, slot, pageId: p.id,
-        file: {name: file.name, mime: file.type || '', data: await b64(file)}});
+        file: {name: file.name, mime: file.type || '', project: p.name || '', data: await b64(file)}});
       if(d.files){ FILES[p.code] = d.files; Object.assign(p, {docsDone: d.files.done, docsChecked: d.files.checked, folder: d.files.folder, drive: d.files.url}); }
       ok++;
     }catch(err){ toast(err.message || 'تعذّر رفع الملف', true); break; }
@@ -1255,7 +1267,7 @@ function docsCard(p){
     '<p class="note">' + (f && f.error ? '<span style="color:var(--urgent)">تعذّرت قراءة الملفات: ' + esc(f.error) + '</span> · ' : '') +
       'آخر فحص للمجلد ' + fmtDate(checked) + (p.folder || (f && f.folder) ? ' · <span class="folder">' + esc(p.folder || f.folder) + '</span>' : '') +
       (phaseKnown ? ' · «لاحقًا» يعني أن وقته لم يحن في مرحلة «' + esc(p.phase) + '»' : '') + '.' +
-      (canUpload ? ' يُرفع الملف إلى مجلد خانته باسم موحّد «' + esc(p.code || 'الكود') + '- اسم الخانة- التاريخ»، ويمكن سحبه وإفلاته على الخانة.' : '') +
+      (canUpload ? ' يُرفع الملف إلى مجلد خانته باسم موحّد «' + esc(p.code || 'الكود') + '- نوع المستند- اسم المشروع»، ويمكن سحبه وإفلاته على الخانة.' : '') +
       (SOURCE === 'local' ? ' في نسخة التطوير يفتح زر الملف بحثًا عنه في درايف، وبعد نشر الجسر يفتح الملف نفسه مباشرة.' : '') + '</p>' +
   '</article>';
 }
