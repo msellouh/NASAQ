@@ -587,7 +587,7 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
       <label class="fld">اسم المشروع الموحّد<select name="stdName" required></select></label>
       <label class="fld" id="stdNewWrap" hidden>اسم جديد للقائمة<input name="stdNew" maxlength="100" placeholder="يُضاف للقائمة ويُستخدم لباقي المشاريع"></label>
     </div>
-    <label class="fld">تفصيل اختياري<input name="suffix" maxlength="120" placeholder="مثال: الشهر العاشر، المرحلة الثانية، مستشفى الشفاء"></label>
+    <label class="fld">الاسم المخصص<input name="suffix" maxlength="120" placeholder="ما يميّز المشروع: الشهر العاشر، المرحلة الثانية… وفي التأهيل: المكان والتفاصيل"></label>
     <div class="fld-row">
       <label class="fld">الكود<input name="code" maxlength="12" dir="ltr"></label>
       <label class="fld">السنة<input name="year" maxlength="4" inputmode="numeric"></label>
@@ -1654,7 +1654,7 @@ function projTitle(){
   const std = f.elements.stdName.value === NEW_OPT ? f.elements.stdNew.value.trim() : f.elements.stdName.value;
   const donor = f.elements.donor.value === NEW_OPT ? f.elements.donorNew.value.trim() : f.elements.donor.value;
   const sfx = f.elements.suffix.value.trim();
-  return {std, donor, title: std ? 'مشروع ' + std.replace(/^مشروع\s+/, '') + (sfx ? ' – ' + sfx : '') + (donor ? ' – ' + donor : '') : ''};
+  return {std, donor, custom: sfx, title: std ? ['مشروع ' + std.replace(/^مشروع\s+/, ''), sfx, donor].filter(Boolean).join(' - ') : ''};
 }
 function projPreview(){
   const f = $('projForm');
@@ -1663,7 +1663,9 @@ function projPreview(){
   f.elements.stdNew.required = !$('stdNewWrap').hidden;
   f.elements.donorNew.required = !$('donorNewWrap').hidden;
   const t = projTitle().title;
-  $('projTitlePrev').textContent = t ? 'اسم المشروع في نوشن: ' + t : '';
+  f.elements.suffix.required = /تأهيل/.test(projTitle().std);
+  const code = f.elements.code.value.trim().toUpperCase();
+  $('projTitlePrev').textContent = t ? 'الاسم: ' + t + ' · مجلد درايف: ' + (code ? code + '- ' : '') + t : '';
 }
 function fillList(id, key){
   const vals = [...new Set(DATA.projects.map(p => p[key]).filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b), 'ar'));
@@ -1691,7 +1693,7 @@ $('projForm').addEventListener('submit', async e => {
   [...f.elements].forEach(el => { if(el.name) v[el.name] = el.value.trim(); });
   const nt = projTitle();
   if(!nt.std){ toast('اختر اسم المشروع الموحّد أو أضف اسمًا جديدًا', true); return; }
-  Object.assign(v, {stdName: nt.std, donor: nt.donor, name: nt.title});
+  Object.assign(v, {stdName: nt.std, donor: nt.donor, name: nt.title, custom: nt.custom});
   ['stdNew', 'donorNew', 'suffix'].forEach(k => delete v[k]);
   const code = v.code.toUpperCase();
   if(code && DATA.projects.some(p => p.code === code)){ toast('الكود ' + code + ' مستخدم لمشروع آخر', true); return; }
@@ -1718,7 +1720,7 @@ $('projForm').addEventListener('submit', async e => {
     S.sel = d.project.id; S.view = 'list';
     history.replaceState(null, '', '#' + encodeURIComponent(d.project.code || d.project.id));
     buildFilters(); render();
-    toast('أُنشئ المشروع ' + (d.project.code || '') + ' في نوشن');
+    toast(d.folderError ? 'أُنشئ المشروع في نوشن، وتعذّر إنشاء مجلده في درايف: ' + d.folderError : 'أُنشئ المشروع ' + (d.project.code || '') + ' في نوشن ومجلده في درايف', !!d.folderError);
   }catch(err){ toast(err.message || 'تعذّر الإنشاء', true); }
   finally{ btn.disabled = false; }
 });
