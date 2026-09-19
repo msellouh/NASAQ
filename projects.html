@@ -517,6 +517,7 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
 <main class="wrap">
   <div class="page-head">
     <div><h1 id="pageTitle">المشاريع</h1><p id="pageSub">جارٍ التحميل…</p></div>
+    <button class="btn cta" type="button" id="newProjBtn">＋ مشروع جديد</button>
   </div>
 
   <div class="filters" role="search">
@@ -556,6 +557,82 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
 </main>
 
 <!-- نافذة بند الخطة -->
+<dialog id="projDlg" aria-labelledby="projDlgTitle">
+  <form id="projForm" method="dialog">
+    <h2 id="projDlgTitle">مشروع جديد</h2>
+    <p class="sub" id="projDlgSub"></p>
+    <label class="fld">اسم المشروع<input name="name" required maxlength="300"></label>
+    <div class="fld-row">
+      <label class="fld">الكود<input name="code" maxlength="12" dir="ltr"></label>
+      <label class="fld">السنة<input name="year" maxlength="4" inputmode="numeric"></label>
+      <label class="fld">الحالة<select name="status"><option>مخطط له</option><option>قيد التنفيذ</option><option>نشط</option><option>مكتمل</option></select></label>
+    </div>
+    <div class="fld-row">
+      <label class="fld">الجهة الممولة<input name="donor" list="dlDonor"></label>
+      <label class="fld">نوع المشروع<input name="type" list="dlType"></label>
+    </div>
+    <div class="fld-row">
+      <label class="fld">منسق المشروع<input name="coordinator" list="dlCoord"></label>
+      <label class="fld">المسوق<input name="marketer" list="dlMarketer"></label>
+    </div>
+    <div class="fld-row">
+      <label class="fld">الدولة<input name="country" list="dlCountry" value="غزة"></label>
+      <label class="fld">مكان التنفيذ<input name="place" list="dlPlace"></label>
+    </div>
+    <div class="fld-row">
+      <label class="fld">تاريخ الاعتماد<input name="approvalDate" type="date"></label>
+      <label class="fld">البداية<input name="start" type="date"></label>
+      <label class="fld">النهاية<input name="end" type="date"></label>
+    </div>
+    <div class="fld-row">
+      <label class="fld">المبلغ الكلي<input name="approved" type="number" step="0.01" min="0"></label>
+      <label class="fld">النسبة الإدارية<input name="admin" type="number" step="0.01" min="0"></label>
+      <label class="fld">المصاريف التشغيلية<input name="otherOps" type="number" step="0.01" min="0"></label>
+    </div>
+    <div class="fld-row">
+      <label class="fld">عدد المستفيدين<input name="benef" type="number" min="0"></label>
+      <label class="fld">بيان المستفيدين<input name="benefText" maxlength="300"></label>
+    </div>
+    <label class="fld">نبذة<textarea name="brief" maxlength="1900"></textarea></label>
+    <p class="note" style="margin:0">مبلغ التنفيذ حسب الاعتماد والفعلي يُحسبان بالمعادلة، ويمكن تعديلهما لاحقًا من «تعديل المبالغ».</p>
+    <div class="dlg-acts">
+      <button class="btn cta" type="submit" value="save">إنشاء المشروع</button>
+      <button class="btn ghost" type="button" data-close>إلغاء</button>
+    </div>
+  </form>
+  <datalist id="dlDonor"></datalist><datalist id="dlType"></datalist><datalist id="dlCoord"></datalist>
+  <datalist id="dlMarketer"></datalist><datalist id="dlCountry"></datalist><datalist id="dlPlace"></datalist>
+</dialog>
+<dialog id="moneyDlg" aria-labelledby="moneyDlgTitle">
+  <form id="moneyForm" method="dialog">
+    <h2 id="moneyDlgTitle">تعديل المبالغ</h2>
+    <p class="sub" id="moneyDlgSub"></p>
+    <div class="fld-row">
+      <label class="fld">المبلغ الكلي<input name="approved" type="number" step="0.01" min="0" inputmode="decimal"></label>
+      <label class="fld">النسبة الإدارية<input name="admin" type="number" step="0.01" min="0" inputmode="decimal"></label>
+    </div>
+    <div class="fld-row">
+      <label class="fld">مبلغ التنفيذ حسب الاعتماد<input name="exec" type="number" step="0.01" min="0" inputmode="decimal"></label>
+      <label class="fld">المصاريف التشغيلية<input name="otherOps" type="number" step="0.01" min="0" inputmode="decimal"></label>
+    </div>
+    <div class="fld-row">
+      <label class="fld">مبلغ التنفيذ الفعلي<input name="net" type="number" step="0.01" min="0" inputmode="decimal"></label>
+      <label class="fld">حسب الترسية أو التعاقد<input name="contract" type="number" step="0.01" min="0" inputmode="decimal"></label>
+    </div>
+    <div class="fld-row">
+      <label class="fld">مطبوعات<input name="printing" type="number" step="0.01" min="0" inputmode="decimal"></label>
+      <label class="fld">مواصلات<input name="transport" type="number" step="0.01" min="0" inputmode="decimal"></label>
+      <label class="fld">المستلم من المانح<input name="received" type="number" step="0.01" min="0" inputmode="decimal"></label>
+    </div>
+    <p class="note" id="moneyCheck" style="margin:0"></p>
+    <label class="fld">ملاحظات<textarea name="notes" maxlength="1900"></textarea></label>
+    <div class="dlg-acts">
+      <button class="btn cta" type="submit" value="save">حفظ</button>
+      <button class="btn soft" type="button" id="moneyCalc" title="التنفيذ حسب الاعتماد = الكلي − الإدارية، والفعلي = حسب الاعتماد − التشغيلية">احسب بالمعادلة</button>
+      <button class="btn ghost" type="button" data-close>إلغاء</button>
+    </div>
+  </form>
+</dialog>
 <dialog id="planDlg" aria-labelledby="planDlgTitle">
   <form id="planForm" method="dialog">
     <h2 id="planDlgTitle">بند جديد</h2>
@@ -1171,7 +1248,8 @@ function moneyCard(p){
     .concat(p.indirectTypes || []).filter(Boolean);
   if(p.inBudget) opsParts.push(p.inBudget === 'نعم' ? 'ضمن ميزانية المانح' : 'خارج ميزانية المانح');
   const cDiff = C != null && F ? F - C : null;
-  return '<article class="card"><div class="card-h"><h2>المالية</h2><span class="end">' + payPill + (p.payStatus ? '<span class="pill">' + esc(p.payStatus) + '</span>' : '') + '</span></div>' +
+  return '<article class="card" id="moneyCard"><div class="card-h"><h2>المالية</h2><span class="end">' + payPill + (p.payStatus ? '<span class="pill">' + esc(p.payStatus) + '</span>' : '') +
+      '<button class="btn soft sm" type="button" data-act="money-edit">تعديل المبالغ</button></span></div>' +
     '<div class="money">' +
       m('المبلغ الكلي', money(p.approved), 'حسب الاعتماد') +
       m('النسبة الإدارية', money(hasVal(p.admin) ? ADM : null), base && hasVal(p.admin) ? pct(ADM / base) + ' من المبلغ الكلي' : '') +
@@ -1518,6 +1596,106 @@ async function createFromTemplate(p, key){
 
 /* نافذة البند */
 let dlgItem = null, dlgProject = null;
+/* ---------- مشروع جديد ---------- */
+/* الكود التالي: مديكس G، هيوميرا H — أعلى رقم مستخدم + ١ */
+function nextCode(){
+  const pre = ORG === 'humera' ? 'H' : 'G';
+  const max = DATA.projects.reduce((m, p) => { const r = /^([A-Z])(\d+)$/.exec(p.code || ''); return r && r[1] === pre ? Math.max(m, +r[2]) : m; }, 0);
+  return pre + String(max + 1).padStart(3, '0');
+}
+function fillList(id, key){
+  const vals = [...new Set(DATA.projects.map(p => p[key]).filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b), 'ar'));
+  $(id).innerHTML = vals.map(v => '<option value="' + esc(v) + '">').join('');
+}
+$('newProjBtn').addEventListener('click', () => {
+  const f = $('projForm'); f.reset();
+  f.elements.code.value = nextCode();
+  f.elements.year.value = String(new Date().getFullYear());
+  [['dlDonor', 'donor'], ['dlType', 'type'], ['dlCoord', 'coordinator'], ['dlMarketer', 'marketer'], ['dlCountry', 'country'], ['dlPlace', 'place']].forEach(x => fillList(x[0], x[1]));
+  $('projDlgSub').textContent = ORG_INFO.full;
+  $('projDlg').showModal();
+});
+$('projForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if(SOURCE !== 'live'){ toast('الإنشاء يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true); return; }
+  const f = $('projForm'), v = {};
+  [...f.elements].forEach(el => { if(el.name) v[el.name] = el.value.trim(); });
+  const code = v.code.toUpperCase();
+  if(code && DATA.projects.some(p => p.code === code)){ toast('الكود ' + code + ' مستخدم لمشروع آخر', true); return; }
+  const n = x => x === '' ? null : Number(x);
+  const A = n(v.approved), ADM = n(v.admin), OPS = n(v.otherOps);
+  const E = A != null ? A - (ADM || 0) : null;
+  const pr = Object.assign({}, v, {code, approved: A, admin: ADM, otherOps: OPS, exec: E, net: E != null ? E - (OPS || 0) : null, benef: n(v.benef),
+    phase: v.status === 'مخطط له' ? 'الاعتماد' : ''});
+  const btn = f.querySelector('[type=submit]'); btn.disabled = true;
+  try{
+    const d = await post({action:'project_create', org: ORG, project: pr});
+    DATA.projects.unshift(d.project);
+    try{ localStorage.removeItem('daily-board-projects-cache-' + ORG); }catch(err){}
+    $('projDlg').close();
+    S.q = ''; $('q').value = ''; if(d.project.year && S.year && S.year !== d.project.year) S.year = d.project.year;
+    S.sel = d.project.id; S.view = 'list';
+    history.replaceState(null, '', '#' + encodeURIComponent(d.project.code || d.project.id));
+    buildFilters(); render();
+    toast('أُنشئ المشروع ' + (d.project.code || '') + ' في نوشن');
+  }catch(err){ toast(err.message || 'تعذّر الإنشاء', true); }
+  finally{ btn.disabled = false; }
+});
+
+/* ---------- تعديل المبالغ ---------- */
+const MONEY_KEYS = ['approved', 'admin', 'exec', 'otherOps', 'net', 'contract', 'printing', 'transport', 'received'];
+let moneyP = null;
+function moneyVals(){
+  const f = $('moneyForm'), o = {};
+  MONEY_KEYS.forEach(k => { const v = f.elements[k].value.trim(); o[k] = v === '' ? null : Number(v); });
+  return o;
+}
+function moneyCheck(){
+  const v = moneyVals(), el = $('moneyCheck'), n = x => x || 0, msgs = [];
+  if(v.approved != null && v.exec != null && Math.abs(v.approved - n(v.admin) - v.exec) >= 1)
+    msgs.push('الكلي − الإدارية = ' + money(v.approved - n(v.admin)) + '، وحسب الاعتماد ' + money(v.exec));
+  if(v.exec != null && v.net != null && Math.abs(v.exec - v.net - n(v.otherOps)) >= 1)
+    msgs.push('الفعلي + التشغيلية = ' + money(v.net + n(v.otherOps)) + '، وحسب الاعتماد ' + money(v.exec));
+  el.textContent = msgs.length ? '⚠ ' + msgs.join(' · ') : (v.approved != null && v.exec != null ? '✓ المعادلة متوازنة' : '');
+  el.style.color = msgs.length ? 'var(--urgent)' : 'var(--done)';
+}
+function openMoneyDlg(p){
+  moneyP = p;
+  const f = $('moneyForm');
+  MONEY_KEYS.forEach(k => { f.elements[k].value = p[k] == null || p[k] === '' ? '' : p[k]; });
+  f.elements.notes.value = p.notes || '';
+  $('moneyDlgSub').textContent = (p.code ? p.code + ' · ' : '') + p.name;
+  moneyCheck();
+  $('moneyDlg').showModal();
+}
+$('moneyForm').addEventListener('input', moneyCheck);
+$('moneyCalc').addEventListener('click', () => {
+  const f = $('moneyForm'), v = moneyVals();
+  if(v.approved != null) f.elements.exec.value = +(v.approved - (v.admin || 0)).toFixed(2);
+  const e = Number(f.elements.exec.value);
+  if(f.elements.exec.value !== '') f.elements.net.value = +(e - (v.otherOps || 0)).toFixed(2);
+  moneyCheck();
+});
+$('moneyForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const p = moneyP; if(!p) return;
+  const vals = moneyVals(), notes = $('moneyForm').elements.notes.value.trim();
+  const changed = {};
+  MONEY_KEYS.forEach(k => { const old = p[k] == null || p[k] === '' ? null : Number(p[k]); if(old !== vals[k]) changed[k] = vals[k]; });
+  const notesChanged = notes !== (p.notes || '');
+  if(!Object.keys(changed).length && !notesChanged){ $('moneyDlg').close(); return; }
+  if(SOURCE !== 'live'){ toast('الحفظ يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true); return; }
+  const btn = e.submitter || $('moneyForm').querySelector('[type=submit]');
+  btn.disabled = true;
+  try{
+    await post(Object.assign({action:'project_money', org: ORG, pageId: p.id, money: changed}, notesChanged ? {notes} : {}));
+    Object.assign(p, changed); if(notesChanged) p.notes = notes;
+    try{ localStorage.removeItem('daily-board-projects-cache-' + ORG); }catch(err){}
+    $('moneyDlg').close(); rerender(); toast('حُفظت المبالغ في نوشن');
+  }catch(err){ toast(err.message || 'تعذّر الحفظ', true); }
+  finally{ btn.disabled = false; }
+});
+
 function openPlanDlg(p, it, stage, newStage){
   dlgProject = p; dlgItem = it || null;
   const f = $('planForm');
@@ -1695,6 +1873,7 @@ $('detail').addEventListener('click', e => {
   else if(act === 'more'){ const k = b.dataset.key; EXPANDED.has(k) ? EXPANDED.delete(k) : EXPANDED.add(k); refreshCard('docsCard', docsCard(p)); }
   else if(act === 'files-refresh'){ delete FILES[p.code]; fetchFiles(p); refreshCard('docsCard', docsCard(p)); }
   else if(act === 'up') pickFiles(p, b.dataset.slot);
+  else if(act === 'money-edit') openMoneyDlg(p);
 });
 /* السحب والإفلات على الخانة نفسها */
 function slotOf(e){ return e.target.closest('#docsCard .slot'); }
