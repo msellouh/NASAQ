@@ -1556,9 +1556,8 @@ function projTable(rows){
   const V = k => TCOLS.find(c => c[0] === k)[2];
   const body = sorted.map(p => {
     const sp = V('spend')(p), rc = V('recv')(p), pl = V('plan')(p);
-    const link = (filesOf(p) || {}).url || p.drive;
     return '<tr data-id="' + esc(p.id) + '"><td>' + codeChip(p) + '</td>' +
-      '<td class="nm">' + (link ? '<a href="' + esc(link) + '" target="_blank" rel="noopener" data-stop title="فتح مجلد المشروع">' + esc(p.name) + '</a>' : esc(p.name)) + '</td>' +
+      '<td class="nm"><a href="#' + encodeURIComponent(p.code || p.id) + '" title="فتح بطاقة المشروع">' + esc(p.name) + '</a></td>' +
       '<td>' + esc(p.donor || '—') + '</td><td>' + esc(p.coordinator || '—') + '</td><td>' + (p.end ? fmtDate(p.end, false) : '—') + '</td><td>' + statusPill(p.status) + '</td>' +
       '<td>' + money(p.approved) + '</td><td>' + money(p.exec) + '</td>' +
       (f => '<td class="' + (f.issues.length ? 'hi' : '') + '"' + (f.issues.length ? ' title="' + esc(f.issues.join(' · ')) + '"' : '') + '>' + (f.F ? money(f.F) : '—') + (f.issues.length ? ' ⚠' : '') + '</td>')(fin(p)) +
@@ -1569,7 +1568,7 @@ function projTable(rows){
   const head = TCOLS.map(c => '<th><button type="button" data-sort="' + c[0] + '" class="' + (c[0] === S.tsort ? 'on' : '') + '">' + c[1] +
     (c[0] === S.tsort ? (S.tdir < 0 ? ' ↓' : ' ↑') : '') + '</button></th>').join('');
   return card('جدول المشاريع', '<div class="st-scroll"><table class="st-table"><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table></div>',
-    cnt(rows.length, W_PROJ) + ' · انقر عنوان العمود للترتيب، والصف لفتح المشروع، واسم المشروع لفتح مجلده');
+    cnt(rows.length, W_PROJ) + ' · انقر عنوان العمود للترتيب، والصف أو اسم المشروع لفتح بطاقته');
 }
 
 /* ================= خطة التنفيذ: الحفظ ================= */
@@ -2045,7 +2044,7 @@ $('stats').addEventListener('click', e => {
   const f = e.target.closest('[data-f]');
   if(f){ const k = f.dataset.f, v = f.dataset.v === 'غير محدد' ? '' : f.dataset.v; S[k] = S[k] === v ? '' : v; buildFilters(); render(); return; }
   const tr = e.target.closest('tr[data-id]');
-  if(tr) openProject(tr.dataset.id);
+  if(tr){ e.preventDefault(); openProject(tr.dataset.id); }
 });
 $('yearSeg').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; S.year = b.dataset.y; buildFilters(); render(); });
 let qT; $('q').addEventListener('input', e => { clearTimeout(qT); qT = setTimeout(() => { S.q = e.target.value; render(); }, 120); });
