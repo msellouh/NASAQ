@@ -561,14 +561,19 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
   <form id="projForm" method="dialog">
     <h2 id="projDlgTitle">مشروع جديد</h2>
     <p class="sub" id="projDlgSub"></p>
-    <label class="fld">اسم المشروع<input name="name" required maxlength="300"></label>
+    <div class="fld-row">
+      <label class="fld">اسم المشروع الموحّد<select name="stdName" required></select></label>
+      <label class="fld" id="stdNewWrap" hidden>اسم جديد للقائمة<input name="stdNew" maxlength="100" placeholder="يُضاف للقائمة ويُستخدم لباقي المشاريع"></label>
+    </div>
+    <label class="fld">تفصيل اختياري<input name="suffix" maxlength="120" placeholder="مثال: الشهر العاشر، المرحلة الثانية، مستشفى الشفاء"></label>
     <div class="fld-row">
       <label class="fld">الكود<input name="code" maxlength="12" dir="ltr"></label>
       <label class="fld">السنة<input name="year" maxlength="4" inputmode="numeric"></label>
       <label class="fld">الحالة<select name="status"><option>مخطط له</option><option>قيد التنفيذ</option><option>نشط</option><option>مكتمل</option></select></label>
     </div>
     <div class="fld-row">
-      <label class="fld">الجهة الممولة<input name="donor" list="dlDonor"></label>
+      <label class="fld">الجهة الممولة<select name="donor"></select></label>
+      <label class="fld" id="donorNewWrap" hidden>مانح جديد للقائمة<input name="donorNew" maxlength="100"></label>
       <label class="fld">نوع المشروع<input name="type" list="dlType"></label>
     </div>
     <div class="fld-row">
@@ -594,6 +599,7 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
       <label class="fld">بيان المستفيدين<input name="benefText" maxlength="300"></label>
     </div>
     <label class="fld">نبذة<textarea name="brief" maxlength="1900"></textarea></label>
+    <p class="note" id="projTitlePrev" style="margin:0"></p>
     <p class="note" style="margin:0">مبلغ التنفيذ حسب الاعتماد والفعلي يُحسبان بالمعادلة، ويمكن تعديلهما لاحقًا من «تعديل المبالغ».</p>
     <div class="dlg-acts">
       <button class="btn cta" type="submit" value="save">إنشاء المشروع</button>
@@ -891,7 +897,7 @@ function localPeopleRead(){ try{ return JSON.parse(localStorage.getItem(LOCAL_PE
 function localPeopleWrite(){ try{ localStorage.setItem(LOCAL_PEOPLE_KEY, JSON.stringify(DATA.people)); }catch(e){} }
 const uniqNames = list => [...new Set(list.map(n => String(n || '').trim()).filter(Boolean))];
 function use(d, src, note){
-  DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [] };
+  DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [], options: d.options || {} };
   SOURCE = src;
   if(src === 'local'){
     DATA.plan = DATA.plan.concat(localPlanRead());
@@ -1603,23 +1609,56 @@ function nextCode(){
   const max = DATA.projects.reduce((m, p) => { const r = /^([A-Z])(\d+)$/.exec(p.code || ''); return r && r[1] === pre ? Math.max(m, +r[2]) : m; }, 0);
   return pre + String(max + 1).padStart(3, '0');
 }
+const NEW_OPT = '__new__';
+/* قائمة منسدلة من الخيارات المعتمدة في نوشن + «إضافة جديد» */
+function fillSelect(sel, list, placeholder){
+  const vals = [...new Set(list.filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b), 'ar'));
+  sel.innerHTML = '<option value="">' + placeholder + '</option>' + vals.map(v => '<option>' + esc(v) + '</option>').join('') +
+    '<option value="' + NEW_OPT + '">＋ إضافة جديد إلى القائمة…</option>';
+}
+function projTitle(){
+  const f = $('projForm');
+  const std = f.elements.stdName.value === NEW_OPT ? f.elements.stdNew.value.trim() : f.elements.stdName.value;
+  const donor = f.elements.donor.value === NEW_OPT ? f.elements.donorNew.value.trim() : f.elements.donor.value;
+  const sfx = f.elements.suffix.value.trim();
+  return {std, donor, title: std ? 'مشروع ' + std.replace(/^مشروع\s+/, '') + (sfx ? ' – ' + sfx : '') + (donor ? ' – ' + donor : '') : ''};
+}
+function projPreview(){
+  const f = $('projForm');
+  $('stdNewWrap').hidden = f.elements.stdName.value !== NEW_OPT;
+  $('donorNewWrap').hidden = f.elements.donor.value !== NEW_OPT;
+  f.elements.stdNew.required = !$('stdNewWrap').hidden;
+  f.elements.donorNew.required = !$('donorNewWrap').hidden;
+  const t = projTitle().title;
+  $('projTitlePrev').textContent = t ? 'اسم المشروع في نوشن: ' + t : '';
+}
 function fillList(id, key){
   const vals = [...new Set(DATA.projects.map(p => p[key]).filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b), 'ar'));
   $(id).innerHTML = vals.map(v => '<option value="' + esc(v) + '">').join('');
 }
 $('newProjBtn').addEventListener('click', () => {
   const f = $('projForm'); f.reset();
+  const O = DATA.options || {};
+  fillSelect(f.elements.stdName, (O.names || []).concat(DATA.projects.map(p => p.stdName)), 'اختر من القائمة');
+  fillSelect(f.elements.donor, (O.donors || []).concat(DATA.projects.map(p => p.donor)), 'بلا مانح محدد');
   f.elements.code.value = nextCode();
   f.elements.year.value = String(new Date().getFullYear());
   [['dlDonor', 'donor'], ['dlType', 'type'], ['dlCoord', 'coordinator'], ['dlMarketer', 'marketer'], ['dlCountry', 'country'], ['dlPlace', 'place']].forEach(x => fillList(x[0], x[1]));
   $('projDlgSub').textContent = ORG_INFO.full;
+  projPreview();
   $('projDlg').showModal();
 });
+$('projForm').addEventListener('input', projPreview);
+$('projForm').addEventListener('change', projPreview);
 $('projForm').addEventListener('submit', async e => {
   e.preventDefault();
   if(SOURCE !== 'live'){ toast('الإنشاء يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true); return; }
   const f = $('projForm'), v = {};
   [...f.elements].forEach(el => { if(el.name) v[el.name] = el.value.trim(); });
+  const nt = projTitle();
+  if(!nt.std){ toast('اختر اسم المشروع الموحّد أو أضف اسمًا جديدًا', true); return; }
+  Object.assign(v, {stdName: nt.std, donor: nt.donor, name: nt.title});
+  ['stdNew', 'donorNew', 'suffix'].forEach(k => delete v[k]);
   const code = v.code.toUpperCase();
   if(code && DATA.projects.some(p => p.code === code)){ toast('الكود ' + code + ' مستخدم لمشروع آخر', true); return; }
   const n = x => x === '' ? null : Number(x);
@@ -1631,6 +1670,9 @@ $('projForm').addEventListener('submit', async e => {
   try{
     const d = await post({action:'project_create', org: ORG, project: pr});
     DATA.projects.unshift(d.project);
+    const O = DATA.options = DATA.options || {};
+    if(nt.std && !(O.names || []).includes(nt.std)) (O.names = O.names || []).push(nt.std);
+    if(nt.donor && !(O.donors || []).includes(nt.donor)) (O.donors = O.donors || []).push(nt.donor);
     try{ localStorage.removeItem('daily-board-projects-cache-' + ORG); }catch(err){}
     $('projDlg').close();
     S.q = ''; $('q').value = ''; if(d.project.year && S.year && S.year !== d.project.year) S.year = d.project.year;
