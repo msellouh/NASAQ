@@ -750,7 +750,16 @@ function fetchBridge(payload){
     .catch(err => { throw new Error(err && err.name === 'AbortError' ? 'لم يردّ الجسر خلال 90 ثانية' : 'تعذّر الوصول إلى الجسر: ' + err.message); })
     .then(r => r.text()).finally(() => clearTimeout(timer));
 }
+/* داخل تبويب اللوح: إطار الجسر يعلن جاهزيته لـ window.top (اللوح نفسه) لا لهذه الصفحة المضمّنة،
+   فنمرّر الطلبات عبر اتصال اللوح القائم بدل فتح اتصال ثانٍ. من file:// يُمنع الوصول للأب فنكمل وحدنا. */
+function hostPost(){
+  if(!EMBED || window.parent === window) return null;
+  try{ return typeof window.parent.post === 'function' ? window.parent.post : null; }catch(e){ return null; }
+}
 function post(body){
+  const viaHost = hostPost();
+  if(viaHost) return viaHost(Object.assign({}, body)).then(d => { if(!d || !d.ok) throw new Error((d && d.error) || 'خطأ غير معروف'); return d; },
+    e => { throw new Error(e && e.message || String(e)); });
   const payload = Object.assign({}, body, auth && auth.token ? {token: auth.token} : {});
   const call = !/^https?:$/.test(location.protocol) ? fetchBridge(payload) : rpcInit().then(()=>new Promise((resolve, reject)=>{
     const id = ++rpcSeq;
