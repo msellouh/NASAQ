@@ -778,8 +778,18 @@ async function load(){
   $('items').innerHTML = '<div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div>';
   let bridgeErr = '';
   if(bridge && auth && auth.isOwner){
-    try{ const d = await post({action:'projects_list', org: ORG}); return use(d, 'live'); }
-    catch(e){ bridgeErr = e.message; }
+    /* آخر نسخة من نوشن تُعرض فورًا من هذا المتصفح، ثم تُستبدل بالجديدة حين يردّ الجسر */
+    const CK = 'daily-board-projects-cache-' + ORG;
+    let shown = false;
+    try{ const c = JSON.parse(localStorage.getItem(CK) || 'null'); if(c && c.ok){ use(c, 'live'); shown = true; } }catch(e){}
+    try{
+      const d = await post({action:'projects_list', org: ORG});
+      try{ localStorage.setItem(CK, JSON.stringify(d)); }catch(e){}
+      return use(d, 'live');
+    }catch(e){
+      if(shown){ toast('تعذّر التحديث من نوشن، والمعروض آخر نسخة محفوظة: ' + e.message, true); return; }
+      bridgeErr = e.message;
+    }
   }
   try{
     const r = await fetch(ORG_INFO.fixture, {cache:'no-store'});
