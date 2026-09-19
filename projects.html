@@ -1645,7 +1645,7 @@ function nextCode(){
 }
 const NEW_OPT = '__new__';
 /* قائمة منسدلة من الخيارات المعتمدة في نوشن + «إضافة جديد» */
-function fillSelect(sel, list, placeholder){
+function fillPick(sel, list, placeholder){
   const vals = [...new Set(list.filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b), 'ar'));
   sel.innerHTML = '<option value="">' + placeholder + '</option>' + vals.map(v => '<option>' + esc(v) + '</option>').join('') +
     '<option value="' + NEW_OPT + '">＋ إضافة جديد إلى القائمة…</option>';
@@ -1673,8 +1673,8 @@ function fillList(id, key){
 $('newProjBtn').addEventListener('click', () => {
   const f = $('projForm'); f.reset();
   const O = DATA.options || {};
-  fillSelect(f.elements.stdName, (O.names || []).concat(DATA.projects.map(p => p.stdName)), 'اختر من القائمة');
-  fillSelect(f.elements.donor, (O.donors || []).concat(DATA.projects.map(p => p.donor)), 'بلا مانح محدد');
+  fillPick(f.elements.stdName, (O.names || []).concat(DATA.projects.map(p => p.stdName)), 'اختر من القائمة');
+  fillPick(f.elements.donor, (O.donors || []).concat(DATA.projects.map(p => p.donor)), 'بلا مانح محدد');
   f.elements.code.value = nextCode();
   f.elements.year.value = String(new Date().getFullYear());
   [['dlDonor', 'donor'], ['dlType', 'type'], ['dlCoord', 'coordinator'], ['dlMarketer', 'marketer'], ['dlCountry', 'country'], ['dlPlace', 'place']].forEach(x => fillList(x[0], x[1]));
