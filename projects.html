@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800;900&family=Readex+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="nasaq-core.js"></script>
 <script>
 /* الوضع المحفوظ في نَسَق — قبل الرسم حتى لا يومض */
 (function(){ try{
@@ -833,42 +834,11 @@ let bridge = ''; try{ bridge = localStorage.getItem('daily-board-bridge') || '';
 if(!bridge) bridge = DEFAULT_BRIDGE;
 let auth = null; try{ auth = JSON.parse(localStorage.getItem('daily-board-auth') || 'null'); }catch(e){}
 
-let rpcWin = null, rpcOrigin = '', rpcReady = null, rpcReadyDone = null, rpcSeq = 0;
-const rpcPending = new Map();
-window.addEventListener('message', ev=>{
-  const m = ev.data; if(!m || m.__nasaq !== 1) return;
-  let host = ''; try{ host = new URL(ev.origin).hostname; }catch(e){ return; }
-  if(!/\.googleusercontent\.com$/.test(host)) return;
-  if(m.type === 'ready'){ rpcWin = ev.source; rpcOrigin = ev.origin; if(rpcReadyDone) rpcReadyDone(); return; }
-  if(m.type === 'result' && ev.origin === rpcOrigin){
-    const p = rpcPending.get(m.id); if(!p) return;
-    rpcPending.delete(m.id); clearTimeout(p.timer);
-    m.ok ? p.resolve(m.body) : p.reject(new Error(m.error || 'خطأ في الجسر'));
-  }
-});
-function rpcInit(){
-  if(rpcReady) return rpcReady;
-  rpcReady = new Promise((resolve, reject)=>{
-    const t = setTimeout(()=>reject(new Error('لم يستجب الجسر')), 15000);
-    rpcReadyDone = ()=>{ clearTimeout(t); resolve(); };
-    const f = document.createElement('iframe');
-    f.setAttribute('aria-hidden','true'); f.tabIndex = -1; f.title = 'nasaq-bridge';
-    f.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden';
-    f.src = bridge + (bridge.indexOf('?') < 0 ? '?' : '&') + 'frame=1&o=' + encodeURIComponent(location.origin);
-    document.body.appendChild(f);
-  });
-  return rpcReady;
-}
-/* من file:// (فتح اللوح بالنقر المزدوج) لا يعمل الإطار المخفي، فنرسل الطلب مباشرة كما يفعل اللوح */
-function fetchBridge(payload){
-  const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 90000);
-  return fetch(bridge, {method:'POST', redirect:'follow', headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body: JSON.stringify(payload), signal: ctl.signal})
-    .catch(err => { throw new Error(err && err.name === 'AbortError' ? 'لم يردّ الجسر خلال 90 ثانية' : 'تعذّر الوصول إلى الجسر: ' + err.message); })
-    .then(r => r.text()).finally(() => clearTimeout(timer));
-}
-/* داخل تبويب اللوح: إطار الجسر يعلن جاهزيته لـ window.top (اللوح نفسه) لا لهذه الصفحة المضمّنة،
-   فنمرّر الطلبات عبر اتصال اللوح القائم بدل فتح اتصال ثانٍ. من file:// يُمنع الوصول للأب فنكمل وحدنا. */
+/* النقل نفسه الذي يستعمله اللوح — nasaq-core.js */
+NasaqBridge.configure(function(){ return bridge; });
+
+/* داخل تبويب اللوح: إطار الجسر يعلن جاهزيته لـ window.top (اللوح) لا لهذه الصفحة المضمّنة،
+   فنمرّر الطلبات عبر اتصال اللوح القائم بدل فتح اتصال ثانٍ. من file:// يُمنع الوصول للأب. */
 function hostPost(){
   if(!EMBED || window.parent === window) return null;
   try{ return typeof window.parent.post === 'function' ? window.parent.post : null; }catch(e){ return null; }
@@ -878,15 +848,9 @@ function post(body){
   if(viaHost) return viaHost(Object.assign({}, body)).then(d => { if(!d || !d.ok) throw new Error((d && d.error) || 'خطأ غير معروف'); return d; },
     e => { throw new Error(e && e.message || String(e)); });
   const payload = Object.assign({}, body, auth && auth.token ? {token: auth.token} : {});
-  const call = !/^https?:$/.test(location.protocol) ? fetchBridge(payload) : rpcInit().then(()=>new Promise((resolve, reject)=>{
-    const id = ++rpcSeq;
-    const timer = setTimeout(()=>{ rpcPending.delete(id); reject(new Error('لم يردّ الجسر خلال 90 ثانية')); }, 90000);
-    rpcPending.set(id, {resolve, reject, timer});
-    rpcWin.postMessage({__nasaq:1, type:'call', id, payload: JSON.stringify(payload)}, rpcOrigin);
-  }));
-  return call.then(t=>{
-    let d; try{ d = JSON.parse(t); }catch(e){ throw new Error('ردّ غير مفهوم من الجسر — تأكد من نشر نسخته الأخيرة'); }
-    if(!d || !d.ok) throw new Error((d && d.error) || 'خطأ غير معروف'); return d;
+  return NasaqBridge.post(payload).then(d => {
+    if(!d || !d.ok) throw new Error((d && d.error) || 'خطأ غير معروف');
+    return d;
   });
 }
 
