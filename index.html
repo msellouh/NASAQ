@@ -487,6 +487,14 @@ body{padding:0}
 .greet-media{position:relative;width:72%;max-width:900px;flex:none;display:flex;align-items:flex-end;justify-content:flex-end;padding:12px}
 .greet-card:not(.has-photo) .greet-media{width:auto}
 .greet-card.has-photo{min-height:280px}
+/* الصور تتناسق مع الطابع: ستارة من لون الهوية بمزج ناعم فوق الصورة وحدها،
+   فتتغيّر مع كل طابع ومع الوضع الداكن بلا تعديل على الصورة نفسها. */
+.greet-card.has-photo .greet-media::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  mix-blend-mode:soft-light;opacity:.55;
+  background:linear-gradient(200deg,color-mix(in srgb,var(--accent,var(--brand,#174C4F)) 85%,transparent),color-mix(in srgb,var(--brand,var(--ink)) 45%,transparent))}
+:root[data-theme="dark"] .greet-card.has-photo .greet-media::after{opacity:.42}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .greet-card.has-photo .greet-media::after{opacity:.42}}
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo .greet-media::after{opacity:.3}
 /* مشهد نَسَق: يُرسم بألوان الطابع، ويحل محل الصورة حين لا توجد صورة تناسب السياق */
 .hero-scene{position:absolute;inset:0;z-index:0}
 .hero-scene[hidden]{display:none}
@@ -1013,7 +1021,7 @@ body.focus-open{overflow:hidden}
 .hero-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:13px;cursor:pointer}
 .hero-empty[hidden]{display:none}
 .hero-empty:hover{color:var(--ink)}
-.hero-tools{position:absolute;bottom:8px;left:8px;display:none;gap:6px}
+.hero-tools{position:absolute;bottom:8px;left:8px;display:none;gap:6px;z-index:2}
 .hero.has-photo .hero-tools{display:flex}
 .hero-add,.hero-del{border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,.55);color:#fff;border-radius:999px;font:inherit;font-size:12px;padding:5px 12px;cursor:pointer}
 .hero-del{padding:4px 11px}
@@ -1238,7 +1246,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .admin-user-row button:hover{background:var(--urgent);color:#fff}
 
 /* ---------- auth ---------- */
-.auth-overlay{position:fixed;inset:0;background:var(--board);display:flex;align-items:center;justify-content:center;padding:20px;z-index:120;overflow-y:auto}
+.auth-overlay{position:fixed;inset:0;background:radial-gradient(ellipse 52% 46% at 50% 44%,color-mix(in srgb,var(--accent,var(--focus)) 14%,transparent),transparent 72%),repeating-radial-gradient(circle at 0 0,transparent 0 56px,var(--pattern) 56px 57px),repeating-radial-gradient(circle at 100% 100%,transparent 0 56px,var(--pattern) 56px 57px),var(--board);display:flex;align-items:center;justify-content:center;padding:20px;z-index:120;overflow-y:auto}
 .auth-overlay[hidden]{display:none}
 .auth-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);width:100%;max-width:380px;padding:26px}
 .auth-brand{display:flex;align-items:center;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:18px}
@@ -5591,7 +5599,10 @@ function applyHeroVisual(ctx){
   $('heroTagBtn').hidden = !photoList.length;   /* «صورك» متاح ما دامت لديك صورة */
   if(usePhoto){
     const pool = tagged.length ? tagged : (anytime.length ? anytime : photoList);
-    const cur = pool[Math.floor(Date.now() / (25 * 60 * 1000)) % pool.length];   /* تتبدّل كل ٢٥ دقيقة */
+    /* الاختيار يتبدّل مع السياق (وقت/مناسبة/مهمة) ومع الوقت كل ١٠ دقائق،
+       فلا تبقى الصورة نفسها حين يتغيّر سياق يومك. */
+    let h = 0; for(let i = 0; i < tag.length; i++) h = (h * 31 + tag.charCodeAt(i)) >>> 0;
+    const cur = pool[(h + Math.floor(Date.now() / (10 * 60 * 1000))) % pool.length];
     photoIdx = Math.max(0, photoList.indexOf(cur));
     scene.hidden = true; scene.innerHTML = '';
     $('heroBanner').classList.add('has-photo');
