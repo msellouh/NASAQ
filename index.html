@@ -1323,81 +1323,6 @@ li.exp-row:nth-child(even){background:var(--stripe)}
    وبنفسجي للانتظار، وأحمر للعاجل. يرث عناصر تحكم «نَسَق» (قواعد ^="nasaq" أعلاه) ويبدّل
    الألوان والخطوط والتدرّج والنقشة. الأصل هو الوضع الداكن «ليل المدار»، والفاتح نسخة «الورق»
    بالطيف العميق. تباين كل نص ≥ 4.5. الأزرار الأساسية سماوية بنص ليلي (7.4:1) لا أبيض (2.4:1). */
-:root[data-palette="nasaq360"]{
-  --ink:#14162A; --ink-2:#3A3F62; --paper:#FFFFFF; --board:#EEF1F7;
-  --rule:#DCE0EC; --done:#087F5D; --hold:#6A43B8; --urgent:#C42B2E;
-  --muted:#5E6485; --focus:#007A99; --r:14px;
-  --surface:#FFFFFF; --stripe:#F5F7FB;
-  --hold-bg:#EEE8FA; --hold-ink:#5A3A9E;
-  --focus-bg:#E0F4F8; --focus-ink:#005F78;
-  --imp-b-bg:#E6E9F3;
-  --brand:#14162A; --accent:#00B7D4;
-  --shadow:0 1px 2px rgba(20,22,42,.06),0 10px 28px rgba(20,22,42,.08);
-  --overlay:rgba(20,22,42,.45);
-  --pattern:rgba(0,122,153,.08);
-  --font-head:Alexandria,"Readex Pro",Tahoma,sans-serif;
-  --font-body:"Readex Pro","Segoe UI",Tahoma,sans-serif;
-  --field-bg:#F3F5FA; --field-line:#8F92A6; --field-hover:#757991;
-  --ring:rgba(0,183,212,.25); --on-accent:#FFFFFF; --btn-soft:#E6E9F3; --btn-soft-hover:#DADEEC;
-  /* الزر الأساسي: سماوي 360 بنص ليلي، وينقلب عند المرور كما في الجزيرة 360 */
-  --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#14162A; --on-cta-hover:#EEF1F7;
-  --live:#C42B2E; --on-done:#FFFFFF;
-  --bm-1:#14162A; --bm-2:#087F5D; --bm-dot:#007A99;
-  /* الحلقة: ٣٣٠° مخروطية تبدأ بعد فجوة ٣٠° عند الثانية عشرة — نعناعي ← سماوي ← بنفسجي */
-  --orbit:conic-gradient(from 15deg,#0E9E74 0deg,#0086A8 150deg,#6A43B8 300deg,#6A43B8 330deg,transparent 330deg);
-  --grad-line:linear-gradient(to left,#0E9E74,#0086A8 55%,#6A43B8);
-  --grad-text:linear-gradient(90deg,#0E9E74,#0086A8 55%,#6A43B8);
-  --aura-1:rgba(106,67,184,.12); --aura-2:rgba(14,158,116,.10); --orbit-line:rgba(0,122,153,.16);
-  color-scheme:light;
-}
-:root[data-theme="dark"][data-palette="nasaq360"]{
-  --ink:#EEF1F7; --ink-2:#C4C9DD; --paper:#1D2040; --board:#14162A;
-  --rule:#2C3058; --done:#34F5B5; --hold:#B69CF5; --urgent:#FF6B6E;
-  --muted:#9AA1BE; --focus:#00B7D4;
-  --surface:#1D2040; --stripe:#22264A;
-  --hold-bg:#2A2350; --hold-ink:#C9B5FF;
-  --focus-bg:#0F3246; --focus-ink:#7FE3F5;
-  --imp-b-bg:#2A2E55;
-  --brand:#EEF1F7; --accent:#00B7D4;
-  --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 30px rgba(0,0,0,.35);
-  --overlay:rgba(8,9,20,.72);
-  --pattern:rgba(0,183,212,.07);
-  --field-bg:#171A31; --field-line:#686C87; --field-hover:#80849D;
-  --ring:rgba(0,183,212,.3); --on-accent:#14162A; --btn-soft:#262A4F; --btn-soft-hover:#30355F;
-  --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#EEF1F7; --on-cta-hover:#14162A;
-  --live:#D92F32; --on-done:#14162A;
-  --bm-1:#EEF1F7; --bm-2:#34F5B5; --bm-dot:#00B7D4;
-  --orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg);
-  --grad-line:linear-gradient(to left,#34F5B5,#00B7D4 55%,#7B55CC);
-  --grad-text:linear-gradient(90deg,#34F5B5,#00B7D4 55%,#7B55CC);
-  --aura-1:rgba(123,85,204,.32); --aura-2:rgba(52,245,181,.14); --orbit-line:rgba(0,183,212,.2);
-  color-scheme:dark;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"])[data-palette="nasaq360"]{
-    --ink:#EEF1F7; --ink-2:#C4C9DD; --paper:#1D2040; --board:#14162A;
-    --rule:#2C3058; --done:#34F5B5; --hold:#B69CF5; --urgent:#FF6B6E;
-    --muted:#9AA1BE; --focus:#00B7D4;
-    --surface:#1D2040; --stripe:#22264A;
-    --hold-bg:#2A2350; --hold-ink:#C9B5FF;
-    --focus-bg:#0F3246; --focus-ink:#7FE3F5;
-    --imp-b-bg:#2A2E55;
-    --brand:#EEF1F7; --accent:#00B7D4;
-    --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 30px rgba(0,0,0,.35);
-    --overlay:rgba(8,9,20,.72);
-    --pattern:rgba(0,183,212,.07);
-    --field-bg:#171A31; --field-line:#686C87; --field-hover:#80849D;
-    --ring:rgba(0,183,212,.3); --on-accent:#14162A; --btn-soft:#262A4F; --btn-soft-hover:#30355F;
-    --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#EEF1F7; --on-cta-hover:#14162A;
-    --live:#D92F32; --on-done:#14162A;
-    --bm-1:#EEF1F7; --bm-2:#34F5B5; --bm-dot:#00B7D4;
-    --orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg);
-    --grad-line:linear-gradient(to left,#34F5B5,#00B7D4 55%,#7B55CC);
-    --grad-text:linear-gradient(90deg,#34F5B5,#00B7D4 55%,#7B55CC);
-    --aura-1:rgba(123,85,204,.32); --aura-2:rgba(52,245,181,.14); --orbit-line:rgba(0,183,212,.2);
-    color-scheme:dark;
-  }
-}
 
 /* الخطوط: Alexandria للعناوين والأرقام الكبيرة، وReadex Pro للنص. لا تباعد بين الحروف العربية */
 :root[data-palette="nasaq360"] body{font-family:var(--font-body);background-image:none}
@@ -1707,6 +1632,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   ol.tasks li.task:nth-child(4n+1),.imp.a,.check[aria-checked="true"],.fill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
+<link rel="stylesheet" href="nasaq-theme.css">
 </head>
 <body>
 

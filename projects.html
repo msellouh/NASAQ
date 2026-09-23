@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="madar">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,73 +20,7 @@
 <style>
 /* ==================== طابع «نَسَق 360» — هوية «مَدار» ====================
    ليل كحلي، ونعناعي للإنجاز، وسماوي للفعل، وبنفسجي للانتظار، وأحمر للعاجل.
-   الرموز منسوخة من index.html حتى يُدمج التبويب لاحقًا دون تغيير في الشكل. */
-:root{
-  --ink:#14162A; --ink-2:#3A3F62; --paper:#FFFFFF; --board:#EEF1F7;
-  --rule:#DCE0EC; --done:#087F5D; --hold:#6A43B8; --urgent:#C42B2E;
-  --muted:#5E6485; --focus:#007A99; --r:14px;
-  --stripe:#F5F7FB;
-  --hold-bg:#EEE8FA; --hold-ink:#5A3A9E;
-  --focus-bg:#E0F4F8; --focus-ink:#005F78;
-  --done-bg:#E2F3EC; --urgent-bg:#FBE8E8;
-  --shadow:0 1px 2px rgba(20,22,42,.06),0 10px 28px rgba(20,22,42,.08);
-  --overlay:rgba(20,22,42,.45);
-  --pattern:rgba(0,122,153,.08);
-  --font-head:Alexandria,"Readex Pro",Tahoma,sans-serif;
-  --font-body:"Readex Pro","Segoe UI",Tahoma,sans-serif;
-  --field-bg:#F3F5FA; --field-line:#8F92A6; --field-hover:#757991;
-  --ring:rgba(0,183,212,.25); --btn-soft:#E6E9F3; --btn-soft-hover:#DADEEC;
-  --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#14162A; --on-cta-hover:#EEF1F7;
-  --bm-1:#14162A; --bm-2:#087F5D; --bm-dot:#007A99;
-  --orbit:conic-gradient(from 15deg,#0E9E74 0deg,#0086A8 150deg,#6A43B8 300deg,#6A43B8 330deg,transparent 330deg);
-  --grad-line:linear-gradient(to left,#0E9E74,#0086A8 55%,#6A43B8);
-  --grad-text:linear-gradient(90deg,#0E9E74,#0086A8 55%,#6A43B8);
-  --aura-1:rgba(106,67,184,.12); --aura-2:rgba(14,158,116,.10); --orbit-line:rgba(0,122,153,.16);
-  /* ألوان المخططات: التنفيذ، الإدارية، التشغيلية، غير المباشرة، والمعتمد الخافت */
-  --c-exec:#007A99; --c-admin:#6A43B8; --c-ops:#087F5D; --c-ind:#C42B2E; --c-soft:#CDE9F0;
-  --tb-h:72px; --gut:clamp(16px,4vw,56px);
-  color-scheme:light;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --ink:#EEF1F7; --ink-2:#C4C9DD; --paper:#1D2040; --board:#14162A;
-    --rule:#2C3058; --done:#34F5B5; --hold:#B69CF5; --urgent:#FF6B6E;
-    --muted:#9AA1BE; --focus:#00B7D4; --stripe:#22264A;
-    --hold-bg:#2A2350; --hold-ink:#C9B5FF; --focus-bg:#0F3246; --focus-ink:#7FE3F5;
-    --done-bg:#10362F; --urgent-bg:#3B1E2A;
-    --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 30px rgba(0,0,0,.35);
-    --overlay:rgba(8,9,20,.72); --pattern:rgba(0,183,212,.07);
-    --field-bg:#171A31; --field-line:#686C87; --field-hover:#80849D;
-    --ring:rgba(0,183,212,.3); --btn-soft:#262A4F; --btn-soft-hover:#30355F;
-    --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#EEF1F7; --on-cta-hover:#14162A;
-    --bm-1:#EEF1F7; --bm-2:#34F5B5; --bm-dot:#00B7D4;
-    --orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg);
-    --grad-line:linear-gradient(to left,#34F5B5,#00B7D4 55%,#7B55CC);
-    --grad-text:linear-gradient(90deg,#34F5B5,#00B7D4 55%,#7B55CC);
-    --aura-1:rgba(123,85,204,.32); --aura-2:rgba(52,245,181,.14); --orbit-line:rgba(0,183,212,.2);
-    --c-exec:#00B7D4; --c-admin:#B69CF5; --c-ops:#34F5B5; --c-ind:#FF6B6E; --c-soft:#26405E;
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --ink:#EEF1F7; --ink-2:#C4C9DD; --paper:#1D2040; --board:#14162A;
-  --rule:#2C3058; --done:#34F5B5; --hold:#B69CF5; --urgent:#FF6B6E;
-  --muted:#9AA1BE; --focus:#00B7D4; --stripe:#22264A;
-  --hold-bg:#2A2350; --hold-ink:#C9B5FF; --focus-bg:#0F3246; --focus-ink:#7FE3F5;
-  --done-bg:#10362F; --urgent-bg:#3B1E2A;
-  --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 30px rgba(0,0,0,.35);
-  --overlay:rgba(8,9,20,.72); --pattern:rgba(0,183,212,.07);
-  --field-bg:#171A31; --field-line:#686C87; --field-hover:#80849D;
-  --ring:rgba(0,183,212,.3); --btn-soft:#262A4F; --btn-soft-hover:#30355F;
-  --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#EEF1F7; --on-cta-hover:#14162A;
-  --bm-1:#EEF1F7; --bm-2:#34F5B5; --bm-dot:#00B7D4;
-  --orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg);
-  --grad-line:linear-gradient(to left,#34F5B5,#00B7D4 55%,#7B55CC);
-  --grad-text:linear-gradient(90deg,#34F5B5,#00B7D4 55%,#7B55CC);
-  --aura-1:rgba(123,85,204,.32); --aura-2:rgba(52,245,181,.14); --orbit-line:rgba(0,183,212,.2);
-  --c-exec:#00B7D4; --c-admin:#B69CF5; --c-ops:#34F5B5; --c-ind:#FF6B6E; --c-soft:#26405E;
-  color-scheme:dark;
-}
+   ألوان الطابع صارت في nasaq-theme.css المشترك؛ هنا تنسيقات هذه الصفحة وحدها. */
 
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -511,6 +445,7 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
 
 @media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
 </style>
+<link rel="stylesheet" href="nasaq-theme.css">
 </head>
 <body>
 <header class="tb" id="tb">
