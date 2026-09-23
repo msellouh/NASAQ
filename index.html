@@ -1395,7 +1395,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .greet-card.ring-big #heroRing .o-core small{font-size:13px}
 .greet-card.ring-big #heroRing .o-tick i{height:calc(var(--ow) + 8px);top:-4px;opacity:.6}
 .greet-card.ring-big #heroRing .o-tick em{display:block;position:absolute;left:50%;top:calc(var(--ow) + 10px);font:500 12px/1 var(--font-body);font-style:normal;color:#C4C9DD;white-space:nowrap}
-.greet-card.ring-big #heroRing .o-gap{display:block;position:absolute;left:50%;top:-24px;transform:translateX(-50%);font-size:12px;color:#9AA1BE}
+.greet-card.ring-big #heroRing .o-gap{display:none;position:absolute;left:50%;top:-24px;transform:translateX(-50%);font-size:12px;color:#9AA1BE}
 @media (max-width:1199px){ .greet-card.ring-big #heroRing{position:relative;left:auto;top:auto;transform:none} }
 /* ---- الحلقة الكبيرة تسكن في المعين الذهبي وتنبثق منه ----
    الحركة كلها «خط زمني واحد» (P من ٠ إلى ١) يرسمه JS إطارًا بإطار — مثل timeline في GSAP:
@@ -1412,6 +1412,14 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .greet-card.ring-big #heroRing .o-min{display:block;position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;
   background:#F4FFFB;box-shadow:0 0 8px 2px rgba(52,245,181,.8),0 0 20px 6px rgba(0,183,212,.35);opacity:0;pointer-events:none;will-change:transform,opacity}
 .greet-card.ring-big #heroRing.settled .o-min{transition:transform 1s linear}
+/* اسم متقارب مع جاره يُنقل خارج الحلقة */
+.greet-card.ring-big #heroRing .o-tick.out em{top:-24px}
+/* دخول وقت الصلاة: الاسم يتوهّج ذهبيًا، والعلامة معه */
+.greet-card.ring-big #heroRing .o-tick.now em{color:#FFE9A8;animation:prayerGlow 2.6s ease-in-out infinite}
+.greet-card.ring-big #heroRing .o-tick.now i{background:#D6A84F;box-shadow:0 0 10px rgba(214,168,79,.8)}
+@keyframes prayerGlow{0%,100%{text-shadow:0 1px 3px rgba(8,9,20,.7),0 0 8px rgba(214,168,79,.35)} 50%{text-shadow:0 1px 3px rgba(8,9,20,.7),0 0 16px rgba(255,233,168,.95),0 0 30px rgba(214,168,79,.55)}}
+:root[data-palette="nasaq360"] .greet-card.ring-big #heroRing.rest.prayer-now .o-now b{animation-duration:1.4s}
+@media (prefers-reduced-motion:reduce){ .greet-card.ring-big #heroRing .o-tick.now em{animation:none;text-shadow:0 0 12px rgba(255,233,168,.9)} }
 .greet-card.ring-big #heroRing .o-seed{display:block;position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;
   border:0;border-radius:50%;background:transparent;cursor:pointer;z-index:3;padding:0;-webkit-tap-highlight-color:transparent}
 .greet-card.ring-big #heroRing.open .o-seed{width:46%;height:46%;margin:0;transform:translate(-50%,-50%)}
@@ -3369,9 +3377,15 @@ function ringFrame(el, P){
     di.style.transform = 'scaleY(' + eBack(v).toFixed(3) + ')';
   });
   /* ٣ج. عقرب الدقائق يولد بعد اكتمال الميناء، بنبضة صغيرة */
-  const mn = el.querySelector('.o-min'), mv = rz(P, .6, .78);
-  if(mn){ mn.style.opacity = eOut(mv).toFixed(3);
-    mn.style.transform = 'rotate(' + ringMinuteAngle().toFixed(2) + 'deg) translateY(' + (-g.rMin).toFixed(2) + 'px) scale(' + eBack(mv).toFixed(3) + ')'; }
+  /* تنطلق من الثانية عشرة مع انطلاق القلم، وتسير على الميناء بالإيقاع نفسه (المنحنى ذاته) حتى
+     تبلغ دقيقتك الآن، فتبدو ظلًّا للقلم في الدائرة الداخلية؛ ثم نبضة صغيرة عند الوصول */
+  const mn = el.querySelector('.o-min');
+  if(mn){
+    const mAng = ringMinuteAngle() % 360, mv = rz(P, .1, .2), land = rz(P, .62, .74);
+    const pop = 1 + .55 * Math.sin(Math.PI * land);
+    mn.style.opacity = eOut(mv).toFixed(3);
+    mn.style.transform = 'rotate(' + (mAng * draw).toFixed(2) + 'deg) translateY(' + (-g.rMin).toFixed(2) + 'px) scale(' + (eOut(mv) * pop).toFixed(3) + ')';
+  }
   /* ٤. القوس يمتلئ بالإنجاز («دوران») بتباطؤ أُسّي */
   const f = eExpo(rz(P, .38, .86)) * pct;
   el.style.setProperty('--p', (f / 100 * RING_ARC) + 'deg');
@@ -3401,7 +3415,7 @@ setInterval(()=>{
   const el = $('heroRing');
   if(!el || ringP < 1 || ringRaf || !el.classList.contains('settled')) return;
   const mn = el.querySelector('.o-min'), g = ringGeo || (ringGeo = ringGeometry(el));
-  if(mn) mn.style.transform = 'rotate(' + ringMinuteAngle().toFixed(2) + 'deg) translateY(' + (-g.rMin).toFixed(2) + 'px) scale(1)';
+  if(mn) mn.style.transform = 'rotate(' + (ringMinuteAngle() % 360).toFixed(2) + 'deg) translateY(' + (-g.rMin).toFixed(2) + 'px) scale(1)';
 }, 1000);
 /* فتح الحلقة من المعين أو طيّها إليه — تبقى ١٥ ثانية بعد اكتمال ظهورها ثم تنطوي */
 function ringOpen(open){
@@ -3421,16 +3435,40 @@ function ringClearInline(el){
   el.classList.remove('open', 'rest', 'settled');
   el.querySelectorAll('.o-now b,.o-head,.o-min,.o-core,.o-gap,.o-tick i,.o-tick em,.o-dial i').forEach(x=>{ x.style.cssText = ''; });
 }
+/* مواقيت اليوم على الحلقة، بالترتيب: الفجر، الشروق، الظهر، العصر، المغرب، العشاء */
+const RING_PRAYERS = [['fajr', 'الفجر'], ['sunrise', 'الشروق'], ['dhuhr', 'الظهر'], ['asr', 'العصر'], ['maghrib', 'المغرب'], ['isha', 'العشاء']];
+/* زاوية على ميناء ١٢ ساعة (الثانية عشرة أعلى) — للحلقة الكبيرة ذات الميناء */
+const ringAnalog = m=>(m / 60 % 12) * 30;
+/* يضع علامات الصلاة: على الميناء (١٢ ساعة) في الحلقة الكبيرة، وعلى قوس اليوم في غيرها.
+   الأسماء المتقاربة (كالشروق والمغرب على الميناء) يُنقل أحدها خارج الحلقة كي لا تتزاحم. */
+function ringPlaceTicks(el, analog){
+  const p = prayerTimes(), list = [];
+  el.querySelectorAll('.o-tick').forEach(t=>{
+    const k = t.dataset.k, ang = analog ? ringAnalog(p[k]) : ringAngle(p[k]);
+    t.style.transform = 'rotate(' + ang.toFixed(2) + 'deg)';
+    t.title = (RING_PRAYERS.find(x=>x[0] === k) || [, ''])[1] + ' ' + ringFmt(p[k]);
+    list.push({t, ang});
+  });
+  list.sort((x, y)=>x.ang - y.ang);
+  list.forEach((o, i)=>{
+    const prev = list[i - 1], out = analog && prev && o.ang - prev.ang < 16 && !prev.t.classList.contains('out');
+    o.t.classList.toggle('out', !!out);
+    const e = o.t.querySelector('em'); if(e) e.style.transform = 'translateX(-50%) rotate(' + (-o.ang).toFixed(2) + 'deg)';
+  });
+  /* دخول وقت الصلاة: يتوهّج اسمها ٢٠ دقيقة، وينبض المعين الساكن أسرع إيذانًا به */
+  const now = prayerNow();
+  el.querySelectorAll('.o-tick').forEach(t=>t.classList.toggle('now', t.dataset.k === now));
+  el.classList.toggle('prayer-now', !!now);
+}
 function ringParts(el){
   if(el.dataset.built) return;
   el.dataset.built = '1';
   const mk = (cls, parent = el)=>{ const e = document.createElement('i'); e.className = cls; parent.appendChild(e); return e; };
   mk('o-fill'); mk('o-glint');
   if(el.classList.contains('ring-clock') && alive.prayer){
-    const p = prayerTimes();
-    Object.keys(PRAYER_NAMES).forEach((k, i)=>{
-      const t = mk('o-tick'), ang = ringAngle(p[k]); t.style.transform = 'rotate(' + ang + 'deg)'; t.style.setProperty('--i', i); t.title = PRAYER_NAMES[k] + ' ' + ringFmt(p[k]); mk('', t);
-      const e = document.createElement('em'); e.textContent = PRAYER_NAMES[k]; e.style.transform = 'translateX(-50%) rotate(' + (-ang) + 'deg)'; t.appendChild(e);
+    RING_PRAYERS.forEach(([k, name], i)=>{
+      const t = mk('o-tick'); t.dataset.k = k; t.style.setProperty('--i', i); mk('', t);
+      const e = document.createElement('em'); e.textContent = name; t.appendChild(e);
     });
     const g = document.createElement('span'); g.className = 'o-gap'; g.textContent = 'هدوء'; el.appendChild(g);
   }
@@ -3466,7 +3504,9 @@ function renderRingClock(){
   document.querySelectorAll('.orbit.clock,.ring-clock').forEach(el=>{
     ringParts(el);
     el.dataset.pct = pct;
-    el.style.setProperty('--a', a + 'deg');
+    const analog = el === hr0 && big;
+    el.style.setProperty('--a', (analog ? ringAnalog(m + new Date().getSeconds() / 60) : a) + 'deg');
+    if(el.classList.contains('ring-clock')) ringPlaceTicks(el, analog);
     el.classList.toggle('quiet', q);
     /* حلقة الواجهة الكبيرة المطويّة: القوس فارغ حتى تُفتح. وأثناء حركة الامتلاء لا نقاطعها */
     /* حلقة الواجهة الكبيرة يرسمها الخط الزمني — لا نقاطع حركتها الجارية */
