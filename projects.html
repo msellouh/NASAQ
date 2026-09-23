@@ -68,10 +68,16 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .orbit::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--orbit);
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));
           mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px))}
-/* حلقة مدار تدور حول الرمز دورانًا هادئًا متصلًا (تتوقف لمن فضّل تقليل الحركة) */
-@keyframes orbitSpin{to{transform:rotate(360deg)}}
-.orbit::before{animation:orbitSpin 24s linear infinite;will-change:transform}
-@media (prefers-reduced-motion:reduce){ .orbit::before{animation:none} }
+/* حلقة مدار ثابتة (كما في اللوح حيث هي ساعة اليوم)، تحييها لمعة تسري على القوس كل ٧ ثوانٍ */
+@property --g{syntax:'<angle>';inherits:false;initial-value:-30deg}
+@keyframes orbitGlint{0%{--g:-30deg} 38%{--g:360deg} 100%{--g:360deg}}
+.orbit::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;mix-blend-mode:screen;
+  background:conic-gradient(from 15deg,transparent calc(var(--g) - 26deg),rgba(255,255,255,.85) var(--g),transparent calc(var(--g) + 4deg));
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px)),conic-gradient(from 15deg,#000 330deg,transparent 0);
+  -webkit-mask-composite:source-in;
+          mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px)) intersect,conic-gradient(from 15deg,#000 330deg,transparent 0);
+  animation:orbitGlint 7s cubic-bezier(.45,0,.2,1) infinite}
+@media (prefers-reduced-motion:reduce){ .orbit::after{animation:none;display:none} }
 .brand-mark{width:28px;height:28px}
 
 .brand-name{font-family:var(--font-head);font-weight:800;font-size:24px;color:var(--ink);line-height:1}

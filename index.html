@@ -1342,10 +1342,47 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));
           mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px))}
 :root[data-palette="nasaq360"] .orbit .brand-mark{width:34px;height:34px}
-/* حلقة مدار تدور حول الرمز دورانًا هادئًا متصلًا (تتوقف لمن فضّل تقليل الحركة) */
-@keyframes orbitSpin{to{transform:rotate(360deg)}}
-:root[data-palette="nasaq360"] .orbit::before{animation:orbitSpin 24s linear infinite;will-change:transform}
-@media (prefers-reduced-motion:reduce){ :root[data-palette="nasaq360"] .orbit::before{animation:none} }
+/* ---------- الحلقة ساعة اليوم ----------
+   ثابتة لا تدور: الفجوة أعلاها = ساعات الهدوء، والقوس = ساعات العمل. الامتلاء = إنجاز مهام اليوم،
+   والمعين = الساعة الآن (رمادي في الهدوء). الحياة من لمعة تسري على الممتلئ كل ٧ ثوانٍ ثم تسكن.
+   حيث لا بيانات (شاشة الدخول) تبقى الحلقة زينة ثابتة بلمعة على القوس كاملًا. */
+@property --p{syntax:'<angle>';inherits:true;initial-value:330deg}
+@property --g{syntax:'<angle>';inherits:false;initial-value:-30deg}
+@keyframes orbitGlint{0%{--g:-30deg} 38%{--g:360deg} 100%{--g:360deg}}
+:root[data-palette="nasaq360"] :is(.orbit,.ring-clock){--ow:3.5px}
+:root[data-palette="nasaq360"] :is(.orbit,.ring-clock) :is(.o-fill,.o-glint),
+:root[data-palette="nasaq360"] .orbit:not(.clock)::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--ow)),#000 calc(100% - var(--ow) + .5px)),conic-gradient(from 15deg,#000 var(--p),transparent 0);
+  -webkit-mask-composite:source-in;
+          mask:radial-gradient(farthest-side,transparent calc(100% - var(--ow)),#000 calc(100% - var(--ow) + .5px)) intersect,conic-gradient(from 15deg,#000 var(--p),transparent 0)}
+:root[data-palette="nasaq360"] :is(.orbit,.ring-clock) .o-fill{background:var(--orbit);transition:--p .9s cubic-bezier(.2,.8,.2,1)}
+:root[data-palette="nasaq360"] :is(.orbit,.ring-clock) .o-glint,
+:root[data-palette="nasaq360"] .orbit:not(.clock)::after{mix-blend-mode:screen;
+  background:conic-gradient(from 15deg,transparent calc(var(--g) - 26deg),rgba(255,255,255,.85) var(--g),transparent calc(var(--g) + 4deg));
+  animation:orbitGlint 7s cubic-bezier(.45,0,.2,1) infinite}
+:root[data-palette="nasaq360"] :is(.orbit.clock,.ring-clock)::before{opacity:.22}
+:root[data-palette="nasaq360"] :is(.orbit,.ring-clock) .o-now{position:absolute;inset:0;pointer-events:none;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+:root[data-palette="nasaq360"] :is(.orbit,.ring-clock) .o-now b{position:absolute;left:50%;top:calc(var(--ow) / 2);width:var(--dz,7px);height:var(--dz,7px);
+  transform:translate(-50%,-50%) rotate(45deg);background:#D6A84F;border-radius:1px;box-shadow:0 0 0 1.5px var(--dz-ring,var(--board)),0 0 8px rgba(214,168,79,.55)}
+:root[data-palette="nasaq360"] :is(.orbit,.ring-clock).quiet .o-now b{background:#9AA1BE;box-shadow:0 0 0 1.5px var(--dz-ring,var(--board))}
+:root[data-palette="nasaq360"] .ring-clock .o-tick{position:absolute;inset:0;pointer-events:none}
+:root[data-palette="nasaq360"] .ring-clock .o-tick i{position:absolute;left:50%;top:-3px;width:2px;height:calc(var(--ow) + 6px);margin-left:-1px;border-radius:2px;background:currentColor;opacity:.5}
+@media (prefers-reduced-motion:reduce){
+  :root[data-palette="nasaq360"] :is(.orbit,.ring-clock) :is(.o-fill,.o-now){transition:none}
+  :root[data-palette="nasaq360"] :is(.orbit,.ring-clock) .o-glint,:root[data-palette="nasaq360"] .orbit:not(.clock)::after{animation:none;display:none}
+}
+/* حلقة الواجهة الكبيرة: بجانب «لمحة اليوم»، في جهة النص لا فوق الصورة */
+.hero-glance{display:contents}
+.ring-clock{display:none}
+:root[data-palette="nasaq360"][data-tab="board"] .hero-glance{display:flex;align-items:center;gap:22px;margin-top:14px;flex-wrap:wrap}
+:root[data-palette="nasaq360"][data-tab="board"] .hero-glance .hero-meta{margin-top:0;flex:1;min-width:220px}
+:root[data-palette="nasaq360"][data-tab="board"] .ring-clock{display:block;position:relative;flex:none;width:118px;height:118px;border-radius:50%;--ow:6px;--dz:11px;--dz-ring:#080914}
+:root[data-palette="nasaq360"] .ring-clock::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--orbit);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--ow)),#000 calc(100% - var(--ow) + .5px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - var(--ow)),#000 calc(100% - var(--ow) + .5px))}
+.ring-clock .o-core{position:absolute;inset:18%;display:grid;place-items:center;align-content:center;gap:2px;text-align:center}
+.ring-clock .o-core b{font:800 22px/1 Alexandria,sans-serif;direction:ltr}
+.ring-clock .o-core small{font-size:11.5px;opacity:.75}
 :root[data-palette="nasaq360"] .auth-brand .orbit{width:60px;height:60px}
 :root[data-palette="nasaq360"] .auth-brand .orbit .brand-mark{width:38px;height:38px}
 :root[data-palette="nasaq360"] :is(.brand-name,.auth-brand h2)::after{content:"360";display:inline-block;direction:ltr;
@@ -1818,7 +1855,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <div class="app">
 <aside class="sidenav" aria-label="التنقل الرئيسي">
   <a class="sidenav-brand" id="brandHome" href="#today" aria-label="نَسَق — الصفحة الرئيسية" title="الصفحة الرئيسية">
-    <span class="orbit"><svg class="brand-mark" viewBox="34 36 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><use href="#nasaqMark"/></svg></span>
+    <span class="orbit clock"><svg class="brand-mark" viewBox="34 36 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><use href="#nasaqMark"/></svg></span>
     <div class="sidenav-brand-text">
       <span class="brand-name">نَسَق</span>
       <span class="brand-latin">NASAQ</span>
@@ -1878,7 +1915,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <p class="greet-tagline">لكل شيء مكان، ولكل يوم نَسَق.</p>
     <div class="greet-date"><span id="weekday">—</span>، <span id="date">—</span><span class="greet-hijri" id="hijriDate" hidden></span></div>
     <!-- لمحة اليوم: تظهر في واجهة «360» الكاملة فقط -->
-    <div class="hero-meta" id="heroMeta"></div>
+    <div class="hero-glance"><div class="ring-clock" id="heroRing" role="img"></div><div class="hero-meta" id="heroMeta"></div></div>
     <button class="plan-day" id="planDayBtn" type="button">☀️ خطّط يومك</button>
   </div>
   <div class="greet-media">
@@ -2062,7 +2099,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="q"><label for="r3">ما أول مهمة غدًا؟</label><input class="field" id="r3" placeholder="أول ما ستبدأ به غدًا…"></div>
     </div>
     <button class="close-day" id="newDay" type="button">
-      <span class="orbit"><svg class="brand-mark close-mark" viewBox="34 36 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><use href="#nasaqMark"/></svg></span>
+      <span class="orbit clock"><svg class="brand-mark close-mark" viewBox="34 36 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><use href="#nasaqMark"/></svg></span>
       <span class="close-day-text"><b>أغلق اليوم</b><small>وابدأ يومًا جديدًا على نَسَق</small></span>
     </button>
   </section>
@@ -2403,6 +2440,7 @@ function applyPalette(p){
   syncThemeColor();
   try{ topbarUpdate(); heroScroll(); }catch(e){}   /* «نَسَق 360» يبدّل الشريط الجانبي إلى علوي */
   try{ heroVisual = {ctx:'', kind:'', url:''}; showPhoto(); }catch(e){}   /* مشهد الواجهة بألوان الطابع الجديد */
+  try{ renderRingClock(); }catch(e){}   /* الحلقة وأيقونة التبويب في «مَدار» وحده */
 }
 applyPalette(palette);
 document.querySelectorAll('#setPalette button').forEach(b=>{
@@ -3167,8 +3205,92 @@ function renderSideToday(){
     if(staleWaits) chip(AR(staleWaits) + ' بانتظار رد تحتاج متابعة', 'late');
     if(first){ const p = document.createElement('p'); p.className = 'hm-pri'; const b = document.createElement('b'); b.textContent = 'أولويتك الأولى'; p.append(b, document.createTextNode(first)); hm.appendChild(p); }
   }
+  try{ renderRingClock(); }catch(e){}
 }
 document.querySelectorAll('.pri .field').forEach(f=>f.addEventListener('input', renderSideToday));
+
+/* ---------- الحلقة ساعة اليوم (طابع «مَدار») ----------
+   القوس ٣٣٠° = ساعات العمل (من نهاية الهدوء إلى بدايته، من الإعدادات)، والفجوة ٣٠° أعلاها = الهدوء.
+   الامتلاء = المنجز من مهام اليوم، والمعين = الآن، والعلامات = مواقيت الصلاة في غزة.
+   أرقام الحلقة إنجليزية (40%، 2:05) بقرار المستخدم. تظهر: حول الشعار في الشريط العلوي،
+   وفي الواجهة الكبيرة، وفي «ختام اليوم»، وفي أيقونة التبويب. */
+const RING_ARC0 = 15, RING_ARC = 330;
+const FAV_STATIC = (document.querySelector('link[rel="icon"]') || {}).href || 'icons/favicon-32.png';
+function ringAngle(m){
+  const qf = hmToMin(alive.quietFrom || '20:00'), qt = hmToMin(alive.quietTo || '07:00');
+  const work = ((qf - qt) % 1440 + 1440) % 1440 || 1440, quiet = 1440 - work;
+  const k = ((m - qt) % 1440 + 1440) % 1440;
+  if(k < work) return RING_ARC0 + k / work * RING_ARC;
+  return RING_ARC0 + RING_ARC + (quiet ? (k - work) / quiet * (360 - RING_ARC) : 0);
+}
+const ringFmt = m=>{ const h = Math.floor(m / 60) % 24, mm = m % 60; return (h % 12 || 12) + ':' + String(mm).padStart(2, '0') + (h < 12 ? ' ص' : ' م'); };
+function ringNextPrayer(m){
+  if(!alive.prayer) return '';
+  const p = prayerTimes(), list = Object.keys(PRAYER_NAMES).map(k=>[PRAYER_NAMES[k], p[k]]).sort((a, b)=>a[1] - b[1]);
+  const nx = list.find(x=>x[1] > m) || list[0];
+  const left = ((nx[1] - m) % 1440 + 1440) % 1440, h = Math.floor(left / 60), mm = left % 60;
+  return nx[0] + ' بعد ' + (h ? h + ':' + String(mm).padStart(2, '0') : mm + ' دقيقة');
+}
+function ringParts(el){
+  if(el.dataset.built) return;
+  el.dataset.built = '1';
+  const mk = (cls, parent = el)=>{ const e = document.createElement('i'); e.className = cls; parent.appendChild(e); return e; };
+  mk('o-fill'); mk('o-glint');
+  if(el.classList.contains('ring-clock') && alive.prayer){
+    const p = prayerTimes();
+    Object.keys(PRAYER_NAMES).forEach(k=>{ const t = mk('o-tick'); t.style.transform = 'rotate(' + ringAngle(p[k]) + 'deg)'; t.title = PRAYER_NAMES[k] + ' ' + ringFmt(p[k]); mk('', t); });
+  }
+  const now = mk('o-now'); now.appendChild(document.createElement('b'));
+  if(el.classList.contains('ring-clock')){
+    const c = document.createElement('div'); c.className = 'o-core';
+    c.innerHTML = '<b></b><small></small>'; el.appendChild(c);
+  }
+}
+function renderRingClock(){
+  const on = document.documentElement.getAttribute('data-palette') === 'nasaq360';
+  const fav = document.querySelector('link[rel="icon"]');
+  if(!on){ if(fav && fav.href !== FAV_STATIC) fav.href = FAV_STATIC; return; }
+  const done = tasks.filter(t=>t.done).length, total = tasks.length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+  const m = nowMin(), a = ringAngle(m), q = inQuietHours();
+  document.querySelectorAll('.orbit.clock,.ring-clock').forEach(el=>{
+    ringParts(el);
+    el.style.setProperty('--p', (pct / 100 * RING_ARC) + 'deg');
+    el.classList.toggle('quiet', q);
+    const n = el.querySelector('.o-now'); if(n) n.style.transform = 'rotate(' + a + 'deg)';
+    const c = el.querySelector('.o-core');
+    if(c){ c.querySelector('b').textContent = pct + '%'; c.querySelector('small').textContent = q ? 'هدوء' : ringFmt(m); }
+  });
+  const nx = ringNextPrayer(m);
+  const line = (total ? pct + '% من مهامك' : 'لا مهام بعد') + ' · ' + ringFmt(m) + (nx ? ' · ' + nx : '');
+  const brand = $('brandHome'); if(brand) brand.title = line;
+  const hr = $('heroRing'); if(hr) hr.setAttribute('aria-label', line);
+  if(fav) try{ fav.href = ringIcon(pct, a, q); }catch(e){}
+}
+/* أيقونة التبويب: القوس والمعين والنسبة على قماش ٣٢×٣٢ */
+function ringIcon(pct, a, q){
+  const s = 32, cv = document.createElement('canvas'); cv.width = cv.height = s;
+  const c = cv.getContext('2d'), cx = s / 2, w = 3.6, R = s / 2 - w / 2 - 1;
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+    (!document.documentElement.hasAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
+  const rad = x=>(x - 90) * Math.PI / 180;
+  c.fillStyle = dark ? '#14162A' : '#FFFFFF'; c.beginPath(); c.arc(cx, cx, s / 2, 0, Math.PI * 2); c.fill();
+  c.lineCap = 'round'; c.lineWidth = w;
+  c.strokeStyle = dark ? 'rgba(238,241,247,.18)' : 'rgba(20,22,42,.12)';
+  c.beginPath(); c.arc(cx, cx, R, rad(RING_ARC0), rad(RING_ARC0 + RING_ARC)); c.stroke();
+  if(pct > 0){
+    const L = dark ? ['#34F5B5', '#00B7D4', '#7B55CC'] : ['#0E9E74', '#0086A8', '#6A43B8'];
+    let g = L[1];
+    if(c.createConicGradient){ g = c.createConicGradient(rad(RING_ARC0), cx, cx); g.addColorStop(0, L[0]); g.addColorStop(150 / 360, L[1]); g.addColorStop(300 / 360, L[2]); g.addColorStop(1, L[2]); }
+    c.strokeStyle = g; c.beginPath(); c.arc(cx, cx, R, rad(RING_ARC0), rad(RING_ARC0 + pct / 100 * RING_ARC)); c.stroke();
+  }
+  const x = cx + R * Math.cos(rad(a)), y = cx + R * Math.sin(rad(a)), k = 3.4;
+  c.save(); c.translate(x, y); c.rotate(Math.PI / 4); c.fillStyle = q ? '#9AA1BE' : '#D6A84F'; c.fillRect(-k / 2, -k / 2, k, k); c.restore();
+  c.fillStyle = dark ? '#EEF1F7' : '#14162A'; c.font = '700 ' + (pct === 100 ? 8.5 : 10) + 'px Alexandria, sans-serif';
+  c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(String(pct), cx, cx + 1);
+  return cv.toDataURL('image/png');
+}
+
 
 /* ---------- شريط الأسبوع: الأيام السبعة القادمة وعدد ما يستحق في كل يوم ---------- */
 const WS_DOW = ['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
@@ -4672,6 +4794,7 @@ renderNotifs();
 /* ---------- المحرّك: يفحص كل ٣٠ ثانية ما يستحق التنبيه ---------- */
 function aliveTick(){
   const now = new Date(), n = nowMin(now);
+  try{ renderRingClock(); }catch(e){}   /* المعين يتقدّم مع الوقت */
   /* مواعيد تقويم Google: قبل ١٠ دقائق — تتجاوز الهدوء */
   try{
     gcalEvents.forEach(ev=>{
