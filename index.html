@@ -1383,6 +1383,62 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .ring-clock .o-core{position:absolute;inset:18%;display:grid;place-items:center;align-content:center;gap:2px;text-align:center}
 .ring-clock .o-core b{font:800 22px/1 Alexandria,sans-serif;direction:ltr}
 .ring-clock .o-core small{font-size:11.5px;opacity:.75}
+.ring-clock .o-tick em,.ring-clock .o-gap{display:none}
+/* الواجهة الكبيرة (عرض ١٢٠٠px فأكثر): الحلقة كبيرة في منتصف الصورة مرفوعة نحو أعلاها، وخطها رفيع.
+   تحت ذلك تعود متوسطة بجانب «لمحة اليوم» لأن المنتصف يضيق ويزاحم العنوان. */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card.ring-big #heroRing{position:absolute;left:50%;top:34%;z-index:2;
+  width:min(40vh,360px);height:min(40vh,360px);transform:translate(-50%,-50%);--ow:5px;--dz:13px;color:#EEF1F7}
+.greet-card.ring-big #heroRing .o-core{inset:26%;gap:6px}
+/* فوق صورة فاتحة: ظل خفيف يُبقي الأرقام وأسماء الصلوات مقروءة */
+.greet-card.ring-big #heroRing :is(.o-core,.o-tick em,.o-gap){text-shadow:0 1px 3px rgba(8,9,20,.7),0 0 12px rgba(8,9,20,.45)}
+.greet-card.ring-big #heroRing .o-core b{font-size:40px;letter-spacing:-.5px}
+.greet-card.ring-big #heroRing .o-core small{font-size:13px}
+.greet-card.ring-big #heroRing .o-tick i{height:calc(var(--ow) + 8px);top:-4px;opacity:.6}
+.greet-card.ring-big #heroRing .o-tick em{display:block;position:absolute;left:50%;top:calc(var(--ow) + 10px);font:500 12px/1 var(--font-body);font-style:normal;color:#C4C9DD;white-space:nowrap}
+.greet-card.ring-big #heroRing .o-gap{display:block;position:absolute;left:50%;top:-24px;transform:translateX(-50%);font-size:12px;color:#9AA1BE}
+@media (max-width:1199px){ .greet-card.ring-big #heroRing{position:relative;left:auto;top:auto;transform:none} }
+/* ---- الحلقة الكبيرة تسكن في المعين الذهبي وتنبثق منه ----
+   الحركة كلها «خط زمني واحد» (P من ٠ إلى ١) يرسمه JS إطارًا بإطار — مثل timeline في GSAP:
+   فتُعكس بدقة عند الطيّ، وتُقاطَع في أي لحظة فترجع من حيث وصلت. هنا الحالات الثابتة فقط. */
+.ring-clock .o-seed,.ring-clock .o-head,.ring-clock .o-dial{display:none}
+/* ميناء الساعة: ١٢ تقسيمًا متساوية (كل ٣٠°) داخل الحلقة الكبيرة، أبعد من أسماء الصلوات كي لا تتزاحم */
+.greet-card.ring-big #heroRing .o-dial{display:block;position:absolute;inset:0;pointer-events:none}
+.greet-card.ring-big #heroRing .o-dial i{position:absolute;left:50%;top:calc(var(--ow) + 30px);width:1.5px;height:7px;margin-left:-.75px;border-radius:2px;
+  background:#EEF1F7;opacity:0;transform-origin:50% 0;will-change:transform,opacity}
+.greet-card.ring-big #heroRing .o-dial.major i{width:2px;height:12px;margin-left:-1px}
+/* عقرب الدقائق: نقطة متوهجة على الميناء الداخلي (٦° في الدقيقة)، منفصلة عن المعين الذي يبقى
+   «موضعك من يومك» على المدار الخارجي — فلكل دائرة معنى واحد لا يختلط بالآخر. */
+.ring-clock .o-min{display:none}
+.greet-card.ring-big #heroRing .o-min{display:block;position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;
+  background:#F4FFFB;box-shadow:0 0 8px 2px rgba(52,245,181,.8),0 0 20px 6px rgba(0,183,212,.35);opacity:0;pointer-events:none;will-change:transform,opacity}
+.greet-card.ring-big #heroRing.settled .o-min{transition:transform 1s linear}
+.greet-card.ring-big #heroRing .o-seed{display:block;position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;
+  border:0;border-radius:50%;background:transparent;cursor:pointer;z-index:3;padding:0;-webkit-tap-highlight-color:transparent}
+.greet-card.ring-big #heroRing.open .o-seed{width:46%;height:46%;margin:0;transform:translate(-50%,-50%)}
+.greet-card.ring-big #heroRing .o-seed:focus-visible{outline:2px solid #7FE3F5;outline-offset:4px}
+.greet-card.ring-big #heroRing .o-now{transform:none!important}
+.greet-card.ring-big #heroRing .o-now b{top:50%;will-change:transform}
+.greet-card.ring-big #heroRing .o-now b::after{content:"";position:absolute;inset:-1px;border:1.5px solid #D6A84F;border-radius:2px;
+  opacity:var(--pingO,0);transform:scale(var(--pingS,1));pointer-events:none}
+/* رأس القلم: نقطة مضيئة تقود رسم المدار */
+.greet-card.ring-big #heroRing .o-head{display:block;position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;
+  background:#F4FFFB;box-shadow:0 0 10px 3px rgba(52,245,181,.75),0 0 26px 8px rgba(0,183,212,.35);opacity:0;pointer-events:none;will-change:transform,opacity}
+.greet-card.ring-big #heroRing :is(.o-core,.o-gap,.o-tick i,.o-tick em){will-change:transform,opacity}
+/* اللمعة لا تبدأ إلا بعد اكتمال الظهور */
+.greet-card.ring-big #heroRing .o-glint{opacity:0;transition:opacity .6s ease}
+.greet-card.ring-big #heroRing.settled .o-glint{opacity:1}
+/* المعين الساكن ينبض كنجم — فقط وهو مطويّ تمامًا */
+:root[data-palette="nasaq360"] .greet-card.ring-big #heroRing.rest .o-now b{background:#D6A84F;animation:seedPulse 3.2s ease-in-out infinite}
+@keyframes seedPulse{0%,100%{box-shadow:0 0 0 1.5px #080914,0 0 10px rgba(214,168,79,.45)} 50%{box-shadow:0 0 0 1.5px #080914,0 0 26px 6px rgba(214,168,79,.8)}}
+@media (prefers-reduced-motion:reduce){ .greet-card.ring-big #heroRing.rest .o-now b{animation:none} }
+/* نهايات دائرية لقوس حلقة الواجهة: القناع قوسٌ مرسوم بـ SVG (stroke-linecap:round) يُحسب في renderRingClock،
+   والتدرّج بلا فجوة شفافة كي لا تنقطع النهاية الدائرية عند بداية القوس. الواجهة ليلية دائمًا فألوانه ألوان الليل. */
+:root[data-palette="nasaq360"] .ring-clock.caps{--ring-grad:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 340deg,#34F5B5 360deg)}
+:root[data-palette="nasaq360"] .ring-clock.caps::before{background:var(--ring-grad);opacity:.2;
+  -webkit-mask:var(--m-track) center/100% 100% no-repeat;mask:var(--m-track) center/100% 100% no-repeat}
+:root[data-palette="nasaq360"] .ring-clock.caps .o-fill{background:var(--ring-grad)}
+:root[data-palette="nasaq360"] .ring-clock.caps :is(.o-fill,.o-glint){-webkit-mask:var(--m-fill) center/100% 100% no-repeat;-webkit-mask-composite:source-over;
+  mask:var(--m-fill) center/100% 100% no-repeat}
 :root[data-palette="nasaq360"] .auth-brand .orbit{width:60px;height:60px}
 :root[data-palette="nasaq360"] .auth-brand .orbit .brand-mark{width:38px;height:38px}
 :root[data-palette="nasaq360"] :is(.brand-name,.auth-brand h2)::after{content:"360";display:inline-block;direction:ltr;
@@ -3215,6 +3271,7 @@ document.querySelectorAll('.pri .field').forEach(f=>f.addEventListener('input', 
    أرقام الحلقة إنجليزية (40%، 2:05) بقرار المستخدم. تظهر: حول الشعار في الشريط العلوي،
    وفي الواجهة الكبيرة، وفي «ختام اليوم»، وفي أيقونة التبويب. */
 const RING_ARC0 = 15, RING_ARC = 330;
+matchMedia('(min-width:1200px)').addEventListener('change', ()=>{ try{ heroVisual = {ctx:'', kind:'', url:''}; showPhoto(); }catch(e){} });
 const FAV_STATIC = (document.querySelector('link[rel="icon"]') || {}).href || 'icons/favicon-32.png';
 function ringAngle(m){
   const qf = hmToMin(alive.quietFrom || '20:00'), qt = hmToMin(alive.quietTo || '07:00');
@@ -3224,12 +3281,145 @@ function ringAngle(m){
   return RING_ARC0 + RING_ARC + (quiet ? (k - work) / quiet * (360 - RING_ARC) : 0);
 }
 const ringFmt = m=>{ const h = Math.floor(m / 60) % 24, mm = m % 60; return (h % 12 || 12) + ':' + String(mm).padStart(2, '0') + (h < 12 ? ' ص' : ' م'); };
+const ringMinuteAngle = (d = new Date())=>(d.getHours() * 60 + d.getMinutes() + d.getSeconds() / 60) * 6;
 function ringNextPrayer(m){
   if(!alive.prayer) return '';
   const p = prayerTimes(), list = Object.keys(PRAYER_NAMES).map(k=>[PRAYER_NAMES[k], p[k]]).sort((a, b)=>a[1] - b[1]);
   const nx = list.find(x=>x[1] > m) || list[0];
   const left = ((nx[1] - m) % 1440 + 1440) % 1440, h = Math.floor(left / 60), mm = left % 60;
   return nx[0] + ' بعد ' + (h ? h + ':' + String(mm).padStart(2, '0') : mm + ' دقيقة');
+}
+/* الحلقة الكبيرة: طابع «مَدار» وشاشة عريضة — مع المشهد ومع صورك */
+function ringBigWanted(){
+  return document.documentElement.getAttribute('data-palette') === 'nasaq360' && matchMedia('(min-width:1200px)').matches;
+}
+/* قناع قوس بنهايات دائرية على شبكة ١٠٠×١٠٠ — الزوايا باتجاه عقارب الساعة من الأعلى */
+function ringArcMask(a0, a1, w){
+  if(a1 - a0 < .5) return 'linear-gradient(transparent,transparent)';
+  const r = 50 - w / 2 - .6, pt = t=>{ const x = t * Math.PI / 180; return (50 + r * Math.sin(x)).toFixed(2) + ' ' + (50 - r * Math.cos(x)).toFixed(2); };
+  const d = 'M' + pt(a0) + ' A' + r.toFixed(2) + ' ' + r.toFixed(2) + ' 0 ' + (a1 - a0 > 180 ? 1 : 0) + ' 1 ' + pt(a1);
+  return 'url("data:image/svg+xml,' + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='" + d + "' fill='none' stroke='#000' stroke-width='" + w.toFixed(2) + "' stroke-linecap='round'/></svg>") + '")';
+}
+/* امتلاء القوس: --p للحلقات العادية، وقناع SVG بنهايات دائرية لحلقة الواجهة */
+function ringSetFill(el, pct){
+  el.style.setProperty('--p', (pct / 100 * RING_ARC) + 'deg');
+  if(el.classList.contains('caps') && el.offsetWidth){
+    const w = parseFloat(getComputedStyle(el).getPropertyValue('--ow')) / el.offsetWidth * 100 || 2;
+    el.style.setProperty('--m-track', ringArcMask(RING_ARC0, RING_ARC0 + RING_ARC, w));
+    el.style.setProperty('--m-fill', ringArcMask(RING_ARC0, RING_ARC0 + pct / 100 * RING_ARC, w));
+  }
+}
+/* ---------- حركة «الانبثاق من المعين» — خط زمني واحد قابل للعكس والمقاطعة ----------
+   مبادئ الحركة المعتمدة (Material Motion وApple HIG ومرجع MOTION-SPEC):
+   • تباطؤ عند الوصول (ease-out/expo) وتسارع عند المغادرة، والطيّ أسرع من الظهور (~٦٥٪).
+   • نابض (spring) خفيف لاستقرار المعين، وترقّب (anticipation) بانكماش قصير قبل الانطلاق.
+   • المعين يسير في مسار حلزوني لا في خط مستقيم، ورأس مضيء يرسم المدار، وكل علامة صلاة
+     تظهر لحظة يمرّ بها الرأس — فالتتابع نابع من الحركة نفسها لا من تأخيرات عشوائية.
+   • الرقم يعدّ من ٠ إلى النسبة، والنص يظهر بإزاحة صغيرة وضباب يتلاشى.
+   • قابلة للمقاطعة: النقر أثناء الحركة يعكسها من موضعها. واحترام «تقليل الحركة». */
+const RING_OPEN_MS = 1500, RING_CLOSE_MS = 980, RING_HOLD_MS = 15000;
+const rz = (x, a, b)=>Math.min(1, Math.max(0, (x - a) / (b - a)));          /* جزء الخط الزمني الخاص بعنصر */
+const eOut = t=>1 - Math.pow(1 - t, 3), eExpo = t=>t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
+const eInOut = t=>t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eBack = t=>{ const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const eSettle = t=>1 + 2.2 * Math.pow(t - 1, 3) + 1.2 * Math.pow(t - 1, 2);   /* تباطؤ بتجاوز خفيف ثم استقرار (back-out لطيف) */
+const mixRGB = (x, y, t)=>'rgb(' + x.map((v, k)=>Math.round(v + (y[k] - v) * t)).join(',') + ')';
+let ringP = 0, ringDir = 0, ringRaf = 0, ringOpenTimer = 0, ringGeo = null;
+function ringGeometry(el){
+  const size = el.offsetWidth || 1, ow = parseFloat(getComputedStyle(el).getPropertyValue('--ow')) || 5;
+  const w = ow / size * 100, R = size / 2 - ow / 2 - size * .006;
+  return {size, w, R, rMin:size / 2 - ow - 36, dials:[...el.querySelectorAll('.o-dial i')], ticks:[...el.querySelectorAll('.o-tick')].map(t=>({i:t.querySelector('i'), em:t.querySelector('em'),
+    ang:parseFloat((t.style.transform.match(/-?[\d.]+/) || [0])[0])}))};
+}
+/* يرسم الحلقة كلها عند قيمة P — الطيّ هو نفس الدالة بقيم P متناقصة */
+function ringFrame(el, P){
+  const g = ringGeo || (ringGeo = ringGeometry(el));
+  const pct = +el.dataset.pct || 0, a = parseFloat(el.style.getPropertyValue('--a')) || 0;
+  /* ١. ترقّب: انكماش قصير للمعين قبل الانطلاق */
+  const pre = rz(P, 0, .07), squeeze = 1 - .18 * Math.sin(pre * Math.PI);
+  /* ٢. المعين: حلزون من المركز إلى موضع الساعة، ونابض عند الوصول */
+  const u = rz(P, .06, .54), rr = g.R * eSettle(u), th = a - 220 * (1 - eOut(u));
+  const size = 20 - 7 * eOut(u), spin = eOut(rz(P, .15, .6));
+  const b = el.querySelector('.o-now b');
+  if(b){
+    b.style.width = b.style.height = size.toFixed(2) + 'px';
+    b.style.transform = 'translate(-50%,-50%) rotate(' + th.toFixed(2) + 'deg) translateY(' + (-rr).toFixed(2) + 'px) rotate(' + (45 - th + th * spin).toFixed(2) + 'deg) scale(' + squeeze.toFixed(3) + ')';
+    /* يبقى ذهبيًا أثناء الطيران، ويبهت إلى الرمادي عند الوصول إن كان الوقت وقت هدوء */
+    b.style.background = el.classList.contains('quiet') ? mixRGB([214, 168, 79], [154, 161, 190], eOut(rz(P, .45, .6))) : '#D6A84F';
+    /* «نبضة» لحظة الوصول: حلقة ماسية تتسع وتتلاشى */
+    const pg = rz(P, .5, .66);
+    b.style.setProperty('--pingS', (1 + 1.8 * eOut(pg)).toFixed(3));
+    b.style.setProperty('--pingO', (pg > 0 && pg < 1 ? .7 * (1 - pg) : 0).toFixed(3));
+  }
+  /* ٣. المدار يُرسم بقلم مضيء من بداية القوس، والعلامات تظهر لحظة مرور القلم بها */
+  const d = rz(P, .12, .64), draw = eInOut(d), head = RING_ARC0 + RING_ARC * draw;
+  el.style.setProperty('--m-track', d > 0 ? ringArcMask(RING_ARC0, RING_ARC0 + Math.max(.6, RING_ARC * draw), g.w) : 'linear-gradient(transparent,transparent)');
+  const hd = el.querySelector('.o-head');
+  if(hd){ hd.style.opacity = (d > 0 && d < 1 ? Math.sin(Math.PI * d) : 0).toFixed(3);
+    hd.style.transform = 'rotate(' + head.toFixed(2) + 'deg) translateY(' + (-g.R).toFixed(2) + 'px)'; }
+  g.ticks.forEach(t=>{
+    const at = .12 + (t.ang - RING_ARC0) / RING_ARC * .52, v = rz(P, at, at + .09), v2 = rz(P, at + .03, at + .14);
+    if(t.i){ t.i.style.opacity = eOut(v).toFixed(3); t.i.style.transform = 'scaleY(' + eBack(v).toFixed(3) + ')'; }
+    if(t.em){ t.em.style.opacity = eOut(v2).toFixed(3); t.em.style.filter = 'blur(' + (4 * (1 - v2)).toFixed(2) + 'px)'; }
+  });
+  /* ٣ب. ميناء الساعة: التقسيمات الاثنتا عشرة تنبت واحدة تلو الأخرى خلف القلم */
+  g.dials.forEach((di, k)=>{
+    const at = .16 + k * .034, v = rz(P, at, at + .1), major = !(k % 3);
+    di.style.opacity = ((major ? .72 : .4) * eOut(v)).toFixed(3);
+    di.style.transform = 'scaleY(' + eBack(v).toFixed(3) + ')';
+  });
+  /* ٣ج. عقرب الدقائق يولد بعد اكتمال الميناء، بنبضة صغيرة */
+  const mn = el.querySelector('.o-min'), mv = rz(P, .6, .78);
+  if(mn){ mn.style.opacity = eOut(mv).toFixed(3);
+    mn.style.transform = 'rotate(' + ringMinuteAngle().toFixed(2) + 'deg) translateY(' + (-g.rMin).toFixed(2) + 'px) scale(' + eBack(mv).toFixed(3) + ')'; }
+  /* ٤. القوس يمتلئ بالإنجاز («دوران») بتباطؤ أُسّي */
+  const f = eExpo(rz(P, .38, .86)) * pct;
+  el.style.setProperty('--p', (f / 100 * RING_ARC) + 'deg');
+  el.style.setProperty('--m-fill', ringArcMask(RING_ARC0, RING_ARC0 + f / 100 * RING_ARC, g.w));
+  /* ٥. النسبة تعدّ صعودًا، والنص يصعد من ضباب خفيف */
+  const c = el.querySelector('.o-core'), ce = eOut(rz(P, .5, .92));
+  if(c){ c.style.opacity = ce.toFixed(3); c.style.transform = 'translateY(' + (12 * (1 - ce)).toFixed(2) + 'px)'; c.style.filter = 'blur(' + (7 * (1 - ce)).toFixed(2) + 'px)';
+    const nb = c.querySelector('b'); if(nb) nb.textContent = Math.round(pct * eOut(rz(P, .5, .9))) + '%'; }
+  const gp = el.querySelector('.o-gap'); if(gp) gp.style.opacity = eOut(rz(P, .6, .78)).toFixed(3);
+  el.classList.toggle('rest', P <= 0);
+  el.classList.toggle('settled', P >= 1);
+}
+function ringRun(el){
+  cancelAnimationFrame(ringRaf);
+  const calm = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let last = performance.now();
+  const tick = now=>{
+    const dt = Math.min(64, now - last); last = now;
+    ringP = calm ? (ringDir > 0 ? 1 : 0) : Math.min(1, Math.max(0, ringP + ringDir * dt / (ringDir > 0 ? RING_OPEN_MS : RING_CLOSE_MS)));
+    ringFrame(el, ringP);
+    if((ringDir > 0 && ringP < 1) || (ringDir < 0 && ringP > 0)) ringRaf = requestAnimationFrame(tick);
+    else { ringRaf = 0; if(ringDir > 0) ringOpenTimer = setTimeout(()=>ringOpen(false), RING_HOLD_MS); }
+  };
+  ringRaf = requestAnimationFrame(tick);
+}
+setInterval(()=>{
+  const el = $('heroRing');
+  if(!el || ringP < 1 || ringRaf || !el.classList.contains('settled')) return;
+  const mn = el.querySelector('.o-min'), g = ringGeo || (ringGeo = ringGeometry(el));
+  if(mn) mn.style.transform = 'rotate(' + ringMinuteAngle().toFixed(2) + 'deg) translateY(' + (-g.rMin).toFixed(2) + 'px) scale(1)';
+}, 1000);
+/* فتح الحلقة من المعين أو طيّها إليه — تبقى ١٥ ثانية بعد اكتمال ظهورها ثم تنطوي */
+function ringOpen(open){
+  const el = $('heroRing'), hb = $('heroBanner');
+  if(!el || !hb || !hb.classList.contains('ring-big')) return;
+  clearTimeout(ringOpenTimer);
+  ringGeo = ringGeometry(el);
+  ringDir = open ? 1 : -1;
+  el.classList.toggle('open', open);
+  const seed = el.querySelector('.o-seed');
+  if(seed){ seed.setAttribute('aria-expanded', String(open)); seed.setAttribute('aria-label', open ? 'أخفِ ساعة اليوم' : 'اعرض ساعة اليوم'); }
+  ringRun(el);
+}
+/* عند مغادرة الوضع الكبير: تُمسح الأنماط التي كتبها الخط الزمني فتعود الحلقة المتوسطة كما هي */
+function ringClearInline(el){
+  cancelAnimationFrame(ringRaf); ringRaf = 0; clearTimeout(ringOpenTimer); ringP = 0; ringDir = 0; ringGeo = null;
+  el.classList.remove('open', 'rest', 'settled');
+  el.querySelectorAll('.o-now b,.o-head,.o-min,.o-core,.o-gap,.o-tick i,.o-tick em,.o-dial i').forEach(x=>{ x.style.cssText = ''; });
 }
 function ringParts(el){
   if(el.dataset.built) return;
@@ -3238,12 +3428,22 @@ function ringParts(el){
   mk('o-fill'); mk('o-glint');
   if(el.classList.contains('ring-clock') && alive.prayer){
     const p = prayerTimes();
-    Object.keys(PRAYER_NAMES).forEach(k=>{ const t = mk('o-tick'); t.style.transform = 'rotate(' + ringAngle(p[k]) + 'deg)'; t.title = PRAYER_NAMES[k] + ' ' + ringFmt(p[k]); mk('', t); });
+    Object.keys(PRAYER_NAMES).forEach((k, i)=>{
+      const t = mk('o-tick'), ang = ringAngle(p[k]); t.style.transform = 'rotate(' + ang + 'deg)'; t.style.setProperty('--i', i); t.title = PRAYER_NAMES[k] + ' ' + ringFmt(p[k]); mk('', t);
+      const e = document.createElement('em'); e.textContent = PRAYER_NAMES[k]; e.style.transform = 'translateX(-50%) rotate(' + (-ang) + 'deg)'; t.appendChild(e);
+    });
+    const g = document.createElement('span'); g.className = 'o-gap'; g.textContent = 'هدوء'; el.appendChild(g);
   }
   const now = mk('o-now'); now.appendChild(document.createElement('b'));
   if(el.classList.contains('ring-clock')){
     const c = document.createElement('div'); c.className = 'o-core';
     c.innerHTML = '<b></b><small></small>'; el.appendChild(c);
+    mk('o-head'); mk('o-min');
+    for(let k = 0; k < 12; k++){ const d = mk('o-dial' + (k % 3 ? '' : ' major')); d.style.transform = 'rotate(' + (k * 30) + 'deg)'; mk('', d); }
+    const sd = document.createElement('button'); sd.type = 'button'; sd.className = 'o-seed';
+    sd.setAttribute('aria-label', 'اعرض ساعة اليوم'); sd.setAttribute('aria-expanded', 'false');
+    sd.onclick = ()=>ringOpen(!el.classList.contains('open'));
+    el.appendChild(sd);
   }
 }
 function renderRingClock(){
@@ -3253,13 +3453,28 @@ function renderRingClock(){
   const done = tasks.filter(t=>t.done).length, total = tasks.length;
   const pct = total ? Math.round(done / total * 100) : 0;
   const m = nowMin(), a = ringAngle(m), q = inQuietHours();
+  /* الكبيرة في منتصف المشهد أو المتوسطة بجانب النص: ننقل العنصر نفسه */
+  const hb = $('heroBanner'), hr0 = $('heroRing'), big = !!(hb && hr0) && ringBigWanted();
+  if(hb && hr0){
+    hb.classList.toggle('ring-big', big);
+    const home = big ? hb : hb.querySelector('.hero-glance');
+    if(home && hr0.parentNode !== home) home.insertBefore(hr0, home.firstChild);
+    hr0.classList.add('caps');
+    if(!big && hr0.dataset.big === '1') ringClearInline(hr0);
+    hr0.dataset.big = big ? '1' : '';
+  }
   document.querySelectorAll('.orbit.clock,.ring-clock').forEach(el=>{
     ringParts(el);
-    el.style.setProperty('--p', (pct / 100 * RING_ARC) + 'deg');
+    el.dataset.pct = pct;
+    el.style.setProperty('--a', a + 'deg');
     el.classList.toggle('quiet', q);
+    /* حلقة الواجهة الكبيرة المطويّة: القوس فارغ حتى تُفتح. وأثناء حركة الامتلاء لا نقاطعها */
+    /* حلقة الواجهة الكبيرة يرسمها الخط الزمني — لا نقاطع حركتها الجارية */
+    if(el === hr0 && big){ ringGeo = null; if(!ringRaf) ringFrame(el, ringP); }
+    else ringSetFill(el, pct);
     const n = el.querySelector('.o-now'); if(n) n.style.transform = 'rotate(' + a + 'deg)';
     const c = el.querySelector('.o-core');
-    if(c){ c.querySelector('b').textContent = pct + '%'; c.querySelector('small').textContent = q ? 'هدوء' : ringFmt(m); }
+    if(c){ c.querySelector('b').textContent = pct + '%'; c.querySelector('small').textContent = (q && !(el === hr0 && big)) ? 'هدوء' : ringFmt(m); }
   });
   const nx = ringNextPrayer(m);
   const line = (total ? pct + '% من مهامك' : 'لا مهام بعد') + ' · ' + ringFmt(m) + (nx ? ' · ' + nx : '');
@@ -5460,7 +5675,8 @@ const SKY = {
 function heroSceneSVG(ctx){
   const period = ['fajr','morning','noon','afternoon','maghrib','evening','night'].includes(ctx) ? ctx : periodNow();
   const accent = themeHex('--accent', themeHex('--focus', '#00B7D4'));
-  const ink = themeHex('--brand', themeHex('--ink', '#14162A'));
+  /* في «مَدار» الواجهة ليلية دائمًا: حبر التلال ثابت، وإلا شحبت التلال في الوضع الداكن (حبره فاتح) */
+  const ink = document.documentElement.getAttribute('data-palette') === 'nasaq360' ? '#14162A' : themeHex('--brand', themeHex('--ink', '#14162A'));
   const dark = ['evening', 'night', 'fajr'].includes(period);
   const sky = SKY[period].map(c=>mixHex(c, accent, .22));
   const hill = [mixHex(ink, sky[1], .55), mixHex(ink, sky[1], .35), mixHex(ink, sky[1], .18)];
@@ -5516,6 +5732,7 @@ function applyHeroVisual(ctx){
     if(img.getAttribute('src') !== cur.url){ img.classList.add('swapping'); img.onload = img.onerror = ()=>img.classList.remove('swapping'); img.src = cur.url; }
     $('heroDelBtn').hidden = !cur.dbId;
     heroVisual = {ctx, kind:'photo', url:cur.url};
+    try{ renderRingClock(); }catch(e){}
     return;
   }
   /* مشهد نَسَق */
@@ -5526,6 +5743,7 @@ function applyHeroVisual(ctx){
   }
   scene.hidden = false;
   heroVisual = {ctx, kind:'scene', url:''};
+  try{ renderRingClock(); }catch(e){}
 }
 /* ==================== المرحلة ٤: «وقفة» ====================
    الدفعة الأولى — لا يظهر نص حتى تعتمده من «راجع الدفعة».
