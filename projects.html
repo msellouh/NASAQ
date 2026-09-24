@@ -38,7 +38,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 
 /* ---------- الأزرار ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:0 16px;border-radius:4px;border:1px solid transparent;
-  font-family:var(--font-head);font-size:13.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:background-color .18s,color .18s,border-color .18s}
+  font-family:var(--font-head);font-size:13.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:background-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out),border-color var(--dur-2) var(--ease-out)}
 .btn.cta{background:var(--cta);color:var(--on-cta)}
 .btn.cta:hover{background:var(--cta-hover);color:var(--on-cta-hover)}
 .btn.soft{background:var(--btn-soft);color:var(--ink)}
@@ -49,7 +49,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .btn.danger:hover{background:var(--urgent-bg)}
 .btn.sm{min-height:32px;padding:0 12px;font-size:12.5px}
 .btn svg{width:16px;height:16px;flex:none}
-.icon-btn{width:38px;height:38px;border-radius:4px;border:0;background:transparent;color:var(--ink);display:inline-grid;place-items:center;transition:background-color .18s}
+.icon-btn{width:38px;height:38px;border-radius:4px;border:0;background:transparent;color:var(--ink);display:inline-grid;place-items:center;transition:background-color var(--dur-2) var(--ease-out)}
 .icon-btn:hover{background:var(--stripe)}
 .icon-btn svg{width:19px;height:19px}
 .icon-btn.sm{width:30px;height:30px}
@@ -59,7 +59,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 
 /* ---------- شريط «مَدار» العلوي ---------- */
 .tb{position:sticky;top:0;z-index:40;height:var(--tb-h);display:flex;align-items:center;gap:clamp(12px,2.4vw,36px);padding:0 var(--gut);
-  transition:transform .32s cubic-bezier(.4,0,.2,1)}
+  transition:transform var(--dur-3) cubic-bezier(.4,0,.2,1)}
 .tb::before{content:"";position:absolute;inset:0;z-index:-1;background:color-mix(in srgb,var(--paper) 82%,transparent);
   -webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:0 1px 0 var(--rule)}
 .tb.hide{transform:translateY(calc(-100% - 4px))}
@@ -84,7 +84,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .brand-name::after{content:"360";display:inline-block;direction:ltr;font-family:Alexandria,sans-serif;font-weight:900;font-size:.5em;
   margin-inline-start:.3em;vertical-align:.8em;background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent}
 .orgs{display:inline-flex;gap:2px;background:var(--field-bg);border:1px solid var(--rule);border-radius:6px;padding:3px;flex:none}
-.orgs a{padding:5px 12px;border-radius:4px;font-family:var(--font-head);font-size:13px;font-weight:600;text-decoration:none;color:var(--ink-2);transition:background-color .18s,color .18s}
+.orgs a{padding:5px 12px;border-radius:4px;font-family:var(--font-head);font-size:13px;font-weight:600;text-decoration:none;color:var(--ink-2);transition:background-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out)}
 .orgs a:hover{color:var(--ink)}
 .orgs a.on{background:var(--cta);color:var(--on-cta)}
 .tb-nav{display:flex;gap:4px}
@@ -107,7 +107,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 /* الفلاتر */
 .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px}
 .search{flex:1 1 280px;min-width:200px;position:relative}
-.search input,.filters select,.fld input,.fld select,.fld textarea{width:100%;border-radius:8px;background:var(--field-bg);border:1px solid var(--field-line);transition:border-color .15s,box-shadow .15s,background-color .15s}
+.search input,.filters select,.fld input,.fld select,.fld textarea{width:100%;border-radius:8px;background:var(--field-bg);border:1px solid var(--field-line);transition:border-color var(--dur-2) var(--ease-out),box-shadow var(--dur-2) var(--ease-out),background-color var(--dur-2) var(--ease-out)}
 .search input{padding:10px 40px 10px 12px}
 .search svg{position:absolute;right:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--muted)}
 .filters select{width:auto;max-width:230px;padding:9px 34px 9px 12px;appearance:none;-webkit-appearance:none;
@@ -160,7 +160,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .list-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--rule);font-size:13px;color:var(--muted)}
 .list-head select{border:0;background:transparent;font-size:13px;color:var(--ink-2);padding:2px}
 .items{overflow:auto;padding:8px;flex:1}
-.item{display:block;width:100%;text-align:right;border:1px solid transparent;background:transparent;border-radius:10px;padding:11px 12px;margin-bottom:2px;transition:background-color .15s}
+.item{display:block;width:100%;text-align:right;border:1px solid transparent;background:transparent;border-radius:10px;padding:11px 12px;margin-bottom:2px;transition:background-color var(--dur-2) var(--ease-out)}
 .item:hover{background:var(--stripe)}
 .item.on{background:var(--focus-bg);border-color:color-mix(in srgb,var(--focus) 30%,transparent)}
 .item .row1{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
@@ -200,7 +200,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .prog b{font-family:var(--font-head);font-size:15px;font-variant-numeric:tabular-nums}
 .steps{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);position:relative;margin:4px 0 6px}
 .steps::before{content:"";position:absolute;top:14px;inset-inline:6%;height:2px;background:var(--rule)}
-.steps .fill{position:absolute;top:14px;inset-inline-start:6%;height:2px;background:var(--grad-line);transition:width .4s}
+.steps .fill{position:absolute;top:14px;inset-inline-start:6%;height:2px;background:var(--grad-line);transition:width var(--dur-4) var(--ease-out)}
 .step{position:relative;text-align:center;font-size:12px;color:var(--muted);padding:0 3px;line-height:1.45}
 .step .dot{width:30px;height:30px;margin:0 auto 7px;border-radius:50%;background:var(--paper);border:2px solid var(--rule);
   display:grid;place-items:center;font-family:var(--font-head);font-size:12px;font-weight:700;color:var(--muted);position:relative;z-index:1}
@@ -220,7 +220,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .pis{list-style:none;margin:8px 0 0;padding:0}
 .pi{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:8px 6px;border-radius:8px}
 .pi:hover{background:var(--stripe)}
-.chk{width:22px;height:22px;border-radius:6px;border:2px solid var(--field-line);background:var(--paper);padding:0;display:grid;place-items:center;transition:background-color .15s,border-color .15s}
+.chk{width:22px;height:22px;border-radius:6px;border:2px solid var(--field-line);background:var(--paper);padding:0;display:grid;place-items:center;transition:background-color var(--dur-2) var(--ease-out),border-color var(--dur-2) var(--ease-out)}
 .chk:hover{border-color:var(--focus)}
 .chk svg{width:13px;height:13px;opacity:0}
 .pi.is-done .chk{background:var(--done);border-color:var(--done)}
@@ -309,7 +309,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .slot-h a{margin-inline-start:auto;font-size:12px}
 .files{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .file{display:inline-flex;align-items:center;gap:7px;max-width:100%;min-height:32px;padding:4px 10px 4px 6px;border-radius:4px;border:1px solid var(--rule);background:var(--stripe);
-  font-size:12.5px;color:var(--ink);text-decoration:none;transition:border-color .15s,background-color .15s}
+  font-size:12.5px;color:var(--ink);text-decoration:none;transition:border-color var(--dur-2) var(--ease-out),background-color var(--dur-2) var(--ease-out)}
 .file:hover{border-color:var(--focus);background:var(--focus-bg)}
 .file b{flex:none;font-family:var(--font-head);font-size:9.5px;font-weight:800;letter-spacing:.2px;padding:2px 5px;border-radius:3px;color:#fff;background:var(--muted);direction:ltr}
 .file span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px}
@@ -385,7 +385,7 @@ button.hb:hover .lb{color:var(--focus-ink);text-decoration:underline}
 .st-table td.nm{white-space:normal;min-width:230px;max-width:360px}
 .st-table td.nm a{color:var(--focus-ink);text-decoration:none;font-weight:500}
 .st-table td.nm a:hover{text-decoration:underline}
-.st-table tbody tr{cursor:pointer;transition:background-color .12s}
+.st-table tbody tr{cursor:pointer;transition:background-color var(--dur-1) var(--ease-out)}
 .st-table tbody tr:hover{background:var(--stripe)}
 .st-table .hi{color:var(--urgent);font-weight:600}
 .st-table .ok{color:var(--done);font-weight:600}
@@ -419,7 +419,7 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
 .dlg-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
 .dlg-acts .push{margin-inline-start:auto}
 .toast{position:fixed;bottom:22px;left:50%;translate:-50% 20px;opacity:0;z-index:80;background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:6px;font-size:13.5px;
-  box-shadow:var(--shadow);transition:opacity .2s,translate .2s;pointer-events:none;max-width:calc(100% - 32px)}
+  box-shadow:var(--shadow);transition:opacity var(--dur-2) var(--ease-out),translate var(--dur-2) var(--ease-out);pointer-events:none;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;translate:-50% 0}
 .toast.bad{background:var(--urgent);color:#fff}
 
@@ -450,6 +450,17 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
 :root.embed .wrap{padding-top:18px}
 
 @media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
+
+/* ---------- الحركة (منهج «مَدار») ---------- */
+@keyframes m-pop-in{from{opacity:0;transform:translateY(10px) scale(.965)}}
+@keyframes m-fade-in{from{opacity:0}}
+dialog[open]{animation:m-pop-in var(--dur-3) var(--ease-out)}
+dialog[open]::backdrop{animation:m-fade-in var(--dur-3) var(--ease-out)}
+:where(button,.btn,[role="button"]):not(:disabled):active{scale:.97}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  :where(button,.btn,[role="button"]):active{scale:none}
+}
 </style>
 <link rel="stylesheet" href="nasaq-theme.css">
 </head>
