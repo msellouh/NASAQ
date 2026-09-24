@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="ar" dir="rtl" class="madar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>نَسَق — نبض المشاريع</title>
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800&family=Readex+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>
+  /* الوضع الداكن كما اختاره صاحب اللوح */
+  try{ var t = localStorage.getItem('daily-board-theme'); if(t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); }catch(e){}
+</script>
+<style>
+/* ==================== نبض المشاريع ====================
+   يجيب كل صباح عن سؤال واحد: أي مشروع يحتاج انتباهي اليوم، ولماذا؟
+   البيانات نفسها التي تعرضها صفحة المشاريع (projects_list من نوشن، أو آخر نسخة محفوظة، أو ملف التطوير المحلي).
+   للعرض والتنبيه فقط — لا إجراء يغيّر البيانات هنا. الألوان من nasaq-theme.css، والحركة بمنهج «مَدار». */
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--board);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:repeating-radial-gradient(circle at 0 0,transparent 0 56px,var(--pattern) 56px 57px),
+             repeating-radial-gradient(circle at 100% 100%,transparent 0 56px,var(--pattern) 56px 57px)}
+button{font:inherit;color:inherit;cursor:pointer}
+h1,h2,h3{font-family:var(--font-head);margin:0;font-weight:700;letter-spacing:0}
+.num{font-variant-numeric:tabular-nums}
+
+/* الشريط العلوي */
+.tb{display:flex;align-items:center;gap:14px;padding:12px var(--gut,24px);border-bottom:1px solid var(--rule);background:color-mix(in srgb,var(--board) 88%,transparent);
+  position:sticky;top:0;z-index:5;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand-mark{width:30px;height:30px}
+.brand b{font:800 20px/1 var(--font-head)}
+.tb nav{display:flex;gap:6px;margin-inline-start:auto}
+.tb nav a,.tb nav button{border:1px solid var(--rule);background:var(--paper);color:var(--ink);text-decoration:none;border-radius:999px;padding:6px 14px;font-size:13px;
+  transition:background-color var(--dur-2) var(--ease-out),border-color var(--dur-2) var(--ease-out)}
+.tb nav .on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.src{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.src i{width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.src.live i{background:var(--done);box-shadow:0 0 0 3px color-mix(in srgb,var(--done) 25%,transparent)}
+:root.embed .tb{display:none}
+
+.wrap{max-width:1180px;margin:0 auto;padding:26px var(--gut,24px) 60px;display:grid;gap:26px}
+:root.embed .wrap{padding-top:18px}
+.head h1{font-size:clamp(24px,3vw,32px)}
+.head p{margin:6px 0 0;color:var(--ink-2);font-size:15.5px}
+.head p b{color:var(--ink)}
+
+/* المؤشرات */
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+@media (max-width:880px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px;display:grid;gap:2px;text-align:start;box-shadow:var(--shadow);
+  transition:border-color var(--dur-2) var(--ease-out),translate var(--dur-2) var(--ease-out)}
+button.kpi:hover{border-color:var(--ink-2);translate:0 -2px}
+.kpi span{font-size:12.5px;color:var(--muted)}
+.kpi b{font:800 30px/1.1 var(--font-head)}
+.kpi small{font-size:12px;color:var(--ink-2)}
+.kpi.bad b{color:var(--urgent)} .kpi.warn b{color:var(--hold)} .kpi.ok b{color:var(--done)}
+
+/* أقسام */
+.sec-h{display:flex;align-items:baseline;gap:10px;margin-bottom:12px}
+.sec-h h2{font-size:19px}
+.sec-h small{color:var(--muted);font-size:13px}
+
+/* يحتاج انتباهك */
+.focus{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:880px){.focus{grid-template-columns:1fr}}
+.fcard{position:relative;background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:16px 18px;text-align:start;display:grid;gap:8px;box-shadow:var(--shadow);overflow:hidden;
+  transition:border-color var(--dur-2) var(--ease-out),translate var(--dur-2) var(--ease-out)}
+.fcard::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px;background:var(--urgent)}
+.fcard.warn::before{background:var(--hold)}
+.fcard:hover{border-color:var(--ink-2);translate:0 -2px}
+.fcard .code{font:700 12px/1 var(--font-head);color:var(--focus);letter-spacing:.3px}
+.fcard h3{font-size:16px;line-height:1.45}
+.fcard ul{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:13.5px;color:var(--ink-2)}
+.fcard li::before{content:"◆";color:#D6A84F;font-size:9px;margin-inline-end:7px;vertical-align:2px}
+
+/* الاستحقاقات */
+.dues{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.dgroup + .dgroup{border-top:1px solid var(--rule)}
+.dgroup > h3{font:600 13px/1 var(--font-body);color:var(--muted);padding:12px 18px 6px;display:flex;gap:8px;align-items:center}
+.dgroup > h3 i{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dgroup.late > h3 i{background:var(--urgent)} .dgroup.week > h3 i{background:var(--hold)} .dgroup.month > h3 i{background:var(--focus)}
+.drow{width:100%;display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;padding:10px 18px;border:0;background:transparent;text-align:start;
+  transition:background-color var(--dur-2) var(--ease-out)}
+.drow:hover{background:var(--stripe)}
+.kind{font-size:12px;font-weight:600;padding:3px 10px;border-radius:6px;background:var(--focus-bg);color:var(--focus-ink);white-space:nowrap}
+.kind.final{background:var(--hold-bg);color:var(--hold-ink)}
+.drow .t{min-width:0}
+.drow .t b{display:block;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.drow .t small{color:var(--muted);font-size:12.5px}
+.st{font-size:12px;padding:2px 9px;border-radius:999px;border:1px solid var(--rule);color:var(--ink-2);white-space:nowrap}
+.st.prep{border-color:color-mix(in srgb,var(--hold) 45%,transparent);color:var(--hold)}
+.when{font-size:13px;font-weight:600;white-space:nowrap;text-align:end;min-width:104px}
+.when.late{color:var(--urgent)} .when.soon{color:var(--hold)}
+.when small{display:block;font-weight:400;color:var(--muted);font-size:11.5px}
+@media (max-width:640px){ .drow{grid-template-columns:1fr auto;row-gap:6px} .drow .kind{grid-column:1/-1;justify-self:start} .drow .st{display:none} }
+
+/* المشاريع الجارية */
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.pcard{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:16px 18px;display:grid;gap:10px;text-align:start;box-shadow:var(--shadow);
+  transition:border-color var(--dur-2) var(--ease-out),translate var(--dur-2) var(--ease-out)}
+.pcard:hover{border-color:var(--ink-2);translate:0 -2px}
+.pcard .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.pcard .code{font:700 12px/1 var(--font-head);color:var(--focus)}
+.pcard h3{font-size:15px;line-height:1.5;margin-top:4px}
+.pcard .donor{font-size:12.5px;color:var(--muted)}
+.flag{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:6px;white-space:nowrap;background:color-mix(in srgb,var(--urgent) 12%,transparent);color:var(--urgent)}
+.flag.warn{background:var(--hold-bg);color:var(--hold-ink)} .flag.ok{background:color-mix(in srgb,var(--done) 14%,transparent);color:var(--done)}
+/* شريطان متقابلان: الوقت المنقضي، والإنجاز */
+.bars{display:grid;gap:7px}
+.bar{display:grid;grid-template-columns:62px 1fr 44px;gap:10px;align-items:center;font-size:12px;color:var(--muted)}
+.bar i{height:6px;border-radius:99px;background:color-mix(in srgb,var(--ink) 9%,transparent);position:relative;overflow:hidden}
+.bar i::after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--bar,var(--focus));transform-origin:right;transform:scaleX(var(--v,0))}
+.bar.time i::after{--bar:var(--muted)}
+.bar.work i::after{--bar:var(--grad-line)}
+.bar b{font-weight:600;color:var(--ink);text-align:end}
+.pcard .next{font-size:12.5px;color:var(--ink-2);border-top:1px dashed var(--rule);padding-top:8px}
+.empty{background:var(--paper);border:1px dashed var(--rule);border-radius:var(--r);padding:22px;text-align:center;color:var(--muted)}
+.loading{color:var(--muted);text-align:center;padding:40px}
+
+/* ---------- الحركة (منهج «مَدار»): «شروق» متتابع للأقسام والبطاقات، وامتلاء الأشرطة بعده ---------- */
+@keyframes rise{from{opacity:0;transform:translateY(12px)}}
+.reveal{animation:rise var(--dur-4) var(--ease-out) both;animation-delay:calc(var(--i,0) * 45ms)}
+.bar i::after{transition:transform 900ms var(--ease-out);transition-delay:calc(200ms + var(--i,0) * 45ms)}
+:where(button,a):not(:disabled):active{scale:.98}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
+  :where(button,a):active{scale:none}
+}
+</style>
+<link rel="stylesheet" href="nasaq-theme.css">
+</head>
+<body>
+<header class="tb">
+  <a class="brand" href="index.html" title="العودة إلى لوح اليوم">
+    <svg class="brand-mark" viewBox="34 36 440 440" aria-hidden="true"><use href="#nasaqMark"/></svg>
+    <b>نَسَق</b>
+  </a>
+  <span class="src" id="src" hidden><i></i><span></span></span>
+  <nav id="orgs" aria-label="المؤسسة"></nav>
+  <nav><a href="projects.html" id="toProjects">كل المشاريع</a></nav>
+</header>
+
+<main class="wrap" id="main">
+  <div class="loading">جارٍ قراءة نبض المشاريع…</div>
+</main>
+
+<script src="nasaq-core.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const AR = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+const Q = new URLSearchParams(location.search);
+const ORGS = { medics: { name: 'مديكس', fixture: 'projects.local.json' }, humera: { name: 'هيوميرا', fixture: 'humera.local.json' } };
+const ORG = Q.get('org') === 'humera' ? 'humera' : 'medics';
+const EMBED = Q.get('embed') === '1';
+if(EMBED) document.documentElement.classList.add('embed');
+
+const today = (()=>{ const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
+const toDate = s => { if(!s) return null; const d = new Date(String(s).slice(0, 10) + 'T00:00:00'); return isNaN(d) ? null : d; };
+const daysTo = s => { const d = toDate(s); return d ? Math.round((d - today) / 864e5) : null; };
+const RUNNING = new Set(['قيد التنفيذ', 'نشط']);
+const fmtDay = s => { const d = toDate(s); return d ? d.toLocaleDateString('ar-EG', {day: 'numeric', month: 'short'}) : '—'; };
+/* المعدود بصيغته الصحيحة: ١ مشروع، ٢ مشروعان، ٣–١٠ مشاريع، ١١+ مشروعًا */
+function cnt(n, f){ return n === 1 ? f[0] : n === 2 ? f[1] : AR(n) + ' ' + (n <= 10 ? f[2] : f[3]); }
+const W_PROJ = ['مشروع واحد', 'مشروعان', 'مشاريع', 'مشروعًا'], W_REP = ['تقرير واحد', 'تقريران', 'تقارير', 'تقريرًا'];
+function days(n){ n = Math.abs(n); return n === 1 ? 'يوم واحد' : n === 2 ? 'يومان' : n <= 10 ? AR(n) + ' أيام' : AR(n) + ' يومًا'; }
+function whenText(n){
+  if(n == null) return {txt: 'بلا تاريخ', cls: ''};
+  if(n < 0) return {txt: 'متأخر ' + days(n), cls: 'late'};
+  if(n === 0) return {txt: 'اليوم', cls: 'soon'};
+  if(n === 1) return {txt: 'غدًا', cls: 'soon'};
+  return {txt: 'بعد ' + days(n), cls: n <= 7 ? 'soon' : ''};
+}
+
+/* ================= الاتصال (نفس قناة نَسَق) ================= */
+const DEFAULT_BRIDGE = 'https://script.google.com/macros/s/AKfycbwwrcb-T-vBdPd2u94XfiFspyDwBKXec-NNeUzZiJMCupbUp91dFwZM2Wfj-F3dncw/exec';
+let bridge = ''; try{ bridge = localStorage.getItem('daily-board-bridge') || ''; }catch(e){}
+if(!bridge) bridge = DEFAULT_BRIDGE;
+let auth = null; try{ auth = JSON.parse(localStorage.getItem('daily-board-auth') || 'null'); }catch(e){}
+NasaqBridge.configure(()=>bridge);
+function post(body){
+  /* داخل اللوح: اتصال اللوح القائم بدل فتح اتصال ثانٍ */
+  if(EMBED && window.parent !== window){ try{ if(typeof window.parent.post === 'function') return window.parent.post(body); }catch(e){} }
+  const payload = Object.assign({}, body, auth && auth.token ? {token: auth.token} : {});
+  return NasaqBridge.post(payload).then(d=>{ if(!d || !d.ok) throw new Error((d && d.error) || 'خطأ غير معروف'); return d; });
+}
+
+let DATA = null, SOURCE = '';
+async function load(){
+  const CK = 'daily-board-projects-cache-' + ORG;
+  let shown = false;
+  /* آخر نسخة من نوشن تُعرض فورًا (هي نفسها التي تحفظها صفحة المشاريع)، ثم تُحدَّث */
+  try{ const c = JSON.parse(localStorage.getItem(CK) || 'null'); if(c && c.ok){ use(c, 'cache'); shown = true; } }catch(e){}
+  if(bridge && auth && auth.isOwner){
+    try{ const d = await post({action: 'projects_list', org: ORG}); try{ localStorage.setItem(CK, JSON.stringify(d)); }catch(e){} return use(d, 'live'); }
+    catch(e){ if(shown) return; }
+  }
+  if(shown) return;
+  try{
+    /* ملف التطوير على هذا الجهاز فقط — لا يُطلب من الموقع المنشور */
+    if(!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) throw new Error('no-fixture');
+    const r = await fetch(ORGS[ORG].fixture, {cache: 'no-store'}); if(!r.ok) throw new Error(r.status);
+    use(await r.json(), 'local');
+  }catch(e){
+    $('main').innerHTML = '<div class="empty">لا بيانات بعد. ' + (auth && auth.isOwner ? 'افتح صفحة المشاريع مرة ليُحفظ آخر نسخة، أو تحقّق من الجسر.' : 'سجّل الدخول في نَسَق بحساب صاحب اللوح أولًا.') + '</div>';
+  }
+}
+function use(d, src){
+  DATA = {projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || []};
+  SOURCE = src;
+  const el = $('src'); el.hidden = false; el.className = 'src ' + (src === 'live' ? 'live' : '');
+  el.querySelector('span').textContent = src === 'live' ? 'مباشر من نوشن' : src === 'cache' ? 'آخر نسخة محفوظة' : 'نسخة محلية للتطوير';
+  render();
+}
+
+/* ================= الحساب ================= */
+function analyse(){
+  const byId = new Map(DATA.projects.map(p=>[p.id, p]));
+  const running = DATA.projects.filter(p=>RUNNING.has(p.status));
+  const open = DATA.deliverables.filter(x=>x.status !== 'صدر' && byId.has(x.project));
+  const dues = open.map(x=>({x, p: byId.get(x.project), n: daysTo(x.due)}));
+  const groups = {
+    late:  dues.filter(o=>o.n != null && o.n < 0).sort((a, b)=>a.n - b.n),
+    week:  dues.filter(o=>o.n != null && o.n >= 0 && o.n <= 7).sort((a, b)=>a.n - b.n),
+    month: dues.filter(o=>o.n != null && o.n > 7 && o.n <= 31).sort((a, b)=>a.n - b.n),
+    later: dues.filter(o=>o.n != null && o.n > 31 && o.n <= 90).sort((a, b)=>a.n - b.n)
+  };
+  /* صحّة كل مشروع جارٍ: الوقت مقابل الإنجاز، والتقارير، والنهاية */
+  const health = running.map(p=>{
+    const s = toDate(p.start), e = toDate(p.end), endIn = daysTo(p.end);
+    const elapsed = s && e && e > s ? Math.min(1, Math.max(0, (today - s) / (e - s))) : null;
+    const plan = DATA.plan.filter(x=>x.project === p.id), dels = DATA.deliverables.filter(x=>x.project === p.id);
+    const progress = plan.length ? plan.filter(x=>x.status === 'منجز').length / plan.length
+                   : dels.length ? dels.filter(x=>x.status === 'صدر').length / dels.length : null;
+    const lateDels = dues.filter(o=>o.p === p && o.n != null && o.n < 0);
+    const nextDel = dues.filter(o=>o.p === p && o.n != null && o.n >= 0).sort((a, b)=>a.n - b.n)[0];
+    const finalDone = dels.some(x=>/ختامي/.test(x.kind || '') && x.status === 'صدر');
+    const reasons = [];
+    if(lateDels.length) reasons.push(lateDels.length === 1 ? 'تقرير متأخر: ' + lateDels[0].x.kind + ' ' + AR(lateDels[0].x.num || '') : 'متأخر: ' + cnt(lateDels.length, W_REP));
+    if(endIn != null && endIn < 0) reasons.push('تجاوز موعد انتهائه بـ' + days(endIn) + ' ولم يُغلق');
+    else if(endIn != null && endIn <= 30) reasons.push('ينتهي بعد ' + days(endIn) + (finalDone ? '' : ' — والتقرير الختامي لم يصدر'));
+    const behind = elapsed != null && progress != null && elapsed - progress > .25;
+    if(behind) reasons.push('الوقت سبق الإنجاز: ' + AR(Math.round(elapsed * 100)) + '٪ من المدة مقابل ' + AR(Math.round(progress * 100)) + '٪ إنجاز');
+    if(nextDel && nextDel.n <= 7) reasons.push('يستحق ' + nextDel.x.kind + ' ' + whenText(nextDel.n).txt);
+    const score = lateDels.length * 3 + (endIn != null && endIn < 0 ? 3 : 0) + (endIn != null && endIn >= 0 && endIn <= 30 ? 2 : 0) + (behind ? 2 : 0) + (nextDel && nextDel.n <= 7 ? 1 : 0);
+    return {p, elapsed, progress, endIn, lateDels, nextDel, reasons, score, behind};
+  }).sort((a, b)=>b.score - a.score || (a.endIn ?? 1e9) - (b.endIn ?? 1e9));
+  return {running, groups, health};
+}
+
+/* ================= العرض ================= */
+function projectLink(p){
+  return 'projects.html' + (ORG !== 'medics' ? '?org=' + ORG : '') + '#' + encodeURIComponent(p.code || p.id);
+}
+function openProject(p){
+  /* داخل اللوح: يفتح تبويب «المشاريع» على المشروع نفسه */
+  if(EMBED && window.parent !== window){ try{ if(typeof window.parent.openProjectFromPulse === 'function') return window.parent.openProjectFromPulse(p.code || p.id, ORG); }catch(e){} }
+  location.href = projectLink(p);
+}
+let I = 0;
+const rv = ()=>' reveal" style="--i:' + (I++);
+function render(){
+  const A = analyse(); I = 0;
+  const G = A.groups, H = A.health, attn = H.filter(h=>h.score > 0);
+  const ending = H.filter(h=>h.endIn != null && h.endIn >= 0 && h.endIn <= 30).length;
+  const behind = H.filter(h=>h.behind || (h.endIn != null && h.endIn < 0)).length;
+  const main = $('main');
+  const head = '<div class="head' + rv() + '"><h1>نبض المشاريع</h1><p>' + today.toLocaleDateString('ar-EG', {weekday: 'long', day: 'numeric', month: 'long'}) + ' — ' +
+    (attn.length ? '<b>' + cnt(attn.length, W_PROJ) + (attn.length === 1 ? ' يحتاج' : attn.length === 2 ? ' يحتاجان' : ' تحتاج') + ' انتباهك</b>' + (G.late.length ? '، و' + cnt(G.late.length, W_REP) + ' ' + (G.late.length <= 10 && G.late.length > 2 ? 'متأخرة' : 'متأخر' + (G.late.length === 2 ? 'ان' : '')) : '') + '.'
+                 : 'كل المشاريع الجارية على مسارها. لا تقارير متأخرة.') + '</p></div>';
+  const kpi = (k, v, sub, cls, target)=>'<' + (target ? 'button type="button" data-go="' + target + '"' : 'div') + ' class="kpi ' + (cls || '') + rv() + '"><span>' + k + '</span><b class="num">' + AR(v) + '</b><small>' + sub + '</small></' + (target ? 'button' : 'div') + '>';
+  const kpis = '<div class="kpis">' +
+    kpi('تقارير متأخرة', G.late.length, 'فات موعدها ولم تصدر', G.late.length ? 'bad' : 'ok', 'dues') +
+    kpi('هذا الأسبوع', G.week.length, 'تقارير مستحقة خلال ٧ أيام', G.week.length ? 'warn' : '', 'dues') +
+    kpi('هذا الشهر', G.month.length, 'مستحقة خلال ٣١ يومًا', '', 'dues') +
+    kpi('مشاريع جارية', A.running.length, AR(ending) + ' تنتهي خلال ٣٠ يومًا', '', 'running') +
+    kpi('خارج المسار', behind, 'تجاوزت مدتها أو سبقها الوقت', behind ? 'bad' : 'ok', 'running') + '</div>';
+
+  const focus = attn.length ? '<section><div class="sec-h' + rv() + '"><h2>يحتاج انتباهك اليوم</h2><small>مرتّبة بحسب الإلحاح</small></div><div class="focus">' +
+    attn.slice(0, 3).map(h=>'<button type="button" class="fcard' + (h.lateDels.length || (h.endIn != null && h.endIn < 0) ? '' : ' warn') + rv() + '" data-p="' + esc(h.p.id) + '">' +
+      '<span class="code">' + esc(h.p.code || '') + '</span><h3>' + esc(h.p.name || '') + '</h3><ul>' + h.reasons.slice(0, 3).map(r=>'<li>' + esc(r) + '</li>').join('') + '</ul></button>').join('') +
+    '</div></section>' : '';
+
+  const drow = o=>{ const w = whenText(o.n), fin = /ختامي/.test(o.x.kind || '');
+    return '<button type="button" class="drow" data-p="' + esc(o.p.id) + '"><span class="kind' + (fin ? ' final' : '') + '">' + esc(o.x.kind || 'تقرير') + (o.x.num ? ' ' + AR(o.x.num) : '') + '</span>' +
+      '<span class="t"><b>' + esc(o.p.name || '') + '</b><small>' + esc(o.p.code || '') + (o.p.donor ? ' · ' + esc(o.p.donor) : '') + '</small></span>' +
+      '<span class="st' + (o.x.status === 'قيد الإعداد' ? ' prep' : '') + '">' + esc(o.x.status || 'لم يبدأ') + '</span>' +
+      '<span class="when ' + w.cls + '">' + w.txt + '<small>' + fmtDay(o.x.due) + '</small></span></button>'; };
+  const grp = (key, title, list)=>list.length ? '<div class="dgroup ' + key + '"><h3><i></i>' + title + ' (' + AR(list.length) + ')</h3>' + list.map(drow).join('') + '</div>' : '';
+  const anyDue = G.late.length + G.week.length + G.month.length + G.later.length;
+  const dues = '<section id="dues"><div class="sec-h' + rv() + '"><h2>التقارير والاستحقاقات</h2><small>المرحلية والختامية التي لم تصدر</small></div>' +
+    (anyDue ? '<div class="dues' + rv() + '">' + grp('late', 'متأخرة', G.late) + grp('week', 'هذا الأسبوع', G.week) + grp('month', 'هذا الشهر', G.month) + grp('later', 'خلال ٣ أشهر', G.later) + '</div>'
+            : '<div class="empty' + rv() + '">لا تقارير مستحقة ولا متأخرة.</div>') + '</section>';
+
+  const bar = (cls, label, v, i)=>'<div class="bar ' + cls + '"><span>' + label + '</span><i style="--i:' + i + '" data-v="' + (v == null ? 0 : v.toFixed(3)) + '"></i><b>' + (v == null ? '—' : AR(Math.round(v * 100)) + '٪') + '</b></div>';
+  const pcards = H.map((h, k)=>{
+    const p = h.p, flag = h.endIn != null && h.endIn < 0 ? '<span class="flag">تجاوز المدة</span>'
+      : h.lateDels.length ? '<span class="flag">تقرير متأخر</span>' : h.behind ? '<span class="flag warn">متأخر عن الخطة</span>'
+      : h.endIn != null && h.endIn <= 30 ? '<span class="flag warn">ينتهي قريبًا</span>' : '<span class="flag ok">على المسار</span>';
+    const nx = h.nextDel ? 'التالي: ' + esc(h.nextDel.x.kind) + (h.nextDel.x.num ? ' ' + AR(h.nextDel.x.num) : '') + ' — ' + whenText(h.nextDel.n).txt
+      : h.endIn != null ? (h.endIn < 0 ? 'انتهت مدته في ' : 'ينتهي في ') + fmtDay(p.end) : 'بلا تاريخ انتهاء مسجّل';
+    return '<button type="button" class="pcard' + rv() + '" data-p="' + esc(p.id) + '"><div class="top"><div><span class="code">' + esc(p.code || '') + '</span><h3>' + esc(p.name || '') + '</h3>' +
+      (p.donor ? '<span class="donor">' + esc(p.donor) + '</span>' : '') + '</div>' + flag + '</div><div class="bars">' +
+      bar('time', 'الوقت', h.elapsed, k) + bar('work', 'الإنجاز', h.progress, k) + '</div><div class="next">' + nx + '</div></button>';
+  }).join('');
+  const running = '<section id="running"><div class="sec-h' + rv() + '"><h2>المشاريع الجارية</h2><small>الوقت المنقضي مقابل الإنجاز — الإنجاز من الخطة، أو من التقارير الصادرة إن لم تُسجَّل خطة</small></div>' +
+    (H.length ? '<div class="plist">' + pcards + '</div>' : '<div class="empty">لا مشاريع جارية.</div>') + '</section>';
+
+  main.innerHTML = head + kpis + focus + dues + running;
+  /* الأشرطة تمتلئ بعد ظهور بطاقاتها */
+  requestAnimationFrame(()=>requestAnimationFrame(()=>main.querySelectorAll('.bar i').forEach(i=>i.style.setProperty('--v', i.dataset.v))));
+}
+
+document.addEventListener('click', e=>{
+  const go = e.target.closest('[data-go]'); if(go){ const t = $(go.dataset.go); if(t) t.scrollIntoView({behavior: 'smooth', block: 'start'}); return; }
+  const b = e.target.closest('[data-p]'); if(!b || !DATA) return;
+  const p = DATA.projects.find(x=>x.id === b.dataset.p); if(p) openProject(p);
+});
+$('orgs').innerHTML = Object.entries(ORGS).map(([k, o])=>'<a href="pulse.html' + (k !== 'medics' ? '?org=' + k : '') + '"' + (k === ORG ? ' class="on" aria-current="page"' : '') + '>' + o.name + '</a>').join('');
+$('toProjects').href = 'projects.html' + (ORG !== 'medics' ? '?org=' + ORG : '');
+load();
+</script>
+<script src="nasaq-brand.js"></script>
+</body>
+</html>
