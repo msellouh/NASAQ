@@ -558,7 +558,20 @@ body{padding:0}
 .c-focus .pomodoro{flex:1;display:flex;flex-direction:column;justify-content:center}
 /* على الشاشات العريضة جدًا: حدّ أقصى للعرض كي لا تتمدد البطاقات بلا فائدة */
 .content > *{max-width:1560px;margin-inline:auto}
-.proj-mini{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px 24px}
+.proj-mini{display:grid;gap:12px}
+.pulse-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.pulse-kpi{border:1px solid var(--rule);border-radius:10px;padding:10px 12px;display:grid;gap:2px;background:var(--paper)}
+.pulse-kpi b{font:800 24px/1.1 var(--font-head);font-variant-numeric:tabular-nums}
+.pulse-kpi span{font-size:12px;color:var(--muted)}
+.pulse-kpi.bad b{color:var(--urgent)} .pulse-kpi.warn b{color:var(--hold)} .pulse-kpi.ok b{color:var(--done)}
+.pulse-rows{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.pulse-row{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;text-align:start;border:1px solid var(--rule);border-inline-start:3px solid var(--urgent);border-radius:10px;background:var(--paper);padding:10px 12px;color:var(--ink);
+  transition:background-color var(--dur-2) var(--ease-out),border-color var(--dur-2) var(--ease-out)}
+.pulse-row:hover{background:var(--stripe)}
+.pr-code{font:700 12px/1 var(--font-head);color:var(--focus);letter-spacing:.3px}
+.pr-t{min-width:0;display:grid}
+.pr-t b{font-weight:600;font-size:14px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pr-t small{font-size:12.5px;color:var(--urgent)}
 .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 14px}
 .card-head h2{display:flex;align-items:center;gap:8px;font-family:var(--font-head);font-size:17.5px;font-weight:700;margin:0;color:var(--ink)}
 .card-head .ic{width:19px;height:19px;color:var(--focus);flex:none}
@@ -2137,7 +2150,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </section>
 
     <section class="card c-projects">
-      <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2.5h6.5A2.5 2.5 0 0 1 21 10v7.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/></svg>مشاريعي</h2><a class="card-link" href="pulse.html" title="استحقاقات التقارير وما يحتاج انتباهك اليوم">نبض المشاريع ←</a></div>
+      <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2.5h6.5A2.5 2.5 0 0 1 21 10v7.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/></svg>نبض المشاريع</h2><a class="card-link" href="pulse.html" title="استحقاقات التقارير وما يحتاج انتباهك اليوم">نبض المشاريع ←</a></div>
       <div class="proj-mini" id="projectsMini"></div>
     </section>
   </div>
@@ -2423,6 +2436,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <div class="toast" id="toastBox"></div>
 
 <script src="nasaq-core.js"></script>
+<script src="nasaq-pulse.js"></script>
 <script>
 const AR = n => Number(n).toLocaleString('ar-EG');
 const $ = id => document.getElementById(id);
@@ -4140,57 +4154,44 @@ function renderDaySummary(){
   });
 }
 
-/* ---------- مشاريعي: من مهام اللوح والأرشيف، ومن مهام نوشن المحفوظة للتقويم (آخر ٦ أشهر) ----------
-   مهام نوشن تحمل «المشروع / الجهة» حتى لو خلت مهام اليوم منه، فلا تبقى البطاقة فارغة.
-   المهمة الواحدة تُحسب مرة: ما في اللوح يُستبعد من نسخة نوشن بمعرّفه. */
+/* ---------- «نبض المشاريع» في اللوح ----------
+   كانت «مشاريعي» تعدّ مهام اللوح حسب وسم المشروع، فيظهر مشروع بمهمة واحدة منجزة «مكتمل ١٠٠٪».
+   الآن: خلاصة صفحة النبض من بيانات المشاريع الحقيقية (آخر نسخة حفظتها صفحة المشاريع) —
+   المتأخر، والمستحق هذا الأسبوع، والمشاريع خارج المسار، وأكثر ثلاثة مشاريع إلحاحًا وسببها. */
 function renderProjects(){
   const box = $('projectsMini'); if(!box) return;
-  const map = {};
-  const add = (name, done)=>{
-    const p = (name||'').trim(); if(!p) return;
-    const r = map[p] || (map[p] = {name:p, total:0, done:0, open:0});
-    r.total++; if(done) r.done++; else r.open++;
-  };
-  const local = tasks.concat(archive);
-  local.forEach(t=>add(t.proj, t.done));
-  let fromNotion = 0;
-  try{
-    const seen = new Set(local.map(t=>t.notionId).filter(Boolean));
-    Object.values(notionMonthCache).forEach(rows=>(rows || []).forEach(r=>{
-      if(!r || !r.project || seen.has(r.pageId)) return;
-      seen.add(r.pageId); fromNotion++;
-      add(r.project, notionState(r.status) === 'done');
-    }));
-  }catch(e){}   /* قد تُرسم البطاقة قبل تهيئة ذاكرة التقويم */
-  const rows = Object.values(map).sort((a,b)=> b.open - a.open || b.total - a.total).slice(0, 5);
+  let data = null;
+  try{ const c = JSON.parse(localStorage.getItem('daily-board-projects-cache-medics') || 'null'); if(c && c.ok) data = c; }catch(e){}
   box.innerHTML = '';
-  if(!rows.length){
+  if(!data || !window.NasaqPulse){
     const e = document.createElement('div'); e.className = 'empty-sm';
-    e.textContent = notionOK()
-      ? 'لا مهام مرتبطة بمشروع بعد. أضف مهمة باختصار #المشروع، أو اختر «المشروع / الجهة» لمهامك في نوشن.'
-      : 'تظهر مشاريعك هنا حين تربط مهمة بمشروع (#المشروع).';
+    e.textContent = notionOK() ? 'افتح تبويب «المشاريع» مرة، ويظهر هنا نبض مشاريعك: التقارير المستحقة والمتأخرة وما يحتاج انتباهك.'
+                               : 'يظهر هنا نبض مشاريعك بعد تسجيل الدخول بحساب صاحب اللوح.';
     box.appendChild(e); return;
   }
-  rows.forEach(r=>{
-    const pct = Math.round(r.done / r.total * 100);
-    const row = document.createElement('div'); row.className = 'proj-row';
-    const top = document.createElement('div'); top.className = 'proj-top';
-    const n = document.createElement('span'); n.className = 'proj-name'; n.textContent = r.name;
-    const p = document.createElement('span'); p.className = 'proj-pct'; p.textContent = AR(pct) + '٪';
-    top.append(n, p);
-    const bar = document.createElement('div'); bar.className = 'proj-bar';
-    const f = document.createElement('i'); f.style.width = pct + '%'; f.style.background = projColor(r.name); bar.appendChild(f);
-    n.style.setProperty('--pc', projColor(r.name)); n.classList.add('dot-pc');
-    const meta = document.createElement('div'); meta.className = 'proj-meta';
-    meta.textContent = r.open ? AR(r.open) + ' مفتوحة من ' + AR(r.total) : 'مكتمل — ' + AR(r.total) + ' مهام';
-    row.append(top, bar, meta); box.appendChild(row);
+  const A = NasaqPulse.analyse(data), G = A.groups;
+  const off = A.health.filter(h=>h.behind || (h.endIn != null && h.endIn < 0)).length;
+  const kp = document.createElement('div'); kp.className = 'pulse-kpis';
+  [['متأخرة', G.late.length, 'bad'], ['هذا الأسبوع', G.week.length, 'warn'], ['خارج المسار', off, 'bad']].forEach(([k, v, cls])=>{
+    const d = document.createElement('div'); d.className = 'pulse-kpi' + (v ? ' ' + cls : ' ok');
+    d.innerHTML = '<b></b><span></span>'; d.querySelector('b').textContent = v; d.querySelector('span').textContent = k; kp.appendChild(d);
   });
-  if(fromNotion){
-    const note = document.createElement('div'); note.className = 'card-note proj-src';
-    note.textContent = 'تشمل مهام نوشن في آخر الأشهر التي فتحتها في التقويم.';
-    box.appendChild(note);
-  }
+  box.appendChild(kp);
+  const attn = A.health.filter(h=>h.score > 0).slice(0, 3);
+  if(!attn.length){ const ok = document.createElement('div'); ok.className = 'empty-sm'; ok.textContent = 'كل المشاريع الجارية على مسارها.'; box.appendChild(ok); return; }
+  const list = document.createElement('div'); list.className = 'pulse-rows'; box.appendChild(list);
+  attn.forEach(h=>{
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'pulse-row';
+    b.innerHTML = '<span class="pr-code"></span><span class="pr-t"><b></b><small></small></span>';
+    b.querySelector('.pr-code').textContent = h.p.code || '';
+    b.querySelector('b').textContent = h.p.name || '';
+    b.querySelector('small').textContent = h.reasons[0] || '';
+    b.onclick = ()=>window.openProjectFromPulse && window.openProjectFromPulse(h.p.code || h.p.id, 'medics');
+    list.appendChild(b);
+  });
 }
+/* يتحدّث حين تحفظ صفحة المشاريع نسخة جديدة (في هذا التبويب داخل الإطار، أو في تبويب آخر) */
+window.addEventListener('storage', e=>{ if(e.key === 'daily-board-projects-cache-medics') renderProjects(); });
 
 /* ---------- عاداتي اليوم: من روتين Daily Flow، بضغطة تُعلَّم منجزة ---------- */
 function renderHabitsMini(){
