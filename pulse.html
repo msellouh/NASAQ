@@ -282,7 +282,7 @@ function render(){
       '<span class="when ' + w.cls + '">' + w.txt + '<small>' + fmtDay(o.x.due) + '</small></span></button>' +
       '<div class="dact">' +
         '<button type="button" data-act="task" data-d="' + id + '"' + (tasked ? ' class="done" title="أُضيفت إلى مهامك"' : '') + '>' + (tasked ? '✓ في مهامك' : 'حوّل إلى مهمة') + '</button>' +
-        '<select data-act="status" data-d="' + id + '" aria-label="حالة التقرير"' + off + '>' + ['لم يبدأ', 'قيد الإعداد', 'صدر'].map(v=>'<option' + ((o.x.status || 'لم يبدأ') === v ? ' selected' : '') + '>' + v + '</option>').join('') + '</select>' +
+        '<select data-act="status" data-d="' + id + '" aria-label="حالة التقرير"' + off + '>' + ['لم يبدأ', 'قيد الإعداد', 'متأخر', 'صدر'].filter(v=>v !== 'متأخر' || o.x.status === 'متأخر').map(v=>'<option' + ((o.x.status || 'لم يبدأ') === v ? ' selected' : '') + '>' + v + '</option>').join('') + '</select>' +
         '<button type="button" data-act="upload" data-d="' + id + '"' + off + '>ارفع التقرير</button>' +
         '<button type="button" data-act="defer" data-d="' + id + '"' + off + '>تأجيل</button>' +
         '<button type="button" data-act="msg" data-d="' + id + '">رسالة متابعة</button>' +
