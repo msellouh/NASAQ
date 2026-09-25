@@ -2137,7 +2137,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </section>
 
     <section class="card c-projects">
-      <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2.5h6.5A2.5 2.5 0 0 1 21 10v7.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/></svg>مشاريعي</h2></div>
+      <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2.5h6.5A2.5 2.5 0 0 1 21 10v7.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/></svg>مشاريعي</h2><a class="card-link" href="pulse.html" title="استحقاقات التقارير وما يحتاج انتباهك اليوم">نبض المشاريع ←</a></div>
       <div class="proj-mini" id="projectsMini"></div>
     </section>
   </div>
@@ -5297,6 +5297,31 @@ function addTask(){
   $('tText').focus(); sync();
 }
 $('addBtn').onclick = addTask;
+
+/* ---------- صندوق الوارد من «نبض المشاريع» ----------
+   «حوّل إلى مهمة» في صفحة النبض: داخل اللوح تستدعي addTaskFromPulse مباشرة، ومن صفحة مستقلة
+   تضع المهمة في daily-board-inbox فيسحبها اللوح عند فتحه أو فورًا إن كان مفتوحًا في تبويب آخر. */
+const INBOX_KEY = 'daily-board-inbox';
+function addTaskFromPulse(t){
+  tasks.push({id: Date.now() + Math.random(), text: String(t.text || '').slice(0, 300), proj: t.proj || '', donor: t.donor || '', imp: t.imp || 'ب',
+    due: t.due || '', mins: '', actual: '', notes: t.notes || '', done: false, state: 0, createdAt: new Date().toISOString(), dirty: true});
+  sync();
+}
+window.addTaskFromPulse = addTaskFromPulse;
+function drainInbox(){
+  let q = []; try{ q = JSON.parse(localStorage.getItem(INBOX_KEY) || '[]'); }catch(e){}
+  if(!Array.isArray(q) || !q.length) return;
+  try{ localStorage.removeItem(INBOX_KEY); }catch(e){}
+  q.forEach(addTaskFromPulse);
+  showToast(q.length === 1 ? 'أُضيفت مهمة من «نبض المشاريع»' : 'أُضيفت ' + q.length + ' مهام من «نبض المشاريع»');
+}
+window.addEventListener('storage', e=>{ if(e.key === INBOX_KEY && e.newValue) drainInbox(); });
+/* فتح مشروع من النبض داخل اللوح: تبويب «المشاريع» على المشروع نفسه */
+window.openProjectFromPulse = (code, org)=>{
+  const f = $('projectsFrame');
+  f.setAttribute('src', 'projects.html?embed=1' + (org && org !== 'medics' ? '&org=' + org : '') + '#' + encodeURIComponent(code));
+  showTab('projects');
+};
 ['tText','tProj','tMins'].forEach(id=>$(id).addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); }));
 
 /* getArr دالة لا مصفوفة: apply() وقراءة السحابة تستبدلان waits/laters بمصفوفات جديدة،
@@ -5413,6 +5438,7 @@ $('pinnedEvent').addEventListener('input', save);
 $('brainDump').addEventListener('input', save);
 
 load();
+setTimeout(drainInbox, 800);   /* بعد تحميل الحالة: مهام وصلت من «نبض المشاريع» واللوح مغلق */
 render();
 renderTimeline();
 

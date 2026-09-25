@@ -102,7 +102,8 @@ button.kpi:hover{border-color:var(--ink-2);translate:0 -2px}
 .plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .pcard{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:16px 18px;display:grid;gap:10px;text-align:start;box-shadow:var(--shadow);
   transition:border-color var(--dur-2) var(--ease-out),translate var(--dur-2) var(--ease-out)}
-.pcard:hover{border-color:var(--ink-2);translate:0 -2px}
+.pcard:hover{border-color:var(--ink-2)}
+.pmain{display:grid;gap:10px;border:0;background:transparent;padding:0;text-align:start;width:100%}
 .pcard .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
 .pcard .code{font:700 12px/1 var(--font-head);color:var(--focus)}
 .pcard h3{font-size:15px;line-height:1.5;margin-top:4px}
@@ -118,6 +119,36 @@ button.kpi:hover{border-color:var(--ink-2);translate:0 -2px}
 .bar.work i::after{--bar:var(--grad-line)}
 .bar b{font-weight:600;color:var(--ink);text-align:end}
 .pcard .next{font-size:12.5px;color:var(--ink-2);border-top:1px dashed var(--rule);padding-top:8px}
+/* الإجراءات */
+.drow{display:block;padding:0}
+.dmain{display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;padding:10px 18px 4px;border:0;background:transparent;text-align:start;width:100%}
+.dact{display:flex;flex-wrap:wrap;gap:6px;padding:0 18px 10px;justify-content:flex-end}
+.dact button,.dact select,.pact button,.tb .act{font-size:12px;border:1px solid var(--rule);background:var(--paper);color:var(--ink-2);border-radius:999px;padding:4px 11px;
+  transition:background-color var(--dur-2) var(--ease-out),border-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out)}
+.dact button:hover,.dact select:hover,.pact button:hover{border-color:var(--ink-2);color:var(--ink)}
+.dact button[disabled],.dact select[disabled],.pact button[disabled]{opacity:.45;cursor:not-allowed}
+.dact .done{border-color:color-mix(in srgb,var(--done) 45%,transparent);color:var(--done)}
+.pact{display:flex;gap:6px;flex-wrap:wrap}
+.pact .danger{border-color:color-mix(in srgb,var(--urgent) 45%,transparent);color:var(--urgent)}
+@media (max-width:640px){ .dmain{grid-template-columns:1fr auto;row-gap:6px} .dmain .kind{grid-column:1/-1;justify-self:start} .dmain .st{display:none} }
+dialog{border:0;padding:0;border-radius:var(--r);background:var(--paper);color:var(--ink);box-shadow:0 30px 80px rgba(8,9,20,.35);width:min(520px,calc(100% - 32px))}
+dialog::backdrop{background:var(--overlay)}
+dialog[open]{animation:dlgIn var(--dur-3) var(--ease-out)}
+@keyframes dlgIn{from{opacity:0;transform:translateY(10px) scale(.965)}}
+.dlg{display:grid;gap:14px;padding:22px 24px}
+.dlg h2{font-size:18px}
+.dlg p{margin:0;color:var(--ink-2);font-size:14px}
+.dlg label{display:grid;gap:6px;font-size:13px;color:var(--ink-2)}
+.dlg input,.dlg textarea{font:inherit;color:var(--ink);background:var(--field-bg,var(--stripe));border:1px solid var(--field-line,var(--rule));border-radius:8px;padding:9px 11px}
+.dlg textarea{min-height:170px;line-height:1.8;resize:vertical}
+.dlg .row{display:flex;gap:8px;justify-content:flex-start;flex-wrap:wrap}
+.dlg .row button{border:1px solid var(--rule);background:var(--paper);border-radius:4px;padding:8px 16px;font-weight:600}
+.dlg .row .primary{background:var(--cta);color:var(--on-cta);border-color:var(--cta)}
+.dlg .row .danger{background:var(--urgent);color:#fff;border-color:var(--urgent)}
+.toast{position:fixed;bottom:22px;left:50%;translate:-50% 16px;opacity:0;z-index:50;background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:8px;font-size:13.5px;
+  transition:opacity var(--dur-3) var(--ease-out),translate var(--dur-3) var(--ease-out);pointer-events:none;max-width:90vw}
+.toast.on{opacity:1;translate:-50% 0}
+.toast.bad{background:var(--urgent);color:#fff}
 .empty{background:var(--paper);border:1px dashed var(--rule);border-radius:var(--r);padding:22px;text-align:center;color:var(--muted)}
 .loading{color:var(--muted);text-align:center;padding:40px}
 
@@ -141,18 +172,23 @@ button.kpi:hover{border-color:var(--ink-2);translate:0 -2px}
   </a>
   <span class="src" id="src" hidden><i></i><span></span></span>
   <nav id="orgs" aria-label="المؤسسة"></nav>
-  <nav><a href="projects.html" id="toProjects">كل المشاريع</a></nav>
+  <nav><button type="button" class="act" id="weeklyBtn">الملخص الأسبوعي</button><a href="projects.html" id="toProjects">كل المشاريع</a></nav>
 </header>
 
 <main class="wrap" id="main">
   <div class="loading">جارٍ قراءة نبض المشاريع…</div>
 </main>
 
+<dialog id="dlg"></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="upFile" hidden accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,image/*">
 <script src="nasaq-core.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const AR = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+/* الأرقام إنجليزية في المنصة كلها (قرار صاحب اللوح) */
+const AR = n => String(n);
+const LOC = 'ar-EG-u-nu-latn';
 const Q = new URLSearchParams(location.search);
 const ORGS = { medics: { name: 'مديكس', fixture: 'projects.local.json' }, humera: { name: 'هيوميرا', fixture: 'humera.local.json' } };
 const ORG = Q.get('org') === 'humera' ? 'humera' : 'medics';
@@ -163,7 +199,7 @@ const today = (()=>{ const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(
 const toDate = s => { if(!s) return null; const d = new Date(String(s).slice(0, 10) + 'T00:00:00'); return isNaN(d) ? null : d; };
 const daysTo = s => { const d = toDate(s); return d ? Math.round((d - today) / 864e5) : null; };
 const RUNNING = new Set(['قيد التنفيذ', 'نشط']);
-const fmtDay = s => { const d = toDate(s); return d ? d.toLocaleDateString('ar-EG', {day: 'numeric', month: 'short'}) : '—'; };
+const fmtDay = s => { const d = toDate(s); return d ? d.toLocaleDateString(LOC, {day: 'numeric', month: 'short'}) : '—'; };
 /* المعدود بصيغته الصحيحة: ١ مشروع، ٢ مشروعان، ٣–١٠ مشاريع، ١١+ مشروعًا */
 function cnt(n, f){ return n === 1 ? f[0] : n === 2 ? f[1] : AR(n) + ' ' + (n <= 10 ? f[2] : f[3]); }
 const W_PROJ = ['مشروع واحد', 'مشروعان', 'مشاريع', 'مشروعًا'], W_REP = ['تقرير واحد', 'تقريران', 'تقارير', 'تقريرًا'];
@@ -269,15 +305,15 @@ function render(){
   const ending = H.filter(h=>h.endIn != null && h.endIn >= 0 && h.endIn <= 30).length;
   const behind = H.filter(h=>h.behind || (h.endIn != null && h.endIn < 0)).length;
   const main = $('main');
-  const head = '<div class="head' + rv() + '"><h1>نبض المشاريع</h1><p>' + today.toLocaleDateString('ar-EG', {weekday: 'long', day: 'numeric', month: 'long'}) + ' — ' +
-    (attn.length ? '<b>' + cnt(attn.length, W_PROJ) + (attn.length === 1 ? ' يحتاج' : attn.length === 2 ? ' يحتاجان' : ' تحتاج') + ' انتباهك</b>' + (G.late.length ? '، و' + cnt(G.late.length, W_REP) + ' ' + (G.late.length <= 10 && G.late.length > 2 ? 'متأخرة' : 'متأخر' + (G.late.length === 2 ? 'ان' : '')) : '') + '.'
+  const head = '<div class="head' + rv() + '"><h1>نبض المشاريع</h1><p>' + today.toLocaleDateString(LOC, {weekday: 'long', day: 'numeric', month: 'long'}) + ' — ' +
+    (attn.length ? '<b>' + cnt(attn.length, W_PROJ) + (attn.length === 1 ? ' يحتاج' : attn.length === 2 ? ' يحتاجان' : ' تحتاج') + ' انتباهك</b>' + (G.late.length ? '، و' + cnt(G.late.length, W_REP) + ' ' + (G.late.length > 10 ? 'متأخرًا' : G.late.length > 2 ? 'متأخرة' : G.late.length === 2 ? 'متأخران' : 'متأخر') : '') + '.'
                  : 'كل المشاريع الجارية على مسارها. لا تقارير متأخرة.') + '</p></div>';
   const kpi = (k, v, sub, cls, target)=>'<' + (target ? 'button type="button" data-go="' + target + '"' : 'div') + ' class="kpi ' + (cls || '') + rv() + '"><span>' + k + '</span><b class="num">' + AR(v) + '</b><small>' + sub + '</small></' + (target ? 'button' : 'div') + '>';
   const kpis = '<div class="kpis">' +
     kpi('تقارير متأخرة', G.late.length, 'فات موعدها ولم تصدر', G.late.length ? 'bad' : 'ok', 'dues') +
-    kpi('هذا الأسبوع', G.week.length, 'تقارير مستحقة خلال ٧ أيام', G.week.length ? 'warn' : '', 'dues') +
-    kpi('هذا الشهر', G.month.length, 'مستحقة خلال ٣١ يومًا', '', 'dues') +
-    kpi('مشاريع جارية', A.running.length, AR(ending) + ' تنتهي خلال ٣٠ يومًا', '', 'running') +
+    kpi('هذا الأسبوع', G.week.length, 'تقارير مستحقة خلال 7 أيام', G.week.length ? 'warn' : '', 'dues') +
+    kpi('هذا الشهر', G.month.length, 'مستحقة خلال 31 يومًا', '', 'dues') +
+    kpi('مشاريع جارية', A.running.length, AR(ending) + ' تنتهي خلال 30 يومًا', '', 'running') +
     kpi('خارج المسار', behind, 'تجاوزت مدتها أو سبقها الوقت', behind ? 'bad' : 'ok', 'running') + '</div>';
 
   const focus = attn.length ? '<section><div class="sec-h' + rv() + '"><h2>يحتاج انتباهك اليوم</h2><small>مرتّبة بحسب الإلحاح</small></div><div class="focus">' +
@@ -285,27 +321,36 @@ function render(){
       '<span class="code">' + esc(h.p.code || '') + '</span><h3>' + esc(h.p.name || '') + '</h3><ul>' + h.reasons.slice(0, 3).map(r=>'<li>' + esc(r) + '</li>').join('') + '</ul></button>').join('') +
     '</div></section>' : '';
 
-  const drow = o=>{ const w = whenText(o.n), fin = /ختامي/.test(o.x.kind || '');
-    return '<button type="button" class="drow" data-p="' + esc(o.p.id) + '"><span class="kind' + (fin ? ' final' : '') + '">' + esc(o.x.kind || 'تقرير') + (o.x.num ? ' ' + AR(o.x.num) : '') + '</span>' +
+  const can = canWrite(), off = can ? '' : ' disabled title="يحتاج الاتصال المباشر بنوشن بحساب صاحب اللوح"';
+  const drow = o=>{ const w = whenText(o.n), fin = /ختامي/.test(o.x.kind || ''), id = esc(o.x.id), tasked = TASKED.has(o.x.id);
+    return '<div class="drow"><button type="button" class="dmain" data-p="' + esc(o.p.id) + '"><span class="kind' + (fin ? ' final' : '') + '">' + esc(o.x.kind || 'تقرير') + (o.x.num ? ' ' + AR(o.x.num) : '') + '</span>' +
       '<span class="t"><b>' + esc(o.p.name || '') + '</b><small>' + esc(o.p.code || '') + (o.p.donor ? ' · ' + esc(o.p.donor) : '') + '</small></span>' +
       '<span class="st' + (o.x.status === 'قيد الإعداد' ? ' prep' : '') + '">' + esc(o.x.status || 'لم يبدأ') + '</span>' +
-      '<span class="when ' + w.cls + '">' + w.txt + '<small>' + fmtDay(o.x.due) + '</small></span></button>'; };
+      '<span class="when ' + w.cls + '">' + w.txt + '<small>' + fmtDay(o.x.due) + '</small></span></button>' +
+      '<div class="dact">' +
+        '<button type="button" data-act="task" data-d="' + id + '"' + (tasked ? ' class="done" title="أُضيفت إلى مهامك"' : '') + '>' + (tasked ? '✓ في مهامك' : 'حوّل إلى مهمة') + '</button>' +
+        '<select data-act="status" data-d="' + id + '" aria-label="حالة التقرير"' + off + '>' + ['لم يبدأ', 'قيد الإعداد', 'صدر'].map(v=>'<option' + ((o.x.status || 'لم يبدأ') === v ? ' selected' : '') + '>' + v + '</option>').join('') + '</select>' +
+        '<button type="button" data-act="upload" data-d="' + id + '"' + off + '>ارفع التقرير</button>' +
+        '<button type="button" data-act="defer" data-d="' + id + '"' + off + '>تأجيل</button>' +
+        '<button type="button" data-act="msg" data-d="' + id + '">رسالة متابعة</button>' +
+      '</div></div>'; };
   const grp = (key, title, list)=>list.length ? '<div class="dgroup ' + key + '"><h3><i></i>' + title + ' (' + AR(list.length) + ')</h3>' + list.map(drow).join('') + '</div>' : '';
   const anyDue = G.late.length + G.week.length + G.month.length + G.later.length;
   const dues = '<section id="dues"><div class="sec-h' + rv() + '"><h2>التقارير والاستحقاقات</h2><small>المرحلية والختامية التي لم تصدر</small></div>' +
-    (anyDue ? '<div class="dues' + rv() + '">' + grp('late', 'متأخرة', G.late) + grp('week', 'هذا الأسبوع', G.week) + grp('month', 'هذا الشهر', G.month) + grp('later', 'خلال ٣ أشهر', G.later) + '</div>'
+    (anyDue ? '<div class="dues' + rv() + '">' + grp('late', 'متأخرة', G.late) + grp('week', 'هذا الأسبوع', G.week) + grp('month', 'هذا الشهر', G.month) + grp('later', 'خلال 3 أشهر', G.later) + '</div>'
             : '<div class="empty' + rv() + '">لا تقارير مستحقة ولا متأخرة.</div>') + '</section>';
 
-  const bar = (cls, label, v, i)=>'<div class="bar ' + cls + '"><span>' + label + '</span><i style="--i:' + i + '" data-v="' + (v == null ? 0 : v.toFixed(3)) + '"></i><b>' + (v == null ? '—' : AR(Math.round(v * 100)) + '٪') + '</b></div>';
+  const bar = (cls, label, v, i)=>'<div class="bar ' + cls + '"><span>' + label + '</span><i style="--i:' + i + '" data-v="' + (v == null ? 0 : v.toFixed(3)) + '"></i><b>' + (v == null ? '—' : AR(Math.round(v * 100)) + '%') + '</b></div>';
   const pcards = H.map((h, k)=>{
     const p = h.p, flag = h.endIn != null && h.endIn < 0 ? '<span class="flag">تجاوز المدة</span>'
       : h.lateDels.length ? '<span class="flag">تقرير متأخر</span>' : h.behind ? '<span class="flag warn">متأخر عن الخطة</span>'
       : h.endIn != null && h.endIn <= 30 ? '<span class="flag warn">ينتهي قريبًا</span>' : '<span class="flag ok">على المسار</span>';
     const nx = h.nextDel ? 'التالي: ' + esc(h.nextDel.x.kind) + (h.nextDel.x.num ? ' ' + AR(h.nextDel.x.num) : '') + ' — ' + whenText(h.nextDel.n).txt
       : h.endIn != null ? (h.endIn < 0 ? 'انتهت مدته في ' : 'ينتهي في ') + fmtDay(p.end) : 'بلا تاريخ انتهاء مسجّل';
-    return '<button type="button" class="pcard' + rv() + '" data-p="' + esc(p.id) + '"><div class="top"><div><span class="code">' + esc(p.code || '') + '</span><h3>' + esc(p.name || '') + '</h3>' +
+    const act = h.endIn != null && h.endIn < 0 ? '<div class="pact"><button type="button" class="danger" data-act="close" data-pid="' + esc(p.id) + '"' + off + '>أغلق المشروع</button></div>' : '';
+    return '<div class="pcard' + rv() + '"><button type="button" class="pmain" data-p="' + esc(p.id) + '"><div class="top"><div><span class="code">' + esc(p.code || '') + '</span><h3>' + esc(p.name || '') + '</h3>' +
       (p.donor ? '<span class="donor">' + esc(p.donor) + '</span>' : '') + '</div>' + flag + '</div><div class="bars">' +
-      bar('time', 'الوقت', h.elapsed, k) + bar('work', 'الإنجاز', h.progress, k) + '</div><div class="next">' + nx + '</div></button>';
+      bar('time', 'الوقت', h.elapsed, k) + bar('work', 'الإنجاز', h.progress, k) + '</div><div class="next">' + nx + '</div></button>' + act + '</div>';
   }).join('');
   const running = '<section id="running"><div class="sec-h' + rv() + '"><h2>المشاريع الجارية</h2><small>الوقت المنقضي مقابل الإنجاز — الإنجاز من الخطة، أو من التقارير الصادرة إن لم تُسجَّل خطة</small></div>' +
     (H.length ? '<div class="plist">' + pcards + '</div>' : '<div class="empty">لا مشاريع جارية.</div>') + '</section>';
@@ -315,7 +360,135 @@ function render(){
   requestAnimationFrame(()=>requestAnimationFrame(()=>main.querySelectorAll('.bar i').forEach(i=>i.style.setProperty('--v', i.dataset.v))));
 }
 
+
+/* ================= الإجراءات ================= */
+const canWrite = ()=>SOURCE === 'live' && !!(auth && auth.isOwner || EMBED);
+const TASKED_KEY = 'daily-board-pulse-tasked';
+const TASKED = new Set((()=>{ try{ return JSON.parse(localStorage.getItem(TASKED_KEY) || '[]'); }catch(e){ return []; } })());
+function toast(msg, bad){ const t = $('toast'); t.textContent = msg; t.className = 'toast on' + (bad ? ' bad' : ''); clearTimeout(toast.t); toast.t = setTimeout(()=>{ t.className = 'toast'; }, 3200); }
+function dialogOpen(html, wire){
+  const d = $('dlg'); d.innerHTML = '<div class="dlg">' + html + '</div>';
+  d.querySelectorAll('[data-close]').forEach(b=>b.onclick = ()=>d.close());
+  if(wire) wire(d);
+  d.showModal();
+}
+const findDel = id=>DATA.deliverables.find(x=>x.id === id);
+const projOf = x=>DATA.projects.find(p=>p.id === x.project) || {};
+const delLabel = x=>(x.kind || 'تقرير') + (x.num ? ' ' + x.num : '');
+function saveCache(){ try{ const k = 'daily-board-projects-cache-' + ORG, c = JSON.parse(localStorage.getItem(k) || 'null'); if(c){ c.deliverables = DATA.deliverables; c.projects = DATA.projects; localStorage.setItem(k, JSON.stringify(c)); } }catch(e){} }
+async function saveDel(id, fields, okMsg){
+  try{
+    const d = await post(Object.assign({action: 'deliverable_save', org: ORG, id}, fields));
+    const i = DATA.deliverables.findIndex(x=>x.id === id);
+    if(i >= 0 && d.deliverable) DATA.deliverables[i] = Object.assign({}, DATA.deliverables[i], d.deliverable);
+    saveCache(); render(); toast(okMsg); return true;
+  }catch(e){ toast(e.message || 'تعذّر الحفظ في نوشن', true); render(); return false; }
+}
+
+/* ١. حوّل إلى مهمة: داخل اللوح مباشرة، وإلا عبر «صندوق الوارد» الذي يسحبه اللوح عند فتحه */
+function toTask(x){
+  const p = projOf(x), n = daysTo(x.due);
+  const t = {text: 'إعداد ' + delLabel(x) + ' — ' + (p.name || ''), proj: p.code || '', donor: p.donor || '', due: String(x.due || '').slice(0, 10),
+             imp: n != null && n <= 3 ? 'أ' : 'ب', notes: 'من «نبض المشاريع»' + (x.status ? ' — الحالة: ' + x.status : '')};
+  let direct = false;
+  if(EMBED && window.parent !== window){ try{ if(typeof window.parent.addTaskFromPulse === 'function'){ window.parent.addTaskFromPulse(t); direct = true; } }catch(e){} }
+  if(!direct){ try{ const k = 'daily-board-inbox', q = JSON.parse(localStorage.getItem(k) || '[]'); q.push(t); localStorage.setItem(k, JSON.stringify(q)); }catch(e){ toast('تعذّرت الإضافة', true); return; } }
+  TASKED.add(x.id); try{ localStorage.setItem(TASKED_KEY, JSON.stringify([...TASKED])); }catch(e){}
+  render(); toast(direct ? 'أُضيفت إلى مهامك اليوم' : 'أُرسلت إلى مهامك — تظهر في اللوح فور فتحه');
+}
+/* ٢. تأجيل: موعد جديد وسبب يُحفظ في ملاحظات الاستحقاق */
+function deferDel(x){
+  dialogOpen('<h2>تأجيل ' + esc(delLabel(x)) + '</h2><p>' + esc(projOf(x).name || '') + ' — الموعد الحالي ' + fmtDay(x.due) + '</p>' +
+    '<label>الموعد الجديد<input type="date" id="dDue" value="' + esc(String(x.due || '').slice(0, 10)) + '"></label>' +
+    '<label>السبب (يُحفظ في ملاحظات الاستحقاق)<input id="dWhy" placeholder="مثلًا: بانتظار بيانات المستشفى"></label>' +
+    '<div class="row"><button class="primary" id="dOk">احفظ في نوشن</button><button data-close>إلغاء</button></div>', d=>{
+      d.querySelector('#dOk').onclick = async ()=>{
+        const due = d.querySelector('#dDue').value, why = d.querySelector('#dWhy').value.trim();
+        if(!due){ toast('اختر الموعد الجديد', true); return; }
+        const stamp = new Date().toLocaleDateString(LOC, {day: 'numeric', month: 'short'});
+        const notes = [x.notes, 'أُجّل من ' + fmtDay(x.due) + ' إلى ' + fmtDay(due) + ' (' + stamp + ')' + (why ? ': ' + why : '')].filter(Boolean).join('\n');
+        d.close(); await saveDel(x.id, {due, notes}, 'حُفظ الموعد الجديد في نوشن');
+      };
+    });
+}
+/* ٣. رسالة متابعة: نص جاهز تراجعه، ثم تنسخه أو تفتحه في بريدك — لا شيء يُرسل تلقائيًا */
+function followUp(x){
+  const p = projOf(x), n = daysTo(x.due);
+  const body = 'السلام عليكم ورحمة الله وبركاته،\n\n' +
+    'نودّ التذكير بـ' + delLabel(x) + ' لمشروع «' + (p.name || '') + '»' + (p.code ? ' (' + p.code + ')' : '') + '، ' +
+    (n != null && n < 0 ? 'وقد كان موعده ' + fmtDay(x.due) + ' ولم يصدر بعد.' : 'وموعده ' + fmtDay(x.due) + '.') +
+    '\nنرجو إفادتنا بما تم إنجازه والموعد المتوقع للإرسال، أو بما يلزمكم منا لإتمامه.\n\nمع خالص الشكر والتقدير،';
+  const subj = 'متابعة: ' + delLabel(x) + ' — ' + (p.code || p.name || '');
+  dialogOpen('<h2>رسالة متابعة</h2><p>إلى منسق المشروع' + (p.coordinator ? ' (' + esc(p.coordinator) + ')' : '') + ' أو الجهة المعنية — راجعها وعدّلها قبل الإرسال.</p>' +
+    '<textarea id="mBody">' + esc(body) + '</textarea>' +
+    '<div class="row"><button class="primary" id="mCopy">انسخ النص</button><button id="mMail">افتح في البريد</button><button data-close>إغلاق</button></div>', d=>{
+      d.querySelector('#mCopy').onclick = ()=>navigator.clipboard.writeText(d.querySelector('#mBody').value).then(()=>toast('نُسخت الرسالة'), ()=>toast('تعذّر النسخ', true));
+      d.querySelector('#mMail').onclick = ()=>{ location.href = 'mailto:?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(d.querySelector('#mBody').value); };
+    });
+}
+/* ٤. ارفع التقرير: إلى خانته في مجلد المشروع على درايف، ثم تصير حالته «صدر» */
+let upTarget = null;
+const b64 = file=>new Promise((res, rej)=>{ const r = new FileReader(); r.onload = ()=>res(String(r.result).split(',')[1] || ''); r.onerror = ()=>rej(new Error('تعذّرت قراءة الملف')); r.readAsDataURL(file); });
+$('upFile').onchange = async e=>{
+  const file = e.target.files[0], x = upTarget; e.target.value = ''; if(!file || !x) return;
+  if(file.size > 25 * 1024 * 1024){ toast('حجم الملف أكبر من 25 ميجابايت', true); return; }
+  const p = projOf(x), slot = /ختامي/.test(x.kind || '') ? 'تقرير ختامي' : 'تقرير مرحلي';
+  toast('جارٍ رفع «' + file.name + '»…');
+  try{
+    await post({action: 'file_upload', org: ORG, code: p.code, slot, pageId: p.id, file: {name: file.name, mime: file.type || '', project: p.name || '', data: await b64(file)}});
+    await saveDel(x.id, {status: 'صدر'}, 'رُفع التقرير إلى درايف وصارت حالته «صدر»');
+  }catch(err){ toast(err.message || 'تعذّر الرفع', true); }
+};
+/* ٥. إغلاق مشروع تجاوز مدته — بتأكيد كتابة كوده */
+function closeProject(p){
+  dialogOpen('<h2>إغلاق المشروع</h2><p>«' + esc(p.name || '') + '» انتهت مدته في ' + fmtDay(p.end) + '. ستصير حالته في نوشن «مكتمل».</p>' +
+    '<label>للتأكيد اكتب كود المشروع: <b>' + esc(p.code || '') + '</b><input id="cCode" autocomplete="off"></label>' +
+    '<div class="row"><button class="danger" id="cOk">أغلق المشروع</button><button data-close>إلغاء</button></div>', d=>{
+      d.querySelector('#cOk').onclick = async ()=>{
+        if(d.querySelector('#cCode').value.trim().toUpperCase() !== String(p.code || '').toUpperCase()){ toast('الكود غير مطابق', true); return; }
+        d.close();
+        try{ const r = await post({action: 'project_status', org: ORG, id: p.id, status: 'مكتمل'}); Object.assign(p, r.project || {status: 'مكتمل'}); saveCache(); render(); toast('أُغلق المشروع في نوشن'); }
+        catch(e){ toast(e.message || 'تعذّر الإغلاق', true); }
+      };
+    });
+}
+/* ٦. الملخص الأسبوعي: نص جاهز للإدارة — نسخ أو تنزيل ملف نصي */
+function weekly(){
+  if(!DATA) return;
+  const A = analyse(), G = A.groups, line = o=>'• ' + delLabel(o.x) + ' — ' + (o.p.code ? o.p.code + ' ' : '') + (o.p.name || '') + ' (' + whenText(o.n).txt + '، ' + fmtDay(o.x.due) + ')';
+  const over = A.health.filter(h=>h.endIn != null && h.endIn < 0), soon = A.health.filter(h=>h.endIn != null && h.endIn >= 0 && h.endIn <= 30);
+  const sec = (t, list, f)=>list.length ? '\n' + t + ' (' + list.length + '):\n' + list.map(f).join('\n') + '\n' : '';
+  const txt = 'نبض المشاريع — ' + ORGS[ORG].name + ' — ' + today.toLocaleDateString(LOC, {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'}) + '\n' +
+    'مشاريع جارية: ' + A.running.length + ' · تقارير متأخرة: ' + G.late.length + ' · مستحقة هذا الأسبوع: ' + G.week.length + ' · هذا الشهر: ' + G.month.length + '\n' +
+    sec('التقارير المتأخرة', G.late, line) + sec('المستحقة هذا الأسبوع', G.week, line) + sec('المستحقة هذا الشهر', G.month, line) +
+    sec('مشاريع تجاوزت مدتها ولم تُغلق', over, h=>'• ' + (h.p.code || '') + ' ' + (h.p.name || '') + ' — انتهت في ' + fmtDay(h.p.end)) +
+    sec('مشاريع تنتهي خلال 30 يومًا', soon, h=>'• ' + (h.p.code || '') + ' ' + (h.p.name || '') + ' — ' + fmtDay(h.p.end));
+  dialogOpen('<h2>الملخص الأسبوعي</h2><p>جاهز للإرسال إلى الإدارة — راجعه ثم انسخه أو نزّله.</p><textarea id="wBody" style="min-height:280px">' + esc(txt) + '</textarea>' +
+    '<div class="row"><button class="primary" id="wCopy">انسخ</button><button id="wSave">نزّل ملفًا نصيًا</button><button data-close>إغلاق</button></div>', d=>{
+      d.querySelector('#wCopy').onclick = ()=>navigator.clipboard.writeText(d.querySelector('#wBody').value).then(()=>toast('نُسخ الملخص'), ()=>toast('تعذّر النسخ', true));
+      d.querySelector('#wSave').onclick = ()=>{
+        const a = document.createElement('a'), blob = new Blob(['\ufeff' + d.querySelector('#wBody').value], {type: 'text/plain;charset=utf-8'});
+        a.href = URL.createObjectURL(blob); a.download = 'نبض المشاريع ' + today.toISOString().slice(0, 10) + '.txt'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+      };
+    });
+}
+$('weeklyBtn').onclick = weekly;
+document.addEventListener('change', e=>{
+  const sel = e.target.closest('select[data-act="status"]'); if(!sel) return;
+  const x = findDel(sel.dataset.d); if(!x) return;
+  saveDel(x.id, {status: sel.value}, 'حالة ' + delLabel(x) + ': ' + sel.value);
+});
 document.addEventListener('click', e=>{
+  const act = e.target.closest('[data-act]');
+  if(act && act.tagName === 'BUTTON'){
+    const x = act.dataset.d && findDel(act.dataset.d);
+    if(act.dataset.act === 'task' && x && !TASKED.has(x.id)) toTask(x);
+    else if(act.dataset.act === 'defer' && x) deferDel(x);
+    else if(act.dataset.act === 'msg' && x) followUp(x);
+    else if(act.dataset.act === 'upload' && x){ upTarget = x; $('upFile').click(); }
+    else if(act.dataset.act === 'close'){ const p = DATA.projects.find(q=>q.id === act.dataset.pid); if(p) closeProject(p); }
+    return;
+  }
   const go = e.target.closest('[data-go]'); if(go){ const t = $(go.dataset.go); if(t) t.scrollIntoView({behavior: 'smooth', block: 'start'}); return; }
   const b = e.target.closest('[data-p]'); if(!b || !DATA) return;
   const p = DATA.projects.find(x=>x.id === b.dataset.p); if(p) openProject(p);
