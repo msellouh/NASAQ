@@ -397,6 +397,16 @@ dialog::backdrop{background:var(--overlay);-webkit-backdrop-filter:blur(4px);bac
 dialog form{display:grid;gap:14px;padding:24px 26px}
 dialog h2{font-size:19px}
 dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
+.danger-zone{border-color:color-mix(in srgb,var(--urgent) 35%,var(--rule))}
+.danger-zone h2{color:var(--urgent)}
+.btn-danger{background:var(--urgent);color:#fff;border:1px solid var(--urgent);border-radius:4px;padding:8px 16px;font-weight:600}
+.btn-danger[disabled]{opacity:.6;cursor:wait}
+.del-form{display:grid;gap:14px;padding:24px 26px}
+.del-form .row{display:flex;gap:8px;flex-wrap:wrap}
+.del-form .row button[data-close]{border:1px solid var(--rule);background:var(--paper);border-radius:4px;padding:8px 16px}
+.dc-list{display:grid;gap:6px;max-height:320px;overflow:auto}
+.dc-row{display:grid;grid-template-columns:1fr 150px;gap:10px;align-items:center;font-size:13px}
+.dc-row input{padding:6px 9px}
 .fld{display:grid;gap:6px;font-size:13px;color:var(--ink-2)}
 .fld input,.fld select,.fld textarea{padding:9px 12px}
 .fld textarea{min-height:70px;resize:vertical}
@@ -842,6 +852,18 @@ async function load(){
       + 'إن كان هذا أول تشغيل، فانشر نسخة الجسر الجديدة من Apps Script.</div></div>';
   }
 }
+/* دولة كل مانح (من الجسر) تُنسخ إلى المشاريع لتُجمَّع في الإحصائيات */
+function applyDonorCountries(){ const m = DATA.donorCountries || {}; DATA.projects.forEach(p => { p.donorCountry = (p.donor && m[p.donor]) || 'غير مصنّف'; }); }
+document.addEventListener('change', async e => {
+  const inp = e.target.closest('input[data-donor]'); if(!inp) return;
+  try{
+    const r = await post({action: 'donor_country_set', org: ORG, donor: inp.dataset.donor, country: inp.value.trim()});
+    DATA.donorCountries = r.donorCountries || {}; applyDonorCountries();
+    toast('دولة «' + inp.dataset.donor + '»: ' + (inp.value.trim() || 'غير مصنّف'));
+    const open = inp.closest('details') && inp.closest('details').open; render();
+    if(open){ const dd = document.querySelector('.dc-edit'); if(dd) dd.open = true; }
+  }catch(err){ toast(err.message || 'تعذّر الحفظ', true); }
+});
 /* خطة نسخة التطوير تُحفظ في هذا المتصفح فقط — لتجربة الإدخال قبل نشر الجسر */
 const LOCAL_PLAN_KEY = 'daily-board-projects-plan-dev-' + ORG;
 const LOCAL_PEOPLE_KEY = 'daily-board-projects-people-dev-' + ORG;
@@ -851,7 +873,9 @@ function localPeopleRead(){ try{ return JSON.parse(localStorage.getItem(LOCAL_PE
 function localPeopleWrite(){ try{ localStorage.setItem(LOCAL_PEOPLE_KEY, JSON.stringify(DATA.people)); }catch(e){} }
 const uniqNames = list => [...new Set(list.map(n => String(n || '').trim()).filter(Boolean))];
 function use(d, src, note){
-  DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [], options: d.options || {} };
+  DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [], options: d.options || {}, donorCountries: d.donorCountries || {} };
+  applyDonorCountries();
+  if(src === 'live') loadFilesCache();
   SOURCE = src;
   if(src === 'local'){
     DATA.plan = DATA.plan.concat(localPlanRead());
@@ -1001,9 +1025,44 @@ function renderList(rows){
 function renderDetail(){
   const p = DATA.projects.find(x => x.id === S.sel);
   if(!p){ $('detail').innerHTML = '<div class="card empty">اختر مشروعًا من القائمة لعرض تفاصيله.</div>'; return; }
-  $('detail').innerHTML = heroCard(p) + planCard(p) + timelineCard(p) + moneyCard(p) + docsCard(p);
+  $('detail').innerHTML = heroCard(p) + planCard(p) + timelineCard(p) + moneyCard(p) + docsCard(p) + dangerCard(p);
   $('detail').querySelectorAll('.card').forEach((c, i) => { c.classList.add('rise'); c.style.animationDelay = (i * 50) + 'ms'; });
-  if(SOURCE === 'live' && DATA.driveRoot && p.code && !FILES[p.code] && !filesLoading.has(p.code)) fetchFiles(p);
+  if(SOURCE === 'live' && DATA.driveRoot && p.code && (!FILES[p.code] || FILES_STALE.has(p.code)) && !filesLoading.has(p.code)) fetchFiles(p);
+}
+/* حذف المشروع من مكان واحد: أرشفة صفحته واستحقاقاته وخطته في نوشن، ونقل مجلده في درايف إلى المهملات.
+   يشترط كتابة كوده، والجسر يتحقق منه مرة ثانية. الأرشفة والمهملات تُسترجعان نحو ٣٠ يومًا. */
+function dangerCard(p){
+  if(SOURCE !== 'live' || !p.code) return '';
+  return '<article class="card danger-zone"><div class="card-h"><h2>حذف المشروع</h2><small>من نوشن ودرايف واللوح معًا</small></div>' +
+    '<p class="note">يُؤرشف المشروع واستحقاقاته وخطته في نوشن، وينتقل مجلده في درايف إلى المهملات، فيختفي من المنصة كلها. يمكن استرجاعه خلال نحو 30 يومًا من سلة نوشن ومهملات درايف.</p>' +
+    '<button type="button" class="btn-danger" data-act="delete">احذف ' + esc(p.code) + '</button></article>';
+}
+function deleteProject(p){
+  let d = $('delDlg');
+  if(!d){ d = document.createElement('dialog'); d.id = 'delDlg'; document.body.appendChild(d); }
+  d.innerHTML = '<form method="dialog" class="del-form"><h2>حذف «' + esc(p.name || p.code) + '»</h2>' +
+    '<p class="sub">سيُؤرشف في نوشن مع استحقاقاته وخطته، وينتقل مجلده في درايف إلى المهملات.</p>' +
+    '<label class="fld">للتأكيد اكتب كود المشروع: <b>' + esc(p.code) + '</b><input name="c" autocomplete="off" dir="ltr"></label>' +
+    '<div class="row"><button type="submit" class="btn-danger" value="ok">احذف نهائيًا من المنصة</button><button type="button" data-close>إلغاء</button></div></form>';
+  d.querySelector('[data-close]').onclick = () => d.close();
+  d.querySelector('form').onsubmit = async e => {
+    e.preventDefault();
+    const typed = d.querySelector('[name=c]').value.trim();
+    if(typed.toUpperCase() !== String(p.code).toUpperCase()){ toast('الكود غير مطابق', true); return; }
+    const b = d.querySelector('.btn-danger'); b.disabled = true; b.textContent = 'جارٍ الحذف…';
+    try{
+      const r = await post({action: 'project_delete', org: ORG, id: p.id, confirm: typed});
+      d.close();
+      DATA.projects = DATA.projects.filter(x => x.id !== p.id);
+      DATA.deliverables = DATA.deliverables.filter(x => x.project !== p.id);
+      DATA.plan = DATA.plan.filter(x => x.project !== p.id);
+      delete FILES[p.code]; saveFilesCache();
+      try{ const k = 'daily-board-projects-cache-' + ORG, c = JSON.parse(localStorage.getItem(k) || 'null'); if(c){ c.projects = DATA.projects; c.deliverables = DATA.deliverables; c.plan = DATA.plan; localStorage.setItem(k, JSON.stringify(c)); } }catch(e){}
+      S.sel = null; history.replaceState(null, '', location.pathname + location.search); render();
+      toast('حُذف ' + p.code + ' — أُرشفت صفحته' + (r.archived ? ' و' + (r.archived.deliverables || 0) + ' استحقاقات و' + (r.archived.plan || 0) + ' بنود خطة' : '') + (r.archived && r.archived.folder ? '، ومجلده في المهملات' : ''));
+    }catch(err){ b.disabled = false; b.textContent = 'احذف نهائيًا من المنصة'; toast(err.message || 'تعذّر الحذف', true); }
+  };
+  d.showModal();
 }
 function refreshCard(id, html){
   const el = $(id); if(!el) return;
@@ -1226,11 +1285,21 @@ function moneyCard(p){
 
 /* ---------- المستندات والملفات ---------- */
 function filesOf(p){ return SOURCE === 'live' ? FILES[p.code] : (DATA.files || {})[p.code]; }
-async function fetchFiles(p){
+/* فحص مجلد المشروع في درايف بطيء: نعرض آخر قائمة محفوظة في هذا المتصفح فورًا، ونحدّثها في الخلفية
+   (والجسر يحفظ النتيجة ١٠ دقائق، ويمسحها عند الرفع؛ زر «تحديث» يطلب فحصًا جديدًا). */
+const FILES_KEY = 'daily-board-projfiles-' + ORG, FILES_STALE = new Set();
+function loadFilesCache(){
+  try{ const c = JSON.parse(localStorage.getItem(FILES_KEY) || '{}'); Object.keys(c).forEach(k => { if(!FILES[k]){ FILES[k] = c[k]; FILES_STALE.add(k); } }); }catch(e){}
+}
+function saveFilesCache(){
+  try{ const c = {}; Object.keys(FILES).forEach(k => { if(FILES[k] && FILES[k].slots) c[k] = FILES[k]; }); localStorage.setItem(FILES_KEY, JSON.stringify(c)); }catch(e){}
+}
+async function fetchFiles(p, fresh){
   filesLoading.add(p.code);
   try{
-    const d = await post({action:'project_files', org: ORG, code: p.code, pageId: p.id});
+    const d = await post({action:'project_files', org: ORG, code: p.code, pageId: p.id, fresh: !!fresh});
     FILES[p.code] = d.files || {none: true};
+    FILES_STALE.delete(p.code); saveFilesCache();
     if(d.files){ Object.assign(p, {docsDone: d.files.done, docsChecked: d.files.checked, folder: d.files.folder, drive: d.files.url}); }
   }catch(e){ FILES[p.code] = {error: e.message}; }
   filesLoading.delete(p.code);
@@ -1411,6 +1480,15 @@ function renderStats(rows){
       filter: 'donor', max: g => Math.max(g.A, g.E), layers: (g, m) => L('a', g.A, m) + L('e', g.E, m),
       value: g => money(g.A || g.E) + ' <small>· ' + AR(g.n) + (g.A ? ' · صرف ' + pct(g.EA / g.A) : '') + '</small>' }) +
     legend(['var(--c-soft)', 'المعتمد'], ['var(--c-exec)', 'التنفيذ']), donors.length > 12 ? 'أعلى 12 من ' + AR(donors.length) : cnt(donors.length, W_ENT));
+  const byCountry = groupBy(rows, 'donorCountry').sort(byAmount);
+  const dcNames = [...new Set(DATA.projects.map(p => p.donor).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ar'));
+  const dcKnown = [...new Set(Object.values(DATA.donorCountries || {}))];
+  const countryCard = card('حسب دولة المانح', hbars(byCountry, {
+      max: g => Math.max(g.A, g.E), layers: (g, m) => L('a', g.A, m) + L('e', g.E, m),
+      value: g => money(g.A || g.E) + ' <small>· ' + AR(g.n) + '</small>' }) +
+    '<details class="dc-edit"><summary>صنّف المانحين حسب الدولة</summary><datalist id="dlDC">' + dcKnown.map(c => '<option value="' + esc(c) + '">').join('') + '</datalist>' +
+    '<div class="dc-list">' + dcNames.map(n => '<label class="dc-row"><span>' + esc(n) + '</span><input list="dlDC" data-donor="' + esc(n) + '" value="' + esc((DATA.donorCountries || {})[n] || '') + '" placeholder="الدولة"' + (SOURCE === 'live' ? '' : ' disabled title="يحتاج الاتصال بنوشن"') + '></label>').join('') + '</div></details>',
+    'يُضبط مرة لكل مانح');
   const types = groupBy(rows, 'type').sort(byAmount);
   const typeCard = card('حسب نوع المشروع', hbars(types, {
     filter: 'type', max: g => Math.max(g.A, g.E), layers: (g, m) => L('a', g.A, m) + L('e', g.E, m),
@@ -1452,7 +1530,7 @@ function renderStats(rows){
 
   $('stats').innerHTML = counters + projTable(rows) +
     '<div class="sgrid">' + card('تركيبة المبلغ الكلي', donut, 'على المشاريع المسجّل لها اعتماد') + monthCard +
-      donorCard + collCard + typeCard + coordCard + missCard + phaseCard + '</div>';
+      donorCard + countryCard + collCard + typeCard + coordCard + missCard + phaseCard + '</div>';
   $('stats').querySelectorAll(':scope > *, .sgrid > *').forEach((c, i) => { c.classList.add('rise'); c.style.animationDelay = Math.min(i, 10) * 40 + 'ms'; });
 }
 
@@ -1950,7 +2028,8 @@ $('detail').addEventListener('click', e => {
   else if(act === 'add-stage') openPlanDlg(p, null, '', true);
   else if(act === 'tpl') createFromTemplate(p, $('tplSel').value);
   else if(act === 'more'){ const k = b.dataset.key; EXPANDED.has(k) ? EXPANDED.delete(k) : EXPANDED.add(k); refreshCard('docsCard', docsCard(p)); }
-  else if(act === 'files-refresh'){ delete FILES[p.code]; fetchFiles(p); refreshCard('docsCard', docsCard(p)); }
+  else if(act === 'files-refresh'){ delete FILES[p.code]; fetchFiles(p, true); refreshCard('docsCard', docsCard(p)); }
+  else if(act === 'delete') deleteProject(p);
   else if(act === 'up') pickFiles(p, b.dataset.slot);
   else if(act === 'money-edit') openMoneyDlg(p);
 });
