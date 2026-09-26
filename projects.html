@@ -397,6 +397,17 @@ dialog::backdrop{background:var(--overlay);-webkit-backdrop-filter:blur(4px);bac
 dialog form{display:grid;gap:14px;padding:24px 26px}
 dialog h2{font-size:19px}
 dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
+.names-dlg{width:min(860px,calc(100% - 32px))}
+.names-body{display:grid;gap:14px;padding:22px 24px;max-height:calc(100vh - 80px);overflow:auto}
+.ngroup{border:1px solid var(--rule);border-radius:10px;padding:12px 14px;display:grid;gap:10px}
+.ngroup.done{opacity:.55}
+.ngroup .nhead{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.ngroup .nhead input{padding:8px 11px;font-weight:600}
+.ngroup ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.ngroup li label{display:grid;grid-template-columns:auto auto 1fr auto;gap:10px;align-items:center;font-size:13.5px}
+.ngroup li code{font-size:12px;color:var(--focus)}
+.ngroup li small{color:var(--muted);font-size:12px}
+.ngroup li small.diff{color:var(--hold)}
 .danger-zone{border-color:color-mix(in srgb,var(--urgent) 35%,var(--rule))}
 .danger-zone h2{color:var(--urgent)}
 .btn-danger{background:var(--urgent);color:#fff;border:1px solid var(--urgent);border-radius:4px;padding:8px 16px;font-weight:600}
@@ -505,6 +516,7 @@ dialog[open]::backdrop{animation:m-fade-in var(--dur-3) var(--ease-out)}
 <main class="wrap">
   <div class="page-head">
     <div><h1 id="pageTitle">المشاريع</h1><p id="pageSub">جارٍ التحميل…</p></div>
+    <button class="btn" type="button" id="namesBtn" title="مجموعات الأسماء المتشابهة لتعتمد لها اسمًا موحّدًا">مراجعة الأسماء</button>
     <button class="btn cta" type="button" id="newProjBtn">＋ مشروع جديد</button>
   </div>
 
@@ -852,6 +864,72 @@ async function load(){
       + 'إن كان هذا أول تشغيل، فانشر نسخة الجسر الجديدة من Apps Script.</div></div>';
   }
 }
+/* ---------- مراجعة الأسماء المتشابهة ----------
+   تجمع المشاريع ذات الأسماء المتقاربة (تشابه الكلمات بعد حذف الحشو والمانح)، وتقترح اسمًا موحّدًا
+   لكل مجموعة: الأكثر تكرارًا من «المشروع الموحد» الحالي، وإلا الكلمات المشتركة. تعدّل الاسم، وتختار
+   المشاريع، ثم «اعتمد» — فيُكتب في «المشروع الموحد» فقط، ولا يتغيّر عنوان أي مشروع. لا دمج تلقائي. */
+const NM_FILL = new Set(['مشروع','اجراء','توزيع','توريد','توفير','تقديم','تنفيذ','في','على','من','الى','قطاع','غزه','لصالح','ضمن','و','عن','مع','خلال','مرحله','نازحين','مرضي','مصابين','جرحي','مستفيدين','اسر','عائلات','شمال','جنوب','وسط','محافظات','مخيمات','خيام']);
+const nmNorm = w => String(w).replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[\u064B-\u0652\u0640]/g, '').replace(/^(وال|بال|لل|ال|و)(?=..)/, '').toLowerCase();
+function nmTokens(p){
+  const donor = new Set(String(p.donor || '').split(/\s+/).map(nmNorm));
+  return new Set(String(p.name || '').replace(/\([^)]*\)/g, ' ').split(/[\s\-–/،,.+]+/).map(nmNorm)
+    .filter(w => w.length > 1 && !/^\d+$/.test(w) && !NM_FILL.has(w) && !donor.has(w) && !/[a-z]/.test(w)));
+}
+function nmGroups(){
+  /* تجميع بالجوهر لا بالسلسلة: كل مشروع يُقارَن بكلمات جوهر المجموعة (الكلمات الموجودة في نصف أعضائها
+     على الأقل)، فينضم لأقربها إن تشابه بما يكفي، وإلا بدأ مجموعة جديدة — فلا تتصل أنواع مختلفة بكلمة عابرة. */
+  const ps = DATA.projects.filter(p => p.name), T = ps.map(nmTokens);
+  const order = ps.map((_, i) => i).sort((a, b) => T[b].size - T[a].size);
+  const groups = [];
+  const core = g => { const c = {}; g.forEach(i => T[i].forEach(w => { c[w] = (c[w] || 0) + 1; })); return new Set(Object.keys(c).filter(w => c[w] >= g.length / 2)); };
+  order.forEach(i => {
+    const a = T[i]; if(!a.size) return;
+    let best = null, bestS = 0;
+    groups.forEach(g => { const b = g.core; let inter = 0; a.forEach(w => { if(b.has(w)) inter++; }); const sim = inter / Math.min(a.size, b.size); if(inter >= 2 && sim >= .67 && sim > bestS){ best = g; bestS = sim; } });
+    if(best){ best.idx.push(i); best.core = core(best.idx); } else groups.push({idx: [i], core: new Set(a)});
+  });
+  const m = new Map(groups.map((g, k) => [k, g.idx]));
+  return [...m.values()].filter(g => g.length > 1).map(g => {
+    const members = g.map(i => ps[i]);
+    const stdCount = {}; members.forEach(p => { if(p.stdName) stdCount[p.stdName] = (stdCount[p.stdName] || 0) + 1; });
+    let sug = Object.keys(stdCount).sort((x, y) => stdCount[y] - stdCount[x])[0];
+    if(!sug){
+      const common = [...T[g[0]]].filter(w => g.every(i => T[i].has(w)));
+      const words = String(members[0].name).split(/\s+/).filter(w => common.includes(nmNorm(w)));
+      sug = words.join(' ');
+    }
+    return {members, sug: sug || '', mixed: Object.keys(stdCount).length > 1 || members.some(p => !p.stdName)};
+  }).sort((a, b) => (b.mixed - a.mixed) || (b.members.length - a.members.length));
+}
+function openNamesReview(){
+  let d = $('namesDlg');
+  if(!d){ d = document.createElement('dialog'); d.id = 'namesDlg'; d.className = 'names-dlg'; document.body.appendChild(d); }
+  const G = nmGroups(), live = SOURCE === 'live', opts = [...new Set(DATA.projects.map(p => p.stdName).filter(Boolean))];
+  d.innerHTML = '<div class="names-body"><h2>مراجعة الأسماء المتشابهة</h2>' +
+    '<p class="sub">' + (G.length ? cnt(G.length, ['مجموعة واحدة', 'مجموعتان', 'مجموعات', 'مجموعة', 'مجموعة']) + ' من المشاريع ذات الأسماء المتقاربة. المختلفة أولًا. عدّل الاسم المقترح، واختر المشاريع، ثم «اعتمد» — يُحفظ في «المشروع الموحد» ولا يتغيّر عنوان أي مشروع.' : 'لا مجموعات متشابهة.') +
+    (live ? '' : ' <b>للعرض فقط — الاعتماد يحتاج الاتصال بنوشن.</b>') + '</p>' +
+    '<datalist id="dlStd">' + opts.map(o => '<option value="' + esc(o) + '">').join('') + '</datalist>' +
+    G.map((g, k) => '<section class="ngroup" data-g="' + k + '"><div class="nhead"><input list="dlStd" value="' + esc(g.sug) + '" placeholder="اكتب الاسم الموحّد" aria-label="الاسم الموحّد"><button type="button" class="btn cta" data-approve="' + k + '"' + (live ? '' : ' disabled') + '>اعتمد</button></div><ul>' +
+      g.members.map(p => '<li><label><input type="checkbox" checked value="' + esc(p.id) + '"><code>' + esc(p.code || '') + '</code><span>' + esc(p.name) + '</span>' +
+        '<small class="' + (p.stdName && p.stdName !== g.sug ? 'diff' : '') + '">' + esc(p.stdName || 'بلا اسم موحّد') + '</small></label></li>').join('') + '</ul></section>').join('') +
+    '<div class="row"><button type="button" class="btn" data-close>إغلاق</button></div></div>';
+  d.querySelector('[data-close]').onclick = () => d.close();
+  d.querySelectorAll('[data-approve]').forEach(b => b.onclick = async () => {
+    const sec = b.closest('.ngroup'), std = sec.querySelector('.nhead input').value.trim();
+    const ids = [...sec.querySelectorAll('li input:checked')].map(i => i.value);
+    if(!std){ toast('اكتب الاسم الموحّد', true); return; }
+    if(!ids.length){ toast('اختر مشروعًا واحدًا على الأقل', true); return; }
+    b.disabled = true; b.textContent = 'جارٍ الحفظ…';
+    try{
+      const r = await post({action: 'std_name_set', org: ORG, std, ids});
+      DATA.projects.forEach(p => { if(ids.includes(p.id)) p.stdName = std; });
+      sec.classList.add('done'); b.textContent = '✓ اعتُمد لـ' + r.updated;
+      sec.querySelectorAll('li small').forEach((sm, i) => { if(sec.querySelectorAll('li input')[i].checked){ sm.textContent = std; sm.className = ''; } });
+    }catch(err){ b.disabled = false; b.textContent = 'اعتمد'; toast(err.message || 'تعذّر الحفظ', true); }
+  });
+  d.showModal();
+}
+$('namesBtn').addEventListener('click', openNamesReview);
 /* دولة كل مانح (من الجسر) تُنسخ إلى المشاريع لتُجمَّع في الإحصائيات */
 function applyDonorCountries(){ const m = DATA.donorCountries || {}; DATA.projects.forEach(p => { p.donorCountry = (p.donor && m[p.donor]) || 'غير مصنّف'; }); }
 document.addEventListener('change', async e => {
