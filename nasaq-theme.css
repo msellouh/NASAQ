@@ -1,3 +1,5 @@
+/* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved.
+   ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
 /* ---------- رموز الحركة (لكل الأطباع) — منهج «مَدار» للحركة ----------
    الوصول بتباطؤ، والمغادرة بتسارع وأسرع (~٦٥٪)، والمدد بحسب حجم العنصر ومسافته.
    dur-1 ضغط وتلميح · dur-2 مرور ومفاتيح صغيرة · dur-3 لوحات وبطاقات ونوافذ · dur-4 عناصر كبيرة. */
@@ -145,3 +147,9 @@
 /* ---------- «نبضة»: موجة دوائر قصيرة من مكان الحدث ترافق صوته ---------- */
 .nb-ripple{position:fixed;width:0;height:0;pointer-events:none;z-index:400}
 .nb-ripple i{position:absolute;left:0;top:0;width:120px;height:120px;border-radius:50%;border:1.5px solid var(--rc,var(--done));opacity:0}
+
+/* ---------- إشعار الحقوق ---------- */
+.nasaq-copy{font-size:11.5px;color:var(--muted, #6b7280);text-align:center;letter-spacing:.2px}
+footer.nasaq-copy{padding:18px 16px 26px;opacity:.85}
+.set-legal .nasaq-copy{text-align:start;font-weight:500;margin-top:4px}
+.auth-copy{margin-top:18px;font-size:10.5px;line-height:1.7;opacity:.8}

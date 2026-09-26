@@ -1,3 +1,5 @@
+/* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved.
+   ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
 /* نَسَق — تعريف واحد للشعار تستعمله كل الصفحات.
    الصفحة تكتب <svg class="brand-mark"><use href="#nasaqMark"/></svg> فقط.
    ألوان الشعار الأصلية ثابتة في كل الأطباع والأوضاع (قاعدة صارمة من صاحب اللوح):
@@ -16,3 +18,6 @@
   }
   if(document.body) inject(); else document.addEventListener("DOMContentLoaded", inject);
 })();
+
+/* إشعار الحقوق في أدوات المطوّر */
+try{ console.info('%cنَسَق (NASAQ)%c\n© 2026 Mohammed S. Ellouh — All rights reserved.\nملكية خاصة: يُمنع نسخ الكود أو التصميم أو تقليدهما أو إعادة استخدامهما دون إذن كتابي.', 'font:700 16px sans-serif;color:#174C4F', 'font:12px sans-serif'); }catch(e){}

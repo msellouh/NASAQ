@@ -1,3 +1,5 @@
+/* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved.
+   ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
 /* نَسَق — عامل الخدمة (Service Worker)
  *
  * ثلاث وظائف:

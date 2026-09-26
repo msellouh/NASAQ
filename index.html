@@ -1,8 +1,12 @@
 <!DOCTYPE html>
+<!-- نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved.
+   ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. -->
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Mohammed S. Ellouh">
+<meta name="copyright" content="© 2026 Mohammed S. Ellouh — جميع الحقوق محفوظة">
 <title>نَسَق — لوح يومك</title>
 <!-- تثبيت اللوح كتطبيق (الهاتف والحاسوب) -->
 <link rel="manifest" href="manifest.webmanifest">
@@ -1784,7 +1788,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 @media (hover:none){ .shot-del{opacity:1} }
 .card.drop{outline:2px dashed var(--focus);outline-offset:3px}
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260926">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260927">
 </head>
 <body>
 
@@ -1839,6 +1843,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </div>
 
     <div class="auth-msg" id="authMsg"></div>
+    <div class="nasaq-copy auth-copy">© 2026 نَسَق · Mohammed S. Ellouh — جميع الحقوق محفوظة<br>منصة ملكية خاصة — الدخول للمدعوّين فقط</div>
   </div>
 </div>
 
@@ -1961,6 +1966,10 @@ li.exp-row:nth-child(even){background:var(--stripe)}
           <button id="setExport" type="button">تصدير CSV</button>
         </div>
         <div class="set-hint">النسخة الاحتياطية تشمل اللوح وDaily Flow والمصروفات.</div>
+      </section>
+      <section class="set-legal">
+        <div class="nasaq-copy">© 2026 نَسَق · Mohammed S. Ellouh — جميع الحقوق محفوظة</div>
+        <div class="set-hint">منصة ملكية خاصة. حسابك إذن شخصي بالاستخدام فقط، ولا يجوز نسخ المنصة أو تصميمها أو فكرتها أو تقليدها أو مشاركتها مع الغير دون إذن كتابي من المالك.</div>
       </section>
     </div>
   </div>
@@ -2449,8 +2458,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
 <div class="toast" id="toastBox"></div>
 
-<script src="nasaq-core.js?v=20260926"></script>
-<script src="nasaq-pulse.js?v=20260926"></script>
+<script src="nasaq-core.js?v=20260927"></script>
+<script src="nasaq-pulse.js?v=20260927"></script>
 <script>
 const AR = n => Number(n).toLocaleString('ar-EG-u-nu-latn');
 const $ = id => document.getElementById(id);
@@ -6838,6 +6847,6 @@ if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
 }
 </script>
-<script src="nasaq-brand.js?v=20260926"></script>
+<script src="nasaq-brand.js?v=20260927"></script>
 </body>
 </html>
