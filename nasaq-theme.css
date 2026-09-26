@@ -120,3 +120,10 @@
     --c-soft:#26405E;
   }
 }
+
+/* ---------- الشعار بألوانه الأصلية في كل مكان (قاعدة صارمة) ----------
+   على الخلفيات الداكنة لا نغيّر ألوانه؛ يجلس على قرص عاجي صغير فيبقى واضحًا. */
+:root[data-theme="dark"] .brand-mark,
+:root[data-palette="nasaq360"] .sidenav:not(.tb-solid) .brand-mark,
+.close-day .brand-mark{background:#F7F6F2;border-radius:50%;padding:12%;box-sizing:border-box}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .brand-mark{background:#F7F6F2;border-radius:50%;padding:12%;box-sizing:border-box} }

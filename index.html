@@ -475,6 +475,7 @@ body{padding:0}
 /* التاريخ الهجري بجانب الميلادي، يفصلهما خط رفيع */
 .greet-hijri{margin-inline-start:10px;padding-inline-start:10px;border-inline-start:1px solid currentColor;border-inline-start-color:color-mix(in srgb,currentColor 35%,transparent)}
 .greet-hijri[hidden]{display:none}
+.greet-date > span{unicode-bidi:isolate}
 /* نقشة نَسَق: الشعار مكرّرًا بإزاحة متناوبة، بلون الهوية وشفافية 10% — بدل التدرّج.
    تُرسم كقناع (mask) فيأخذ لونها من المتغيّر، فتصلح لكل طابع وللوضع الداكن. */
 .greet-card::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.1;background:var(--brand,var(--ink));
@@ -835,7 +836,7 @@ ol.tasks li.task.flash{animation:task-flash 1.6s ease-out}
 .focus-overlay{overflow-y:auto}
 .focus-overlay > *{flex:none}
 body.focus-open{overflow:hidden}
-.fm-mark{width:54px;height:60px}
+.fm-mark{width:92px;height:92px}
 .fm-mark{--bm-1:var(--ink);--bm-2:var(--focus);--bm-dot:var(--accent,#D6A84F)}
 .fm-label{margin:0;font-size:13px;letter-spacing:.5px;color:var(--muted)}
 .fm-task{margin:0;max-width:760px;font-size:clamp(20px,3.2vw,30px);font-weight:600;line-height:1.5;overflow-wrap:anywhere}
@@ -1559,7 +1560,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 :root[data-palette="nasaq360"][data-tab="board"] .greet-text{position:relative;z-index:2;flex:none;width:min(600px,100%);padding:0;gap:10px;
   opacity:calc(1 - var(--hp) * 1.35);translate:0 calc(var(--hp) * -46px)}
 /* العنوان: مقاسٌ يتنفّس مع عرض الشاشة، وسطرٌ يسع التشكيل، وكسرٌ متوازن لا يترك كلمة وحدها */
-:root[data-palette="nasaq360"][data-tab="board"] .greet-title{color:#fff;font-size:clamp(26px,5.2vw,72px);font-weight:800;line-height:1.35;
+:root[data-palette="nasaq360"][data-tab="board"] .greet-title{color:#fff;font-size:clamp(24px,3.4vw,50px);font-weight:700;line-height:1.4;
   text-wrap:balance;max-width:16ch;padding-top:.08em;text-shadow:0 4px 30px rgba(0,0,0,.45)}
 :root[data-palette="nasaq360"][data-tab="board"] .greet-tagline{color:#E3E6F0;font-size:clamp(16px,1.5vw,21px);text-shadow:0 2px 14px rgba(0,0,0,.5)}
 :root[data-palette="nasaq360"][data-tab="board"] .greet-date{color:#C4C9DD;margin-top:2px}
@@ -1599,7 +1600,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   :root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo{flex-direction:column}
   :root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo .greet-media{height:auto}
   :root[data-palette="nasaq360"][data-tab="board"] .greet-text{width:100%;gap:8px}
-  :root[data-palette="nasaq360"][data-tab="board"] .greet-title{font-size:clamp(26px,7.4vw,42px);line-height:1.4;max-width:14ch}
+  :root[data-palette="nasaq360"][data-tab="board"] .greet-title{font-size:clamp(22px,6.4vw,34px);line-height:1.45;max-width:14ch}
   :root[data-palette="nasaq360"][data-tab="board"] .greet-tagline{font-size:15px;line-height:1.7}
   :root[data-palette="nasaq360"][data-tab="board"] .greet-card::after{background:
     linear-gradient(to top,var(--board) 0%,color-mix(in srgb,var(--board) 55%,transparent) 7%,rgba(8,9,20,.78) 26%,rgba(8,9,20,.35) 58%,rgba(8,9,20,.45) 100%)}
@@ -1878,7 +1879,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
             <button data-palette="nasaq" type="button">نَسَق</button>
             <button data-palette="" type="button">كلاسيكي</button>
             <button data-palette="vibrant" type="button">حيوي</button>
-            <button data-palette="nasaq360" type="button">نَسَق 360</button>
+            <button data-palette="nasaq360" type="button">مَدار</button>
           </span>
         </div>
         <div class="set-row"><span>الوضع الداكن</span><button id="setThemeBtn" type="button">🌙</button></div>
