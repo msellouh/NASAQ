@@ -1771,6 +1771,18 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
   :where(button,.btn,[role="button"]):active{scale:none}
 }
+
+/* لقطات «أفكار عابرة» */
+.shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:10px}
+.shots[hidden]{display:none}
+.shot{position:relative;margin:0;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--rule);background:var(--stripe)}
+.shot img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;transition:transform var(--dur-3) var(--ease-out)}
+.shot:hover img{transform:scale(1.04)}
+.shot.fresh{animation:m-pop-in var(--dur-3) var(--ease-out)}
+.shot-del{position:absolute;top:4px;inset-inline-end:4px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(8,9,20,.62);color:#fff;font-size:14px;line-height:1;cursor:pointer;opacity:0;transition:opacity var(--dur-2) var(--ease-out)}
+.shot:hover .shot-del,.shot-del:focus-visible{opacity:1}
+@media (hover:none){ .shot-del{opacity:1} }
+.card.drop{outline:2px dashed var(--focus);outline-offset:3px}
 </style>
 <link rel="stylesheet" href="nasaq-theme.css?v=20260926">
 </head>
@@ -2132,7 +2144,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <section class="card c-ideas">
       <div class="card-art" data-art="idea" aria-hidden="true"></div>
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>أفكار عابرة</h2></div>
-      <textarea class="braindump" id="brainDump" placeholder="ما الذي يشغلك؟ اتركه هنا الآن، ورتّبه لاحقًا."></textarea>
+      <textarea class="braindump" id="brainDump" placeholder="ما الذي يشغلك؟ اتركه هنا الآن، ورتّبه لاحقًا. والصق لقطة شاشة (Ctrl+V) لتحفظها فكرةً."></textarea>
+      <div class="shots" id="ideaShots" aria-label="لقطات محفوظة"></div>
       <button type="button" class="card-link idea-to-task" id="ideaToTask">↩ حوّل السطر الحالي إلى مهمة</button>
 
       <h3 class="sub">بانتظار رد</h3>
@@ -2654,6 +2667,9 @@ function showToast(msg, undoFn){
 
 /* ---------- storage ---------- */
 const KEY = 'daily-board-v2';
+/* لقطات «أفكار عابرة»: صور ملصوقة تبقى حتى تحذفها، وتُزامَن مع حالة اللوح في درايف فتظهر على جهازيك.
+   تُصغَّر قبل الحفظ (أطول ضلع 1400px، WebP) كي لا تثقل الحالة. */
+let ideaShots = [];
 function snapshot(){
   return {
     tasks, waits, laters, archive, timeline,
@@ -2661,7 +2677,8 @@ function snapshot(){
     pri:[...document.querySelectorAll('.pri .field')].map(f=>f.value),
     rev:['r1','r2','r3'].map(id=>$(id).value),
     pinned: $('pinnedEvent').value,
-    dump: $('brainDump').value
+    dump: $('brainDump').value,
+    shots: ideaShots
   };
 }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(snapshot())); }catch(e){} touchState(); }
@@ -2715,6 +2732,8 @@ function apply(d){
   (d.rev||[]).forEach((v,i)=>{const f=$('r'+(i+1)); if(f) f.value=v;});
   $('pinnedEvent').value = d.pinned||'';
   $('brainDump').value = d.dump||'';
+  if(Array.isArray(d.shots)) ideaShots = d.shots;   /* حالة من نسخة أقدم بلا لقطات لا تمحوها */
+  try{ renderShots(); }catch(e){}
   renderTimeline();
 }
 function load(){
@@ -3918,6 +3937,60 @@ function updateCardArts(){
   }catch(e){}
 }
 $('brainDump').addEventListener('input', updateCardArts);
+
+/* ---------- لقطات الشاشة في «أفكار عابرة» ---------- */
+const SHOTS_MAX = 24;
+function shrinkImage(file){
+  return new Promise((res, rej)=>{
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = ()=>{
+      const k = Math.min(1, 1400 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      let q = .82, out = c.toDataURL('image/webp', q);
+      if(!/^data:image\/webp/.test(out)) out = c.toDataURL('image/jpeg', q);
+      while(out.length > 480000 && q > .45){ q -= .12; out = c.toDataURL(/webp/.test(out) ? 'image/webp' : 'image/jpeg', q); }
+      res(out);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); rej(new Error('تعذّرت قراءة الصورة')); };
+    img.src = url;
+  });
+}
+async function addShots(files){
+  const imgs = [...files].filter(f=>/^image\//.test(f.type)); if(!imgs.length) return false;
+  for(const f of imgs){
+    if(ideaShots.length >= SHOTS_MAX){ showToast('وصلت إلى ' + SHOTS_MAX + ' لقطة — احذف ما انتهيت منه لتضيف غيرها'); break; }
+    try{ ideaShots.unshift({id: Date.now() + '-' + Math.random().toString(36).slice(2, 7), src: await shrinkImage(f), at: new Date().toISOString()}); }
+    catch(e){ showToast(e.message); }
+  }
+  renderShots(true); sync();
+  return true;
+}
+function renderShots(fresh){
+  const box = $('ideaShots'); if(!box) return;
+  box.innerHTML = '';
+  ideaShots.forEach((sh, i)=>{
+    const w = document.createElement('figure'); w.className = 'shot' + (fresh && i === 0 ? ' fresh' : '');
+    const im = document.createElement('img'); im.src = sh.src; im.alt = 'لقطة محفوظة'; im.loading = 'lazy';
+    im.onclick = ()=>openModal({title: 'لقطة — ' + new Date(sh.at).toLocaleDateString('ar-EG-u-nu-latn', {day: 'numeric', month: 'long'}),
+      bodyHTML: '<img src="' + sh.src + '" alt="" style="width:100%;border-radius:8px;display:block">', actions: [{label: 'إغلاق', primary: true}]});
+    const del = document.createElement('button'); del.type = 'button'; del.className = 'shot-del'; del.textContent = '×'; del.title = 'احذف اللقطة'; del.setAttribute('aria-label', 'احذف اللقطة');
+    del.onclick = ()=>{ const k = ideaShots.findIndex(x=>x.id === sh.id); if(k < 0) return; const [gone] = ideaShots.splice(k, 1); renderShots(); sync();
+      showToast('حُذفت اللقطة', ()=>{ ideaShots.splice(k, 0, gone); renderShots(); sync(); }); };
+    w.append(im, del); box.appendChild(w);
+  });
+  box.hidden = !ideaShots.length;
+}
+$('brainDump').addEventListener('paste', e=>{
+  const files = [...(e.clipboardData && e.clipboardData.files || [])];
+  if(files.some(f=>/^image\//.test(f.type))){ e.preventDefault(); addShots(files); }
+});
+(()=>{ const card = $('brainDump').closest('.card'); if(!card) return;
+  card.addEventListener('dragover', e=>{ if([...e.dataTransfer.items].some(i=>i.type.startsWith('image/'))){ e.preventDefault(); card.classList.add('drop'); } });
+  card.addEventListener('dragleave', ()=>card.classList.remove('drop'));
+  card.addEventListener('drop', e=>{ card.classList.remove('drop'); if(e.dataTransfer.files.length){ e.preventDefault(); addShots(e.dataTransfer.files); } });
+})();
+
 try{ updateCardArts(); }catch(e){}
 /* الملصق يحمل النسختين معًا، ويُظهر الـCSS ما يطابق الوضع — فلا يحتاج إعادة رسم عند تبديل الوضع */
 const obSvgCache = {};
