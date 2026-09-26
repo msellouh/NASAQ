@@ -95,7 +95,7 @@ function jsonpWithRetry(payload){
 }
 function legacyPost(payload){
   const raw = JSON.stringify(payload);
-  /* حدّ الرابط الآمن ~٨٠٠٠ حرف؛ ما دون ذلك يمرّ عبر JSONP */
+  /* حدّ الرابط الآمن ~8000 حرف؛ ما دون ذلك يمرّ عبر JSONP */
   if(URL_().length + encodeURIComponent(raw).length + 80 < 7000) return jsonpWithRetry(payload);
   return fetchPost(raw);
 }

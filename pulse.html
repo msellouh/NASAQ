@@ -338,7 +338,7 @@ async function saveDel(id, fields, okMsg){
   }catch(e){ toast(e.message || 'تعذّر الحفظ في نوشن', true); render(); return false; }
 }
 
-/* ١. حوّل إلى مهمة: داخل اللوح مباشرة، وإلا عبر «صندوق الوارد» الذي يسحبه اللوح عند فتحه */
+/* 1. حوّل إلى مهمة: داخل اللوح مباشرة، وإلا عبر «صندوق الوارد» الذي يسحبه اللوح عند فتحه */
 function toTask(x){
   const p = projOf(x), n = daysTo(x.due);
   const t = {text: 'إعداد ' + delLabel(x) + ' — ' + (p.name || ''), proj: p.code || '', donor: p.donor || '', due: String(x.due || '').slice(0, 10),
@@ -349,7 +349,7 @@ function toTask(x){
   TASKED.add(x.id); try{ localStorage.setItem(TASKED_KEY, JSON.stringify([...TASKED])); }catch(e){}
   render(); toast(direct ? 'أُضيفت إلى مهامك اليوم' : 'أُرسلت إلى مهامك — تظهر في اللوح فور فتحه');
 }
-/* ٢. تأجيل: موعد جديد وسبب يُحفظ في ملاحظات الاستحقاق */
+/* 2. تأجيل: موعد جديد وسبب يُحفظ في ملاحظات الاستحقاق */
 function deferDel(x){
   dialogOpen('<h2>تأجيل ' + esc(delLabel(x)) + '</h2><p>' + esc(projOf(x).name || '') + ' — الموعد الحالي ' + fmtDay(x.due) + '</p>' +
     '<label>الموعد الجديد<input type="date" id="dDue" value="' + esc(String(x.due || '').slice(0, 10)) + '"></label>' +
@@ -364,7 +364,7 @@ function deferDel(x){
       };
     });
 }
-/* ٣. رسالة متابعة: نص جاهز تراجعه، ثم تنسخه أو تفتحه في بريدك — لا شيء يُرسل تلقائيًا */
+/* 3. رسالة متابعة: نص جاهز تراجعه، ثم تنسخه أو تفتحه في بريدك — لا شيء يُرسل تلقائيًا */
 function followUp(x){
   const p = projOf(x), n = daysTo(x.due);
   const body = 'السلام عليكم ورحمة الله وبركاته،\n\n' +
@@ -379,7 +379,7 @@ function followUp(x){
       d.querySelector('#mMail').onclick = ()=>{ location.href = 'mailto:?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(d.querySelector('#mBody').value); };
     });
 }
-/* ٤. ارفع التقرير: إلى خانته في مجلد المشروع على درايف، ثم تصير حالته «صدر» */
+/* 4. ارفع التقرير: إلى خانته في مجلد المشروع على درايف، ثم تصير حالته «صدر» */
 let upTarget = null;
 const b64 = file=>new Promise((res, rej)=>{ const r = new FileReader(); r.onload = ()=>res(String(r.result).split(',')[1] || ''); r.onerror = ()=>rej(new Error('تعذّرت قراءة الملف')); r.readAsDataURL(file); });
 $('upFile').onchange = async e=>{
@@ -392,7 +392,7 @@ $('upFile').onchange = async e=>{
     await saveDel(x.id, {status: 'صدر'}, 'رُفع التقرير إلى درايف وصارت حالته «صدر»');
   }catch(err){ toast(err.message || 'تعذّر الرفع', true); }
 };
-/* ٥. إغلاق مشروع تجاوز مدته — بتأكيد كتابة كوده */
+/* 5. إغلاق مشروع تجاوز مدته — بتأكيد كتابة كوده */
 function closeProject(p){
   dialogOpen('<h2>إغلاق المشروع</h2><p>«' + esc(p.name || '') + '» انتهت مدته في ' + fmtDay(p.end) + '. ستصير حالته في نوشن «مكتمل».</p>' +
     '<label>للتأكيد اكتب كود المشروع: <b>' + esc(p.code || '') + '</b><input id="cCode" autocomplete="off"></label>' +
@@ -405,7 +405,7 @@ function closeProject(p){
       };
     });
 }
-/* ٦. الملخص الأسبوعي: نص جاهز للإدارة — نسخ أو تنزيل ملف نصي */
+/* 6. الملخص الأسبوعي: نص جاهز للإدارة — نسخ أو تنزيل ملف نصي */
 function weekly(){
   if(!DATA) return;
   const A = analyse(), G = A.groups, line = o=>'• ' + delLabel(o.x) + ' — ' + (o.p.code ? o.p.code + ' ' : '') + (o.p.name || '') + ' (' + whenText(o.n).txt + '، ' + fmtDay(o.x.due) + ')';

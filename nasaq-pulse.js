@@ -9,7 +9,7 @@ const toDate = s => { if(!s) return null; const d = new Date(String(s).slice(0, 
 const daysTo = s => { const d = toDate(s); return d ? Math.round((d - today) / 864e5) : null; };
 const RUNNING = new Set(['قيد التنفيذ', 'نشط']);
 const fmtDay = s => { const d = toDate(s); return d ? d.toLocaleDateString(LOC, {day: 'numeric', month: 'short'}) : '—'; };
-/* المعدود بصيغته الصحيحة: ١ مشروع، ٢ مشروعان، ٣–١٠ مشاريع، ١١+ مشروعًا */
+/* المعدود بصيغته الصحيحة: 1 مشروع، 2 مشروعان، 3–10 مشاريع، 11+ مشروعًا */
 function cnt(n, f){ return n === 1 ? f[0] : n === 2 ? f[1] : AR(n) + ' ' + (n <= 10 ? f[2] : f[3]); }
 const W_PROJ = ['مشروع واحد', 'مشروعان', 'مشاريع', 'مشروعًا'], W_REP = ['تقرير واحد', 'تقريران', 'تقارير', 'تقريرًا'];
 function days(n){ n = Math.abs(n); return n === 1 ? 'يوم واحد' : n === 2 ? 'يومان' : n <= 10 ? AR(n) + ' أيام' : AR(n) + ' يومًا'; }
@@ -48,7 +48,7 @@ function analyse(DATA){
     if(endIn != null && endIn < 0) reasons.push('تجاوز موعد انتهائه بـ' + days(endIn) + ' ولم يُغلق');
     else if(endIn != null && endIn <= 30) reasons.push('ينتهي بعد ' + days(endIn) + (finalDone ? '' : ' — والتقرير الختامي لم يصدر'));
     const behind = elapsed != null && progress != null && elapsed - progress > .25;
-    if(behind) reasons.push('الوقت سبق الإنجاز: ' + AR(Math.round(elapsed * 100)) + '٪ من المدة مقابل ' + AR(Math.round(progress * 100)) + '٪ إنجاز');
+    if(behind) reasons.push('الوقت سبق الإنجاز: ' + AR(Math.round(elapsed * 100)) + '% من المدة مقابل ' + AR(Math.round(progress * 100)) + '% إنجاز');
     if(nextDel && nextDel.n <= 7) reasons.push('يستحق ' + nextDel.x.kind + ' ' + whenText(nextDel.n).txt);
     const score = lateDels.length * 3 + (endIn != null && endIn < 0 ? 3 : 0) + (endIn != null && endIn >= 0 && endIn <= 30 ? 2 : 0) + (behind ? 2 : 0) + (nextDel && nextDel.n <= 7 ? 1 : 0);
     return {p, elapsed, progress, endIn, lateDels, nextDel, reasons, score, behind};

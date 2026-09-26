@@ -115,7 +115,7 @@
    ظلال شبه معدومة، زوايا ناعمة، وكثافة بصرية منخفضة. تباين كل الألوان ≥ 4.5 (WCAG AA). */
 /* القيم مأخوذة من دليل الهوية: Nasaq Teal ‎#174C4F، Saffron ‎#D6A84F، Teal Light ‎#DCEBE9،
    Ivory ‎#F7F6F2 (خلفية)، White (سطح)، Ink ‎#202A2A، Slate، Mist ‎#E4E4E4 (حدود).
-   الألوان الدلالية (Sage/Amber/Terracotta) باهتة كنص (تباين ٢–٣)، فتُستخدم كما هي تعبئةً،
+   الألوان الدلالية (Sage/Amber/Terracotta) باهتة كنص (تباين 2–3)، فتُستخدم كما هي تعبئةً،
    وللنص درجاتها الأغمق المشتقة (≥ 4.5 على العاجي). */
 :root[data-palette="nasaq"]{
   --ink:#202A2A; --ink-2:#3E4A4A; --paper:#FFFFFF; --board:#F7F6F2;
@@ -475,13 +475,13 @@ body{padding:0}
 /* التاريخ الهجري بجانب الميلادي، يفصلهما خط رفيع */
 .greet-hijri{margin-inline-start:10px;padding-inline-start:10px;border-inline-start:1px solid currentColor;border-inline-start-color:color-mix(in srgb,currentColor 35%,transparent)}
 .greet-hijri[hidden]{display:none}
-/* نقشة نَسَق: الشعار مكرّرًا بإزاحة متناوبة، بلون الهوية وشفافية ١٠٪ — بدل التدرّج.
+/* نقشة نَسَق: الشعار مكرّرًا بإزاحة متناوبة، بلون الهوية وشفافية 10% — بدل التدرّج.
    تُرسم كقناع (mask) فيأخذ لونها من المتغيّر، فتصلح لكل طابع وللوضع الداكن. */
 .greet-card::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.1;background:var(--brand,var(--ink));
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Csvg x='8' y='6' width='28' height='31' viewBox='18 12 76 84'%3E%3Cpath d='M47 92 L47 22 C25 46 25 74 47 92 Z'/%3E%3Cpath d='M53 92 L53 46 C74 62 74 82 53 92 Z'/%3E%3Crect x='63' y='19' width='15' height='15' transform='rotate(45 70.5 26.5)'/%3E%3C/svg%3E%3Csvg x='56' y='54' width='28' height='31' viewBox='18 12 76 84'%3E%3Cpath d='M47 92 L47 22 C25 46 25 74 47 92 Z'/%3E%3Cpath d='M53 92 L53 46 C74 62 74 82 53 92 Z'/%3E%3Crect x='63' y='19' width='15' height='15' transform='rotate(45 70.5 26.5)'/%3E%3C/svg%3E%3C/svg%3E") 0 0/96px 96px repeat;
           mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Csvg x='8' y='6' width='28' height='31' viewBox='18 12 76 84'%3E%3Cpath d='M47 92 L47 22 C25 46 25 74 47 92 Z'/%3E%3Cpath d='M53 92 L53 46 C74 62 74 82 53 92 Z'/%3E%3Crect x='63' y='19' width='15' height='15' transform='rotate(45 70.5 26.5)'/%3E%3C/svg%3E%3Csvg x='56' y='54' width='28' height='31' viewBox='18 12 76 84'%3E%3Cpath d='M47 92 L47 22 C25 46 25 74 47 92 Z'/%3E%3Cpath d='M53 92 L53 46 C74 62 74 82 53 92 Z'/%3E%3Crect x='63' y='19' width='15' height='15' transform='rotate(45 70.5 26.5)'/%3E%3C/svg%3E%3C/svg%3E") 0 0/96px 96px repeat}
 .greet-text,.greet-media{z-index:1}
-/* مساحة الصورة: ٧٢٪ من عرض البطاقة (ضعف السابق) وارتفاع أكبر، بلا تدرّج يحجبها */
+/* مساحة الصورة: 72% من عرض البطاقة (ضعف السابق) وارتفاع أكبر، بلا تدرّج يحجبها */
 .greet-media{position:relative;width:72%;max-width:900px;flex:none;display:flex;align-items:flex-end;justify-content:flex-end;padding:12px}
 .greet-card:not(.has-photo) .greet-media{width:auto}
 .greet-card.has-photo{min-height:280px}
@@ -550,7 +550,7 @@ body{padding:0}
 .card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:var(--pad);min-width:0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
 /* البطاقات تملأ ارتفاع صفّها بمحتوى مفيد بدل فراغ في الأسفل */
 .c-ideas,.c-sched,.c-focus,.c-pri{display:flex;flex-direction:column}
-/* الجدول الزمني يملأ ارتفاع صفّه (أساس ٠ مع حدّ أدنى، فلا يفرض هو طول الصف) */
+/* الجدول الزمني يملأ ارتفاع صفّه (أساس 0 مع حدّ أدنى، فلا يفرض هو طول الصف) */
 .c-sched .tl-wrap{flex:1 1 0;min-height:280px;max-height:none}
 /* الأولويات تتوزّع على ارتفاع البطاقة */
 .c-pri .pri{flex:1;align-content:space-evenly}
@@ -823,7 +823,7 @@ ol.tasks li.task.flash{animation:task-flash 1.6s ease-out}
 
 /* ---------- وضع التركيز بملء الشاشة ---------- */
 /* لا مساحات صلبة في المنصة: الخلفية لون الصفحة نفسه مع نقشة الدوائر وهالة خفيفة خلف الساعة،
-   فتتبع الطابع والوضع الفاتح/الداكن. max-width:none لأن الطبقة داخل .content المحدودة بـ١٥٦٠px */
+   فتتبع الطابع والوضع الفاتح/الداكن. max-width:none لأن الطبقة داخل .content المحدودة بـ1560px */
 .focus-overlay{position:fixed;inset:0;z-index:300;max-width:none;margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px 20px;text-align:center;
   color:var(--ink);
   background:
@@ -1302,7 +1302,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   h1{font-size:32px}
   table.arc{font-size:12.5px}
 }
-/* الهاتف: سطر المهمة (١٠ عناصر في صف واحد) يُعاد ترتيبه على ثلاثة أسطر
+/* الهاتف: سطر المهمة (10 عناصر في صف واحد) يُعاد ترتيبه على ثلاثة أسطر
    بدل أن يتمدد خارج الشاشة ويدفع الصفحة كلها جانبيًا. */
 @media (max-width:600px){
   ol.tasks li.task{
@@ -1357,7 +1357,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 :root[data-palette="nasaq360"] .orbit .brand-mark{width:34px;height:34px}
 /* ---------- الحلقة ساعة اليوم ----------
    ثابتة لا تدور: الفجوة أعلاها = ساعات الهدوء، والقوس = ساعات العمل. الامتلاء = إنجاز مهام اليوم،
-   والمعين = الساعة الآن (رمادي في الهدوء). الحياة من لمعة تسري على الممتلئ كل ٧ ثوانٍ ثم تسكن.
+   والمعين = الساعة الآن (رمادي في الهدوء). الحياة من لمعة تسري على الممتلئ كل 7 ثوانٍ ثم تسكن.
    حيث لا بيانات (شاشة الدخول) تبقى الحلقة زينة ثابتة بلمعة على القوس كاملًا. */
 @property --p{syntax:'<angle>';inherits:true;initial-value:330deg}
 @property --g{syntax:'<angle>';inherits:false;initial-value:-30deg}
@@ -1397,7 +1397,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .ring-clock .o-core b{font:800 22px/1 Alexandria,sans-serif;direction:ltr}
 .ring-clock .o-core small{font-size:11.5px;opacity:.75}
 .ring-clock .o-tick em,.ring-clock .o-gap{display:none}
-/* الواجهة الكبيرة (عرض ١٢٠٠px فأكثر): الحلقة كبيرة في منتصف الصورة مرفوعة نحو أعلاها، وخطها رفيع.
+/* الواجهة الكبيرة (عرض 1200px فأكثر): الحلقة كبيرة في منتصف الصورة مرفوعة نحو أعلاها، وخطها رفيع.
    تحت ذلك تعود متوسطة بجانب «لمحة اليوم» لأن المنتصف يضيق ويزاحم العنوان. */
 :root[data-palette="nasaq360"][data-tab="board"] .greet-card.ring-big #heroRing{position:absolute;left:50%;top:34%;z-index:2;
   width:min(40vh,360px);height:min(40vh,360px);transform:translate(-50%,-50%);--ow:5px;--dz:13px;color:#EEF1F7}
@@ -1411,15 +1411,15 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .greet-card.ring-big #heroRing .o-gap{display:none;position:absolute;left:50%;top:-24px;transform:translateX(-50%);font-size:12px;color:#9AA1BE}
 @media (max-width:1199px){ .greet-card.ring-big #heroRing{position:relative;left:auto;top:auto;transform:none} }
 /* ---- الحلقة الكبيرة تسكن في المعين الذهبي وتنبثق منه ----
-   الحركة كلها «خط زمني واحد» (P من ٠ إلى ١) يرسمه JS إطارًا بإطار — مثل timeline في GSAP:
+   الحركة كلها «خط زمني واحد» (P من 0 إلى 1) يرسمه JS إطارًا بإطار — مثل timeline في GSAP:
    فتُعكس بدقة عند الطيّ، وتُقاطَع في أي لحظة فترجع من حيث وصلت. هنا الحالات الثابتة فقط. */
 .ring-clock .o-seed,.ring-clock .o-head,.ring-clock .o-dial{display:none}
-/* ميناء الساعة: ١٢ تقسيمًا متساوية (كل ٣٠°) داخل الحلقة الكبيرة، أبعد من أسماء الصلوات كي لا تتزاحم */
+/* ميناء الساعة: 12 تقسيمًا متساوية (كل 30°) داخل الحلقة الكبيرة، أبعد من أسماء الصلوات كي لا تتزاحم */
 .greet-card.ring-big #heroRing .o-dial{display:block;position:absolute;inset:0;pointer-events:none}
 .greet-card.ring-big #heroRing .o-dial i{position:absolute;left:50%;top:calc(var(--ow) + 30px);width:1.5px;height:7px;margin-left:-.75px;border-radius:2px;
   background:#EEF1F7;opacity:0;transform-origin:50% 0;will-change:transform,opacity}
 .greet-card.ring-big #heroRing .o-dial.major i{width:2px;height:12px;margin-left:-1px}
-/* عقرب الدقائق: نقطة متوهجة على الميناء الداخلي (٦° في الدقيقة)، منفصلة عن المعين الذي يبقى
+/* عقرب الدقائق: نقطة متوهجة على الميناء الداخلي (6° في الدقيقة)، منفصلة عن المعين الذي يبقى
    «موضعك من يومك» على المدار الخارجي — فلكل دائرة معنى واحد لا يختلط بالآخر. */
 .ring-clock .o-min{display:none}
 .greet-card.ring-big #heroRing .o-min{display:block;position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;
@@ -1522,7 +1522,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 :root[data-palette="nasaq360"][data-tab="board"] .content{padding-top:0}
 :root[data-palette="nasaq360"][data-tab="board"] .greet-card{
   --hp:0;   /* تقدّم التمرير عبر الواجهة (0..1) — يضبطه الـJS */
-  /* بعرض الصفحة كاملًا: يتجاوز حدّ ١٥٦٠px العام للمحتوى (.content > *) وحشوة الجانبين */
+  /* بعرض الصفحة كاملًا: يتجاوز حدّ 1560px العام للمحتوى (.content > *) وحشوة الجانبين */
   min-height:100vh;min-height:100svh;max-width:none;margin:0 -28px var(--gap);
   /* النص في مجرى الصفحة (لا تموضع مطلق): إن طال عن الشاشة كبرت الواجهة ولم يُقصّ */
   display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;
@@ -1619,7 +1619,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
 /* ==================== شريط «مَدار» العلوي — بدل الشريط الجانبي في طابع «نَسَق 360» ====================
    ثلاث حالات للطبقة: شفاف بتدرّج ليلي فوق أعلى الواجهة ← زجاج داكن ما دام فوق الواجهة (tb-over)
-   ← زجاج بلون الطابع بعدها (tb-solid). يختفي عند النزول (٣٢٠ms، تسارع ناعم) ويعود عند الصعود أسرع (٢٢٠ms).
+   ← زجاج بلون الطابع بعدها (tb-solid). يختفي عند النزول (320ms، تسارع ناعم) ويعود عند الصعود أسرع (220ms).
    الخلفية والتمويه في ::before لا في الشريط نفسه، كي لا ينكسر التنقّل السفلي الثابت في الجوال. */
 .top-add{display:none}
 :root[data-palette="nasaq360"]{--tb-h:72px}
@@ -1807,9 +1807,9 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </div>
 
     <div class="auth-form" id="authRegister" hidden>
-      <input id="regUser" placeholder="اسم المستخدم (إنجليزي، ٣ أحرف فأكثر)" autocomplete="username">
+      <input id="regUser" placeholder="اسم المستخدم (إنجليزي، 3 أحرف فأكثر)" autocomplete="username">
       <input id="regEmail" type="email" placeholder="بريد الاسترداد" autocomplete="email">
-      <input id="regPass" type="password" placeholder="كلمة السر (٨ أحرف فأكثر)" autocomplete="new-password">
+      <input id="regPass" type="password" placeholder="كلمة السر (8 أحرف فأكثر)" autocomplete="new-password">
       <input id="regCode" placeholder="رمز الدعوة">
       <button class="auth-primary" id="registerBtn" type="button">إنشاء الحساب</button>
       <div class="auth-links"><button class="linklike" id="backToLogin1" type="button">لديّ حساب بالفعل</button></div>
@@ -1819,7 +1819,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <input id="resUser" placeholder="اسم المستخدم" autocomplete="username">
       <button class="auth-primary" id="resSendBtn" type="button">أرسل رمز الاسترداد إلى بريدي</button>
       <div class="auth-divider">ثم أدخل الرمز الذي وصلك</div>
-      <input id="resCode" placeholder="الرمز (٦ أرقام)" inputmode="numeric">
+      <input id="resCode" placeholder="الرمز (6 أرقام)" inputmode="numeric">
       <input id="resPass" type="password" placeholder="كلمة السر الجديدة" autocomplete="new-password">
       <button class="auth-primary" id="resConfirmBtn" type="button">تعيين كلمة السر</button>
       <div class="auth-links"><button class="linklike" id="backToLogin2" type="button">رجوع لتسجيل الدخول</button></div>
@@ -1854,7 +1854,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <div class="set-row"><span>الصلاحية</span><b id="setRole">—</b></div>
         <div class="set-sub">تغيير كلمة السر</div>
         <input type="password" id="setOldPass" placeholder="كلمة السر الحالية" autocomplete="current-password">
-        <input type="password" id="setNewPass" placeholder="كلمة السر الجديدة (٨ فأكثر)" autocomplete="new-password">
+        <input type="password" id="setNewPass" placeholder="كلمة السر الجديدة (8 فأكثر)" autocomplete="new-password">
         <div class="set-actions">
           <button id="setChangePassBtn" type="button">حفظ كلمة السر</button>
           <button id="setLogoutBtn" type="button" class="danger">تسجيل الخروج</button>
@@ -1911,7 +1911,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <div class="set-sub">تنبيهات تيليجرام — تصلك والمنصة مغلقة</div>
         <div class="set-row"><span>الحالة</span><b id="setTgState">—</b></div>
         <div class="set-actions"><button type="button" id="setTgCheck">افحص</button><button type="button" id="setTgTest">أرسل تجربة</button></div>
-        <div class="set-hint">الإعداد مرة واحدة في Apps Script: أنشئ بوتًا من ‎@BotFather، وضع رمزه في خصائص السكربت باسم <code>TELEGRAM_BOT_TOKEN</code> (لا ترسله لأحد)، ثم اضغط Start في محادثة البوت وشغّل <code>SETUP_telegram</code> ثم <code>SETUP_telegram_trigger</code>. يُرسل البوت مواعيد التقويم قبل ١٠ دقائق وملخصًا صباحيًا.</div>
+        <div class="set-hint">الإعداد مرة واحدة في Apps Script: أنشئ بوتًا من ‎@BotFather، وضع رمزه في خصائص السكربت باسم <code>TELEGRAM_BOT_TOKEN</code> (لا ترسله لأحد)، ثم اضغط Start في محادثة البوت وشغّل <code>SETUP_telegram</code> ثم <code>SETUP_telegram_trigger</code>. يُرسل البوت مواعيد التقويم قبل 10 دقائق وملخصًا صباحيًا.</div>
 
         <div class="set-sub">ساعات الهدوء — لا أصوات تنبيه ولا إشعارات نظام (مواعيد التقويم مستثناة)، وتبقى كلها في سجل الإشعارات</div>
         <div class="set-row"><label for="setQuietFrom">من</label><input type="time" class="set-time" id="setQuietFrom"></div>
@@ -1919,9 +1919,9 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <div class="set-row"><label for="setWorkEnd">نهاية يوم العمل (تذكير «أغلق يومك»)</label><input type="time" class="set-time" id="setWorkEnd"></div>
 
         <div class="set-sub">أوقات الصلاة — مدينة غزة</div>
-        <div class="set-row"><label for="setPrayerOn">هدوء ٢٠ دقيقة من دخول كل صلاة</label><input type="checkbox" class="set-toggle" id="setPrayerOn"></div>
+        <div class="set-row"><label for="setPrayerOn">هدوء 20 دقيقة من دخول كل صلاة</label><input type="checkbox" class="set-toggle" id="setPrayerOn"></div>
         <div class="prayer-times" id="setPrayerTimes"></div>
-        <div class="set-hint">تُحسب على جهازك بطريقة الهيئة المصرية العامة للمساحة (الفجر ١٩٫٥°، العشاء ١٧٫٥°، العصر على المذهب الشافعي). قارنها بتقويم وزارة الأوقاف في غزة، وأخبرني إن اختلفت.</div>
+        <div class="set-hint">تُحسب على جهازك بطريقة الهيئة المصرية العامة للمساحة (الفجر 19٫5°، العشاء 17٫5°، العصر على المذهب الشافعي). قارنها بتقويم وزارة الأوقاف في غزة، وأخبرني إن اختلفت.</div>
       </section>
 
       <section>
@@ -1999,7 +1999,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <div class="sidenav-actions">
       <!-- زر الفعل في الشريط العلوي لطابع «نَسَق 360» فقط (كزر «إنشاء حساب» في «الجزيرة 360») -->
       <button id="topAddBtn" class="top-add" type="button">＋ مهمة جديدة</button>
-      <button id="notifBtn" class="icon-btn notif-btn" type="button" aria-label="الإشعارات" aria-haspopup="dialog" aria-expanded="false" title="الإشعارات"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 7 2 7H4s2-2 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="notif-badge" id="notifBadge" hidden>٠</span></button>
+      <button id="notifBtn" class="icon-btn notif-btn" type="button" aria-label="الإشعارات" aria-haspopup="dialog" aria-expanded="false" title="الإشعارات"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 7 2 7H4s2-2 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="notif-badge" id="notifBadge" hidden>0</span></button>
       <button id="paletteBtn" class="icon-btn" type="button" aria-label="بحث وأوامر سريعة (Ctrl+K)" title="بحث وأوامر سريعة — Ctrl+K"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></button>
       <button id="themeQuickBtn" class="icon-btn" type="button" aria-label="تبديل الوضع الداكن" title="الوضع الداكن"></button>
       <button id="settingsBtn" class="icon-btn" type="button" aria-label="الإعدادات" title="الإعدادات">
@@ -2052,9 +2052,9 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <input id="pinnedEvent" placeholder="حدث اليوم المهم — اجتماع، موعد، مكالمة...">
       </div>
       <div class="pri" id="pri">
-        <div class="pri-row"><div class="rank">١</div><input class="field" placeholder="ماذا تريد أن تنجز اليوم؟ — ما لو أُنجز وحده كان اليوم ناجحًا"></div>
-        <div class="pri-row"><div class="rank">٢</div><input class="field" placeholder="الأولوية الثانية"></div>
-        <div class="pri-row"><div class="rank">٣</div><input class="field" placeholder="الأولوية الثالثة"></div>
+        <div class="pri-row"><div class="rank">1</div><input class="field" placeholder="ماذا تريد أن تنجز اليوم؟ — ما لو أُنجز وحده كان اليوم ناجحًا"></div>
+        <div class="pri-row"><div class="rank">2</div><input class="field" placeholder="الأولوية الثانية"></div>
+        <div class="pri-row"><div class="rank">3</div><input class="field" placeholder="الأولوية الثالثة"></div>
       </div>
     </section>
 
@@ -2062,7 +2062,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="card-art" data-art="task" aria-hidden="true"></div>
       <div class="card-head">
         <h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8 12 3 3 5-6"/></svg>مهام اليوم</h2>
-        <div class="meter"><span id="doneCount">٠</span> من <span id="totalCount">٠</span> منجزة · <b id="load">—</b></div>
+        <div class="meter"><span id="doneCount">0</span> من <span id="totalCount">0</span> منجزة · <b id="load">—</b></div>
       </div>
       <div class="progress" aria-hidden="true"><div class="fill" id="fill"></div></div>
       <div class="cap-warn" id="capWarn" role="status" hidden></div>
@@ -2108,7 +2108,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <button type="button" class="card-link" id="habitsMore">عرض الكل</button>
       </div>
       <div class="habits-mini" id="habitsMini"></div>
-      <div class="habit-week mini" id="habitWeekMini" aria-label="إنجاز الروتين في آخر ٧ أيام"></div>
+      <div class="habit-week mini" id="habitWeekMini" aria-label="إنجاز الروتين في آخر 7 أيام"></div>
     </section>
   </div>
 
@@ -2175,7 +2175,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="card-head"><h2 id="pomoTitle"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M10 2h4"/></svg>التركيز</h2>
         <button type="button" class="card-link" id="focusModeBtn" title="وضع التركيز بملء الشاشة">⛶ وضع التركيز</button></div>
       <div class="pomodoro">
-        <div class="pomo-time" id="pomoTime">٢٥:٠٠</div>
+        <div class="pomo-time" id="pomoTime">25:00</div>
         <div class="pomo-controls">
           <button class="go" id="pomoToggle" type="button">ابدأ</button>
           <button id="pomoReset" type="button" title="تصفير">↺</button>
@@ -2249,7 +2249,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <svg class="brand-mark fm-mark" viewBox="34 36 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><use href="#nasaqMark"/></svg>
   <p class="fm-label">وقت التركيز</p>
   <h2 class="fm-task" id="fmTask">—</h2>
-  <div class="fm-time" id="fmTime" aria-live="off">٢٥:٠٠</div>
+  <div class="fm-time" id="fmTime" aria-live="off">25:00</div>
   <div class="fm-bar" aria-hidden="true"><i id="fmFill"></i></div>
   <div class="fm-controls">
     <button type="button" class="fm-go" id="fmToggle">ابدأ</button>
@@ -2344,9 +2344,9 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <section class="card">
     <div class="card-head"><h3>🙏 لحظات الامتنان</h3></div>
     <div class="grat" id="gratWrap">
-      <input data-i="0" placeholder="١. أنا ممتن لـ...">
-      <input data-i="1" placeholder="٢.">
-      <input data-i="2" placeholder="٣.">
+      <input data-i="0" placeholder="1. أنا ممتن لـ...">
+      <input data-i="1" placeholder="2.">
+      <input data-i="2" placeholder="3.">
     </div>
   </section>
 
@@ -2360,7 +2360,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <div class="water">
       <span>💧 ترطيب:</span>
       <button id="waterMinus" type="button">-</button>
-      <b id="waterCount">٠</b>
+      <b id="waterCount">0</b>
       <button id="waterPlus" type="button">+</button>
       <span>أكواب</span>
     </div>
@@ -2377,7 +2377,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="spotify-signedin" id="spotifySignedIn" hidden>
         <select id="spotifyPlaylist" aria-label="اختر قائمة تشغيل"></select>
         <div class="spotify-embed-wrap"><iframe id="spotifyEmbed" width="100%" height="152" frameborder="0" allow="encrypted-media" loading="lazy"></iframe></div>
-        <div class="spotify-hint">حساب مجاني: التشغيل هنا معاينة ٣٠ ثانية فقط. <a id="spotifyOpenApp" href="#" target="_blank" rel="noopener">افتح القائمة كاملة في سبوتيفاي ↗</a></div>
+        <div class="spotify-hint">حساب مجاني: التشغيل هنا معاينة 30 ثانية فقط. <a id="spotifyOpenApp" href="#" target="_blank" rel="noopener">افتح القائمة كاملة في سبوتيفاي ↗</a></div>
         <button id="spotifyDisconnectBtn" type="button" class="linklike">قطع الربط</button>
       </div>
     </div>
@@ -2438,7 +2438,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <script src="nasaq-core.js"></script>
 <script src="nasaq-pulse.js"></script>
 <script>
-const AR = n => Number(n).toLocaleString('ar-EG');
+const AR = n => Number(n).toLocaleString('ar-EG-u-nu-latn');
 const $ = id => document.getElementById(id);
 function localYMD(dt){ return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); }
 function iso(d){
@@ -2457,8 +2457,9 @@ let tasks = [], waits = [], laters = [], archive = [], timeline = {};
 let waitMeta = {};
 const WAIT_STALE_DAYS = 3;
 const expandedIds = new Set();
-const AR_DIGITS = '٠١٢٣٤٥٦٧٨٩';
-const arDigits = s => String(s).replace(/[0-9]/g, d=>AR_DIGITS[d]);
+const AR_DIGITS = '0123456789';
+/* الأرقام إنجليزية في المنصة كلها (قرار صاحب اللوح 2026-09-25): الدالة باقية كي لا تتغيّر مواضع استدعائها */
+const arDigits = s => String(s);
 const EMPTY_ICON = '<svg class="empty-ic" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
   '<path d="M8 26l24-12 24 12-24 12-24-12z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'+
   '<path d="M8 26v14l24 12 24-12V26" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'+
@@ -2475,11 +2476,11 @@ const now = new Date();
    يُعاد حسابه مع تحديث التحية، فيتبدّل بعد منتصف الليل والصفحة مفتوحة. */
 function renderDates(){
   const d = new Date();
-  $('date').textContent = d.toLocaleDateString('ar-EG-u-nu-arab',{day:'numeric',month:'long',year:'numeric'});
-  $('weekday').textContent = d.toLocaleDateString('ar-EG',{weekday:'long'});
+  $('date').textContent = d.toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
+  $('weekday').textContent = d.toLocaleDateString('ar-EG-u-nu-latn',{weekday:'long'});
   const h = $('hijriDate'); if(!h) return;
   try{
-    const f = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-arab',{day:'numeric',month:'long',year:'numeric'});
+    const f = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'long',year:'numeric'});
     if(f.resolvedOptions().calendar !== 'islamic-umalqura') throw 0;   /* متصفح لا يدعم أم القرى: لا نعرض تاريخًا تقريبيًا */
     h.textContent = f.format(d).replace(/\s*هـ$/, '') + ' هـ';
     h.hidden = false;
@@ -2732,7 +2733,7 @@ let bootUpdatedAt = stateUpdatedAt;
 let applyingRemote = false, statePushTimer = null, statePushing = false;
 
 function setStateNote(msg){ const el = $('stateNote'); if(el) el.textContent = msg ? ('· '+msg) : ''; }
-function clockNow(){ return new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}); }
+function clockNow(){ return new Date().toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'}); }
 
 function fullState(){
   return { board: snapshot(), flow: flow, expenses: expenses };
@@ -2752,12 +2753,12 @@ function applyFullState(s){
 }
 
 /* ---------- حماية المزامنة ----------
-   حادثة ٢٠٢٦-٠٩-١٤: متصفح بنسخة فارغة فُتح أول مرة في يوم جديد، فسجّل تصفير روتين اليوم
+   حادثة 2026-09-14: متصفح بنسخة فارغة فُتح أول مرة في يوم جديد، فسجّل تصفير روتين اليوم
    كتعديل، ورفع نسخته الفارغة بعد ثانيتين — قبل أن يصل ردّ السحابة — فمسح الحالة المحفوظة.
    ثلاث قواعد تمنع تكرارها:
-   ١) لا رفع قبل أول قراءة ناجحة للسحابة (stateReady). التعديلات قبلها تُحفظ محليًا وتنتظر.
-   ٢) لا تُرفع نسخة بلا محتوى فوق سحابة فيها محتوى، مهما كان التوقيت.
-   ٣) جهاز بلا محتوى يأخذ ما في السحابة حتى لو بدا توقيته أحدث. */
+   1) لا رفع قبل أول قراءة ناجحة للسحابة (stateReady). التعديلات قبلها تُحفظ محليًا وتنتظر.
+   2) لا تُرفع نسخة بلا محتوى فوق سحابة فيها محتوى، مهما كان التوقيت.
+   3) جهاز بلا محتوى يأخذ ما في السحابة حتى لو بدا توقيته أحدث. */
 let stateReady = false, pendingPush = false, remoteHasContent = false;
 function stateHasContent(s){
   if(!s) return false;
@@ -2775,14 +2776,14 @@ function touchState(){
 }
 function queueStatePush(){
   if(!bridge) return;
-  if(!stateReady){ pendingPush = true; return; }   /* القاعدة ١ */
+  if(!stateReady){ pendingPush = true; return; }   /* القاعدة 1 */
   clearTimeout(statePushTimer);
   statePushTimer = setTimeout(pushState, 2000);
 }
 function pushState(){
   if(!bridge || applyingRemote || statePushing) return;
   if(!stateReady){ pendingPush = true; return; }
-  if(remoteHasContent && !stateHasContent(fullState())){   /* القاعدة ٢ */
+  if(remoteHasContent && !stateHasContent(fullState())){   /* القاعدة 2 */
     setStateNote('لم يُرفع: نسخة هذا الجهاز فارغة والسحابة فيها بيانات');
     return;
   }
@@ -2806,7 +2807,7 @@ function pullState(pre){
     const remoteAt = Number(d.updatedAt)||0;
     remoteHasContent = stateHasContent(d.state);
     stateReady = true;
-    /* القاعدة ٣: جهاز فارغ يأخذ السحابة الممتلئة مهما كان التوقيت */
+    /* القاعدة 3: جهاز فارغ يأخذ السحابة الممتلئة مهما كان التوقيت */
     const localEmpty = !stateHasContent(fullState());
     if(d.state && (remoteAt > bootUpdatedAt || (localEmpty && remoteHasContent))){
       pendingPush = false;
@@ -2871,7 +2872,7 @@ function setDot(cls, msg){
 }
 function markSynced(){
   const t = new Date();
-  $('syncTime').textContent = '· آخر مزامنة ' + t.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+  $('syncTime').textContent = '· آخر مزامنة ' + t.toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'});
 }
 /* النقل إلى الجسر صار في nasaq-core.js — تستعمله هذه الصفحة وصفحة المشاريع.
    يبقى هنا ما يخصّ اللوح وحده: إضافة رمز الجلسة، وفحص الرد، والعودة لشاشة الدخول. */
@@ -2991,7 +2992,7 @@ function fmtDays(n){
   if(n<11) return AR(n)+' أيام';
   return AR(n)+' يومًا';
 }
-function arDate(s){ return new Date(s).toLocaleDateString('ar-EG-u-nu-arab',{day:'numeric',month:'long'}); }
+function arDate(s){ return new Date(s).toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long'}); }
 function openDays(t){ return dayNum(t.doneAt||Date.now()) - dayNum(t.createdAt); }
 
 function makeEditable(el, getVal, setVal, onCommit){
@@ -3131,7 +3132,7 @@ function render(){
   try{ updateCardArts(); }catch(e){}
 }
 
-/* ---------- ساعات العمل (سعة اليوم) — افتراضيًا ٨ ساعات، محفوظة على الجهاز ---------- */
+/* ---------- ساعات العمل (سعة اليوم) — افتراضيًا 8 ساعات، محفوظة على الجهاز ---------- */
 const WORK_KEY = 'daily-board-workmins';
 function workMins(){ let v = 480; try{ v = Number(localStorage.getItem(WORK_KEY)) || 480; }catch(e){} return v; }
 function openCapacityModal(){
@@ -3325,7 +3326,7 @@ function renderSideToday(){
 document.querySelectorAll('.pri .field').forEach(f=>f.addEventListener('input', renderSideToday));
 
 /* ---------- الحلقة ساعة اليوم (طابع «مَدار») ----------
-   القوس ٣٣٠° = ساعات العمل (من نهاية الهدوء إلى بدايته، من الإعدادات)، والفجوة ٣٠° أعلاها = الهدوء.
+   القوس 330° = ساعات العمل (من نهاية الهدوء إلى بدايته، من الإعدادات)، والفجوة 30° أعلاها = الهدوء.
    الامتلاء = المنجز من مهام اليوم، والمعين = الآن، والعلامات = مواقيت الصلاة في غزة.
    أرقام الحلقة إنجليزية (40%، 2:05) بقرار المستخدم. تظهر: حول الشعار في الشريط العلوي،
    وفي الواجهة الكبيرة، وفي «ختام اليوم»، وفي أيقونة التبويب. */
@@ -3352,7 +3353,7 @@ function ringNextPrayer(m){
 function ringBigWanted(){
   return document.documentElement.getAttribute('data-palette') === 'nasaq360' && matchMedia('(min-width:1200px)').matches;
 }
-/* قناع قوس بنهايات دائرية على شبكة ١٠٠×١٠٠ — الزوايا باتجاه عقارب الساعة من الأعلى */
+/* قناع قوس بنهايات دائرية على شبكة 100×100 — الزوايا باتجاه عقارب الساعة من الأعلى */
 function ringArcMask(a0, a1, w){
   if(a1 - a0 < .5) return 'linear-gradient(transparent,transparent)';
   const r = 50 - w / 2 - .6, pt = t=>{ const x = t * Math.PI / 180; return (50 + r * Math.sin(x)).toFixed(2) + ' ' + (50 - r * Math.cos(x)).toFixed(2); };
@@ -3370,11 +3371,11 @@ function ringSetFill(el, pct){
 }
 /* ---------- حركة «الانبثاق من المعين» — خط زمني واحد قابل للعكس والمقاطعة ----------
    مبادئ الحركة المعتمدة (Material Motion وApple HIG ومرجع MOTION-SPEC):
-   • تباطؤ عند الوصول (ease-out/expo) وتسارع عند المغادرة، والطيّ أسرع من الظهور (~٦٥٪).
+   • تباطؤ عند الوصول (ease-out/expo) وتسارع عند المغادرة، والطيّ أسرع من الظهور (~65%).
    • نابض (spring) خفيف لاستقرار المعين، وترقّب (anticipation) بانكماش قصير قبل الانطلاق.
    • المعين يسير في مسار حلزوني لا في خط مستقيم، ورأس مضيء يرسم المدار، وكل علامة صلاة
      تظهر لحظة يمرّ بها الرأس — فالتتابع نابع من الحركة نفسها لا من تأخيرات عشوائية.
-   • الرقم يعدّ من ٠ إلى النسبة، والنص يظهر بإزاحة صغيرة وضباب يتلاشى.
+   • الرقم يعدّ من 0 إلى النسبة، والنص يظهر بإزاحة صغيرة وضباب يتلاشى.
    • قابلة للمقاطعة: النقر أثناء الحركة يعكسها من موضعها. واحترام «تقليل الحركة». */
 const RING_OPEN_MS = 1500, RING_CLOSE_MS = 980, RING_HOLD_MS = 15000;
 const rz = (x, a, b)=>Math.min(1, Math.max(0, (x - a) / (b - a)));          /* جزء الخط الزمني الخاص بعنصر */
@@ -3394,9 +3395,9 @@ function ringGeometry(el){
 function ringFrame(el, P){
   const g = ringGeo || (ringGeo = ringGeometry(el));
   const pct = +el.dataset.pct || 0, a = parseFloat(el.style.getPropertyValue('--a')) || 0;
-  /* ١. ترقّب: انكماش قصير للمعين قبل الانطلاق */
+  /* 1. ترقّب: انكماش قصير للمعين قبل الانطلاق */
   const pre = rz(P, 0, .07), squeeze = 1 - .18 * Math.sin(pre * Math.PI);
-  /* ٢. المعين: حلزون من المركز إلى موضع الساعة، ونابض عند الوصول */
+  /* 2. المعين: حلزون من المركز إلى موضع الساعة، ونابض عند الوصول */
   const u = rz(P, .06, .54), rr = g.R * eSettle(u), th = a - 220 * (1 - eOut(u));
   const size = 20 - 7 * eOut(u), spin = eOut(rz(P, .15, .6));
   const b = el.querySelector('.o-now b');
@@ -3410,7 +3411,7 @@ function ringFrame(el, P){
     b.style.setProperty('--pingS', (1 + 1.8 * eOut(pg)).toFixed(3));
     b.style.setProperty('--pingO', (pg > 0 && pg < 1 ? .7 * (1 - pg) : 0).toFixed(3));
   }
-  /* ٣. المدار يُرسم بقلم مضيء من بداية القوس، والعلامات تظهر لحظة مرور القلم بها */
+  /* 3. المدار يُرسم بقلم مضيء من بداية القوس، والعلامات تظهر لحظة مرور القلم بها */
   const d = rz(P, .12, .64), draw = eInOut(d), head = RING_ARC0 + RING_ARC * draw;
   el.style.setProperty('--m-track', d > 0 ? ringArcMask(RING_ARC0, RING_ARC0 + Math.max(.6, RING_ARC * draw), g.w) : 'linear-gradient(transparent,transparent)');
   const hd = el.querySelector('.o-head');
@@ -3421,13 +3422,13 @@ function ringFrame(el, P){
     if(t.i){ t.i.style.opacity = eOut(v).toFixed(3); t.i.style.transform = 'scaleY(' + eBack(v).toFixed(3) + ')'; }
     if(t.em){ t.em.style.opacity = eOut(v2).toFixed(3); t.em.style.filter = 'blur(' + (4 * (1 - v2)).toFixed(2) + 'px)'; }
   });
-  /* ٣ب. ميناء الساعة: التقسيمات الاثنتا عشرة تنبت واحدة تلو الأخرى خلف القلم */
+  /* 3ب. ميناء الساعة: التقسيمات الاثنتا عشرة تنبت واحدة تلو الأخرى خلف القلم */
   g.dials.forEach((di, k)=>{
     const at = .16 + k * .034, v = rz(P, at, at + .1), major = !(k % 3);
     di.style.opacity = ((major ? .72 : .4) * eOut(v)).toFixed(3);
     di.style.transform = 'scaleY(' + eBack(v).toFixed(3) + ')';
   });
-  /* ٣ج. عقرب الدقائق يولد بعد اكتمال الميناء، بنبضة صغيرة */
+  /* 3ج. عقرب الدقائق يولد بعد اكتمال الميناء، بنبضة صغيرة */
   /* تنطلق من الثانية عشرة مع انطلاق القلم، وتسير على الميناء بالإيقاع نفسه (المنحنى ذاته) حتى
      تبلغ دقيقتك الآن، فتبدو ظلًّا للقلم في الدائرة الداخلية؛ ثم نبضة صغيرة عند الوصول */
   const mn = el.querySelector('.o-min');
@@ -3437,11 +3438,11 @@ function ringFrame(el, P){
     mn.style.opacity = eOut(mv).toFixed(3);
     mn.style.transform = 'rotate(' + (mAng * draw).toFixed(2) + 'deg) translateY(' + (-g.rMin).toFixed(2) + 'px) scale(' + (eOut(mv) * pop).toFixed(3) + ')';
   }
-  /* ٤. القوس يمتلئ بالإنجاز («دوران») بتباطؤ أُسّي */
+  /* 4. القوس يمتلئ بالإنجاز («دوران») بتباطؤ أُسّي */
   const f = eExpo(rz(P, .38, .86)) * pct;
   el.style.setProperty('--p', (f / 100 * RING_ARC) + 'deg');
   el.style.setProperty('--m-fill', ringArcMask(RING_ARC0, RING_ARC0 + f / 100 * RING_ARC, g.w));
-  /* ٥. النسبة تعدّ صعودًا، والنص يصعد من ضباب خفيف */
+  /* 5. النسبة تعدّ صعودًا، والنص يصعد من ضباب خفيف */
   const c = el.querySelector('.o-core'), ce = eOut(rz(P, .5, .92));
   if(c){ c.style.opacity = ce.toFixed(3); c.style.transform = 'translateY(' + (12 * (1 - ce)).toFixed(2) + 'px)'; c.style.filter = 'blur(' + (7 * (1 - ce)).toFixed(2) + 'px)';
     const nb = c.querySelector('b'); if(nb) nb.textContent = Math.round(pct * eOut(rz(P, .5, .9))) + '%'; }
@@ -3468,7 +3469,7 @@ setInterval(()=>{
   const mn = el.querySelector('.o-min'), g = ringGeo || (ringGeo = ringGeometry(el));
   if(mn) mn.style.transform = 'rotate(' + (ringMinuteAngle() % 360).toFixed(2) + 'deg) translateY(' + (-g.rMin).toFixed(2) + 'px) scale(1)';
 }, 1000);
-/* فتح الحلقة من المعين أو طيّها إليه — تبقى ١٥ ثانية بعد اكتمال ظهورها ثم تنطوي */
+/* فتح الحلقة من المعين أو طيّها إليه — تبقى 15 ثانية بعد اكتمال ظهورها ثم تنطوي */
 function ringOpen(open){
   const el = $('heroRing'), hb = $('heroBanner');
   if(!el || !hb || !hb.classList.contains('ring-big')) return;
@@ -3488,9 +3489,9 @@ function ringClearInline(el){
 }
 /* مواقيت اليوم على الحلقة، بالترتيب: الفجر، الشروق، الظهر، العصر، المغرب، العشاء */
 const RING_PRAYERS = [['fajr', 'الفجر'], ['sunrise', 'الشروق'], ['dhuhr', 'الظهر'], ['asr', 'العصر'], ['maghrib', 'المغرب'], ['isha', 'العشاء']];
-/* زاوية على ميناء ١٢ ساعة (الثانية عشرة أعلى) — للحلقة الكبيرة ذات الميناء */
+/* زاوية على ميناء 12 ساعة (الثانية عشرة أعلى) — للحلقة الكبيرة ذات الميناء */
 const ringAnalog = m=>(m / 60 % 12) * 30;
-/* يضع علامات الصلاة: على الميناء (١٢ ساعة) في الحلقة الكبيرة، وعلى قوس اليوم في غيرها.
+/* يضع علامات الصلاة: على الميناء (12 ساعة) في الحلقة الكبيرة، وعلى قوس اليوم في غيرها.
    الأسماء المتقاربة (كالشروق والمغرب على الميناء) يُنقل أحدها خارج الحلقة كي لا تتزاحم. */
 function ringPlaceTicks(el, analog){
   const p = prayerTimes(), list = [];
@@ -3506,7 +3507,7 @@ function ringPlaceTicks(el, analog){
     o.t.classList.toggle('out', !!out);
     const e = o.t.querySelector('em'); if(e) e.style.transform = 'translateX(-50%) rotate(' + (-o.ang).toFixed(2) + 'deg)';
   });
-  /* دخول وقت الصلاة: يتوهّج اسمها ٢٠ دقيقة، وينبض المعين الساكن أسرع إيذانًا به */
+  /* دخول وقت الصلاة: يتوهّج اسمها 20 دقيقة، وينبض المعين الساكن أسرع إيذانًا به */
   const now = prayerNow();
   el.querySelectorAll('.o-tick').forEach(t=>t.classList.toggle('now', t.dataset.k === now));
   el.classList.toggle('prayer-now', !!now);
@@ -3573,7 +3574,7 @@ function renderRingClock(){
   const hr = $('heroRing'); if(hr) hr.setAttribute('aria-label', line);
   if(fav) try{ fav.href = ringIcon(pct, a, q); }catch(e){}
 }
-/* أيقونة التبويب: القوس والمعين والنسبة على قماش ٣٢×٣٢ */
+/* أيقونة التبويب: القوس والمعين والنسبة على قماش 32×32 */
 function ringIcon(pct, a, q){
   const s = 32, cv = document.createElement('canvas'); cv.width = cv.height = s;
   const c = cv.getContext('2d'), cx = s / 2, w = 3.6, R = s / 2 - w / 2 - 1;
@@ -3703,14 +3704,14 @@ function renderOnboard(){
   let planned = false; try{ planned = !!localStorage.getItem(PLAN_KEY); }catch(e){}
   /* كل خطوة ملصق: عنوان بسطرين (الثاني بلون الخطوة)، وسطر قصير، ومشهد مرسوم في OB_ART */
   const steps = [
-    {key:'task', done: tasks.length + archive.length > 0, t:'أضف أول مهمة', l1:'أضف', l2:'أول مهمة', sub:'اكتبها، والاختصارات تكفيك', time:'٣٠ ثانية',
+    {key:'task', done: tasks.length + archive.length > 0, t:'أضف أول مهمة', l1:'أضف', l2:'أول مهمة', sub:'اكتبها، والاختصارات تكفيك', time:'30 ثانية',
       go: ()=>{ showTab('board'); $('tText').scrollIntoView({block:'center'}); $('tText').focus(); }},
-    {key:'pri', done: [...document.querySelectorAll('.pri .field')].some(f=>f.value.trim()), t:'حدّد أولوية اليوم', l1:'حدّد', l2:'أولوية اليوم', sub:'ما لو أُنجز وحده كفى', time:'٣٠ ثانية',
+    {key:'pri', done: [...document.querySelectorAll('.pri .field')].some(f=>f.value.trim()), t:'حدّد أولوية اليوم', l1:'حدّد', l2:'أولوية اليوم', sub:'ما لو أُنجز وحده كفى', time:'30 ثانية',
       go: ()=>{ const f = document.querySelector('.pri .field'); f.scrollIntoView({block:'center'}); f.focus(); }},
-    {key:'plan', done: planned, t:'خطّط يومك', l1:'خطّط', l2:'يومك', sub:'أمس ← ما ينتظرك ← أولوياتك', time:'٣ دقائق', go: ()=>openPlanDay()},
+    {key:'plan', done: planned, t:'خطّط يومك', l1:'خطّط', l2:'يومك', sub:'أمس ← ما ينتظرك ← أولوياتك', time:'3 دقائق', go: ()=>openPlanDay()},
     {key:'habit', done: routines > 0, t:'أضف عادة إلى روتينك', l1:'أضف عادة', l2:'إلى روتينك', sub:'تظهر لك كل صباح', time:'دقيقة',
       go: ()=>{ showTab('flow'); $('amInput').focus(); }},
-    {key:'focus', done: !!st.focus, t:'جرّب جلسة تركيز', l1:'جرّب', l2:'جلسة تركيز', sub:'٢٥ دقيقة لشيء واحد', time:'٢٥ دقيقة', go: ()=>openFocusMode()}
+    {key:'focus', done: !!st.focus, t:'جرّب جلسة تركيز', l1:'جرّب', l2:'جلسة تركيز', sub:'25 دقيقة لشيء واحد', time:'25 دقيقة', go: ()=>openFocusMode()}
   ];
   const n = steps.filter(s=>s.done).length;
   /* اكتملت الخطوات: تختفي القائمة — إلا إن أعدتها من الإعدادات (pinned) فتبقى متوهّجة كلها */
@@ -3852,7 +3853,7 @@ const OB_ART = {
     '<path d="M121 118c-20 2-31-8-33-24 18-2 30 8 33 24z" fill="'+H+'" fill-opacity=".8"/>' +
     '<path d="M122 108c4-19 17-26 33-24-2 18-15 26-33 24z" fill="'+H+'"/>' +
     '<circle cx="138" cy="92" r="10" fill="'+H+'" opacity="'+(.45*P.soft)+'" filter="url(#'+id+'-bl)"/>'},
-  /* حلقة المدار ٣٣٠° حول «٢٥» — مؤقّت جلسة التركيز */
+  /* حلقة المدار 330° حول «25» — مؤقّت جلسة التركيز */
   focus: {art:{dark:'#B69CF5', light:'#7C55D0'}, text:{dark:'#C9B5FF', light:'#6A43B8'}, glowY:.32,
     /* o.banner: نسخة لوحة «التركيز» — بلا نص، والحلقة (ob-arc) يملؤها المؤقّت الحيّ */
     scene:(P, H, id, o)=>
@@ -3862,7 +3863,7 @@ const OB_ART = {
     '<path class="ob-arc" pathLength="100" d="M135.5 58A60 60 0 1 1 104.5 58" fill="none" stroke="url(#'+id+'-ring)" stroke-width="8" stroke-linecap="round"/>' +
     (o && o.banner ? '<circle cx="120" cy="116" r="7" fill="'+H+'" opacity=".8"/><path d="M120 116V84M120 116l16 10" stroke="'+P.txt+'" stroke-width="4" stroke-linecap="round"/>' :
     '<circle cx="135.5" cy="58" r="6" fill="'+P.txt+'"/>' +
-    '<text x="120" y="130" text-anchor="middle" font-family="Alexandria, Readex Pro, sans-serif" font-weight="800" font-size="40" fill="'+P.txt+'">٢٥</text>' +
+    '<text x="120" y="130" text-anchor="middle" font-family="Alexandria, Readex Pro, sans-serif" font-weight="800" font-size="40" fill="'+P.txt+'">25</text>' +
     '<text x="120" y="150" text-anchor="middle" font-family="Readex Pro, sans-serif" font-size="11" fill="'+P.txt2+'">دقيقة</text>')},
   /* مصباح فكرة تحوم حوله خواطر صغيرة — للوحة «أفكار عابرة» */
   idea: {art:{dark:'#FFC35A', light:'#D68A12'}, text:{dark:'#FFC35A', light:'#8A5A00'}, glowY:.32,
@@ -4035,7 +4036,7 @@ function appendTaskRow(list, t, priValues){
   txt.className='t-text'; txt.textContent = t.text;
   if(t.notes) txt.title = t.notes;
   makeEditable(txt, ()=>t.text, v=>{ if(v) t.text = v; }, ()=>{ t.dirty = true; sync(); });
-  /* شارة الخطوات الفرعية «٢/٤» — تفتح التفاصيل بدل تعديل النص */
+  /* شارة الخطوات الفرعية «2/4» — تفتح التفاصيل بدل تعديل النص */
   if(t.subs && t.subs.length){
     const sd = t.subs.filter(s=>s.done).length;
     const sb = document.createElement('button');
@@ -4155,7 +4156,7 @@ function renderDaySummary(){
 }
 
 /* ---------- «نبض المشاريع» في اللوح ----------
-   كانت «مشاريعي» تعدّ مهام اللوح حسب وسم المشروع، فيظهر مشروع بمهمة واحدة منجزة «مكتمل ١٠٠٪».
+   كانت «مشاريعي» تعدّ مهام اللوح حسب وسم المشروع، فيظهر مشروع بمهمة واحدة منجزة «مكتمل 100%».
    الآن: خلاصة صفحة النبض من بيانات المشاريع الحقيقية (آخر نسخة حفظتها صفحة المشاريع) —
    المتأخر، والمستحق هذا الأسبوع، والمشاريع خارج المسار، وأكثر ثلاثة مشاريع إلحاحًا وسببها. */
 function renderProjects(){
@@ -4256,7 +4257,7 @@ function renderDetailsRow(t){
   if(!t.done){
     const fb = document.createElement('button');
     fb.type = 'button'; fb.className = 'focus-go';
-    fb.textContent = '▶ ركّز عليها ٢٥ دقيقة';
+    fb.textContent = '▶ ركّز عليها 25 دقيقة';
     fb.onclick = ()=>focusOnTask(t);
     sh.appendChild(fb);
   }
@@ -4293,7 +4294,7 @@ function renderDetailsRow(t){
   return li;
 }
 
-/* «بانتظار رد»: كل بند بعمره، وتنبيه لما تجاوز ٣ أيام، وثلاثة أفعال: وصل الرد · ذكّرني · احذف */
+/* «بانتظار رد»: كل بند بعمره، وتنبيه لما تجاوز 3 أيام، وثلاثة أفعال: وصل الرد · ذكّرني · احذف */
 function renderWaits(){
   const ul = $('waitList'); ul.innerHTML = '';
   ensureWaitMeta();
@@ -4313,7 +4314,7 @@ function renderWaits(){
     btn('kill', '×', 'احذف', ()=>waitResolve(i, 'delete'));
     li.append(body, acts); ul.appendChild(li);
   });
-  /* شارة بجانب العنوان: كم بندًا تجاوز ٣ أيام بلا رد */
+  /* شارة بجانب العنوان: كم بندًا تجاوز 3 أيام بلا رد */
   const h = ul.previousElementSibling;
   if(h){
     let badge = h.querySelector('.wait-badge');
@@ -4487,7 +4488,7 @@ function refreshCalendarFromNotion(){
 }
 function renderCalendar(){
   const grid = $('calGrid'); grid.innerHTML='';
-  $('calLabel').textContent = calMonth.toLocaleDateString('ar-EG-u-nu-arab',{month:'long',year:'numeric'});
+  $('calLabel').textContent = calMonth.toLocaleDateString('ar-EG-u-nu-latn',{month:'long',year:'numeric'});
   const year = calMonth.getFullYear(), month = calMonth.getMonth();
   const firstDow = new Date(year,month,1).getDay();
   const daysInMonth = new Date(year,month+1,0).getDate();
@@ -4681,14 +4682,14 @@ function pomoFinish(){
   if(t){
     t.actual = (Number(t.actual)||0) + Math.round(POMO_DEFAULT/60);
     t.dirty = true;
-    $('pomoHint').textContent = 'أُضيفت ٢٥ دقيقة إلى: '+t.text;
+    $('pomoHint').textContent = 'أُضيفت 25 دقيقة إلى: '+t.text;
   }else{
     $('pomoHint').textContent = 'انتهت الجلسة.';
   }
   pomoRemaining = POMO_DEFAULT;
   if(pomoBellCancel) pomoBellCancel = null;   /* الجرس المجدول رنّ في موعده */
   else playSound('end');
-  notify('done', 'انتهت جلسة التركيز', t ? 'أُضيفت ٢٥ دقيقة إلى: ' + t.text + ' — خذ استراحة ٥ دقائق' : 'خذ استراحة ٥ دقائق', {noSound:true, urgent:true, action:'focus'});
+  notify('done', 'انتهت جلسة التركيز', t ? 'أُضيفت 25 دقيقة إلى: ' + t.text + ' — خذ استراحة 5 دقائق' : 'خذ استراحة 5 دقائق', {noSound:true, urgent:true, action:'focus'});
   clearTimeout(pomoBreakTimer);
   pomoBreakTimer = setTimeout(()=>{ if(!pomoRunning) notify('remind', 'انتهت الاستراحة', 'جاهز لجلسة أخرى؟', {action:'focus'}); }, 5 * 60 * 1000);
   if(t) sync(); else updatePomoLive();
@@ -4817,7 +4818,7 @@ function renderPalette(){
     if(found.length){
       group('مهام');
       found.forEach(t=>item(t.done ? '✓' : '○', t.text, [t.proj, t.due ? arDate(t.due) : ''].filter(Boolean).join(' · '), ()=>revealTask(t)));
-      found.filter(t=>!t.done).slice(0, 2).forEach(t=>item('▶', 'ركّز على: ' + t.text, '٢٥ د', ()=>focusOnTask(t)));
+      found.filter(t=>!t.done).slice(0, 2).forEach(t=>item('▶', 'ركّز على: ' + t.text, '25 د', ()=>focusOnTask(t)));
     }
     if(!wantsAdd){ item('＋', 'أضف «' + raw + '» مهمةً جديدة', '', ()=>{ const t = quickTask(raw); showToast('أُضيفت: ' + t.text); }); }
   }
@@ -4886,7 +4887,7 @@ document.addEventListener('focusin', e=>{
 });
 $('paletteBtn').onclick = openPalette;
 
-/* ==================== نَسَق الحيّ — المرحلة ١: الأصوات والإشعارات وساعات الهدوء ====================
+/* ==================== نَسَق الحيّ — المرحلة 1: الأصوات والإشعارات وساعات الهدوء ====================
    الإعدادات على الجهاز. الأصوات من هوية «مَدار» (D:\03- Claude Sestem\هوية مدار\madar-sounds.js). */
 const ALIVE_KEY = 'daily-board-alive';
 const ALIVE_DEF = {sound:true, click:true, volume:40, quietFrom:'20:00', quietTo:'07:00', workEnd:'17:00', prayer:true, askedNotif:false, heroImages:'mix'};
@@ -4962,7 +4963,7 @@ function fmtMinAr(m){
   return arDigits(h12 + ':' + String(mm).padStart(2, '0')) + ' ' + (h < 12 ? 'ص' : 'م');
 }
 function minutesAr(n){ return n === 1 ? 'دقيقة' : n === 2 ? 'دقيقتين' : AR(n) + (n <= 10 ? ' دقائق' : ' دقيقة'); }
-/* طريقة الهيئة المصرية العامة للمساحة: الفجر ١٩٫٥°، العشاء ١٧٫٥°، العصر شافعي. تحقّقتُ منها مقابل مواقيت القدس المنشورة */
+/* طريقة الهيئة المصرية العامة للمساحة: الفجر 19٫5°، العشاء 17٫5°، العصر شافعي. تحقّقتُ منها مقابل مواقيت القدس المنشورة */
 const PRAYER_CITY = {lat:31.5017, lng:34.4668};
 const prayerCache = {};
 function prayerTimes(date = new Date()){
@@ -5046,11 +5047,11 @@ function notifAge(ms){
   const m = Math.round((Date.now() - ms) / 60000);
   if(m < 1) return 'الآن'; if(m < 60) return 'منذ ' + minutesAr(m);
   const h = Math.round(m / 60); if(h < 24) return 'منذ ' + (h === 1 ? 'ساعة' : h === 2 ? 'ساعتين' : AR(h) + ' ساعات');
-  return new Date(ms).toLocaleDateString('ar-EG-u-nu-arab', {day:'numeric', month:'long'});
+  return new Date(ms).toLocaleDateString('ar-EG-u-nu-latn', {day:'numeric', month:'long'});
 }
 function renderNotifs(){
   const unread = notifs.filter(n=>!n.read).length, badge = $('notifBadge');
-  if(badge){ badge.hidden = !unread; badge.textContent = unread > 9 ? '٩+' : AR(unread); }
+  if(badge){ badge.hidden = !unread; badge.textContent = unread > 9 ? '9+' : AR(unread); }
   $('notifBtn')?.setAttribute('aria-label', unread ? 'الإشعارات — ' + AR(unread) + ' غير مقروءة' : 'الإشعارات');
   const ul = $('npList'); if(!ul || $('notifPanel').hidden) return;
   ul.innerHTML = '';
@@ -5084,11 +5085,11 @@ document.addEventListener('click', e=>{ if(!$('notifPanel').hidden && !e.target.
 document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && !$('notifPanel').hidden){ closeNotifPanel(); $('notifBtn').focus(); } });
 renderNotifs();
 
-/* ---------- المحرّك: يفحص كل ٣٠ ثانية ما يستحق التنبيه ---------- */
+/* ---------- المحرّك: يفحص كل 30 ثانية ما يستحق التنبيه ---------- */
 function aliveTick(){
   const now = new Date(), n = nowMin(now);
   try{ renderRingClock(); }catch(e){}   /* المعين يتقدّم مع الوقت */
-  /* مواعيد تقويم Google: قبل ١٠ دقائق — تتجاوز الهدوء */
+  /* مواعيد تقويم Google: قبل 10 دقائق — تتجاوز الهدوء */
   try{
     gcalEvents.forEach(ev=>{
       if(ev.allDay || !ev.start) return;
@@ -5096,7 +5097,7 @@ function aliveTick(){
       if(left > 0 && left <= 10) notify('remind', 'بعد ' + minutesAr(left) + ': ' + ev.title, 'موعد في تقويم Google الساعة ' + fmtMinAr(s), {key:'gcal:' + ev.start + ':' + ev.title, urgent:true, action:'board'});
     });
   }catch(e){}
-  /* مهمة مربوطة بالساعة الحالية في «جدول اليوم»: خلال أول ١٥ دقيقة من الساعة */
+  /* مهمة مربوطة بالساعة الحالية في «جدول اليوم»: خلال أول 15 دقيقة من الساعة */
   try{
     const hk = String(now.getHours()).padStart(2, '0') + ':00', txt = String(timeline[hk] || '').trim();
     if(txt && now.getMinutes() < 15) notify('remind', 'حان وقت: ' + txt, 'من «جدول اليوم» — الساعة ' + fmtMinAr(now.getHours() * 60), {key:'tl:' + hk + ':' + txt, action:'board'});
@@ -5444,8 +5445,8 @@ render();
 renderTimeline();
 
 /* ---------- Daily Flow ---------- */
-$('flowDate').textContent = now.toLocaleDateString('ar-EG-u-nu-arab',{day:'numeric',month:'long',year:'numeric'});
-$('flowWeekday').textContent = now.toLocaleDateString('ar-EG',{weekday:'long'});
+$('flowDate').textContent = now.toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
+$('flowWeekday').textContent = now.toLocaleDateString('ar-EG-u-nu-latn',{weekday:'long'});
 
 const FKEY = 'daily-flow-v1';
 let flow = {amRoutine:[], pmRoutine:[], energy:0, grat:['','',''], meals:{breakfast:'',lunch:'',dinner:''}, water:0, lastDate:''};
@@ -5485,7 +5486,7 @@ function renderFlow(){
   renderDaySummary();
   renderHabitWeek();
 }
-/* سجل العادات: نسبة إنجاز الروتين لكل يوم (آخر ٦٠ يومًا) — يُحفظ مع Daily Flow ويتزامن معه */
+/* سجل العادات: نسبة إنجاز الروتين لكل يوم (آخر 60 يومًا) — يُحفظ مع Daily Flow ويتزامن معه */
 function recordHabitDay(){
   const hs = (flow.amRoutine||[]).concat(flow.pmRoutine||[]);
   if(!hs.length) return;
@@ -5522,7 +5523,7 @@ function drawHabitWeek(box){
     const bar = document.createElement('div'); bar.className = 'hw-bar';
     const fill = document.createElement('i'); fill.style.height = pct + '%'; bar.appendChild(fill);
     const lbl = document.createElement('span');
-    lbl.textContent = d.toLocaleDateString('ar-EG', {weekday:'short'});
+    lbl.textContent = d.toLocaleDateString('ar-EG-u-nu-latn', {weekday:'short'});
     cell.append(bar, lbl); box.appendChild(cell);
   }
 }
@@ -5642,7 +5643,7 @@ function setPhotoTags(id, tags){
 }
 
 let photoList = [], photoIdx = 0, photoRotateTimer = null, prevUploadedUrls = [];
-/* ==================== المرحلة ٢: محرّك السياق وتنوّع العبارات ====================
+/* ==================== المرحلة 2: محرّك السياق وتنوّع العبارات ====================
    لكل سياق عشر صيغ تُسحب كأوراق من كيس: لا تعود صيغة حتى تُسحب كل صيغ سياقها،
    ولا تبدأ الجولة الجديدة بآخر ما ظهر. الكيس محفوظ على الجهاز. */
 const PHRASE_KEY = 'daily-board-phrasebag';
@@ -5753,7 +5754,7 @@ function applyHeroPhrase(){
   try{ renderWaqfa(); }catch(e){}   /* الوقفة تتبع السياق أيضًا */
 }
 
-/* ==================== المرحلة ٣: صورة الواجهة تتبع السياق ====================
+/* ==================== المرحلة 3: صورة الواجهة تتبع السياق ====================
    مصدران: صورك الموسومة، و«مشاهد نَسَق» — مناظر تُرسم في المتصفح بألوان الطابع الحالي،
    فتتناسق مع كل طابع ومع الوضعين، بلا ملفات ولا حقوق. الاختيار من الإعدادات. */
 const PHOTO_TAGS = {
@@ -5824,7 +5825,7 @@ function applyHeroVisual(ctx){
   $('heroTagBtn').hidden = !photoList.length;   /* «صورك» متاح ما دامت لديك صورة */
   if(usePhoto){
     const pool = tagged.length ? tagged : (anytime.length ? anytime : photoList);
-    /* الاختيار يتبدّل مع السياق (وقت/مناسبة/مهمة) ومع الوقت كل ١٠ دقائق،
+    /* الاختيار يتبدّل مع السياق (وقت/مناسبة/مهمة) ومع الوقت كل 10 دقائق،
        فلا تبقى الصورة نفسها حين يتغيّر سياق يومك. */
     let h = 0; for(let i = 0; i < tag.length; i++) h = (h * 31 + tag.charCodeAt(i)) >>> 0;
     const cur = pool[(h + Math.floor(Date.now() / (10 * 60 * 1000))) % pool.length];
@@ -5849,21 +5850,21 @@ function applyHeroVisual(ctx){
   heroVisual = {ctx, kind:'scene', url:''};
   try{ renderRingClock(); }catch(e){}
 }
-/* ==================== المرحلة ٤: «وقفة» ====================
+/* ==================== المرحلة 4: «وقفة» ====================
    الدفعة الأولى — لا يظهر نص حتى تعتمده من «راجع الدفعة».
    المصادر: نص الآيات من المصحف، والأحاديث من الصحيحين وما صححه أهل الحديث،
    والآثار منسوبة بصيغة «يُروى عن» حتى يُتحقّق من إسنادها. الدفعات التالية تُبنى من
    الدرر السنية وموسوعة الأحاديث النبوية كما في دراسة «نَسَق الحيّ». */
 const WAQFA_KEY = 'daily-board-waqfa';
 const WAQFA = [
-  {id:'a1', t:'ayah', x:'﴿فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ إِنَّ مَعَ الْعُسْرِ يُسْرًا﴾', s:'سورة الشرح، الآيتان ٥–٦', k:['صبر','مساء'], l:'ما تعثّر اليوم ليس نهاية الطريق؛ أجّله في «مؤجّلة للغد» وابدأ بأصغره غدًا.'},
-  {id:'a2', t:'ayah', x:'﴿وَقُل رَّبِّ زِدْنِي عِلْمًا﴾', s:'سورة طه، الآية ١١٤', k:['علم','قراءة'], l:'اجعل لنفسك صفحةً كل يوم؛ العلم يُبنى بالقليل المتصل.'},
-  {id:'a3', t:'ayah', x:'﴿وَأَن لَّيْسَ لِلْإِنسَانِ إِلَّا مَا سَعَىٰ﴾', s:'سورة النجم، الآية ٣٩', k:['عمل'], l:'النتيجة ثمرة السعي لا النية وحدها؛ اختر مهمة واحدة وابدأ بها الآن.'},
-  {id:'a4', t:'ayah', x:'﴿إِنَّ اللَّهَ لَا يُغَيِّرُ مَا بِقَوْمٍ حَتَّىٰ يُغَيِّرُوا مَا بِأَنفُسِهِمْ﴾', s:'سورة الرعد، الآية ١١', k:['عادات'], l:'التغيير يبدأ من عادة صغيرة في روتينك، لا من قرار كبير.'},
-  {id:'a5', t:'ayah', x:'﴿وَتَعَاوَنُوا عَلَى الْبِرِّ وَالتَّقْوَىٰ﴾', s:'سورة المائدة، الآية ٢', k:['عمل','اجتماع'], l:'ما يثقل عليك وحدك يخفّ بشريك؛ من يمكن أن تشركه في مهمتك اليوم؟'},
-  {id:'a6', t:'ayah', x:'﴿وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا﴾', s:'سورة الطلاق، الآية ٢', k:['صبر'], l:'حين تضيق الخيارات، ابدأ بالصواب لا بالأسهل.'},
-  {id:'a7', t:'ayah', x:'﴿فَإِذَا فَرَغْتَ فَانصَبْ ۝ وَإِلَىٰ رَبِّكَ فَارْغَب﴾', s:'سورة الشرح، الآيتان ٧–٨', k:['عمل','ختام'], l:'إتمام مهمة بابٌ لبدء أخرى؛ لا تترك الفراغ يتسع.'},
-  {id:'a8', t:'ayah', x:'﴿وَقُلِ اعْمَلُوا فَسَيَرَى اللَّهُ عَمَلَكُمْ وَرَسُولُهُ وَالْمُؤْمِنُونَ﴾', s:'سورة التوبة، الآية ١٠٥', k:['إتقان'], l:'أتقِن ما لا يراه أحد؛ فالعمل يُرى ولو بعد حين.'},
+  {id:'a1', t:'ayah', x:'﴿فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ۝ إِنَّ مَعَ الْعُسْرِ يُسْرًا﴾', s:'سورة الشرح، الآيتان 5–6', k:['صبر','مساء'], l:'ما تعثّر اليوم ليس نهاية الطريق؛ أجّله في «مؤجّلة للغد» وابدأ بأصغره غدًا.'},
+  {id:'a2', t:'ayah', x:'﴿وَقُل رَّبِّ زِدْنِي عِلْمًا﴾', s:'سورة طه، الآية 114', k:['علم','قراءة'], l:'اجعل لنفسك صفحةً كل يوم؛ العلم يُبنى بالقليل المتصل.'},
+  {id:'a3', t:'ayah', x:'﴿وَأَن لَّيْسَ لِلْإِنسَانِ إِلَّا مَا سَعَىٰ﴾', s:'سورة النجم، الآية 39', k:['عمل'], l:'النتيجة ثمرة السعي لا النية وحدها؛ اختر مهمة واحدة وابدأ بها الآن.'},
+  {id:'a4', t:'ayah', x:'﴿إِنَّ اللَّهَ لَا يُغَيِّرُ مَا بِقَوْمٍ حَتَّىٰ يُغَيِّرُوا مَا بِأَنفُسِهِمْ﴾', s:'سورة الرعد، الآية 11', k:['عادات'], l:'التغيير يبدأ من عادة صغيرة في روتينك، لا من قرار كبير.'},
+  {id:'a5', t:'ayah', x:'﴿وَتَعَاوَنُوا عَلَى الْبِرِّ وَالتَّقْوَىٰ﴾', s:'سورة المائدة، الآية 2', k:['عمل','اجتماع'], l:'ما يثقل عليك وحدك يخفّ بشريك؛ من يمكن أن تشركه في مهمتك اليوم؟'},
+  {id:'a6', t:'ayah', x:'﴿وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا﴾', s:'سورة الطلاق، الآية 2', k:['صبر'], l:'حين تضيق الخيارات، ابدأ بالصواب لا بالأسهل.'},
+  {id:'a7', t:'ayah', x:'﴿فَإِذَا فَرَغْتَ فَانصَبْ ۝ وَإِلَىٰ رَبِّكَ فَارْغَب﴾', s:'سورة الشرح، الآيتان 7–8', k:['عمل','ختام'], l:'إتمام مهمة بابٌ لبدء أخرى؛ لا تترك الفراغ يتسع.'},
+  {id:'a8', t:'ayah', x:'﴿وَقُلِ اعْمَلُوا فَسَيَرَى اللَّهُ عَمَلَكُمْ وَرَسُولُهُ وَالْمُؤْمِنُونَ﴾', s:'سورة التوبة، الآية 105', k:['إتقان'], l:'أتقِن ما لا يراه أحد؛ فالعمل يُرى ولو بعد حين.'},
   {id:'h1', t:'hadith', x:'«إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى»', s:'متفق عليه — رواه البخاري ومسلم', k:['نية','صباح'], l:'قبل أن تفتح اللوح، اسأل: لماذا أعمل اليوم؟ النية تُحوّل العمل إلى عبادة.'},
   {id:'h2', t:'hadith', x:'«أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ»', s:'متفق عليه — رواه البخاري ومسلم', k:['عادات'], l:'عادة صغيرة لا تنقطع أنفع من عادة كبيرة تتوقف بعد أسبوع.'},
   {id:'h3', t:'hadith', x:'«نِعْمَتَانِ مَغْبُونٌ فِيهِمَا كَثِيرٌ مِنَ النَّاسِ: الصِّحَّةُ وَالْفَرَاغُ»', s:'رواه البخاري', k:['وقت'], l:'ساعةٌ فارغة اليوم تستحق خطة؛ ضعها في «جدول اليوم» قبل أن تضيع.'},
@@ -6010,7 +6011,7 @@ function openPhotoTagsModal(){
 }
 function greetingNow(){ return heroPhrase.text || PHRASES[periodNow()][0]; }
 function showPhoto(){
-  /* الصورة أو المشهد يختارهما السياق (المرحلة ٣)؛ هنا نضبط الأزرار ونقاط التنقّل فقط */
+  /* الصورة أو المشهد يختارهما السياق (المرحلة 3)؛ هنا نضبط الأزرار ونقاط التنقّل فقط */
   /* في الواجهة دائمًا صورة أو مشهد، فزر «أضف صورة» الكبير لا لزوم له — يكفي «+ صورة» فوقها */
   $('heroEmpty').hidden = true;
   try{ applyHeroVisual($('heroBanner').dataset.ctx || heroContext().ctx); }
@@ -6322,7 +6323,7 @@ function loadBudgetSummary(){
   $('expSyncNote').textContent = 'يُحدَّث…';
   post({action:'expense_summary', month}).then(d=>{
     renderBudgetDashboard(d);
-    $('expSyncNote').textContent = 'آخر تحديث ' + new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+    $('expSyncNote').textContent = 'آخر تحديث ' + new Date().toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'});
   }).catch(e=>{
     $('budgetOverall').innerHTML = '<div class="sub">تعذّر تحميل الميزانية: '+e.message+'</div>';
     $('expSyncNote').textContent = '';
@@ -6482,7 +6483,7 @@ function renderAdminUsers(d){
     const who = document.createElement('div'); who.className = 'who';
     const name = document.createElement('b'); name.textContent = u.username;
     const meta = document.createElement('span');
-    meta.textContent = (u.email||'—') + (u.createdAt ? ' · ' + new Date(u.createdAt).toLocaleDateString('ar-EG') : '');
+    meta.textContent = (u.email||'—') + (u.createdAt ? ' · ' + new Date(u.createdAt).toLocaleDateString('ar-EG-u-nu-latn') : '');
     who.append(name, meta);
     row.appendChild(who);
     if(u.isOwner){

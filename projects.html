@@ -68,7 +68,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .orbit::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--orbit);
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));
           mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px))}
-/* حلقة مدار ثابتة (كما في اللوح حيث هي ساعة اليوم)، تحييها لمعة تسري على القوس كل ٧ ثوانٍ */
+/* حلقة مدار ثابتة (كما في اللوح حيث هي ساعة اليوم)، تحييها لمعة تسري على القوس كل 7 ثوانٍ */
 @property --g{syntax:'<angle>';inherits:false;initial-value:-30deg}
 @keyframes orbitGlint{0%{--g:-30deg} 38%{--g:360deg} 100%{--g:360deg}}
 .orbit::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;mix-blend-mode:screen;
@@ -568,7 +568,7 @@ dialog[open]::backdrop{animation:m-fade-in var(--dur-3) var(--ease-out)}
       <h3>الموازنة</h3>
       <div class="fld-row">
         <label class="fld">المبلغ الكلي (اعتماد المانح)<input name="approved" type="number" step="0.01" min="0" required inputmode="decimal"></label>
-        <label class="fld">النسبة الإدارية<input name="admin" type="number" step="0.01" min="0" inputmode="decimal" title="تُحسب ١٠٪ من المبلغ الكلي، ويمكن تعديلها"></label>
+        <label class="fld">النسبة الإدارية<input name="admin" type="number" step="0.01" min="0" inputmode="decimal" title="تُحسب 10% من المبلغ الكلي، ويمكن تعديلها"></label>
         <label class="fld">مبلغ التنفيذ الكلي<input name="execTotal" type="number" readonly tabindex="-1"></label>
       </div>
       <div class="bud-lines" id="budLines"></div>
@@ -686,17 +686,17 @@ dialog[open]::backdrop{animation:m-fade-in var(--dur-3) var(--ease-out)}
 'use strict';
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const AR = n => Number(n).toLocaleString('ar-EG');
+const AR = n => Number(n).toLocaleString('ar-EG-u-nu-latn');
 const money = n => (n == null || n === '') ? '—' : AR(Math.round(Number(n))) + ' $';
-const pct = x => (x == null || !isFinite(x)) ? '—' : AR(Math.round(x * 1000) / 10) + '٪';
+const pct = x => (x == null || !isFinite(x)) ? '—' : AR(Math.round(x * 1000) / 10) + '%';
 const DAY = 86400000;
 const today = (()=>{ const d = new Date(); d.setHours(0,0,0,0); return d; })();
 const toDate = s => s ? new Date(s + 'T00:00:00') : null;
 const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-const fmtDate = (s, withYear) => s ? toDate(s).toLocaleDateString('ar-EG', withYear === false ? {day:'numeric',month:'short'} : {day:'numeric',month:'short',year:'numeric'}) : '—';
+const fmtDate = (s, withYear) => s ? toDate(s).toLocaleDateString('ar-EG-u-nu-latn', withYear === false ? {day:'numeric',month:'short'} : {day:'numeric',month:'short',year:'numeric'}) : '—';
 const days = (a, b) => Math.round((b - a) / DAY);
 function num(x){ return typeof x === 'number' && isFinite(x) ? x : 0; }
-/* العدد مع معدوده بحسب قواعد العربية: [المفرد، المثنى، جمع ٣–١٠، تمييز ١١–٩٩، مئة فأكثر] */
+/* العدد مع معدوده بحسب قواعد العربية: [المفرد، المثنى، جمع 3–10، تمييز 11–99، مئة فأكثر] */
 const W_PROJ = ['مشروع واحد','مشروعان','مشاريع','مشروعًا','مشروع'];
 const W_DAY = ['يوم واحد','يومان','أيام','يومًا','يوم'];
 const W_TASK = ['مهمة واحدة','مهمتان','مهام','مهمة','مهمة'];
@@ -729,7 +729,7 @@ document.documentElement.dataset.org = ORG;
 
 const PHASES = ['الاعتماد','التعاقد','التنفيذ','الاستلام الابتدائي','الافتتاح','التقارير','الإغلاق المالي','إغلاق المشروع'];
 const ACTIVE = new Set(['قيد التنفيذ','نشط','مخطط له']);
-/* خانات قالب مجلد المشروع (١١ مجلدًا ← ١٥ خانة). الرقم = أول مرحلة يُنتظر فيها المستند،
+/* خانات قالب مجلد المشروع (11 مجلدًا ← 15 خانة). الرقم = أول مرحلة يُنتظر فيها المستند،
    فما قبلها يظهر «لاحقًا» لا «ناقصًا». تُستبدل بقالب كل نوع مشروع حين تصل القوائم. */
 const DOC_GROUPS = [
   ['الاعتماد', [['اعتماد التسويق',0],['اعتماد التنفيذ',0]]],
@@ -907,7 +907,7 @@ function segHtml(vals, cur, attr, labelOf){
   return vals.map(v => '<button type="button" data-' + attr + '="' + esc(v) + '" class="' + (cur === v ? 'on' : '') + '" aria-pressed="' + (cur === v) + '">' + labelOf(v) + '</button>').join('');
 }
 function buildFilters(){
-  $('yearSeg').innerHTML = segHtml(['', ...uniq('year').sort().reverse()], S.year, 'y', v => v ? AR(v).replace(/٬/g, '') : 'كل السنوات');
+  $('yearSeg').innerHTML = segHtml(['', ...uniq('year').sort().reverse()], S.year, 'y', v => v ? AR(v).replace(/[٬,]/g, '') : 'كل السنوات');
   fillSelect($('fStatus'), 'كل الحالات', uniq('status'), S.status);
   fillSelect($('fDonor'), 'كل الجهات الممولة', uniq('donor'), S.donor);
   fillSelect($('fType'), 'كل الأنواع', uniq('type'), S.type);
@@ -947,7 +947,7 @@ function render(){
   });
   $('pageTitle').textContent = (st ? 'إحصائيات ' : 'مشاريع ') + ORG_INFO.name;
   document.title = 'نَسَق — ' + $('pageTitle').textContent;
-  const scope = [ORG_INFO.full, S.year ? 'سنة ' + AR(S.year).replace(/٬/g, '') : 'كل السنوات'].join(' · ');
+  const scope = [ORG_INFO.full, S.year ? 'سنة ' + AR(S.year).replace(/[٬,]/g, '') : 'كل السنوات'].join(' · ');
   $('pageSub').textContent = cnt(rows.length, W_PROJ) + ' · ' + scope + (st ? ' · الأرقام تتبع الفلاتر' : '');
   document.querySelectorAll('#orgs a').forEach(a => {
     const on = a.dataset.org === ORG;
@@ -1116,7 +1116,7 @@ function timelineCard(p){
   const m = new Date(lo.getFullYear(), lo.getMonth() + 1, 1);
   const step = Math.round(span / (30 * DAY)) > 10 ? 2 : 1;
   for(let i = 0; m <= hi && i < 24; i++, m.setMonth(m.getMonth() + step))
-    ticks += '<span class="tl-tick" style="inset-inline-start:' + pos(m) + '%">' + m.toLocaleDateString('ar-EG', {month:'short'}) + '</span>';
+    ticks += '<span class="tl-tick" style="inset-inline-start:' + pos(m) + '%">' + m.toLocaleDateString('ar-EG-u-nu-latn', {month:'short'}) + '</span>';
   const marks = dels.filter(d => d.due).map(d => {
     const late = d.status !== 'صدر' && toDate(d.due) < today;
     const cls = d.status === 'صدر' ? 'ok' : late ? 'late' : d.status === 'قيد الإعداد' ? 'prep' : '';
@@ -1266,7 +1266,7 @@ async function uploadToSlot(p, slot, files){
   let ok = 0;
   for(const file of list){
     try{
-      if(file.size > UP_MAX) throw new Error('حجم «' + file.name + '» أكبر من ٢٥ ميجابايت');
+      if(file.size > UP_MAX) throw new Error('حجم «' + file.name + '» أكبر من 25 ميجابايت');
       const d = await post({action:'file_upload', org: ORG, code: p.code, slot, pageId: p.id,
         file: {name: file.name, mime: file.type || '', project: p.name || '', data: await b64(file)}});
       if(d.files){ FILES[p.code] = d.files; Object.assign(p, {docsDone: d.files.done, docsChecked: d.files.checked, folder: d.files.folder, drive: d.files.url}); }
@@ -1309,7 +1309,7 @@ function docsCard(p){
   const checked = (f && f.checked) || p.docsChecked;
   const ratio = nDone / DOCS_N;
   const driveUrl = (f && f.url) || p.drive;
-  const head = '<article class="card" id="docsCard"><div class="card-h"><span class="dring" style="--p:' + Math.round(ratio * 100) + '" aria-hidden="true"><b>' + AR(Math.round(ratio * 100)) + '٪</b></span>' +
+  const head = '<article class="card" id="docsCard"><div class="card-h"><span class="dring" style="--p:' + Math.round(ratio * 100) + '" aria-hidden="true"><b>' + AR(Math.round(ratio * 100)) + '%</b></span>' +
       '<div><h2>مستندات المشروع</h2><small>' + (!checked && !f ? (DATA.driveRoot ? 'لم يُفحص المجلد بعد' : 'الأرشيف غير مربوط') :
         AR(nDone) + ' من ' + AR(DOCS_N) + ' مرفقة' + (nMissing ? ' · ' + AR(nMissing) + ' ناقصة حتى هذه المرحلة' : '')) + '</small></div>' +
       '<span class="end">' + (driveUrl ? '<a class="btn soft sm" href="' + esc(driveUrl) + '" target="_blank" rel="noopener">المجلد في درايف</a>' : '') +
@@ -1317,7 +1317,7 @@ function docsCard(p){
   if(!checked && !f && !DATA.driveRoot) return head + '<p class="note" style="margin:0">لم يُربط أرشيف درايف لمؤسسة ' + ORG_INFO.name +
     ' بعد. اربطه من زر الأرشيف أعلى الصفحة، فتُقرأ مجلدات مشاريعها (المسماة بالكود مثل ' + (ORG === 'humera' ? 'H001-' : 'G050-') + ') ملفًا ملفًا.</p></article>';
   if(!checked && !f) return head + '<p class="note" style="margin:0">' + (loading ? 'جارٍ قراءة مجلد المشروع من درايف…' :
-    'لم يُفحص مجلد هذا المشروع في الأرشيف بعد' + (p.year === '2025' ? '، ومشاريع ٢٠٢٥ مؤرشفة خارج هذا القالب' : '') + '.') + '</p></article>';
+    'لم يُفحص مجلد هذا المشروع في الأرشيف بعد' + (p.year === '2025' ? '، ومشاريع 2025 مؤرشفة خارج هذا القالب' : '') + '.') + '</p></article>';
   return head + groups +
     '<p class="note">' + (f && f.error ? '<span style="color:var(--urgent)">تعذّرت قراءة الملفات: ' + esc(f.error) + '</span> · ' : '') +
       'آخر فحص للمجلد ' + fmtDate(checked) + (p.folder || (f && f.folder) ? ' · <span class="folder">' + esc(p.folder || f.folder) + '</span>' : '') +
@@ -1406,7 +1406,7 @@ function renderStats(rows){
   const donorCard = card('حسب الجهة الممولة', hbars(donors.slice(0, 12), {
       filter: 'donor', max: g => Math.max(g.A, g.E), layers: (g, m) => L('a', g.A, m) + L('e', g.E, m),
       value: g => money(g.A || g.E) + ' <small>· ' + AR(g.n) + (g.A ? ' · صرف ' + pct(g.EA / g.A) : '') + '</small>' }) +
-    legend(['var(--c-soft)', 'المعتمد'], ['var(--c-exec)', 'التنفيذ']), donors.length > 12 ? 'أعلى ١٢ من ' + AR(donors.length) : cnt(donors.length, W_ENT));
+    legend(['var(--c-soft)', 'المعتمد'], ['var(--c-exec)', 'التنفيذ']), donors.length > 12 ? 'أعلى 12 من ' + AR(donors.length) : cnt(donors.length, W_ENT));
   const types = groupBy(rows, 'type').sort(byAmount);
   const typeCard = card('حسب نوع المشروع', hbars(types, {
     filter: 'type', max: g => Math.max(g.A, g.E), layers: (g, m) => L('a', g.A, m) + L('e', g.E, m),
@@ -1431,7 +1431,7 @@ function renderStats(rows){
   const monthCard = card('الاعتمادات حسب الشهر', mk.length ?
     '<div class="cols" role="img" aria-label="المبالغ المعتمدة شهريًا">' + mk.map(k => { const o = months.get(k);
       return '<div class="col" title="' + esc(fmtDate(k + '-01') + ' · ' + cnt(o.n, W_PROJ) + ' · ' + money(o.v)) + '"><em>' + AR(o.n) + '</em><i style="height:' + (o.v / mmax * 84) + '%"></i></div>'; }).join('') + '</div>' +
-    '<div class="col-lbls">' + mk.map(k => '<span>' + toDate(k + '-01').toLocaleDateString('ar-EG', {month: 'short'}) + (multiYear ? ' ' + AR(k.slice(2, 4)).replace(/٬/g, '') : '') + '</span>').join('') + '</div>' +
+    '<div class="col-lbls">' + mk.map(k => '<span>' + toDate(k + '-01').toLocaleDateString('ar-EG-u-nu-latn', {month: 'short'}) + (multiYear ? ' ' + AR(k.slice(2, 4)).replace(/[٬,]/g, '') : '') + '</span>').join('') + '</div>' +
     '<p class="note">ارتفاع العمود المبلغ المعتمد (أو مبلغ التنفيذ إن لم يُسجَّل)، والرقم فوقه عدد المشاريع.</p>'
     : '<p class="note">لا تواريخ اعتماد مسجّلة.</p>', 'بتاريخ الاعتماد');
 
@@ -1552,7 +1552,7 @@ async function createFromTemplate(p, key){
 /* نافذة البند */
 let dlgItem = null, dlgProject = null;
 /* ---------- مشروع جديد ---------- */
-/* الكود التالي: مديكس G، هيوميرا H — أعلى رقم مستخدم + ١ */
+/* الكود التالي: مديكس G، هيوميرا H — أعلى رقم مستخدم + 1 */
 function nextCode(){
   const pre = ORG === 'humera' ? 'H' : 'G';
   const max = DATA.projects.reduce((m, p) => { const r = /^([A-Z])(\d+)$/.exec(p.code || ''); return r && r[1] === pre ? Math.max(m, +r[2]) : m; }, 0);
@@ -1643,7 +1643,7 @@ $('projForm').addEventListener('submit', async e => {
 
 /* ---------- حاسبة الموازنة (مشروع جديد) ----------
    الكلي = الإدارية + التنفيذ الكلي، والتنفيذ الكلي = الفاتورة + المصاريف غير المباشرة.
-   الإدارية ١٠٪ من الكلي ما لم تُعدَّل يدويًا، والفاتورة تتبع الباقي ما لم تُعدَّل يدويًا.
+   الإدارية 10% من الكلي ما لم تُعدَّل يدويًا، والفاتورة تتبع الباقي ما لم تُعدَّل يدويًا.
    لا يُحفظ المشروع إلا والمبلغ موزّع بالكامل: لا زيادة ولا نقص. */
 const BUD_KIND = { salary: 'راتب', printing: 'طباعة', transport: 'مواصلات', other: 'أخرى' };
 const SALARY_ROLES = ['منسق', 'مصور', 'مهندس', 'مشرف', 'عمال', 'محاسب', 'سائق'];
