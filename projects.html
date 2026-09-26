@@ -416,6 +416,8 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
 .people-add{display:flex;gap:6px;margin-top:8px}
 .people-add input{flex:1;min-width:0;padding:6px 10px;border-radius:6px;background:var(--paper);border:1px solid var(--field-line)}
 .people-add input:focus{outline:none;border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
+.dur{display:grid;grid-template-columns:1fr auto;gap:6px}
+.dur-note{font-size:11.5px;color:var(--muted)}
 .fld-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 .dlg-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
 .dlg-acts .push{margin-inline-start:auto}
@@ -563,7 +565,8 @@ dialog[open]::backdrop{animation:m-fade-in var(--dur-3) var(--ease-out)}
     <div class="fld-row">
       <label class="fld">تاريخ الاعتماد<input name="approvalDate" type="date"></label>
       <label class="fld">البداية<input name="start" type="date"></label>
-      <label class="fld">النهاية<input name="end" type="date"></label>
+      <label class="fld">المدة<span class="dur"><input name="durN" type="number" min="1" step="1" inputmode="numeric" placeholder="مثلًا 5"><select name="durU" aria-label="وحدة المدة"><option value="d">أيام</option><option value="w">أسابيع</option><option value="m" selected>أشهر</option></select></span></label>
+      <label class="fld">النهاية<input name="end" type="date"><small class="dur-note" id="durNote">تُحسب من البداية والمدة، أو اكتبها بنفسك</small></label>
     </div>
     <section class="bud" aria-label="الموازنة">
       <h3>الموازنة</h3>
@@ -1590,6 +1593,7 @@ function fillList(id, key){
 }
 $('newProjBtn').addEventListener('click', () => {
   const f = $('projForm'); f.reset();
+  $('durNote').textContent = 'تُحسب من البداية والمدة، أو اكتبها بنفسك';
   const O = DATA.options || {};
   fillPick(f.elements.stdName, (O.names || []).concat(DATA.projects.map(p => p.stdName)), 'اختر من القائمة');
   fillPick(f.elements.donor, (O.donors || []).concat(DATA.projects.map(p => p.donor)), 'بلا مانح محدد');
@@ -1601,6 +1605,22 @@ $('newProjBtn').addEventListener('click', () => {
   projPreview();
   $('projDlg').showModal();
 });
+/* المدة ← تاريخ النهاية: البداية + المدة بالأيام أو الأسابيع أو الأشهر (النهاية آخر يوم في المدة).
+   إن كتب المستخدم النهاية بنفسه تُفرَّغ المدة، فلا تُعاد كتابتها فوق اختياره. */
+function durEnd(){
+  const f = $('projForm'), st = f.elements.start.value, n = parseInt(f.elements.durN.value, 10), u = f.elements.durU.value;
+  if(!st || !(n > 0)) return;
+  const d = new Date(st + 'T00:00:00');
+  if(u === 'm'){ const day = d.getDate(); d.setMonth(d.getMonth() + n); if(d.getDate() < day) d.setDate(0); }
+  else d.setDate(d.getDate() + n * (u === 'w' ? 7 : 1));
+  d.setDate(d.getDate() - 1);
+  const iso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  f.elements.end.value = iso;
+  $('durNote').textContent = 'تنتهي ' + d.toLocaleDateString('ar-EG-u-nu-latn', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'});
+}
+['start', 'durN', 'durU'].forEach(n => $('projForm').elements[n].addEventListener('input', durEnd));
+$('projForm').elements.durU.addEventListener('change', durEnd);
+$('projForm').elements.end.addEventListener('input', () => { $('projForm').elements.durN.value = ''; $('durNote').textContent = 'تاريخ نهاية مكتوب يدويًا'; });
 $('projForm').addEventListener('input', projPreview);
 $('projForm').addEventListener('change', projPreview);
 $('projForm').addEventListener('submit', async e => {
@@ -1611,7 +1631,7 @@ $('projForm').addEventListener('submit', async e => {
   const nt = projTitle();
   if(!nt.std){ toast('اختر اسم المشروع الموحّد أو أضف اسمًا جديدًا', true); return; }
   Object.assign(v, {stdName: nt.std, donor: nt.donor, name: nt.title, custom: nt.custom});
-  ['stdNew', 'donorNew', 'suffix'].forEach(k => delete v[k]);
+  ['stdNew', 'donorNew', 'suffix', 'durN', 'durU'].forEach(k => delete v[k]);
   const code = v.code.toUpperCase();
   if(code && DATA.projects.some(p => p.code === code)){ toast('الكود ' + code + ' مستخدم لمشروع آخر', true); return; }
   const n = x => x === '' ? null : Number(x);
