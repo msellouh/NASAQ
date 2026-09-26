@@ -1772,7 +1772,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   :where(button,.btn,[role="button"]):active{scale:none}
 }
 </style>
-<link rel="stylesheet" href="nasaq-theme.css">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260926">
 </head>
 <body>
 
@@ -2436,8 +2436,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
 <div class="toast" id="toastBox"></div>
 
-<script src="nasaq-core.js"></script>
-<script src="nasaq-pulse.js"></script>
+<script src="nasaq-core.js?v=20260926"></script>
+<script src="nasaq-pulse.js?v=20260926"></script>
 <script>
 const AR = n => Number(n).toLocaleString('ar-EG-u-nu-latn');
 const $ = id => document.getElementById(id);
@@ -2546,6 +2546,7 @@ function applyPalette(p){
   try{ topbarUpdate(); heroScroll(); }catch(e){}   /* «نَسَق 360» يبدّل الشريط الجانبي إلى علوي */
   try{ heroVisual = {ctx:'', kind:'', url:''}; showPhoto(); }catch(e){}   /* مشهد الواجهة بألوان الطابع الجديد */
   try{ renderRingClock(); }catch(e){}   /* الحلقة وأيقونة التبويب في «مَدار» وحده */
+  try{ document.documentElement.dataset.period = periodNow(); }catch(e){}
 }
 applyPalette(palette);
 document.querySelectorAll('#setPalette button').forEach(b=>{
@@ -4948,7 +4949,36 @@ window.NasaqSound = (()=>{
   };
 })();
 /* تُستدعى من أي مكان في الملف دون قلق من ترتيب التعريف */
-function playSound(name){ try{ window.NasaqSound && window.NasaqSound.play(name); }catch(e){} }
+/* «نبضة»: موجة دوائر (نقشة الهوية نفسها متحركة) تنطلق من مكان الحدث مع صوته.
+   ثلاث حلقات متتابعة بـ Web Animations، تباطؤ عند الاتساع، وتتلاشى — ولا شيء لمن طلب تقليل الحركة. */
+function ripple(x, y, color){
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const box = document.createElement('div'); box.className = 'nb-ripple';
+  box.style.left = x + 'px'; box.style.top = y + 'px'; if(color) box.style.setProperty('--rc', color);
+  for(let i = 0; i < 3; i++){
+    const r = document.createElement('i'); box.appendChild(r);
+    r.animate([{transform:'translate(-50%,-50%) scale(.18)', opacity:.6}, {transform:'translate(-50%,-50%) scale(1)', opacity:0}],
+              {duration:720, delay:i * 110, easing:'cubic-bezier(.16,1,.3,1)', fill:'both'});
+  }
+  document.body.appendChild(box); setTimeout(()=>box.remove(), 1150);
+}
+const RIPPLE_COLORS = {done:'var(--done)', sub:'var(--done)', start:'var(--focus)', end:'var(--focus)', notify:'var(--accent,var(--focus))', close:'#D6A84F'};
+let lastPtr = {x:0, y:0, t:0};
+document.addEventListener('pointerdown', e=>{ lastPtr = {x:e.clientX, y:e.clientY, t:Date.now()}; }, true);
+function rippleFor(name){
+  const c = RIPPLE_COLORS[name]; if(!c) return;
+  if(Date.now() - lastPtr.t < 800) return ripple(lastPtr.x, lastPtr.y, c);
+  /* حدث بلا نقرة (انتهاء المؤقت، إشعار): من العنصر الذي يخصّه إن كان ظاهرًا */
+  const el = name === 'end' ? (document.querySelector('.focus-overlay:not([hidden]) .fm-time') || document.querySelector('.pomo-time')) : name === 'notify' ? $('notifBtn') : null;
+  if(el && el.getClientRects().length){ const r = el.getBoundingClientRect(); ripple(r.left + r.width / 2, r.top + r.height / 2, c); }
+}
+function playSound(name){ try{ window.NasaqSound && window.NasaqSound.play(name); }catch(e){} try{ rippleFor(name); }catch(e){} }
+/* إنجاز مهمة من قائمتها: نبضة خضراء حين تصير «منجزة» (بلا صوت، فالمربع له إحساسه) */
+document.addEventListener('click', e=>{
+  const chk = e.target.closest('.check'); if(!chk) return;
+  const x = lastPtr.x, y = lastPtr.y;
+  setTimeout(()=>{ const li = chk.closest('li'); if(li && li.classList.contains('done')) ripple(x, y, 'var(--done)'); }, 0);
+}, true);
 /* نقرة على الأزرار — عدا ما له صوته الخاص */
 document.addEventListener('pointerdown', e=>{
   const b = e.target.closest('button,[role="checkbox"],a.sidenav-brand');
@@ -5089,6 +5119,7 @@ renderNotifs();
 /* ---------- المحرّك: يفحص كل 30 ثانية ما يستحق التنبيه ---------- */
 function aliveTick(){
   const now = new Date(), n = nowMin(now);
+  try{ document.documentElement.dataset.period = periodNow(now); }catch(e){}   /* ألوان وقت اليوم في «مَدار» */
   try{ renderRingClock(); }catch(e){}   /* المعين يتقدّم مع الوقت */
   /* مواعيد تقويم Google: قبل 10 دقائق — تتجاوز الهدوء */
   try{
@@ -6734,6 +6765,6 @@ if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
 }
 </script>
-<script src="nasaq-brand.js"></script>
+<script src="nasaq-brand.js?v=20260926"></script>
 </body>
 </html>

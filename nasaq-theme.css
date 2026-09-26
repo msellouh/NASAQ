@@ -127,3 +127,21 @@
 :root[data-palette="nasaq360"] .sidenav:not(.tb-solid) .brand-mark,
 .close-day .brand-mark{background:#F7F6F2;border-radius:50%;padding:12%;box-sizing:border-box}
 @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .brand-mark{background:#F7F6F2;border-radius:50%;padding:12%;box-sizing:border-box} }
+
+/* ---------- ألوان وقت اليوم في «مَدار» ----------
+   تتبدّل مع فترة اليوم (data-period من محرّك السياق): الهالات ولون نقشة الدوائر فقط.
+   ألوان النص والإنجاز والانتظار والعاجل ثابتة كي لا يتأثر التباين. */
+:root[data-palette="nasaq360"][data-period="fajr"],:root.madar[data-period="fajr"]{--aura-1:rgba(170,110,205,.16);--aura-2:rgba(255,150,165,.12);--pattern:rgba(150,100,190,.075)}
+:root[data-palette="nasaq360"][data-period="morning"],:root.madar[data-period="morning"]{--aura-1:rgba(14,158,116,.14);--aura-2:rgba(0,183,212,.10);--pattern:rgba(14,158,116,.075)}
+:root[data-palette="nasaq360"][data-period="noon"],:root.madar[data-period="noon"]{--aura-1:rgba(0,183,212,.14);--aura-2:rgba(0,134,168,.10);--pattern:rgba(0,134,168,.08)}
+:root[data-palette="nasaq360"][data-period="afternoon"],:root.madar[data-period="afternoon"]{--aura-1:rgba(214,168,79,.14);--aura-2:rgba(0,183,212,.08);--pattern:rgba(160,130,60,.075)}
+:root[data-palette="nasaq360"][data-period="maghrib"],:root.madar[data-period="maghrib"]{--aura-1:rgba(240,150,70,.16);--aura-2:rgba(210,90,90,.10);--pattern:rgba(200,110,60,.08)}
+:root[data-theme="dark"][data-palette="nasaq360"][data-period="fajr"],:root.madar[data-theme="dark"][data-period="fajr"]{--aura-1:rgba(170,110,205,.30);--aura-2:rgba(255,150,165,.14);--pattern:rgba(190,140,230,.07)}
+:root[data-theme="dark"][data-palette="nasaq360"][data-period="morning"],:root.madar[data-theme="dark"][data-period="morning"]{--aura-1:rgba(52,245,181,.18);--aura-2:rgba(0,183,212,.16);--pattern:rgba(52,245,181,.06)}
+:root[data-theme="dark"][data-palette="nasaq360"][data-period="noon"],:root.madar[data-theme="dark"][data-period="noon"]{--aura-1:rgba(0,183,212,.24);--aura-2:rgba(52,245,181,.10);--pattern:rgba(0,183,212,.07)}
+:root[data-theme="dark"][data-palette="nasaq360"][data-period="afternoon"],:root.madar[data-theme="dark"][data-period="afternoon"]{--aura-1:rgba(214,168,79,.22);--aura-2:rgba(0,183,212,.10);--pattern:rgba(214,168,79,.06)}
+:root[data-theme="dark"][data-palette="nasaq360"][data-period="maghrib"],:root.madar[data-theme="dark"][data-period="maghrib"]{--aura-1:rgba(240,150,70,.26);--aura-2:rgba(210,90,90,.14);--pattern:rgba(240,150,70,.06)}
+
+/* ---------- «نبضة»: موجة دوائر قصيرة من مكان الحدث ترافق صوته ---------- */
+.nb-ripple{position:fixed;width:0;height:0;pointer-events:none;z-index:400}
+.nb-ripple i{position:absolute;left:0;top:0;width:120px;height:120px;border-radius:50%;border:1.5px solid var(--rc,var(--done));opacity:0}

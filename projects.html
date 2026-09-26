@@ -9,7 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800;900&family=Readex+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="nasaq-core.js"></script>
+<script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
+<script src="nasaq-core.js?v=20260926"></script>
 <script>
 /* الوضع المحفوظ في نَسَق — قبل الرسم حتى لا يومض */
 (function(){ try{
@@ -462,7 +463,7 @@ dialog[open]::backdrop{animation:m-fade-in var(--dur-3) var(--ease-out)}
   :where(button,.btn,[role="button"]):active{scale:none}
 }
 </style>
-<link rel="stylesheet" href="nasaq-theme.css">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260926">
 </head>
 <body>
 <header class="tb" id="tb">
@@ -1982,6 +1983,6 @@ addEventListener('scroll', () => {
 
 load();
 </script>
-<script src="nasaq-brand.js"></script>
+<script src="nasaq-brand.js?v=20260926"></script>
 </body>
 </html>
