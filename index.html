@@ -170,7 +170,7 @@ ol.tasks li.task:nth-child(4n+1){background:var(--stripe)}
 li.done .t-text{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
 .proj{color:var(--muted);font-size:var(--fs-sm);white-space:nowrap}
 .imp{font-size:var(--fs-sm);font-weight:600;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--board);color:var(--ink-2)}
-.imp.a{background:var(--urgent);color:#fff}
+.imp.a{background:var(--imp-a-bg,var(--urgent));color:#fff}
 .imp.b{background:var(--imp-b-bg);color:var(--ink)}
 .mins{color:var(--muted);font-size:var(--fs-sm);white-space:nowrap;min-width:52px;text-align:left}
 .age{font-size:var(--fs-xs);color:var(--hold);white-space:nowrap}
@@ -420,7 +420,7 @@ body{padding:0}
 .c-tasks .meter{display:block;font-size:var(--fs-xs);color:var(--muted);margin:0}
 .c-tasks .meter b{color:var(--ink);font-weight:600}
 .progress{height:6px;background:var(--stripe);border-radius:var(--r-pill);overflow:hidden;margin:calc(-1 * var(--sp-1)) 0 var(--sp-3)}
-.progress .fill{position:static;height:100%;width:0;border-radius:var(--r-pill);background:var(--done);transition:width var(--dur-4) cubic-bezier(.4,0,.2,1)}
+.progress .fill{position:static;height:100%;width:0;border-radius:var(--r-pill);background:var(--progress-fill,var(--done));transition:width var(--dur-4) cubic-bezier(.4,0,.2,1)}
 .task-filters{display:flex;gap:var(--sp-1);flex-wrap:wrap;margin:0 0 var(--sp-3)}
 .task-filters button{font:inherit;font-size:var(--fs-xs);padding:var(--sp-1) var(--sp-3);border-radius:var(--r-pill);border:1px solid var(--rule);background:transparent;color:var(--ink-2);cursor:pointer}
 .task-filters button b{font-weight:600;color:var(--muted);margin-inline-start:2px}
@@ -441,8 +441,8 @@ body{padding:0}
 .closing-band .field{background:var(--surface);border:1px solid var(--muted);border-radius:var(--r-lg);padding:var(--sp-2) var(--sp-3)}
 /* زر الإغلاق: كبير، بلون الهوية، ومعه شعار نَسَق */
 .close-day{display:flex;align-items:center;gap:var(--sp-3);min-width:230px;min-height:92px;padding:var(--sp-4) var(--sp-5);border:0;border-radius:var(--r-xl);
-  font:inherit;text-align:start;cursor:pointer;color:var(--on-primary);background:var(--primary);
-  box-shadow:0 10px 26px rgba(0,0,0,.14);transition:transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out)}
+  font:inherit;text-align:start;cursor:pointer;color:var(--close-ink,var(--on-primary));background:var(--close-bg,var(--primary));
+  box-shadow:var(--close-shadow,0 10px 26px rgba(0,0,0,.14));transition:transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out)}
 .close-day:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,0,0,.18)}
 .close-day:active{transform:translateY(0) scale(.98)}
 .close-mark{width:46px;height:52px;flex:none}
@@ -463,7 +463,7 @@ body{padding:0}
 .proj-name{font-size:var(--fs-base);font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .proj-pct{font-size:var(--fs-xs);color:var(--muted);flex:none}
 .proj-bar{height:6px;background:var(--stripe);border-radius:var(--r-pill);overflow:hidden;margin:var(--sp-1) 0 var(--sp-1)}
-.proj-bar i{display:block;height:100%;background:var(--accent,var(--focus));border-radius:var(--r-pill)}
+.proj-bar i{display:block;height:100%;background:var(--progress-fill,var(--accent,var(--focus)));border-radius:var(--r-pill)}
 .proj-meta{font-size:var(--fs-xs);color:var(--muted)}
 
 /* بطاقة المهام ضيقة في العمود: سطر المهمة على ثلاثة أسطر حسب عرض البطاقة لا الشاشة */
@@ -962,7 +962,7 @@ body.focus-open{overflow:hidden}
 .day-done{flex:none;width:19px;height:19px;padding:0;line-height:1;border-radius:50%;cursor:pointer;
   border:1.5px solid var(--rule);background:var(--surface);color:var(--muted);font-size:var(--fs-xs)}
 .day-done:hover:not(:disabled){border-color:var(--done);color:var(--done)}
-.day-done.is-done{background:var(--done);border-color:var(--done);color:#fff}
+.day-done.is-done{background:var(--done);border-color:var(--done);color:var(--on-done)}
 .day-done:disabled{opacity:.45;cursor:default}
 .day-chip{flex:none;font-size:var(--fs-xs);padding:1px var(--sp-2);border-radius:var(--r-pill);border:1px solid transparent;white-space:nowrap}
 .st-done{background:color-mix(in srgb,var(--done) 15%,transparent);color:var(--done);border-color:color-mix(in srgb,var(--done) 35%,transparent)}

@@ -78,6 +78,7 @@ try {
     for (const tab of TABS) {
       await evalIn(c, `document.getElementById('tab${tab[0].toUpperCase() + tab.slice(1)}Btn').click(); scrollTo(0,0)`);
       await sleep(tab === 'projects' ? 3500 : 1200);
+      await evalIn(c, 'document.fonts.ready.then(()=>new Promise(r=>setTimeout(r,300)))');   /* لا تصوير قبل اكتمال الخطوط: لقطات ثابتة للمقارنة */
       if (FROZEN) await evalIn(c, `document.getAnimations().forEach(a=>{ try{ a.finish(); }catch(e){ a.pause(); a.currentTime=0; } })`);
       const key = `${pal || 'classic'}-${mode}-${w}-${tab}`;
       const height = Math.min(9000, await evalIn(c, 'document.documentElement.scrollHeight'));

@@ -1,8 +1,8 @@
 /* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved.
    ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
 /* نَسَق — المكوّنات المشتركة بين الطوابع (@layer components). كل مكوّن يقرأ متغيرات الطابع.
-   في المرحلة 1: عناصر التحكم «الحديثة» المشتركة بين نَسَق ونَسَق 360 (TODO: تتحول إلى متغيرات في المرحلة 6)،
-   وحلقة المدار (data-orbit) ورسومات التوهج (data-art="glow")، والشعار على قرصه العاجي، و«نبضة»، وإشعار الحقوق. */
+   عناصر التحكم «الحديثة» تُفعَّل بـ data-field="box" (نَسَق ونَسَق 360) وتقرأ متغيرات الطابع
+   (--cta و--btn-shadow و--select-chevron و--head-weight…)، وحلقة المدار (data-orbit) ورسومات التوهج (data-art="glow")، والشعار على قرصه العاجي، و«نبضة»، وإشعار الحقوق. */
 /* ---------- الأيقونات (المرحلة 5): Lucide عبر nasaq-icons.js ----------
    في طبقة base عمدًا: مقاس افتراضي تتجاوزه قواعد المكوّنات الخاصة (.tab .ic، .card-head .ic).
    16px داخل النص، و20px في الأزرار والعناوين، والسماكة من الطابع، واللون currentColor. */
@@ -12,14 +12,10 @@ svg.ic{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px
 :is([dir="rtl"],:dir(rtl)) svg.ic-dir{transform:scaleX(-1)}
 }
 @layer components{
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) h1,:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) h2,:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) h3{font-weight:600;letter-spacing:0}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .sheet{box-shadow:var(--shadow)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) h1{color:var(--brand)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add input,.add select,.add-details input,.add-details textarea,
+:root[data-field="box"] :is(h1,h2,h3){font-weight:var(--head-weight,600);letter-spacing:0}
+:root[data-field="box"] .sheet{box-shadow:var(--shadow)}
+:root[data-field="box"] h1{color:var(--brand)}
+:root[data-field="box"] :is(.add input,.add select,.add-details input,.add-details textarea,
   li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
   .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
   .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
@@ -27,102 +23,72 @@ svg.ic{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px
   background-color:var(--field-bg); border:1px solid var(--field-line); border-radius:var(--r-lg);
   transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
 }
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add input,.add select,.add-details input,.add-details textarea,
+:root[data-field="box"] :is(.add input,.add select,.add-details input,.add-details textarea,
   li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
   .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
   .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
   .settings-body input,.auth-form input,.mini-add):hover{border-color:var(--field-hover)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add input,.add select,.add-details input,.add-details textarea,
+:root[data-field="box"] :is(.add input,.add select,.add-details input,.add-details textarea,
   li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
   .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
   .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
   .settings-body input,.auth-form input,.mini-add):focus{
   outline:none; background-color:var(--surface); border-color:var(--focus); box-shadow:0 0 0 3px var(--ring);
 }
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(input,textarea)::placeholder{color:var(--muted);opacity:.8}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add select,.pull select,.exp-add select){
+:root[data-field="box"] :is(input,textarea)::placeholder{color:var(--muted);opacity:.8}
+:root[data-field="box"] :is(.add select,.pull select,.exp-add select){
   appearance:none; -webkit-appearance:none; padding-left:var(--sp-6);
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237A8886' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-image:var(--select-chevron);
   background-repeat:no-repeat; background-position:left 12px center;
 }
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .field{
+:root[data-field="box"] .field{
   /* حقل ظاهر وهو فارغ: تعبئة + حدّ بتباين ≥ 3:1 (WCAG 1.4.11) — كان شفافًا حتى المرور */
   border:1px solid var(--field-line); border-radius:var(--r-lg); padding:var(--sp-2) var(--sp-3); background:var(--field-bg);
   transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
 }
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .field:hover{border-color:var(--field-hover)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .field:focus{outline:none;background:var(--surface);border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+:root[data-field="box"] .field:hover{border-color:var(--field-hover)}
+:root[data-field="box"] .field:focus{outline:none;background:var(--surface);border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
+:root[data-field="box"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
   .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button){
-  background:var(--focus); color:var(--on-primary); border:1px solid transparent; border-radius:var(--r-lg);
-  font-weight:600; box-shadow:0 1px 2px rgba(18,48,47,.12);
-  transition:background-color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+  background:var(--cta); color:var(--on-cta); border:1px solid transparent; border-radius:var(--r-lg);
+  font-family:var(--btn-font,inherit); font-weight:600; box-shadow:var(--btn-shadow,var(--elev-1));
+  transition:background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
 }
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+:root[data-field="box"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
   .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button):hover{
-  background:color-mix(in srgb, var(--focus) 88%, var(--ink)); box-shadow:0 4px 12px var(--ring);
+  background:var(--cta-hover); color:var(--on-cta-hover); box-shadow:var(--btn-shadow-hover,0 4px 12px var(--ring));
 }
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+:root[data-field="box"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
   .pomo-controls button.go,.exp-add button,.auth-primary):active{transform:scale(.97)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
+:root[data-field="box"] :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
   .modal .row button:not(.primary),.pomo-controls button:not(.go),.cal-head button,.energy button,
   .water button,.set-actions button:not(.danger)){
   background:var(--btn-soft); color:var(--ink); border:1px solid transparent; border-radius:var(--r-lg);
   transition:background-color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out);
 }
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
+:root[data-field="box"] :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
   .modal .row button:not(.primary),.pomo-controls button:not(.go),.cal-head button,.energy button,
   .water button,.set-actions button:not(.danger)):hover{background:var(--btn-soft-hover)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .energy button.active{background:var(--focus-bg);border-color:var(--focus);color:var(--focus-ink)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(#addDetailsBtn,#expAddDetailsBtn){
+:root[data-field="box"] .energy button.active{background:var(--focus-bg);border-color:var(--focus);color:var(--focus-ink)}
+:root[data-field="box"] :is(#addDetailsBtn,#expAddDetailsBtn){
   background:var(--btn-soft); color:var(--ink-2); border:1px solid transparent; border-radius:var(--r-lg); box-shadow:none;
 }
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(#addDetailsBtn,#expAddDetailsBtn):hover{background:var(--btn-soft-hover);box-shadow:none}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(#addDetailsBtn,#expAddDetailsBtn)[aria-expanded="true"]{background:var(--focus-bg);color:var(--focus-ink);border-color:var(--focus)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .tab.active{background:var(--focus);color:var(--on-primary)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .tab:hover:not(.active){background:var(--field-bg)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .task-filters button.active{background:var(--focus);border-color:var(--focus);color:var(--on-primary)}
+:root[data-field="box"] :is(#addDetailsBtn,#expAddDetailsBtn):hover{background:var(--btn-soft-hover);box-shadow:none}
+:root[data-field="box"] :is(#addDetailsBtn,#expAddDetailsBtn)[aria-expanded="true"]{background:var(--focus-bg);color:var(--focus-ink);border-color:var(--focus)}
+:root[data-field="box"] .tab.active{background:var(--cta);color:var(--on-cta)}
+:root[data-field="box"] .tab:hover:not(.active){background:var(--field-bg)}
+:root[data-field="box"] :is(.task-filters button.active,.pswitch button.active){background:var(--cta);border-color:transparent;color:var(--on-cta)}
 @media (max-width:999px){
-  /* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .tab.active{background:transparent;color:var(--focus)}
+:root[data-field="box"] .tab.active{background:transparent;color:var(--focus)}
 }
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .state{border-color:transparent;background:var(--field-bg)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .pswitch{background:var(--field-bg);border-color:transparent}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .pswitch button.active{background:var(--focus);color:var(--on-primary)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .check{border-radius:50%;border-color:var(--field-hover);transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .check:hover{border-color:var(--done);background:color-mix(in srgb, var(--done) 10%, var(--surface))}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .check[aria-checked="true"]::after{inset:3px 5.5px 5px 5.5px}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .rank{border-radius:50%;width:34px;height:34px;align-self:center;font-size:var(--fs-md);background:var(--focus);color:var(--on-primary)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .plan-day{background:var(--focus);color:var(--on-primary)}
-/* TODO: يتحول إلى متغير في المرحلة 6 */
-:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .plan-nav button.primary{background:var(--focus);border-color:var(--focus);color:var(--on-primary)}
+:root[data-field="box"] .state{border-color:transparent;background:var(--field-bg)}
+:root[data-field="box"] .pswitch{background:var(--field-bg);border-color:transparent}
+:root[data-field="box"] .check{border-radius:50%;border-color:var(--field-hover);transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out)}
+:root[data-field="box"] .check:hover{border-color:var(--done);background:color-mix(in srgb, var(--done) 10%, var(--surface))}
+:root[data-field="box"] .check[aria-checked="true"]::after{inset:3px 5.5px 5px 5.5px}
+:root[data-field="box"] .rank{border-radius:50%;width:34px;height:34px;align-self:center;font-size:var(--fs-md);background:var(--cta);color:var(--on-cta)}
+:root[data-field="box"] .plan-day{background:var(--cta);color:var(--on-cta)}
+:root[data-field="box"] .plan-nav button.primary{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
 :root[data-art="glow"] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:repeating-radial-gradient(circle at 0 0,transparent 0 56px,var(--pattern) 56px 57px);transform:translateZ(0)}
 :root[data-orbit="on"] .orbit{display:inline-grid;place-items:center;position:relative;flex:none;border-radius:50%;width:56px;height:56px}
@@ -249,6 +215,93 @@ footer.nasaq-copy{padding:var(--sp-4) var(--sp-4) var(--sp-5);opacity:.85}
 .tc-name{font-family:var(--font-head);font-weight:700;font-size:var(--fs-base);margin-top:var(--sp-1)}
 .tc-desc{font-size:var(--fs-xs);color:var(--text-2)}
 kbd{font:inherit;font-size:var(--fs-xs);padding:0 var(--sp-1);border:1px solid var(--border-strong);border-radius:var(--r-sm);background:var(--surface-2)}
+/* ---------- شخصية الطابع عبر المتغيرات (المرحلة 6) ----------
+   لاحقة العلامة («360») ووزن الشعار الفرعي والأرقام من متغيرات الطابع؛ غيابها = لا شيء أو القيمة الأساسية. */
+:is(.brand-name,.auth-brand h2)::after{content:var(--brand-suffix,none);font-family:var(--font-display);font-weight:700;font-size:.5em;background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent;direction:ltr;margin-inline-start:.3em;vertical-align:.8em}
+.brand-latin::after{content:var(--brand-latin-suffix,none)}
+.greet-tagline{font-weight:var(--tagline-weight,600)}
+:is(.pomo-time,.count,.budget-overall .big){font-weight:var(--num-weight,400)}
+/* هالة الواجهة في رسومات التوهج */
+:root[data-art="glow"] .greet-card::before{opacity:1;background:
+    radial-gradient(ellipse 36% 95% at 7% 25%,var(--aura-1),transparent 70%),
+    radial-gradient(ellipse 30% 80% at 24% 115%,var(--aura-2),transparent 70%),
+    repeating-radial-gradient(circle at -60px 50%,transparent 0 26px,var(--orbit-line) 26px 27px);-webkit-mask:linear-gradient(to right,#000,transparent 68%);mask:linear-gradient(to right,#000,transparent 68%)}
+/* ---------- الواجهة الغامرة (data-hero="immersive"): ليلية دائمًا بمتغيرات --hero-* من الطابع ---------- */
+:root[data-hero="immersive"][data-tab="board"] .ring-clock{border-radius:50%;--dz-ring:var(--hero-night)}
+:root[data-hero="immersive"][data-tab="board"] .greet-card.ring-big #heroRing{color:var(--hero-ink)}
+:root[data-hero="immersive"][data-tab="board"] .greet-card{border:0;border-radius:0;box-shadow:none;background:var(--hero-night);color:var(--hero-ink)}
+:root[data-hero="immersive"][data-tab="board"] .greet-card::before{opacity:1;background:var(--hero-scene)}
+:root[data-hero="immersive"][data-tab="board"] .greet-card.has-photo::before{opacity:0}
+:root[data-hero="immersive"][data-tab="board"] .greet-card::after{background:
+    linear-gradient(to left,color-mix(in srgb,var(--hero-night) 88%,transparent) 0%,color-mix(in srgb,var(--hero-night) 55%,transparent) 34%,color-mix(in srgb,var(--hero-night) 8%,transparent) 64%,transparent 78%),
+    linear-gradient(to top,var(--board) 0%,color-mix(in srgb,var(--board) 55%,transparent) 8%,transparent 24%),
+    linear-gradient(to bottom,color-mix(in srgb,var(--hero-night) 40%,transparent),transparent 16%)}
+:root[data-hero="immersive"][data-tab="board"] .greet-media img{border-radius:0}
+:root[data-hero="immersive"][data-tab="board"] :is(.greet-media .hero-empty,.hero-tools){opacity:calc(1 - var(--hp) * 2)}
+:root[data-hero="immersive"][data-tab="board"] .greet-media .hero-empty{border:1px solid rgba(255,255,255,.45);border-radius:var(--r-md);background:color-mix(in srgb,var(--hero-night) 35%,transparent);color:var(--hero-white);font-size:var(--fs-sm);backdrop-filter:blur(6px)}
+:root[data-hero="immersive"][data-tab="board"] .greet-media .hero-empty:hover{background:var(--hero-white);color:var(--hero-on-white)}
+:root[data-hero="immersive"][data-tab="board"] :is(.hero-add,.hero-del){border-radius:var(--r-md);font-size:var(--fs-sm);backdrop-filter:blur(6px)}
+:root[data-hero="immersive"][data-tab="board"] .greet-text{opacity:calc(1 - var(--hp) * 1.35)}
+:root[data-hero="immersive"][data-tab="board"] .greet-title{color:var(--hero-white);font-size:clamp(24px,3.4vw,50px);font-weight:700;line-height:1.4;text-wrap:balance;text-shadow:0 4px 30px rgba(0,0,0,.45)}
+:root[data-hero="immersive"][data-tab="board"] .greet-tagline{color:var(--hero-sub);font-size:clamp(16px,1.5vw,21px);text-shadow:0 2px 14px rgba(0,0,0,.5)}
+:root[data-hero="immersive"][data-tab="board"] .greet-date{color:var(--hero-ink-2)}
+:root[data-hero="immersive"][data-tab="board"] .plan-day{border-radius:var(--r-md);font-size:var(--fs-md);font-weight:700;background:var(--primary);color:var(--on-primary);transition:background-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out)}
+:root[data-hero="immersive"][data-tab="board"] .plan-day:hover{background:var(--hero-white);color:var(--hero-on-white)}
+:root[data-hero="immersive"][data-tab="board"] .plan-day.done{background:color-mix(in srgb,var(--hero-night) 35%,transparent);color:var(--hero-white);border:1px solid rgba(255,255,255,.55);backdrop-filter:blur(6px)}
+:root[data-hero="immersive"][data-tab="board"] .plan-day.done:hover{background:var(--hero-white);color:var(--hero-on-white)}
+:root[data-hero="immersive"][data-tab="board"] .plan-day:focus-visible{outline:3px solid var(--hero-focus);outline-offset:3px}
+:root[data-hero="immersive"][data-tab="board"] .hero-dots:not(:empty){opacity:calc(1 - var(--hp) * 2)}
+:root[data-hero="immersive"][data-tab="board"] .hero-cue{border:0;background:none;color:var(--ink-2);font:inherit;font-size:var(--fs-xs);cursor:pointer;opacity:calc(1 - var(--hp) * 2.5)}
+/* ظهور البطاقات عند التمرير — جزء من التجربة الغامرة */
+:root[data-hero="immersive"] .rv{opacity:0;transition:opacity .7s ease var(--rv-d,0ms),translate .8s cubic-bezier(.2,.7,.2,1) var(--rv-d,0ms);translate:0 28px}
+:root[data-hero="immersive"] .rv.in{opacity:1;translate:0 0}
+@media (max-width:999px){
+  :root[data-hero="immersive"][data-tab="board"] .greet-title{font-size:clamp(22px,6.4vw,34px);line-height:1.45}
+  :root[data-hero="immersive"][data-tab="board"] .greet-tagline{font-size:var(--fs-base);line-height:1.7}
+  :root[data-hero="immersive"][data-tab="board"] .greet-card::after{background:
+    linear-gradient(to top,var(--board) 0%,color-mix(in srgb,var(--board) 55%,transparent) 7%,color-mix(in srgb,var(--hero-night) 78%,transparent) 26%,color-mix(in srgb,var(--hero-night) 35%,transparent) 58%,color-mix(in srgb,var(--hero-night) 45%,transparent) 100%)}
+}
+@media (prefers-reduced-motion:reduce){
+  :root[data-hero="immersive"][data-tab="board"] :is(.greet-text,.greet-media img){opacity:1}
+  :root[data-hero="immersive"] .rv{opacity:1;transition:none;translate:none}
+}
+/* ---------- الشريط العلوي (data-nav="top"): شفاف فوق الواجهة الليلية، وزجاجي بعد التمرير (tb-solid) ---------- */
+:root[data-nav="top"] .sidenav{background:transparent;border:0;color:var(--hero-white);transition:top var(--dur-3) cubic-bezier(.4,0,.2,1)}
+:root[data-nav="top"] .sidenav::before{background:linear-gradient(to bottom,color-mix(in srgb,var(--hero-night) 72%,transparent),color-mix(in srgb,var(--hero-night) 25%,transparent) 70%,transparent);transition:background-color var(--dur-3) var(--ease-out),opacity var(--dur-3) var(--ease-out)}
+:root[data-nav="top"] .sidenav.tb-over::before{background:color-mix(in srgb,var(--hero-night) 55%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
+:root[data-nav="top"] .sidenav.tb-solid::before{background:color-mix(in srgb,var(--surface-1) 90%,transparent);-webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%);box-shadow:0 1px 0 var(--border)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){ :root[data-nav="top"] .sidenav.tb-solid::before{background:var(--surface-1)} }
+/* الشريط فوق الواجهة الليلية: خلفية داكنة شبه معتمة (الروابط الفاتحة تبقى مقروءة فوق أي جزء من المشهد) */
+:root[data-nav="top"] .sidenav:not(.tb-solid){background-color:color-mix(in srgb,var(--hero-night) 62%,transparent)}
+:root[data-nav="top"] .sidenav.tb-solid{background-color:color-mix(in srgb,var(--surface-1) 90%,transparent)}
+:root[data-nav="top"] .sidenav.tb-hidden{transition-duration:.32s}
+:root[data-nav="top"] .sidenav:not(.tb-hidden){transition-duration:.22s;transition-timing-function:cubic-bezier(0,0,.2,1)}
+:root[data-nav="top"] .sidenav-brand{border:0}
+:root[data-nav="top"] .sidenav .brand-name{color:var(--hero-white);font-size:var(--fs-xl)}
+:root[data-nav="top"] .sidenav .tab{border-radius:var(--r-md);background:transparent;color:color-mix(in srgb,var(--hero-white) 86%,transparent);font-size:var(--fs-base);font-weight:600}
+:root[data-nav="top"] .sidenav .tab:hover{background:transparent;color:var(--hero-white)}
+:root[data-nav="top"] .sidenav .tab.active{background:var(--grad-line) bottom / 100% 2px no-repeat;color:var(--hero-focus);font-weight:600;box-shadow:0 8px 18px -12px color-mix(in srgb,var(--primary) 30%,transparent)}
+:root[data-nav="top"] .sidenav .tabbar-sync{border-radius:var(--r-md);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub)}
+:root[data-nav="top"] .sidenav .icon-btn{border-radius:var(--r-md);background:transparent;border-color:transparent;color:var(--hero-white)}
+:root[data-nav="top"] .sidenav .icon-btn:hover{background:rgba(255,255,255,.12)}
+:root[data-nav="top"] .top-add{border:0;border-radius:var(--r-md);background:var(--primary);color:var(--on-primary);font:inherit;font-family:var(--font-head);font-size:var(--fs-base);font-weight:700;cursor:pointer;transition:background-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out)}
+:root[data-nav="top"] .top-add:hover{background:var(--hero-white);color:var(--hero-on-white)}
+:root[data-nav="top"] .sidenav :is(.tab,.icon-btn,.top-add):focus-visible{outline:2px solid var(--hero-focus);outline-offset:2px}
+:root[data-nav="top"] .sidenav.tb-solid{color:var(--ink)}
+:root[data-nav="top"] .sidenav.tb-solid .brand-name{color:var(--ink)}
+:root[data-nav="top"] .sidenav.tb-solid .tab{color:var(--ink-2)}
+:root[data-nav="top"] .sidenav.tb-solid .tab:hover{color:var(--ink)}
+:root[data-nav="top"] .sidenav.tb-solid .tab.active{color:var(--focus)}
+:root[data-nav="top"] .sidenav.tb-solid .icon-btn{color:var(--ink)}
+:root[data-nav="top"] .sidenav.tb-solid .icon-btn:hover{background:var(--stripe)}
+:root[data-nav="top"] .sidenav.tb-solid .tabbar-sync{background:var(--stripe);border-color:var(--rule);color:var(--ink-2)}
+@media (max-width:999px){
+  :root[data-nav="top"] .sidenav .brand-name{font-size:var(--fs-lg)}
+  :root[data-nav="top"] .sidenav .tabbar{background:color-mix(in srgb,var(--paper) 88%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+  :root[data-nav="top"] .sidenav .tab{font-size:var(--fs-xs);color:var(--ink-2)}
+  :root[data-nav="top"] .sidenav .tab.active{color:var(--focus);background:var(--grad-line) top / 60% 2px no-repeat}
+}
+@media (prefers-reduced-motion:reduce){ :root[data-nav="top"] .sidenav{transition:none} }
 /* ---------- الطباعة على الشاشة (المرحلة 4) ----------
    العناوين متوازنة الأسطر، والفقرات «جميلة» بلا كلمة يتيمة، وأقصى عرض للفقرة 65 حرفًا؛
    والأسماء الطويلة تُقصّ بعد سطرين بـ«…» والنص الكامل في title. */
