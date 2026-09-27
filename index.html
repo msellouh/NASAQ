@@ -5703,7 +5703,7 @@ let heroPhrase = {slot:'', text:''};
 const BRAND_TAGLINE = 'لكل شيء مكان، ولكل يوم نَسَق.';
 function applyHeroPhrase(){
   const c = heroContext();
-  if(heroPhrase.slot !== c.slot) heroPhrase = {slot:c.slot, text: pickPhrase(c.ctx).replace('{name}', c.name || '')};
+  if(heroPhrase.slot !== c.slot) heroPhrase = {slot:c.slot, text: pickPhrase(c.ctx).replace(/لـ\{name\}/, /^ال/.test(c.name || '') ? 'لل' + c.name.slice(2) : 'لـ{name}').replace('{name}', c.name || '')};   /* لـ + العصر = للعصر */
   $('heroGreet').textContent = heroPhrase.text;
   const tag = document.querySelector('.greet-tagline');
   if(tag) tag.textContent = (PHRASE_SPECIAL[c.ctx] && c.sub) ? c.sub : BRAND_TAGLINE;
