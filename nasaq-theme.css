@@ -15,4 +15,48 @@
   --ease-std:cubic-bezier(.4,0,.2,1);       /* تغيّر حالة في المكان */
   --ease-back:cubic-bezier(.34,1.56,.64,1); /* ظهور بتجاوز خفيف */
 }
+
+/* ---------- سلّم الخط (المرحلة 2) — لا نص أصغر من 12px، والأساس 14px ---------- */
+:root{
+  --fs-xs:12px; --fs-sm:13px; --fs-base:14px; --fs-md:16px;
+  --fs-lg:20px; --fs-xl:24px; --fs-2xl:32px; --fs-display:clamp(36px,5vw,56px);
+  --lh-tight:1.25; --lh-base:1.6; --lh-relaxed:1.75;
+  --fw-regular:400; --fw-semibold:600; --fw-bold:700;
+  /* المسافات */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px; --sp-8:64px;
+  --r-pill:999px;
+  --gut:clamp(16px,4vw,56px);
+}
+/* ---------- المرادفات القديمة: تشير إلى الأسماء الوظيفية (themes/*.css) حتى لا ينكسر شيء ----------
+   تُعرَّف على الجذر وعلى .nq-scope (بطاقات معاينة الطوابع) لتُحسب داخل كل نطاق. */
+:is(:root,.nq-scope){
+  --board:var(--bg); --paper:var(--surface-1); --surface:var(--surface-1); --stripe:var(--surface-2);
+  --ink:var(--text-1); --ink-2:var(--text-2); --muted:var(--text-3); --rule:var(--border); --field-line:var(--border-strong);
+  --focus:var(--focus-ring); --focus-bg:var(--info-bg); --focus-ink:var(--info);
+  --done:var(--success); --done-bg:var(--success-bg); --hold:var(--warning); --hold-bg:var(--warning-bg); --hold-ink:var(--warning);
+  --urgent:var(--danger); --urgent-bg:var(--danger-bg); --live:var(--danger);
+  --brand:var(--primary); --cta:var(--primary); --on-cta:var(--on-primary); --cta-hover:var(--primary-hover); --on-cta-hover:var(--on-primary);
+  --ring:color-mix(in srgb,var(--focus-ring) 25%,transparent);
+  --r:var(--r-lg); --shadow:var(--elev-2);
+  --orbit:conic-gradient(from 15deg,var(--primary) 0deg,var(--primary-hover) 330deg,transparent 330deg);
+  --grad-line:linear-gradient(to left,var(--primary),var(--primary-hover));
+  --grad-text:linear-gradient(90deg,var(--primary),var(--primary-hover));
+  --aura-1:transparent; --aura-2:transparent; --orbit-line:var(--border);
+}
+
+/* ---------- ألوان ثابتة لا تتبع الطابع ----------
+   قرص الشعار العاجي (الشعار بألوانه الأصلية دائمًا)، وشارات أنواع الملفات، وألوان جدول تقرير Medics المعتمد. */
+:root{
+  --logo-disk:#F7F6F2;
+  --file-pdf:#C42B2E; --file-doc:#1F5FBF; --file-xls:#087F5D; --file-img:#6A43B8; --file-vid:#B4541A;
+  --rep-teal:#006C75; --rep-mid:#008F9B; --rep-cyan:#00B2C1; --rep-pale:#81D0D9; --rep-grey:#44546A; --rep-soft:#E6F6F7;
+  --rep-done1:#FCE4D6; --rep-done2:#E2EFDA; --rep-done3:#BCF6E4; --rep-planned:#D9D9D9; --rep-now:#D6A84F;
+}
+}
+/* الطباعة: أسود على أبيض بخط الطابع (طبقة utilities تغلب ألوان الطابع) — الكلاسيكي: صفحة دفتر (المرحلة 11) */
+@layer utilities{
+  @media print{
+    :root{--bg:#FFFFFF; --surface-1:#FFFFFF; --surface-2:#FFFFFF; --surface-3:#FFFFFF; --text-1:#111111; --text-2:#333333; --text-3:#555555;
+          --border:#CCCCCC; --border-strong:#999999; --primary:#111111; --on-primary:#FFFFFF; --imp-b-bg:#EEEEEE}
+  }
 }

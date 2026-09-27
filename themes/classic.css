@@ -3,47 +3,55 @@
 /* طابع «كلاسيكي» — الدفتر. في هذه المرحلة: ألوانه كما كانت (وهي الأساس الافتراضي لكل الطوابع،
    لذلك :root بلا طابع). تُستبدل بلوحة الدفتر وعلاماته في المرحلة 3. */
 @layer theme{
-:root{
-  --ink:#14312A; --ink-2:#2A544A; --paper:#FBFAF6; --board:#EDF0EA;
-  --rule:#D3DBD2; --done:#2F7A5B; --hold:#C08A0C; --urgent:#A8402F;
-  --muted:#6D7C74; --focus:#1F6F8B; --r:10px;
-  --surface:#ffffff; --stripe:#F5F7F3;
-  --hold-bg:#FDF6E3; --hold-ink:#8A6300;
-  --focus-bg:#EAF3F6; --focus-ink:#14556B;
-  --imp-b-bg:#E4EAE2;
-  --shadow:0 14px 34px rgba(20,49,42,.16);
-  --overlay:rgba(20,49,42,.38);
-  --pattern:rgba(20,49,42,.055);
-  --font-head:Amiri,"Traditional Arabic",serif;
+/* الألوان الوظيفية — فاتح */
+:is(:root,.nq-scope):is([data-palette="classic"],:not([data-palette])){
+  --bg:#F5F0E3; --surface-1:#FBF8EF; --surface-2:#F0EADB; --surface-3:#E8E0CC;
+  --text-1:#1E3A6E; --text-2:#3B4A63; --text-3:#5F5B52; --border:#B8CCE4;
+  --border-strong:#7C8AA3; --primary:#1E3A6E; --on-primary:#FBF8EF; --primary-hover:#16305D;
+  --accent:#B3261E; --on-accent:#FBF8EF; --focus-ring:#1E3A6E; --success:#2E6B4F;
+  --success-bg:#E3EDE3; --warning:#8A5A00; --warning-bg:#F6EBCB; --danger:#B3261E;
+  --danger-bg:#F7E1DC; --info:#1E3A6E; --info-bg:#E3EAF5; --art-rule:#B8CCE4;
+  --art-margin:#D9534F; --art-highlight:#F6E27A; --pattern:rgba(30,58,110,.06); --overlay:rgba(27,26,23,.4);
+  --field-bg:transparent; --field-hover:#3B4A63; --btn-soft:#F0EADB; --btn-soft-hover:#E8E0CC;
+  --imp-b-bg:#F0EADB; --on-done:#FBF8EF; --c-exec:#1E3A6E; --c-admin:#8A5A00;
+  --c-ops:#2E6B4F; --c-ind:#B3261E; --c-soft:#E3EAF5;
+  --font-body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif; --font-head:Amiri,"Traditional Arabic",serif; --font-display:Amiri,"Traditional Arabic",serif; --font-hand:"Aref Ruqaa",Amiri,serif;
+  --head-scale:1.12; --r-sm:2px; --r-md:3px; --r-lg:4px;
+  --r-xl:6px; --border-w:1px; --elev-1:0 1px 0 var(--surface-2),0 2px 0 var(--border); --elev-2:0 1px 0 var(--surface-2),0 2px 0 var(--border);
+  --elev-3:0 1px 0 var(--surface-2),0 2px 0 var(--border),0 3px 0 var(--surface-2),0 4px 0 var(--border); --row-h:48px; --card-pad:var(--sp-5); --icon-stroke:1.5;
+  --motion-scale:.6; --ease-enter:var(--ease-std); --lh-body:1.75;
   color-scheme:light;
 }
+/* الألوان الوظيفية — داكن */
+:is(:root,.nq-scope):is([data-palette="classic"],:not([data-palette]))[data-theme="dark"]{
+  --bg:#1B1A17; --surface-1:#24221E; --surface-2:#2C2925; --surface-3:#34302B;
+  --text-1:#8FB0E8; --text-2:#C8C1B2; --text-3:#B3AC9C; --border:#3A4458;
+  --border-strong:#6E7A92; --primary:#8FB0E8; --on-primary:#1B1A17; --primary-hover:#A9C3EF;
+  --accent:#F08A7E; --on-accent:#1B1A17; --focus-ring:#8FB0E8; --success:#86C7A5;
+  --success-bg:#1F2E27; --warning:#E2B35C; --warning-bg:#332A17; --danger:#F08A7E;
+  --danger-bg:#3A2320; --info:#8FB0E8; --info-bg:#232C3D; --art-rule:#3A4458;
+  --art-margin:#8C3B35; --art-highlight:#6B5E1E; --pattern:rgba(143,176,232,.05); --overlay:rgba(0,0,0,.6);
+  --field-bg:transparent; --field-hover:#C8C1B2; --btn-soft:#2C2925; --btn-soft-hover:#34302B;
+  --imp-b-bg:#2C2925; --on-done:#1B1A17; --c-exec:#8FB0E8; --c-admin:#E2B35C;
+  --c-ops:#86C7A5; --c-ind:#F08A7E; --c-soft:#232C3D;
+  color-scheme:dark;
+}
+/* تلقائي: يتبع الجهاز */
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --ink:#E9ECE4; --ink-2:#B7C4B3; --paper:#1B1E19; --board:#14160F;
-    --rule:#343B2C; --done:#57B389; --hold:#E7B24C; --urgent:#E4816B;
-    --muted:#8E9A88; --focus:#6FC0E0;
-    --surface:#20241B; --stripe:#1F231A;
-    --hold-bg:#33301A; --hold-ink:#E7B24C;
-    --focus-bg:#182A30; --focus-ink:#8FD3EC;
-    --imp-b-bg:#262C1F;
-    --shadow:0 14px 34px rgba(0,0,0,.55);
-    --overlay:rgba(0,0,0,.6);
-    --pattern:rgba(255,255,255,.045);
+  :is(:root,.nq-scope):is([data-palette="classic"],:not([data-palette])):not([data-theme="light"]){
+    --bg:#1B1A17; --surface-1:#24221E; --surface-2:#2C2925; --surface-3:#34302B;
+    --text-1:#8FB0E8; --text-2:#C8C1B2; --text-3:#B3AC9C; --border:#3A4458;
+    --border-strong:#6E7A92; --primary:#8FB0E8; --on-primary:#1B1A17; --primary-hover:#A9C3EF;
+    --accent:#F08A7E; --on-accent:#1B1A17; --focus-ring:#8FB0E8; --success:#86C7A5;
+    --success-bg:#1F2E27; --warning:#E2B35C; --warning-bg:#332A17; --danger:#F08A7E;
+    --danger-bg:#3A2320; --info:#8FB0E8; --info-bg:#232C3D; --art-rule:#3A4458;
+    --art-margin:#8C3B35; --art-highlight:#6B5E1E; --pattern:rgba(143,176,232,.05); --overlay:rgba(0,0,0,.6);
+    --field-bg:transparent; --field-hover:#C8C1B2; --btn-soft:#2C2925; --btn-soft-hover:#34302B;
+    --imp-b-bg:#2C2925; --on-done:#1B1A17; --c-exec:#8FB0E8; --c-admin:#E2B35C;
+    --c-ops:#86C7A5; --c-ind:#F08A7E; --c-soft:#232C3D;
     color-scheme:dark;
   }
 }
-:root[data-theme="dark"]{
-  --ink:#E9ECE4; --ink-2:#B7C4B3; --paper:#1B1E19; --board:#14160F;
-  --rule:#343B2C; --done:#57B389; --hold:#E7B24C; --urgent:#E4816B;
-  --muted:#8E9A88; --focus:#6FC0E0;
-  --surface:#20241B; --stripe:#1F231A;
-  --hold-bg:#33301A; --hold-ink:#E7B24C;
-  --focus-bg:#182A30; --focus-ink:#8FD3EC;
-  --imp-b-bg:#262C1F;
-  --shadow:0 14px 34px rgba(0,0,0,.55);
-  --overlay:rgba(0,0,0,.6);
-  --pattern:rgba(255,255,255,.045);
-  color-scheme:dark;
-}
+
 :root[data-theme="light"]{ color-scheme:light; }
 }

@@ -2,62 +2,54 @@
    ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
 /* طابع «نَسَق» — الهوية (الافتراضي): متغيرات الألوان للوضعين. */
 @layer theme{
+/* الألوان الوظيفية — فاتح */
+:is(:root,.nq-scope)[data-palette="nasaq"]{
+  --bg:#F7F6F2; --surface-1:#FFFFFF; --surface-2:#FAF9F6; --surface-3:#F1EFE9;
+  --text-1:#202A2A; --text-2:#3E4A4A; --text-3:#5B6868; --border:#E4E4E4;
+  --border-strong:#7F8A8A; --primary:#174C4F; --on-primary:#FFFFFF; --primary-hover:#2F6F6B;
+  --accent:#D6A84F; --on-accent:#202A2A; --focus-ring:#2F6F6B; --success:#4F6E5D;
+  --success-bg:#EAF1EC; --warning:#846428; --warning-bg:#F8F1E2; --danger:#93563F;
+  --danger-bg:#F8ECE8; --info:#174C4F; --info-bg:#DCEBE9; --pattern:rgba(23,76,79,.035);
+  --overlay:rgba(23,76,79,.3); --field-bg:#F7F6F2; --field-hover:#6F7B7B; --btn-soft:#DCEBE9;
+  --btn-soft-hover:#CDE2DF; --imp-b-bg:#E8F0EE; --on-done:#FFFFFF; --c-exec:#174C4F;
+  --c-admin:#B08A3E; --c-ops:#4F6E5D; --c-ind:#93563F; --c-soft:#DCEBE9;
+  --font-body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif; --font-head:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif; --font-display:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif; --font-hand:var(--font-head);
+  --head-scale:1; --r-sm:6px; --r-md:8px; --r-lg:12px;
+  --r-xl:16px; --border-w:1px; --elev-1:0 1px 2px rgba(23,76,79,.05); --elev-2:0 1px 2px rgba(23,76,79,.05),0 8px 24px rgba(23,76,79,.06);
+  --elev-3:0 2px 4px rgba(23,76,79,.06),0 16px 40px rgba(23,76,79,.12); --row-h:44px; --card-pad:var(--sp-5); --icon-stroke:1.75;
+  --motion-scale:1; --ease-enter:var(--ease-std); --lh-body:1.6;
+  color-scheme:light;
+}
+/* الألوان الوظيفية — داكن */
+:is(:root,.nq-scope)[data-palette="nasaq"][data-theme="dark"]{
+  --bg:#0C1A1B; --surface-1:#112426; --surface-2:#152C2E; --surface-3:#1A3334;
+  --text-1:#E8EFEE; --text-2:#BCCDCB; --text-3:#8EA5A3; --border:#22393B;
+  --border-strong:#5E7C7A; --primary:#7CC4BC; --on-primary:#0C1A1B; --primary-hover:#9FD4CD;
+  --accent:#E0B865; --on-accent:#0C1A1B; --focus-ring:#7CC4BC; --success:#8FC1A5;
+  --success-bg:#17302A; --warning:#E0B865; --warning-bg:#2E2814; --danger:#E6A08B;
+  --danger-bg:#3A231E; --info:#A9DCD6; --info-bg:#173B3B; --pattern:rgba(255,255,255,.03);
+  --overlay:rgba(0,0,0,.6); --field-bg:#0E1F20; --field-hover:#6A8A87; --btn-soft:#173B3B;
+  --btn-soft-hover:#1D4646; --imp-b-bg:#1A3334; --on-done:#0C1A1B; --c-exec:#7CC4BC;
+  --c-admin:#E0B865; --c-ops:#8FC1A5; --c-ind:#E6A08B; --c-soft:#173B3B;
+  --elev-1:0 1px 2px rgba(0,0,0,.3); --elev-2:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.4); --elev-3:0 2px 6px rgba(0,0,0,.4),0 18px 44px rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+/* تلقائي: يتبع الجهاز */
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"])[data-palette="nasaq"]{
-    --ink:#E8EFEE; --ink-2:#BCCDCB; --paper:#112426; --board:#0C1A1B;
-    --rule:#22393B; --done:#8FC1A5; --hold:#E0B865; --urgent:#E6A08B;
-    --muted:#8EA5A3; --focus:#7CC4BC;
-    --surface:#152C2E; --stripe:#132829;
-    --hold-bg:#2E2814; --hold-ink:#E0B865;
-    --focus-bg:#173B3B; --focus-ink:#A9DCD6;
-    --imp-b-bg:#1A3334;
-    --brand:#7CC4BC; --accent:#E0B865;
-    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.4);
-    --overlay:rgba(0,0,0,.6);
-    --pattern:rgba(255,255,255,.03);
+  :is(:root,.nq-scope)[data-palette="nasaq"]:not([data-theme="light"]){
+    --bg:#0C1A1B; --surface-1:#112426; --surface-2:#152C2E; --surface-3:#1A3334;
+    --text-1:#E8EFEE; --text-2:#BCCDCB; --text-3:#8EA5A3; --border:#22393B;
+    --border-strong:#5E7C7A; --primary:#7CC4BC; --on-primary:#0C1A1B; --primary-hover:#9FD4CD;
+    --accent:#E0B865; --on-accent:#0C1A1B; --focus-ring:#7CC4BC; --success:#8FC1A5;
+    --success-bg:#17302A; --warning:#E0B865; --warning-bg:#2E2814; --danger:#E6A08B;
+    --danger-bg:#3A231E; --info:#A9DCD6; --info-bg:#173B3B; --pattern:rgba(255,255,255,.03);
+    --overlay:rgba(0,0,0,.6); --field-bg:#0E1F20; --field-hover:#6A8A87; --btn-soft:#173B3B;
+    --btn-soft-hover:#1D4646; --imp-b-bg:#1A3334; --on-done:#0C1A1B; --c-exec:#7CC4BC;
+    --c-admin:#E0B865; --c-ops:#8FC1A5; --c-ind:#E6A08B; --c-soft:#173B3B;
+    --elev-1:0 1px 2px rgba(0,0,0,.3); --elev-2:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.4); --elev-3:0 2px 6px rgba(0,0,0,.4),0 18px 44px rgba(0,0,0,.5);
+    color-scheme:dark;
   }
 }
-:root[data-palette="nasaq"]{
-  --ink:#202A2A; --ink-2:#3E4A4A; --paper:#FFFFFF; --board:#F7F6F2;
-  --rule:#E4E4E4; --done:#547563; --hold:#88682E; --urgent:#9F5F4D;
-  --muted:#627070; --focus:#174C4F; --r:12px;
-  --surface:#FFFFFF; --stripe:#FAF9F6;
-  --hold-bg:#F6EEDC; --hold-ink:#7A5B22;
-  --focus-bg:#DCEBE9; --focus-ink:#174C4F;
-  --imp-b-bg:#E8F0EE;
-  --brand:#174C4F; --accent:#D6A84F;
-  --shadow:0 1px 2px rgba(23,76,79,.05),0 8px 24px rgba(23,76,79,.06);
-  --overlay:rgba(23,76,79,.3);
-  --pattern:rgba(23,76,79,.035);
-  --font-head:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
-}
-:root[data-theme="dark"][data-palette="nasaq"]{
-  --ink:#E8EFEE; --ink-2:#BCCDCB; --paper:#112426; --board:#0C1A1B;
-  --rule:#22393B; --done:#8FC1A5; --hold:#E0B865; --urgent:#E6A08B;
-  --muted:#8EA5A3; --focus:#7CC4BC; --r:12px;
-  --surface:#152C2E; --stripe:#132829;
-  --hold-bg:#2E2814; --hold-ink:#E0B865;
-  --focus-bg:#173B3B; --focus-ink:#A9DCD6;
-  --imp-b-bg:#1A3334;
-  --brand:#7CC4BC; --accent:#E0B865;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.4);
-  --overlay:rgba(0,0,0,.6);
-  --pattern:rgba(255,255,255,.03);
-  --font-head:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
-}
-:root[data-palette="nasaq"]{
-  --field-bg:#F7F6F2; --field-line:#899393; --field-hover:#717D7D;
-  --ring:rgba(23,76,79,.16); --on-accent:#FFFFFF; --btn-soft:#DCEBE9; --btn-soft-hover:#CDE2DF;
-}
-:root[data-theme="dark"][data-palette="nasaq"]{
-  --field-bg:#0E1F20; --field-line:#557270; --field-hover:#6A8A87;
-  --ring:rgba(124,196,188,.25); --on-accent:#0C1A1B; --btn-soft:#173B3B; --btn-soft-hover:#1D4646;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"])[data-palette="nasaq"]{
-    --field-bg:#0E1F20; --field-line:#557270; --field-hover:#6A8A87;
-    --ring:rgba(124,196,188,.25); --on-accent:#0C1A1B; --btn-soft:#173B3B; --btn-soft-hover:#1D4646;
-  }
-}
+
 :root[data-palette="nasaq"] .close-day{background:#174C4F;color:#fff}
 }

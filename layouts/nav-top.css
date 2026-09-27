@@ -10,28 +10,28 @@
 :root[data-nav="top"] .sidenav.tb-hidden{top:calc(-1 * var(--tb-h) - 4px)}
 :root[data-nav="top"] .sidenav-brand{padding:0;flex:none}
 :root[data-nav="top"] .sidenav .brand-latin{display:none}
-:root[data-nav="top"] .sidenav .tabbar{flex-direction:row;gap:4px}
-:root[data-nav="top"] .sidenav .tab{width:auto;padding:10px 14px}
+:root[data-nav="top"] .sidenav .tabbar{flex-direction:row;gap:var(--sp-1)}
+:root[data-nav="top"] .sidenav .tab{width:auto;padding:var(--sp-2) var(--sp-3)}
 :root[data-nav="top"] .sidenav .tab .ic{display:none}
 :root[data-nav="top"] .side-today{display:none}
-:root[data-nav="top"] .sidenav-foot{margin:0;margin-inline-start:auto;flex-direction:row;align-items:center;gap:12px;min-width:0}
-:root[data-nav="top"] .sidenav .tabbar-sync{max-width:240px;padding:6px 12px;flex-wrap:nowrap}
+:root[data-nav="top"] .sidenav-foot{margin:0;margin-inline-start:auto;flex-direction:row;align-items:center;gap:var(--sp-3);min-width:0}
+:root[data-nav="top"] .sidenav .tabbar-sync{max-width:240px;padding:var(--sp-1) var(--sp-3);flex-wrap:nowrap}
 :root[data-nav="top"] .sidenav .tabbar-sync #syncMsg{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 :root[data-nav="top"] .sidenav .tabbar-sync :is(#syncTime,#stateNote){display:none}
-:root[data-nav="top"] .sidenav-actions{align-items:center;gap:8px}
+:root[data-nav="top"] .sidenav-actions{align-items:center;gap:var(--sp-2)}
 :root[data-nav="top"] .sidenav .icon-btn{width:38px;height:38px}
-:root[data-nav="top"] .top-add{display:inline-flex;align-items:center;min-height:40px;padding:0 18px}
-:root[data-nav="top"] .content{padding-top:calc(var(--tb-h) + 24px)}
+:root[data-nav="top"] .top-add{display:inline-flex;align-items:center;min-height:40px;padding:0 var(--sp-4)}
+:root[data-nav="top"] .content{padding-top:calc(var(--tb-h) + var(--sp-5))}
 @media (max-width:1180px){
   :root[data-nav="top"] .sidenav .tabbar-sync{display:none}
 }
 @media (max-width:999px){
   :root[data-nav="top"]{--tb-h:56px}
-  :root[data-nav="top"] .sidenav{padding:0 14px;gap:10px}
+  :root[data-nav="top"] .sidenav{padding:0 var(--sp-3);gap:var(--sp-2)}
   :root[data-nav="top"] .top-add{display:none}
   :root[data-nav="top"] .sidenav .tabbar{flex-direction:row}
-  :root[data-nav="top"] .sidenav .tab{flex:1;flex-direction:column;gap:3px;padding:7px 4px}
+  :root[data-nav="top"] .sidenav .tab{flex:1;flex-direction:column;gap:3px;padding:var(--sp-2) var(--sp-1)}
   :root[data-nav="top"] .sidenav .tab .ic{display:block}
-  :root[data-nav="top"] .content{padding-top:calc(var(--tb-h) + 14px)}
+  :root[data-nav="top"] .content{padding-top:calc(var(--tb-h) + var(--sp-3))}
 }
 }
