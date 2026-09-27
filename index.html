@@ -1807,7 +1807,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <div class="auth-form" id="authLogin">
       <input id="loginUser" placeholder="اسم المستخدم" autocomplete="username">
       <input id="loginPass" type="password" placeholder="كلمة السر" autocomplete="current-password">
-      <label class="auth-remember"><input type="checkbox" id="rememberMe"><span>احفظ بيانات الدخول على هذا الجهاز</span></label>
+      <label class="auth-remember"><input type="checkbox" id="rememberMe"><span>ابقَ مسجّل الدخول على هذا الجهاز</span></label>
       <button class="auth-primary" id="loginBtn" type="button">دخول</button>
       <div class="auth-links">
         <button class="linklike" id="toRegister" type="button">إنشاء حساب جديد</button>
@@ -2458,7 +2458,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
 <div class="toast" id="toastBox"></div>
 
-<script src="nasaq-core.js?v=20260927"></script>
+<script src="nasaq-core.js?v=20260927a"></script>
 <script src="nasaq-pulse.js?v=20260927"></script>
 <script>
 const AR = n => Number(n).toLocaleString('ar-EG-u-nu-latn');
@@ -2880,13 +2880,13 @@ let bridge = '';
 try{ bridge = localStorage.getItem(BKEY) || ''; }catch(e){}
 if(!bridge && DEFAULT_BRIDGE) bridge = DEFAULT_BRIDGE;
 
-/* ---------- جلسة المستخدم ---------- */
-const AUTHKEY = 'daily-board-auth';
-let auth = null;
-try{ auth = JSON.parse(localStorage.getItem(AUTHKEY) || 'null'); }catch(e){}
-function saveAuth(a){
+/* ---------- جلسة المستخدم ----------
+   التخزين في NasaqAuth (nasaq-core.js): رمز الجلسة وحده، في localStorage إن اختار
+   «ابقَ مسجّل الدخول» وإلا في sessionStorage. persist غير محدَّد = يبقى حيث هو. */
+let auth = NasaqAuth.load();
+function saveAuth(a, persist){
   auth = a;
-  try{ a ? localStorage.setItem(AUTHKEY, JSON.stringify(a)) : localStorage.removeItem(AUTHKEY); }catch(e){}
+  NasaqAuth.save(a, persist);
 }
 /* نوشن متاح لصاحب الجسر وحده — لأن مفاتيحه ملكه */
 function notionOK(){ return !!(bridge && auth && auth.isOwner); }
@@ -6745,32 +6745,28 @@ function resetLocalForUser(newUser){
 
 function afterAuth(d){
   resetLocalForUser(d.user);
-  saveAuth({token:d.token, user:d.user, isOwner:d.isOwner});
+  saveAuth({token:d.token, user:d.user, isOwner:d.isOwner}, $('rememberMe').checked);
   hideAuth();
   bootConnected();
 }
 
-/* ---------- حفظ بيانات الدخول على هذا الجهاز ----------
-   مخزَّنة كنص صريح في متصفح هذا الجهاز وحده — لا تُرسل ولا تُزامَن.
-   لا تفعّلها على جهاز مشترك. */
-const REMEMBER_KEY = 'daily-board-remember';
+/* ---------- ابقَ مسجّل الدخول على هذا الجهاز ----------
+   كلمة السر لا تُحفظ في المتصفح أبدًا (مدير كلمات السر في المتصفح يعرض حفظها بأمان عبر
+   autocomplete). المؤشَّر: رمز الجلسة في localStorage ويُطلب من الجسر جلسة طويلة،
+   مع حفظ اسم المستخدم وحده لتعبئة الحقل. غير المؤشَّر: الرمز في sessionStorage فقط.
+   المفتاح القديم daily-board-remember (كان فيه كلمة السر نصًّا صريحًا) يُحذف في NasaqAuth. */
 function loadRemembered(){
-  let r = null;
-  try{ r = JSON.parse(localStorage.getItem(REMEMBER_KEY) || 'null'); }catch(e){}
-  if(!r) return;
+  const u = NasaqAuth.rememberedUser();
+  if(!u) return;
   $('rememberMe').checked = true;
-  $('loginUser').value = r.u || '';
-  $('loginPass').value = r.p || '';
+  $('loginUser').value = u;
 }
-function saveRemembered(u, p){
-  try{
-    if($('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, JSON.stringify({u:u, p:p}));
-    else localStorage.removeItem(REMEMBER_KEY);
-  }catch(e){}
+function saveRemembered(u){
+  NasaqAuth.rememberUser($('rememberMe').checked ? u : '');
 }
 $('rememberMe').onchange = ()=>{
-  /* إلغاء التأشير يمحو المحفوظ فورًا، لا عند الدخول التالي */
-  if(!$('rememberMe').checked){ try{ localStorage.removeItem(REMEMBER_KEY); }catch(e){} }
+  /* إلغاء التأشير يمحو الاسم المحفوظ فورًا، لا عند الدخول التالي */
+  if(!$('rememberMe').checked) NasaqAuth.rememberUser('');
 };
 loadRemembered();
 
@@ -6778,15 +6774,15 @@ $('loginBtn').onclick = ()=>{
   const u = $('loginUser').value.trim(), p = $('loginPass').value;
   if(!u || !p){ setAuthMsg('أدخل اسم المستخدم وكلمة السر','err'); return; }
   setAuthMsg('جارٍ الدخول…');
-  post({action:'auth_login', username:u, password:p})
-    .then(d=>{ saveRemembered(u, p); return afterAuth(d); })
+  post({action:'auth_login', username:u, password:p, remember:$('rememberMe').checked})
+    .then(d=>{ saveRemembered(u); $('loginPass').value = ''; return afterAuth(d); })
     .catch(e=>setAuthMsg(e.message,'err'));
 };
 $('registerBtn').onclick = ()=>{
   setAuthMsg('جارٍ إنشاء الحساب…');
   post({action:'auth_register',
     username:$('regUser').value.trim(), password:$('regPass').value,
-    email:$('regEmail').value.trim(), code:$('regCode').value.trim()
+    email:$('regEmail').value.trim(), code:$('regCode').value.trim(), remember:$('rememberMe').checked
   }).then(afterAuth).catch(e=>setAuthMsg(e.message,'err'));
 };
 $('resSendBtn').onclick = ()=>{
@@ -6800,7 +6796,7 @@ $('resSendBtn').onclick = ()=>{
 $('resConfirmBtn').onclick = ()=>{
   setAuthMsg('جارٍ التعيين…');
   post({action:'auth_reset_confirm',
-    username:$('resUser').value.trim(), code:$('resCode').value.trim(), password:$('resPass').value
+    username:$('resUser').value.trim(), code:$('resCode').value.trim(), password:$('resPass').value, remember:$('rememberMe').checked
   }).then(afterAuth).catch(e=>setAuthMsg(e.message,'err'));
 };
 $('toRegister').onclick = ()=>showAuth('register');

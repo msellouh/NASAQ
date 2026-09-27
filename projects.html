@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800;900&family=Readex+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
-<script src="nasaq-core.js?v=20260927"></script>
+<script src="nasaq-core.js?v=20260927a"></script>
 <script>
 /* الوضع المحفوظ في نَسَق — قبل الرسم حتى لا يومض */
 (function(){ try{
@@ -842,7 +842,7 @@ const S = { q:'', year:'2026', status:'', donor:'', type:'', coord:'', sort:'sma
 const DEFAULT_BRIDGE = 'https://script.google.com/macros/s/AKfycbwwrcb-T-vBdPd2u94XfiFspyDwBKXec-NNeUzZiJMCupbUp91dFwZM2Wfj-F3dncw/exec';
 let bridge = ''; try{ bridge = localStorage.getItem('daily-board-bridge') || ''; }catch(e){}
 if(!bridge) bridge = DEFAULT_BRIDGE;
-let auth = null; try{ auth = JSON.parse(localStorage.getItem('daily-board-auth') || 'null'); }catch(e){}
+let auth = NasaqAuth.load();   /* رمز الجلسة من localStorage أو sessionStorage — nasaq-core.js */
 
 /* النقل نفسه الذي يستعمله اللوح — nasaq-core.js */
 NasaqBridge.configure(function(){ return bridge; });

@@ -159,3 +159,36 @@ function legacyOrRpc(payload){
 return { configure: function(f){ getUrl = f; }, post: legacyOrRpc, reset: rpcReset,
          get disabled(){ return rpcDisabled; } };
 })();
+
+/* ---------- جلسة الدخول — مشتركة بين اللوح وصفحتي المشاريع والنبض ----------
+   لا تُخزَّن كلمة السر في المتصفح إطلاقًا؛ المحفوظ رمز الجلسة وحده (والاسم لتعبئة الحقل).
+   «ابقَ مسجّل الدخول»: الرمز في localStorage (جلسة طويلة يمنحها الجسر).
+   بدونه: في sessionStorage فقط، فتنتهي الجلسة بإغلاق التبويب/المتصفح.
+   المفتاح daily-board-auth نفسه في المخزنين، فلا تنفصل الجلسات القديمة. */
+window.NasaqAuth = (function(){
+  var KEY = 'daily-board-auth', USER_KEY = 'daily-board-remember-user', OLD_KEY = 'daily-board-remember';
+  function get(store){ try{ return JSON.parse(window[store].getItem(KEY) || 'null'); }catch(e){ return null; } }
+  function del(store, k){ try{ window[store].removeItem(k); }catch(e){} }
+  /* ترحيل لمرة واحدة: النسخة القديمة كانت تحفظ اسم المستخدم وكلمة السر نصًّا صريحًا */
+  (function migrate(){
+    var old = null;
+    try{ old = JSON.parse(localStorage.getItem(OLD_KEY) || 'null'); }catch(e){}
+    try{ if(localStorage.getItem(OLD_KEY) !== null) localStorage.removeItem(OLD_KEY); }catch(e){}
+    if(old && old.u){ try{ if(!localStorage.getItem(USER_KEY)) localStorage.setItem(USER_KEY, String(old.u)); }catch(e){} }
+  })();
+  function load(){ return get('sessionStorage') || get('localStorage'); }
+  function persistent(){ return !!get('localStorage'); }
+  /* persist غير محدَّد: يبقى الرمز في المخزن الذي هو فيه الآن (تحديث بعد الإقلاع أو تغيير كلمة السر) */
+  function save(a, persist){
+    if(!a){ clear(); return; }
+    if(persist === undefined) persist = persistent() || !get('sessionStorage');
+    var to = persist ? 'localStorage' : 'sessionStorage', other = persist ? 'sessionStorage' : 'localStorage';
+    try{ window[to].setItem(KEY, JSON.stringify(a)); }catch(e){}
+    del(other, KEY);
+  }
+  function clear(){ del('localStorage', KEY); del('sessionStorage', KEY); }
+  function rememberedUser(){ try{ return localStorage.getItem(USER_KEY) || ''; }catch(e){ return ''; } }
+  function rememberUser(u){ try{ u ? localStorage.setItem(USER_KEY, u) : localStorage.removeItem(USER_KEY); }catch(e){} }
+  return { load: load, save: save, clear: clear, persistent: persistent,
+           rememberedUser: rememberedUser, rememberUser: rememberUser };
+})();

@@ -187,7 +187,7 @@ dialog[open]{animation:dlgIn var(--dur-3) var(--ease-out)}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="upFile" hidden accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,image/*">
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
-<script src="nasaq-core.js?v=20260927"></script>
+<script src="nasaq-core.js?v=20260927a"></script>
 <script src="nasaq-pulse.js?v=20260927"></script>
 <script>
 const $ = id => document.getElementById(id);
@@ -207,7 +207,7 @@ const {today, toDate, daysTo, fmtDay, cnt, W_PROJ, W_REP, days, whenText, RUNNIN
 const DEFAULT_BRIDGE = 'https://script.google.com/macros/s/AKfycbwwrcb-T-vBdPd2u94XfiFspyDwBKXec-NNeUzZiJMCupbUp91dFwZM2Wfj-F3dncw/exec';
 let bridge = ''; try{ bridge = localStorage.getItem('daily-board-bridge') || ''; }catch(e){}
 if(!bridge) bridge = DEFAULT_BRIDGE;
-let auth = null; try{ auth = JSON.parse(localStorage.getItem('daily-board-auth') || 'null'); }catch(e){}
+let auth = NasaqAuth.load();   /* رمز الجلسة من localStorage أو sessionStorage — nasaq-core.js */
 NasaqBridge.configure(()=>bridge);
 function post(body){
   /* داخل اللوح: اتصال اللوح القائم بدل فتح اتصال ثانٍ */
