@@ -2,5 +2,34 @@
    ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
 /* واجهة «صفحة الرزنامة» لكلاسيكي — data-hero="page" (المرحلة 3). */
 @layer layouts{
-/* (فارغ بعد) */
+/* ورقة رزنامة حائط: شريط علوي أحمر فيه الشهر، ثم رقم اليوم كبيرًا، ثم اليوم والتاريخ الهجري؛ وحافة علوية مثقوبة.
+   بجانبها العبارة (خط الرقعة من ملف الطابع) والتاريخ بسطر واحد وزر «خطّط يومك». المشهد الليلي لا يظهر.
+   صورة المستخدم (إن وُجدت) مطبوعة بإطار أبيض ومثبتة بشريط لاصق، بعرض 140px كحد أقصى. الارتفاع ≤ 180px. */
+.cal-sheet,.brief-ring{display:none}
+:root[data-hero="page"] .greet-card{min-height:0;max-height:180px;align-items:center;gap:var(--sp-5);padding:var(--sp-3) var(--sp-5)}
+:root[data-hero="page"] .greet-card::before{display:none}
+:root[data-hero="page"] .cal-sheet{display:flex;flex-direction:column;align-items:center;flex:none;width:112px;padding:6px 0 var(--sp-2);
+  background:radial-gradient(circle at 50% 0,var(--bg) 2.5px,transparent 3px) top / 10px 6px repeat-x,var(--surface-1);
+  border:1px solid var(--border);border-radius:var(--r-md);box-shadow:var(--elev-1)}
+:root[data-hero="page"] .cs-month{align-self:stretch;text-align:center;background:var(--danger);color:var(--on-accent);font-size:var(--fs-sm);font-weight:600;padding:2px 0}
+:root[data-hero="page"] .cs-day{font-family:var(--font-display);font-size:var(--fs-display);font-weight:700;line-height:1.05;color:var(--text-1);font-variant-numeric:tabular-nums}
+:root[data-hero="page"] .cs-dow{font-size:var(--fs-sm);font-weight:600;color:var(--text-2)}
+:root[data-hero="page"] .cs-hijri{font-size:var(--fs-xs);color:var(--text-3)}
+:root[data-hero="page"] .greet-text{padding:0;gap:var(--sp-1)}
+:root[data-hero="page"] .greet-title{font-size:var(--fs-xl);line-height:1.5}
+:root[data-hero="page"] .greet-media{width:auto;max-width:150px;padding:0;align-self:center;background:none}
+:root[data-hero="page"] .hero-scene{display:none}
+:root[data-hero="page"] .greet-card.has-photo{min-height:0}
+:root[data-hero="page"] .greet-card.has-photo .greet-media::after{display:none}
+:root[data-hero="page"] .greet-media img{position:static;display:block;width:auto;height:auto;max-width:140px;max-height:140px;
+  border:6px solid var(--surface-1);border-radius:var(--r-sm);box-shadow:var(--elev-2);transform:rotate(2deg)}
+:root[data-hero="page"] .greet-card.has-photo .greet-media::before{content:"";position:absolute;top:-8px;left:50%;width:56px;height:18px;translate:-50% 0;
+  rotate:-4deg;background:color-mix(in srgb,var(--art-highlight) 55%,transparent);z-index:2}
+:root[data-hero="page"] .hero-tools{position:static}
+@media (max-width:640px){
+  :root[data-hero="page"] .greet-card{gap:var(--sp-3);padding:var(--sp-3)}
+  :root[data-hero="page"] .cal-sheet{width:88px}
+  :root[data-hero="page"] .cs-day{font-size:var(--fs-2xl)}
+  :root[data-hero="page"] .greet-media{display:none}
+}
 }

@@ -2,5 +2,24 @@
    ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
 /* واجهة «موجز اليوم» لنَسَق — data-hero="brief" (المرحلة 3). */
 @layer layouts{
-/* (فارغ بعد) */
+/* «موجز اليوم»: بطاقة بارتفاع 200–220px. في جهة البداية العبارة (--fs-2xl بوزن 600) وسطر التاريخ وحلقة تقدّم اليوم
+   (Teal مع نقطة زعفران) وزر «خطّط يومك»، وفي الجهة الأخرى المشهد بنسبة 40% من العرض وبزوايا --r-lg. */
+:root[data-hero="brief"] .greet-card{min-height:200px;max-height:220px;align-items:stretch}
+:root[data-hero="brief"] .greet-card.has-photo{min-height:200px}
+:root[data-hero="brief"] .greet-text{padding:var(--sp-4) var(--sp-6);gap:var(--sp-2)}
+:root[data-hero="brief"] .greet-title{font-size:var(--fs-2xl);font-weight:600;line-height:1.3}
+:root[data-hero="brief"] .greet-media{width:40%;margin:var(--sp-3);margin-inline-start:0;border-radius:var(--r-lg);overflow:hidden}
+:root[data-hero="brief"] .hero-glance{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap}
+:root[data-hero="brief"] .hero-glance .plan-day{margin-top:0}
+:root[data-hero="brief"] .brief-ring{--p:calc(var(--day-pct,0) * 3.6deg);display:grid;place-items:center;position:relative;flex:none;width:52px;height:52px;border-radius:50%;
+  background:conic-gradient(var(--primary) var(--p),var(--border) 0);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4.5px));mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4.5px))}
+:root[data-hero="brief"] .brief-ring::after{content:"";position:absolute;top:0;left:50%;width:8px;height:8px;margin:-1.5px 0 0 -4px;border-radius:50%;
+  background:var(--accent);transform-origin:4px 27.5px;rotate:var(--p)}
+:root[data-hero="brief"] .brief-ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:var(--fs-xs);font-weight:600;color:var(--text-1);
+  font-variant-numeric:tabular-nums;direction:ltr;-webkit-mask:none;mask:none}
+@media (max-width:760px){
+  :root[data-hero="brief"] .greet-card{flex-direction:column;max-height:none}
+  :root[data-hero="brief"] .greet-media{width:auto;height:120px;margin:0 var(--sp-3) var(--sp-3)}
+}
 }

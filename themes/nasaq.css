@@ -52,4 +52,21 @@
 }
 
 :root[data-palette="nasaq"] .close-day{background:#174C4F;color:#fff}
+/* ---------- علامة «نَسَق»: نقطة الزعفران (من الشعار) ----------
+   العنصر النشط خلفيته --surface-2 مع نقطة زعفران 6px في جهة البداية، بدل الكتلة الخضراء الممتلئة.
+   والنقطة نفسها: اليوم الحالي في التقويم، وشارة الإشعارات، ونهاية شريط التقدم. */
+:root[data-palette="nasaq"] .tab{padding-inline-start:calc(var(--sp-3) + 8px)}
+:root[data-palette="nasaq"] .tab.active{background:radial-gradient(circle at calc(100% - 8px) 50%,var(--accent) 3px,transparent 3.6px),var(--surface-2);
+  color:var(--text-1);box-shadow:inset 0 0 0 1px var(--border)}
+:root[data-palette="nasaq"] .tab.active .ic{color:var(--primary)}
+@media (max-width:999px){
+  :root[data-palette="nasaq"] .tab{padding-inline-start:var(--sp-1)}
+  :root[data-palette="nasaq"] .tab.active{background:radial-gradient(circle at 50% 4px,var(--accent) 3px,transparent 3.6px);box-shadow:none;color:var(--primary)}
+}
+:root[data-palette="nasaq"] .cal-day.today{background:radial-gradient(circle at 50% 5px,var(--accent) 2.5px,transparent 3px),var(--surface-1)}
+:root[data-palette="nasaq"] .notif-badge{background:var(--accent);color:var(--on-accent)}
+:root[data-palette="nasaq"] .progress .fill{background:radial-gradient(circle at 4px 50%,var(--accent) 3px,transparent 3.5px),var(--primary)}
+/* نقش الشعار في الواجهة والحالات الفارغة فقط، بشفافية ≤ 3% — لا في كل الصفحة */
+:root[data-palette="nasaq"] body{background-image:none}
+:root[data-palette="nasaq"] .greet-card::before{opacity:.03}
 }

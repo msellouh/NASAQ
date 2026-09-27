@@ -54,4 +54,16 @@
 }
 
 :root[data-theme="light"]{ color-scheme:light; }
+/* ---------- علامة «كلاسيكي» في التنقل: ألسنة فواصل الدفتر ----------
+   العنصر النشط لسان ورقي بلون الورقة يبرز 4px نحو الصفحة، بشريط أحمر 3px في جهة البداية — لا تعبئة زرقاء. */
+:root[data-palette="classic"] .sidenav{background:var(--surface-2)}
+:root[data-palette="classic"] .tab:hover{background:color-mix(in srgb,var(--surface-1) 65%,transparent);color:var(--text-1)}
+:root[data-palette="classic"] .tab.active{background:var(--surface-1);color:var(--text-1);border-radius:var(--r-sm);
+  box-shadow:inset -3px 0 0 var(--art-margin),0 1px 0 var(--border);transform:translateX(-4px)}
+@media (max-width:999px){
+  :root[data-palette="classic"] .tab.active{transform:none;box-shadow:inset 0 3px 0 var(--art-margin)}
+}
+/* الواجهة: العبارة المتغيرة بخط الرقعة (لمسة اليد)، والعناوين والتاريخ بخط Amiri */
+:root[data-palette="classic"] .greet-title{font-family:var(--font-hand);font-weight:400;color:var(--text-1)}
+:root[data-palette="classic"] body{background-image:none}
 }

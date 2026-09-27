@@ -2,5 +2,20 @@
    ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
 /* نمط التنقل الجانبي — data-nav="side" (كلاسيكي ونَسَق). البنية الحالية في index.html وتنتقل إلى هنا تدريجيًا. */
 @layer layouts{
-/* (فارغ بعد) */
+/* طيّ القائمة الجانبية إلى شريط أيقونات بعرض 72px — data-rail="collapsed" على <html>.
+   يحفظه اللوح (daily-board-rail)، وإن لم يختر المستخدم يُطوى تلقائيًا تحت 1200px. النص يبقى للقارئ الآلي (title/aria). */
+.rail-toggle{display:none}
+@media (min-width:1000px){
+  :root[data-nav="side"] .rail-toggle{display:inline-flex}
+  :root[data-nav="side"] .app{transition:grid-template-columns calc(var(--dur-3) * var(--motion-scale,1)) var(--ease-std)}
+  :root[data-nav="side"][data-rail="collapsed"] .app{grid-template-columns:72px minmax(0,1fr)}
+  :root[data-nav="side"][data-rail="collapsed"] .sidenav{padding-inline:var(--sp-2);align-items:center}
+  :root[data-nav="side"][data-rail="collapsed"] :is(.sidenav-brand-text,.tab > span,.side-today,.tabbar-sync > :not(.dot)){display:none}
+  :root[data-nav="side"][data-rail="collapsed"] .sidenav-brand{padding-inline:0;justify-content:center}
+  :root[data-nav="side"][data-rail="collapsed"] .tabbar{align-self:stretch}
+  :root[data-nav="side"][data-rail="collapsed"] .tab{justify-content:center;padding:var(--sp-3) 0}
+  :root[data-nav="side"][data-rail="collapsed"] :is(.sidenav-foot,.sidenav-actions){flex-direction:column;align-items:center}
+  :root[data-nav="side"][data-rail="collapsed"] .tabbar-sync{justify-content:center;padding:var(--sp-2)}
+  :root[data-nav="side"][data-rail="collapsed"] .rail-toggle svg{transform:scaleX(-1)}
+}
 }

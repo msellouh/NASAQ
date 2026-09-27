@@ -1734,23 +1734,23 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </a>
 
   <nav class="tabbar" aria-label="الأقسام">
-    <button class="tab active" id="tabBoardBtn" type="button">
+    <button class="tab active" id="tabBoardBtn" type="button" title="اليوم">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>
       <span>اليوم</span>
     </button>
-    <button class="tab" id="tabTasksBtn" type="button">
+    <button class="tab" id="tabTasksBtn" type="button" title="المهام">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8 12 3 3 5-6"/></svg>
       <span>المهام</span>
     </button>
-    <button class="tab" id="tabFlowBtn" type="button">
+    <button class="tab" id="tabFlowBtn" type="button" title="العادات">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c0-9 5-15 15-16-1 10-7 15-16 15"/><path d="M5 21c3-6 7-9 11-11"/></svg>
       <span>العادات</span>
     </button>
-    <button class="tab" id="tabProjectsBtn" type="button">
+    <button class="tab" id="tabProjectsBtn" type="button" title="المشاريع">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z"/></svg>
       <span>المشاريع</span>
     </button>
-    <button class="tab" id="tabExpensesBtn" type="button">
+    <button class="tab" id="tabExpensesBtn" type="button" title="المصروفات">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M3 10h18"/><circle cx="16.5" cy="15" r="1.2"/></svg>
       <span>المصروفات</span>
     </button>
@@ -1771,6 +1771,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <button id="notifBtn" class="icon-btn notif-btn" type="button" aria-label="الإشعارات" aria-haspopup="dialog" aria-expanded="false" title="الإشعارات"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 7 2 7H4s2-2 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="notif-badge" id="notifBadge" hidden>0</span></button>
       <button id="paletteBtn" class="icon-btn" type="button" aria-label="بحث وأوامر سريعة (Ctrl+K)" title="بحث وأوامر سريعة — Ctrl+K"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></button>
       <button id="themeQuickBtn" class="icon-btn" type="button" aria-label="تبديل الوضع الداكن" title="الوضع الداكن"></button>
+      <button id="railToggle" class="icon-btn rail-toggle" type="button" aria-label="طيّ القائمة" title="طيّ القائمة" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"/></svg></button>
       <button id="settingsBtn" class="icon-btn" type="button" aria-label="الإعدادات" title="الإعدادات">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
       </button>
@@ -1781,12 +1782,14 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <div class="content">
 <!-- بطاقة الترحيب: التحية والشعار اللفظي والتاريخ، وصورتك إن وُجدت -->
 <section class="greet-card" id="heroBanner">
+  <!-- «صفحة الرزنامة» (كلاسيكي): تُملأ من renderDates -->
+  <div class="cal-sheet" id="calSheet" aria-hidden="true"><span class="cs-month" id="csMonth"></span><b class="cs-day" id="csDay"></b><span class="cs-dow" id="csDow"></span><span class="cs-hijri" id="csHijri"></span></div>
   <div class="greet-text">
     <h1 class="greet-title" id="heroGreet">صباح الخير</h1>
     <p class="greet-tagline">لكل شيء مكان، ولكل يوم نَسَق.</p>
     <div class="greet-date"><bdi id="weekday">—</bdi>، <bdi id="date">—</bdi><span class="greet-sep" id="hijriSep" hidden> | </span><bdi class="greet-hijri" id="hijriDate" hidden></bdi></div>
     <!-- لمحة اليوم: تظهر في واجهة «360» الكاملة فقط -->
-    <div class="hero-glance"><div class="ring-clock" id="heroRing" role="img"></div><div class="hero-meta" id="heroMeta"></div></div>
+    <div class="hero-glance"><div class="ring-clock" id="heroRing" role="img"></div><div class="brief-ring" id="briefRing" role="img"><b id="briefPct">0%</b></div><div class="hero-meta" id="heroMeta"></div></div>
     <button class="plan-day" id="planDayBtn" type="button">☀️ خطّط يومك</button>
   </div>
   <div class="greet-media">
@@ -2249,6 +2252,13 @@ function renderDates(){
   if(hj){ h.textContent = hj.replace(/\s*هـ$/, '') + ' هـ'; h.hidden = false; }
   else h.hidden = true;
   $('hijriSep').hidden = h.hidden;
+  /* ورقة الرزنامة (واجهة «كلاسيكي»): الشهر، ورقم اليوم كبيرًا، واليوم والتاريخ الهجري */
+  if($('calSheet')){
+    $('csMonth').textContent = fmtDate(d, {month:'long'});
+    $('csDay').textContent = fmtDate(d, {day:'numeric'});
+    $('csDow').textContent = fmtDate(d, {weekday:'long'});
+    $('csHijri').textContent = hj ? hj.replace(/\s*هـ$/, '') + ' هـ' : '';
+  }
 }
 renderDates();
 
@@ -2312,6 +2322,25 @@ document.querySelectorAll('#setPalette button').forEach(b=>{
     applyPalette(palette);
   };
 });
+
+/* ---------- طيّ القائمة الجانبية ----------
+   اختيار المستخدم محفوظ؛ وإن لم يختر فالقائمة تُطوى تلقائيًا تحت 1200px. */
+const RAIL_KEY = 'daily-board-rail';
+const railMQ = matchMedia('(max-width:1199px)');
+function applyRail(){
+  let pref = null; try{ pref = localStorage.getItem(RAIL_KEY); }catch(e){}
+  const collapsed = pref ? pref === 'collapsed' : railMQ.matches;
+  document.documentElement.dataset.rail = collapsed ? 'collapsed' : 'open';
+  const b = $('railToggle');
+  if(b){ b.setAttribute('aria-pressed', String(collapsed)); const l = collapsed ? 'أظهر القائمة' : 'طيّ القائمة'; b.title = l; b.setAttribute('aria-label', l); }
+}
+$('railToggle').onclick = ()=>{
+  const collapsed = document.documentElement.dataset.rail !== 'collapsed';
+  try{ localStorage.setItem(RAIL_KEY, collapsed ? 'collapsed' : 'open'); }catch(e){}
+  applyRail();
+};
+railMQ.addEventListener('change', applyRail);
+applyRail();
 
 /* ---------- tabs ---------- */
 const TABKEY = 'daily-board-tab';
@@ -3117,7 +3146,7 @@ function ringNextPrayer(m){
 }
 /* الحلقة الكبيرة: طابع «مَدار» وشاشة عريضة — مع المشهد ومع صورك */
 function ringBigWanted(){
-  return document.documentElement.dataset.hero === 'immersive' && document.documentElement.dataset.orbit === 'on' && matchMedia('(min-width:1200px)').matches;
+  return document.documentElement.dataset.hero === 'immersive' && document.documentElement.dataset.orbit === 'on' && matchMedia('(min-width:1200px)').matches && !!$('heroBanner') && $('heroBanner').classList.contains('hero-full');
 }
 /* قناع قوس بنهايات دائرية على شبكة 100×100 — الزوايا باتجاه عقارب الساعة من الأعلى */
 function ringArcMask(a0, a1, w){
@@ -3306,9 +3335,13 @@ function ringParts(el){
 function renderRingClock(){
   const on = document.documentElement.dataset.orbit === 'on';
   const fav = document.querySelector('link[rel="icon"]');
-  if(!on){ if(fav && fav.href !== FAV_STATIC) fav.href = FAV_STATIC; return; }
   const done = tasks.filter(t=>t.done).length, total = tasks.length;
   const pct = total ? Math.round(done / total * 100) : 0;
+  /* حلقة «موجز اليوم»: Teal مع نقطة زعفران عند نهاية التقدّم */
+  const br = $('briefRing');
+  if(br){ br.style.setProperty('--day-pct', pct); $('briefPct').textContent = pct + '%';
+    br.setAttribute('aria-label', total ? 'أنجزت ' + pct + '% من مهام اليوم (' + done + ' من ' + total + ')' : 'لا مهام بعد'); }
+  if(!on){ if(fav && fav.href !== FAV_STATIC) fav.href = FAV_STATIC; return; }
   const m = nowMin(), a = ringAngle(m), q = inQuietHours();
   /* الكبيرة في منتصف المشهد أو المتوسطة بجانب النص: ننقل العنصر نفسه */
   const hb = $('heroBanner'), hr0 = $('heroRing'), big = !!(hb && hr0) && ringBigWanted();
@@ -5929,6 +5962,29 @@ $('heroAddBtn').onclick = openAddPhotoModal;
 $('heroTagBtn').onclick = openPhotoTagsModal;
 
 /* ---------- واجهة «360»: حركة التمرير، ومؤشر «تابع يومك»، وظهور الأقسام تباعًا ---------- */
+/* الواجهة الغامرة: 100svh عند أول فتح في اليوم فقط (60svh على الجوال)، وبعد أول تمرير أو ضغطة
+   تنكمش إلى 320px بانتقال ناعم وتبقى كذلك بقية اليوم — الحالة محفوظة بتاريخ اليوم */
+const HERO_FULL_KEY = 'daily-board-hero-full';
+function heroFullInit(){
+  const hb = $('heroBanner'); if(!hb) return;
+  let seen = ''; try{ seen = localStorage.getItem(HERO_FULL_KEY) || ''; }catch(e){}
+  const full = document.documentElement.dataset.hero === 'immersive' && seen !== iso(new Date());
+  hb.classList.toggle('hero-full', full);
+  try{ renderRingClock(); }catch(e){}   /* الحلقة الكبيرة في منتصف المشهد حين تملأ الواجهة الشاشة فقط */
+  if(!full) return;
+  const shrink = ev=>{
+    if(!hb.classList.contains('hero-full')) return;
+    if(ev && ev.type === 'pointerdown' && ev.target.closest('.greet-card button,.greet-card a')) return;   /* الضغط على زر الواجهة لا يطويها */
+    removeEventListener('scroll', shrink); removeEventListener('pointerdown', shrink, true);
+    try{ localStorage.setItem(HERO_FULL_KEY, iso(new Date())); }catch(e){}
+    const go = ()=>{ hb.classList.remove('hero-full'); try{ renderRingClock(); }catch(e){} };
+    if(document.startViewTransition && !matchMedia('(prefers-reduced-motion:reduce)').matches) document.startViewTransition(go); else go();
+  };
+  addEventListener('scroll', shrink, {passive:true, once:false});
+  addEventListener('pointerdown', shrink, true);
+}
+document.documentElement.addEventListener('nasaq-theme', heroFullInit);
+setTimeout(heroFullInit, 0);
 function heroMode(){ const r = document.documentElement.dataset; return r.hero === 'immersive' && r.tab === 'board'; }
 let heroTick = false;
 function heroScroll(){
