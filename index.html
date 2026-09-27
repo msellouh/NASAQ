@@ -11,6 +11,7 @@
 <!-- تثبيت اللوح كتطبيق (الهاتف والحاسوب) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#F7F6F2">
+<script src="nasaq-core.js?v=20260927e"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -19,250 +20,76 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=Cairo:wght@500;700;800&family=Alexandria:wght@600;700;800;900&family=Readex+Pro:wght@300;400;500;600&family=Amiri+Quran&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=Alexandria:wght@600;700;800;900&family=Readex+Pro:wght@300;400;500;600&family=Amiri+Quran&display=swap" rel="stylesheet">
 <style>
-:root{
-  --ink:#14312A; --ink-2:#2A544A; --paper:#FBFAF6; --board:#EDF0EA;
-  --rule:#D3DBD2; --done:#2F7A5B; --hold:#C08A0C; --urgent:#A8402F;
-  --muted:#6D7C74; --focus:#1F6F8B; --r:10px;
-  --surface:#ffffff; --stripe:#F5F7F3;
-  --hold-bg:#FDF6E3; --hold-ink:#8A6300;
-  --focus-bg:#EAF3F6; --focus-ink:#14556B;
-  --imp-b-bg:#E4EAE2;
-  --shadow:0 14px 34px rgba(20,49,42,.16);
-  --overlay:rgba(20,49,42,.38);
-  --pattern:rgba(20,49,42,.055);
-  --font-head:Amiri,"Traditional Arabic",serif;
-  color-scheme:light;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --ink:#E9ECE4; --ink-2:#B7C4B3; --paper:#1B1E19; --board:#14160F;
-    --rule:#343B2C; --done:#57B389; --hold:#E7B24C; --urgent:#E4816B;
-    --muted:#8E9A88; --focus:#6FC0E0;
-    --surface:#20241B; --stripe:#1F231A;
-    --hold-bg:#33301A; --hold-ink:#E7B24C;
-    --focus-bg:#182A30; --focus-ink:#8FD3EC;
-    --imp-b-bg:#262C1F;
-    --shadow:0 14px 34px rgba(0,0,0,.55);
-    --overlay:rgba(0,0,0,.6);
-    --pattern:rgba(255,255,255,.045);
-    color-scheme:dark;
-  }
-  :root:not([data-theme="light"])[data-palette="vibrant"]{
-    --ink:#F5F1FF; --ink-2:#C9C3E8; --paper:#201A38; --board:#150F28;
-    --rule:#3A3060; --done:#35D0B0; --hold:#FFC46B; --urgent:#FF8A75;
-    --muted:#9088B0; --focus:#8A7CFF;
-    --surface:#2A2348; --stripe:#251E42;
-    --hold-bg:#3A2E10; --hold-ink:#FFC46B;
-    --focus-bg:#2A2358; --focus-ink:#B3A8FF;
-    --imp-b-bg:#3A2438;
-    --shadow:0 14px 34px rgba(0,0,0,.6);
-    --overlay:rgba(0,0,0,.65);
-    --pattern:rgba(255,255,255,.05);
-  }
-  :root:not([data-theme="light"])[data-palette="nasaq"]{
-    --ink:#E8EFEE; --ink-2:#BCCDCB; --paper:#112426; --board:#0C1A1B;
-    --rule:#22393B; --done:#8FC1A5; --hold:#E0B865; --urgent:#E6A08B;
-    --muted:#8EA5A3; --focus:#7CC4BC;
-    --surface:#152C2E; --stripe:#132829;
-    --hold-bg:#2E2814; --hold-ink:#E0B865;
-    --focus-bg:#173B3B; --focus-ink:#A9DCD6;
-    --imp-b-bg:#1A3334;
-    --brand:#7CC4BC; --accent:#E0B865;
-    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.4);
-    --overlay:rgba(0,0,0,.6);
-    --pattern:rgba(255,255,255,.03);
-  }
-}
-:root[data-theme="dark"]{
-  --ink:#E9ECE4; --ink-2:#B7C4B3; --paper:#1B1E19; --board:#14160F;
-  --rule:#343B2C; --done:#57B389; --hold:#E7B24C; --urgent:#E4816B;
-  --muted:#8E9A88; --focus:#6FC0E0;
-  --surface:#20241B; --stripe:#1F231A;
-  --hold-bg:#33301A; --hold-ink:#E7B24C;
-  --focus-bg:#182A30; --focus-ink:#8FD3EC;
-  --imp-b-bg:#262C1F;
-  --shadow:0 14px 34px rgba(0,0,0,.55);
-  --overlay:rgba(0,0,0,.6);
-  --pattern:rgba(255,255,255,.045);
-  color-scheme:dark;
-}
-:root[data-theme="light"]{ color-scheme:light; }
-:root[data-palette="vibrant"]{
-  --ink:#2B2E6B; --ink-2:#4A4E8A; --paper:#FFFDF9; --board:#FFF1E6;
-  --rule:#F0DCC9; --done:#17A398; --hold:#F5A623; --urgent:#FF6B5C;
-  --muted:#8A7F9B; --focus:#5B5FEF; --r:16px;
-  --surface:#ffffff; --stripe:#FFF3EA;
-  --hold-bg:#FDECC8; --hold-ink:#9A6B00;
-  --focus-bg:#ECEBFF; --focus-ink:#4A3FBD;
-  --imp-b-bg:#FFE1D9;
-  --shadow:0 16px 36px rgba(43,46,107,.18);
-  --overlay:rgba(43,46,107,.35);
-  --pattern:rgba(43,46,107,.05);
-  --font-head:Cairo,"IBM Plex Sans Arabic",sans-serif;
-}
-:root[data-theme="dark"][data-palette="vibrant"]{
-  --ink:#F5F1FF; --ink-2:#C9C3E8; --paper:#201A38; --board:#150F28;
-  --rule:#3A3060; --done:#35D0B0; --hold:#FFC46B; --urgent:#FF8A75;
-  --muted:#9088B0; --focus:#8A7CFF; --r:16px;
-  --surface:#2A2348; --stripe:#251E42;
-  --hold-bg:#3A2E10; --hold-ink:#FFC46B;
-  --focus-bg:#2A2358; --focus-ink:#B3A8FF;
-  --imp-b-bg:#3A2438;
-  --shadow:0 16px 36px rgba(0,0,0,.6);
-  --overlay:rgba(0,0,0,.65);
-  --pattern:rgba(255,255,255,.05);
-  --font-head:Cairo,"IBM Plex Sans Arabic",sans-serif;
-}
+@layer tokens, base, layouts, components, theme, utilities;
+@layer base{
 /* ---------- طابع «نَسَق» — من مواصفة الهوية: أبيض دافئ، أخضر مزرق داكن، حدود رفيعة،
    ظلال شبه معدومة، زوايا ناعمة، وكثافة بصرية منخفضة. تباين كل الألوان ≥ 4.5 (WCAG AA). */
 /* القيم مأخوذة من دليل الهوية: Nasaq Teal ‎#174C4F، Saffron ‎#D6A84F، Teal Light ‎#DCEBE9،
    Ivory ‎#F7F6F2 (خلفية)، White (سطح)، Ink ‎#202A2A، Slate، Mist ‎#E4E4E4 (حدود).
    الألوان الدلالية (Sage/Amber/Terracotta) باهتة كنص (تباين 2–3)، فتُستخدم كما هي تعبئةً،
    وللنص درجاتها الأغمق المشتقة (≥ 4.5 على العاجي). */
-:root[data-palette="nasaq"]{
-  --ink:#202A2A; --ink-2:#3E4A4A; --paper:#FFFFFF; --board:#F7F6F2;
-  --rule:#E4E4E4; --done:#547563; --hold:#88682E; --urgent:#9F5F4D;
-  --muted:#627070; --focus:#174C4F; --r:12px;
-  --surface:#FFFFFF; --stripe:#FAF9F6;
-  --hold-bg:#F6EEDC; --hold-ink:#7A5B22;
-  --focus-bg:#DCEBE9; --focus-ink:#174C4F;
-  --imp-b-bg:#E8F0EE;
-  --brand:#174C4F; --accent:#D6A84F;
-  --shadow:0 1px 2px rgba(23,76,79,.05),0 8px 24px rgba(23,76,79,.06);
-  --overlay:rgba(23,76,79,.3);
-  --pattern:rgba(23,76,79,.035);
-  --font-head:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
-}
-:root[data-theme="dark"][data-palette="nasaq"]{
-  --ink:#E8EFEE; --ink-2:#BCCDCB; --paper:#112426; --board:#0C1A1B;
-  --rule:#22393B; --done:#8FC1A5; --hold:#E0B865; --urgent:#E6A08B;
-  --muted:#8EA5A3; --focus:#7CC4BC; --r:12px;
-  --surface:#152C2E; --stripe:#132829;
-  --hold-bg:#2E2814; --hold-ink:#E0B865;
-  --focus-bg:#173B3B; --focus-ink:#A9DCD6;
-  --imp-b-bg:#1A3334;
-  --brand:#7CC4BC; --accent:#E0B865;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.4);
-  --overlay:rgba(0,0,0,.6);
-  --pattern:rgba(255,255,255,.03);
-  --font-head:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
-}
+
+
 /* الخط نفسه للعناوين والنص في «نَسَق»، فيُعوَّض الفرق بالوزن لا بعائلة خط أخرى */
-:root[data-palette^="nasaq"] h1,:root[data-palette^="nasaq"] h2,:root[data-palette^="nasaq"] h3{font-weight:600;letter-spacing:0}
-:root[data-palette^="nasaq"] .sheet{box-shadow:var(--shadow)}
+
+
 
 /* ---------- عناصر التحكم في «نَسَق» ----------
    حقول بتعبئة ناعمة بدل الإطار، وتوهّج عند التركيز، وأزرار أساسية بلون الهوية،
    وثانوية بتعبئة خفيفة، وتبويبات كبسولية، ومربع إنجاز دائري.
    محصورة في هذا الطابع — الكلاسيكي يحتفظ بطابع الدفتر، والحيوي كما هو. */
-:root[data-palette="nasaq"]{
-  --field-bg:#F7F6F2; --field-line:#899393; --field-hover:#717D7D;
-  --ring:rgba(23,76,79,.16); --on-accent:#FFFFFF; --btn-soft:#DCEBE9; --btn-soft-hover:#CDE2DF;
-}
-:root[data-theme="dark"][data-palette="nasaq"]{
-  --field-bg:#0E1F20; --field-line:#557270; --field-hover:#6A8A87;
-  --ring:rgba(124,196,188,.25); --on-accent:#0C1A1B; --btn-soft:#173B3B; --btn-soft-hover:#1D4646;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"])[data-palette="nasaq"]{
-    --field-bg:#0E1F20; --field-line:#557270; --field-hover:#6A8A87;
-    --ring:rgba(124,196,188,.25); --on-accent:#0C1A1B; --btn-soft:#173B3B; --btn-soft-hover:#1D4646;
-  }
-}
+
+
+
 /* العنوان الرئيسي بلون الهوية، كما في التصميم */
-:root[data-palette^="nasaq"] h1{color:var(--brand)}
+
 
 /* الحقول */
-:root[data-palette^="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
-  li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
-  .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
-  .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
-  .settings-body input,.auth-form input,.mini-add){
-  background-color:var(--field-bg); border:1px solid var(--field-line); border-radius:10px;
-  transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
-}
-:root[data-palette^="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
-  li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
-  .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
-  .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
-  .settings-body input,.auth-form input,.mini-add):hover{border-color:var(--field-hover)}
-:root[data-palette^="nasaq"] :is(.add input,.add select,.add-details input,.add-details textarea,
-  li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
-  .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
-  .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
-  .settings-body input,.auth-form input,.mini-add):focus{
-  outline:none; background-color:var(--surface); border-color:var(--focus); box-shadow:0 0 0 3px var(--ring);
-}
-:root[data-palette^="nasaq"] :is(input,textarea)::placeholder{color:var(--muted);opacity:.8}
+
+
+
+
 /* القوائم المنسدلة: سهم نحيف بدل سهم النظام (يسار الحقل لأن الاتجاه RTL) */
-:root[data-palette^="nasaq"] :is(.add select,.pull select,.exp-add select){
-  appearance:none; -webkit-appearance:none; padding-left:32px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237A8886' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:left 12px center;
-}
+
 
 /* الأولويات وختام اليوم: صفوف ناعمة بدل خطوط الدفتر */
-:root[data-palette^="nasaq"] .field{
-  /* حقل ظاهر وهو فارغ: تعبئة + حدّ بتباين ≥ 3:1 (WCAG 1.4.11) — كان شفافًا حتى المرور */
-  border:1px solid var(--field-line); border-radius:10px; padding:10px 12px; background:var(--field-bg);
-  transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
-}
-:root[data-palette^="nasaq"] .field:hover{border-color:var(--field-hover)}
-:root[data-palette^="nasaq"] .field:focus{outline:none;background:var(--surface);border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
+
+
+
 
 /* الأزرار الأساسية: لون الهوية بدل الأسود */
-:root[data-palette^="nasaq"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
-  .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button){
-  background:var(--focus); color:var(--on-accent); border:1px solid transparent; border-radius:10px;
-  font-weight:600; box-shadow:0 1px 2px rgba(18,48,47,.12);
-  transition:background-color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
-}
-:root[data-palette^="nasaq"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
-  .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button):hover{
-  background:color-mix(in srgb, var(--focus) 88%, var(--ink)); box-shadow:0 4px 12px var(--ring);
-}
-:root[data-palette^="nasaq"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
-  .pomo-controls button.go,.exp-add button,.auth-primary):active{transform:scale(.97)}
+
+
+
 
 /* الأزرار الثانوية: تعبئة خفيفة بلا إطار */
-:root[data-palette^="nasaq"] :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
-  .modal .row button:not(.primary),.pomo-controls button:not(.go),.cal-head button,.energy button,
-  .water button,.set-actions button:not(.danger)){
-  background:var(--btn-soft); color:var(--ink); border:1px solid transparent; border-radius:10px;
-  transition:background-color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out);
-}
-:root[data-palette^="nasaq"] :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
-  .modal .row button:not(.primary),.pomo-controls button:not(.go),.cal-head button,.energy button,
-  .water button,.set-actions button:not(.danger)):hover{background:var(--btn-soft-hover)}
-:root[data-palette^="nasaq"] .energy button.active{background:var(--focus-bg);border-color:var(--focus);color:var(--focus-ink)}
+
+
+
 /* زرّا "⋯" للتفاصيل معرّفان بـ id فيغلبان القاعدة العامة — نعطيهما الهيئة الثانوية صراحةً */
-:root[data-palette^="nasaq"] :is(#addDetailsBtn,#expAddDetailsBtn){
-  background:var(--btn-soft); color:var(--ink-2); border:1px solid transparent; border-radius:10px; box-shadow:none;
-}
-:root[data-palette^="nasaq"] :is(#addDetailsBtn,#expAddDetailsBtn):hover{background:var(--btn-soft-hover);box-shadow:none}
-:root[data-palette^="nasaq"] :is(#addDetailsBtn,#expAddDetailsBtn)[aria-expanded="true"]{background:var(--focus-bg);color:var(--focus-ink);border-color:var(--focus)}
+
+
+
 
 /* التنقّل الجانبي: العنصر النشط بلون الهوية كما في التصميم */
-:root[data-palette^="nasaq"] .tab.active{background:var(--focus);color:var(--on-accent)}
-:root[data-palette^="nasaq"] .tab:hover:not(.active){background:var(--field-bg)}
-:root[data-palette^="nasaq"] .task-filters button.active{background:var(--focus);border-color:var(--focus);color:var(--on-accent)}
+
+
+
 /* زر إغلاق اليوم بلون الهوية الثابت في الوضعين، كي يبقى الشعار الفاتح عليه واضحًا */
-:root[data-palette="nasaq"] .close-day{background:#174C4F;color:#fff}
-@media (max-width:999px){
-  :root[data-palette^="nasaq"] .tab.active{background:transparent;color:var(--focus)}
-}
+
+
 
 /* حالة المهمة ومفتاح الطابع */
-:root[data-palette^="nasaq"] .state{border-color:transparent;background:var(--field-bg)}
-:root[data-palette^="nasaq"] .pswitch{background:var(--field-bg);border-color:transparent}
-:root[data-palette^="nasaq"] .pswitch button.active{background:var(--focus);color:var(--on-accent)}
+
+
+
 
 /* مربع الإنجاز: دائري كتطبيقات المهام الحديثة */
-:root[data-palette^="nasaq"] .check{border-radius:50%;border-color:var(--field-hover);transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out)}
-:root[data-palette^="nasaq"] .check:hover{border-color:var(--done);background:color-mix(in srgb, var(--done) 10%, var(--surface))}
-:root[data-palette^="nasaq"] .check[aria-checked="true"]::after{inset:3px 5.5px 5px 5.5px}
+
+
+
 *{box-sizing:border-box}
 input,textarea,select{min-width:0}
 html,body{margin:0;padding:0}
@@ -306,7 +133,7 @@ h1{font-family:var(--font-head);font-size:40px;font-weight:700;margin:0;letter-s
 :root[data-theme="dark"]{--bm-1:#F7F6F2;--bm-2:#9FC6C0}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bm-1:#F7F6F2;--bm-2:#9FC6C0}}
 /* أولويات «نَسَق»: دوائر بلون الهوية كما في التصميم */
-:root[data-palette^="nasaq"] .rank{border-radius:50%;width:34px;height:34px;align-self:center;font-size:17px;background:var(--focus);color:var(--on-accent)}
+
 .field{border:0;border-bottom:1px solid var(--rule);background:transparent;font:inherit;color:inherit;padding:9px 4px;width:100%}
 .field::placeholder{color:#A6B2AA}
 .field:focus{outline:none;border-bottom-color:var(--focus);box-shadow:0 1px 0 var(--focus)}
@@ -499,7 +326,7 @@ body{padding:0}
   background:linear-gradient(200deg,color-mix(in srgb,var(--accent,var(--brand,#174C4F)) 85%,transparent),color-mix(in srgb,var(--brand,var(--ink)) 45%,transparent))}
 :root[data-theme="dark"] .greet-card.has-photo .greet-media::after{opacity:.42}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .greet-card.has-photo .greet-media::after{opacity:.42}}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo .greet-media::after{opacity:.3}
+
 /* مشهد نَسَق: يُرسم بألوان الطابع، ويحل محل الصورة حين لا توجد صورة تناسب السياق */
 .hero-scene{position:absolute;inset:0;z-index:0}
 .hero-scene[hidden]{display:none}
@@ -673,7 +500,7 @@ ol.tasks li.task.has-proj{box-shadow:inset -3px 0 0 var(--pc)}
 li.task.has-proj .proj::before,.dot-pc::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pc);margin-inline-end:6px;vertical-align:middle}
 /* تخطيط الصباح */
 .plan-day{align-self:flex-start;margin-top:12px;font:inherit;font-size:13.5px;font-weight:600;padding:8px 16px;border-radius:999px;border:0;cursor:pointer;background:var(--ink);color:var(--paper);min-height:38px}
-:root[data-palette^="nasaq"] .plan-day{background:var(--focus);color:var(--on-accent)}
+
 .plan-day.done{background:transparent;color:var(--ink-2);border:1px solid var(--rule)}
 .plan-modal{max-width:560px}
 .plan-steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
@@ -696,7 +523,7 @@ li.task.has-proj .proj::before,.dot-pc::before{content:"";display:inline-block;w
 .plan-nav{display:flex;justify-content:space-between;gap:8px;margin-top:14px}
 .plan-nav button{font:inherit;font-size:14px;padding:9px 18px;border-radius:10px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);cursor:pointer}
 .plan-nav button.primary{background:var(--ink);border-color:var(--ink);color:var(--paper);margin-inline-start:auto}
-:root[data-palette^="nasaq"] .plan-nav button.primary{background:var(--focus);border-color:var(--focus);color:var(--on-accent)}
+
 /* تنبيه تجاوز ساعات العمل */
 .cap-warn{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:-6px 0 14px;padding:8px 12px;border-radius:10px;background:var(--hold-bg);color:var(--hold-ink);font-size:13px}
 .cap-warn[hidden]{display:none}
@@ -858,7 +685,7 @@ body.focus-open{overflow:hidden}
 .fm-controls .fm-go:hover{background:var(--cta-hover,var(--ink));color:var(--on-cta-hover,var(--paper));border-color:transparent}
 .fm-controls kbd{font:inherit;font-size:11px;color:var(--muted);border:1px solid var(--rule);border-radius:4px;padding:0 4px;margin-inline-start:4px}
 .fm-note{margin:10px 0 0;max-width:460px;font-size:13px;color:var(--muted);line-height:1.7}
-:root[data-palette="nasaq360"] .fm-controls button{border-radius:4px}
+
 @media (prefers-reduced-motion:reduce){ .fm-bar i,.ob-bar i{transition:none} ol.tasks li.task.flash{animation:none;outline:2px solid var(--hold)} }
 
 /* ---------- لوحة الأوامر ---------- */
@@ -1345,23 +1172,20 @@ li.exp-row:nth-child(even){background:var(--stripe)}
    بالطيف العميق. تباين كل نص ≥ 4.5. الأزرار الأساسية سماوية بنص ليلي (7.4:1) لا أبيض (2.4:1). */
 
 /* الخطوط: Alexandria للعناوين والأرقام الكبيرة، وReadex Pro للنص. لا تباعد بين الحروف العربية */
-:root[data-palette="nasaq360"] body{font-family:var(--font-body);background-image:none}
+
 /* نقشة المدار: دوائر متحدة المركز من الزاوية، كموجات الأثير وصفر «360».
    طبقة ثابتة مستقلة بدل background-attachment:fixed كي لا يُعاد رسمها مع كل تمرير */
-:root[data-palette="nasaq360"] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:repeating-radial-gradient(circle at 0 0,transparent 0 56px,var(--pattern) 56px 57px);transform:translateZ(0)}
-:root[data-palette="nasaq360"] :is(h1,h2,h3){font-weight:700}
-:root[data-palette="nasaq360"] .greet-title{font-weight:800}
-:root[data-palette="nasaq360"] .greet-tagline{font-weight:400}
-:root[data-palette="nasaq360"] :is(.pomo-time,.count,.sum-item b,.budget-overall .big,.exp-amt){font-weight:800;font-variant-numeric:tabular-nums}
+
+
+
+
+
 
 /* الشعار: رمز نَسَق داخل حلقة المدار، و«360» بتدرّج الهوية */
 .orbit{display:contents}
-:root[data-palette="nasaq360"] .orbit{display:inline-grid;place-items:center;position:relative;flex:none;border-radius:50%;width:56px;height:56px}
-:root[data-palette="nasaq360"] .orbit::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--orbit);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));
-          mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px))}
-:root[data-palette="nasaq360"] .orbit .brand-mark{width:34px;height:34px}
+
+
+
 /* ---------- الحلقة ساعة اليوم ----------
    ثابتة لا تدور: الفجوة أعلاها = ساعات الهدوء، والقوس = ساعات العمل. الامتلاء = إنجاز مهام اليوم،
    والمعين = الساعة الآن (رمادي في الهدوء). الحياة من لمعة تسري على الممتلئ كل 7 ثوانٍ ثم تسكن.
@@ -1369,45 +1193,31 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 @property --p{syntax:'<angle>';inherits:true;initial-value:330deg}
 @property --g{syntax:'<angle>';inherits:false;initial-value:-30deg}
 @keyframes orbitGlint{0%{--g:-30deg} 38%{--g:360deg} 100%{--g:360deg}}
-:root[data-palette="nasaq360"] :is(.orbit,.ring-clock){--ow:3.5px}
-:root[data-palette="nasaq360"] :is(.orbit,.ring-clock) :is(.o-fill,.o-glint),
-:root[data-palette="nasaq360"] .orbit:not(.clock)::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--ow)),#000 calc(100% - var(--ow) + .5px)),conic-gradient(from 15deg,#000 var(--p),transparent 0);
-  -webkit-mask-composite:source-in;
-          mask:radial-gradient(farthest-side,transparent calc(100% - var(--ow)),#000 calc(100% - var(--ow) + .5px)) intersect,conic-gradient(from 15deg,#000 var(--p),transparent 0)}
-:root[data-palette="nasaq360"] :is(.orbit,.ring-clock) .o-fill{background:var(--orbit);transition:--p .9s cubic-bezier(.2,.8,.2,1)}
-:root[data-palette="nasaq360"] :is(.orbit,.ring-clock) .o-glint,
-:root[data-palette="nasaq360"] .orbit:not(.clock)::after{mix-blend-mode:screen;
-  background:conic-gradient(from 15deg,transparent calc(var(--g) - 26deg),rgba(255,255,255,.85) var(--g),transparent calc(var(--g) + 4deg));
-  animation:orbitGlint 7s cubic-bezier(.45,0,.2,1) infinite}
-:root[data-palette="nasaq360"] :is(.orbit.clock,.ring-clock)::before{opacity:.22}
-:root[data-palette="nasaq360"] :is(.orbit,.ring-clock) .o-now{position:absolute;inset:0;pointer-events:none;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
-:root[data-palette="nasaq360"] :is(.orbit,.ring-clock) .o-now b{position:absolute;left:50%;top:calc(var(--ow) / 2);width:var(--dz,7px);height:var(--dz,7px);
-  transform:translate(-50%,-50%) rotate(45deg);background:#D6A84F;border-radius:1px;box-shadow:0 0 0 1.5px var(--dz-ring,var(--board)),0 0 8px rgba(214,168,79,.55)}
-:root[data-palette="nasaq360"] :is(.orbit,.ring-clock).quiet .o-now b{background:#9AA1BE;box-shadow:0 0 0 1.5px var(--dz-ring,var(--board))}
-:root[data-palette="nasaq360"] .ring-clock .o-tick{position:absolute;inset:0;pointer-events:none}
-:root[data-palette="nasaq360"] .ring-clock .o-tick i{position:absolute;left:50%;top:-3px;width:2px;height:calc(var(--ow) + 6px);margin-left:-1px;border-radius:2px;background:currentColor;opacity:.5}
-@media (prefers-reduced-motion:reduce){
-  :root[data-palette="nasaq360"] :is(.orbit,.ring-clock) :is(.o-fill,.o-now){transition:none}
-  :root[data-palette="nasaq360"] :is(.orbit,.ring-clock) .o-glint,:root[data-palette="nasaq360"] .orbit:not(.clock)::after{animation:none;display:none}
-}
+
+
+
+
+
+
+
+
+
+
+
 /* حلقة الواجهة الكبيرة: بجانب «لمحة اليوم»، في جهة النص لا فوق الصورة */
 .hero-glance{display:contents}
 .ring-clock{display:none}
-:root[data-palette="nasaq360"][data-tab="board"] .hero-glance{display:flex;align-items:center;gap:22px;margin-top:14px;flex-wrap:wrap}
-:root[data-palette="nasaq360"][data-tab="board"] .hero-glance .hero-meta{margin-top:0;flex:1;min-width:220px}
-:root[data-palette="nasaq360"][data-tab="board"] .ring-clock{display:block;position:relative;flex:none;width:118px;height:118px;border-radius:50%;--ow:6px;--dz:11px;--dz-ring:#080914}
-:root[data-palette="nasaq360"] .ring-clock::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--orbit);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--ow)),#000 calc(100% - var(--ow) + .5px));
-          mask:radial-gradient(farthest-side,transparent calc(100% - var(--ow)),#000 calc(100% - var(--ow) + .5px))}
+
+
+
+
 .ring-clock .o-core{position:absolute;inset:18%;display:grid;place-items:center;align-content:center;gap:2px;text-align:center}
 .ring-clock .o-core b{font:800 22px/1 Alexandria,sans-serif;direction:ltr}
 .ring-clock .o-core small{font-size:11.5px;opacity:.75}
 .ring-clock .o-tick em,.ring-clock .o-gap{display:none}
 /* الواجهة الكبيرة (عرض 1200px فأكثر): الحلقة كبيرة في منتصف الصورة مرفوعة نحو أعلاها، وخطها رفيع.
    تحت ذلك تعود متوسطة بجانب «لمحة اليوم» لأن المنتصف يضيق ويزاحم العنوان. */
-:root[data-palette="nasaq360"][data-tab="board"] .greet-card.ring-big #heroRing{position:absolute;left:50%;top:34%;z-index:2;
-  width:min(40vh,360px);height:min(40vh,360px);transform:translate(-50%,-50%);--ow:5px;--dz:13px;color:#EEF1F7}
+
 .greet-card.ring-big #heroRing .o-core{inset:26%;gap:6px}
 /* فوق صورة فاتحة: ظل خفيف يُبقي الأرقام وأسماء الصلوات مقروءة */
 .greet-card.ring-big #heroRing :is(.o-core,.o-tick em,.o-gap){text-shadow:0 1px 3px rgba(8,9,20,.7),0 0 12px rgba(8,9,20,.45)}
@@ -1438,7 +1248,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .greet-card.ring-big #heroRing .o-tick.now em{color:#FFE9A8;animation:prayerGlow 2.6s ease-in-out infinite}
 .greet-card.ring-big #heroRing .o-tick.now i{background:#D6A84F;box-shadow:0 0 10px rgba(214,168,79,.8)}
 @keyframes prayerGlow{0%,100%{text-shadow:0 1px 3px rgba(8,9,20,.7),0 0 8px rgba(214,168,79,.35)} 50%{text-shadow:0 1px 3px rgba(8,9,20,.7),0 0 16px rgba(255,233,168,.95),0 0 30px rgba(214,168,79,.55)}}
-:root[data-palette="nasaq360"] .greet-card.ring-big #heroRing.rest.prayer-now .o-now b{animation-duration:1.4s}
+
 @media (prefers-reduced-motion:reduce){ .greet-card.ring-big #heroRing .o-tick.now em{animation:none;text-shadow:0 0 12px rgba(255,233,168,.9)} }
 .greet-card.ring-big #heroRing .o-seed{display:block;position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;
   border:0;border-radius:50%;background:transparent;cursor:pointer;z-index:3;padding:0;-webkit-tap-highlight-color:transparent}
@@ -1456,302 +1266,210 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .greet-card.ring-big #heroRing .o-glint{opacity:0;transition:opacity .6s ease}
 .greet-card.ring-big #heroRing.settled .o-glint{opacity:1}
 /* المعين الساكن ينبض كنجم — فقط وهو مطويّ تمامًا */
-:root[data-palette="nasaq360"] .greet-card.ring-big #heroRing.rest .o-now b{background:#D6A84F;animation:seedPulse 3.2s ease-in-out infinite}
+
 @keyframes seedPulse{0%,100%{box-shadow:0 0 0 1.5px #080914,0 0 10px rgba(214,168,79,.45)} 50%{box-shadow:0 0 0 1.5px #080914,0 0 26px 6px rgba(214,168,79,.8)}}
 @media (prefers-reduced-motion:reduce){ .greet-card.ring-big #heroRing.rest .o-now b{animation:none} }
 /* نهايات دائرية لقوس حلقة الواجهة: القناع قوسٌ مرسوم بـ SVG (stroke-linecap:round) يُحسب في renderRingClock،
    والتدرّج بلا فجوة شفافة كي لا تنقطع النهاية الدائرية عند بداية القوس. الواجهة ليلية دائمًا فألوانه ألوان الليل. */
-:root[data-palette="nasaq360"] .ring-clock.caps{--ring-grad:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 340deg,#34F5B5 360deg)}
-:root[data-palette="nasaq360"] .ring-clock.caps::before{background:var(--ring-grad);opacity:.2;
-  -webkit-mask:var(--m-track) center/100% 100% no-repeat;mask:var(--m-track) center/100% 100% no-repeat}
-:root[data-palette="nasaq360"] .ring-clock.caps .o-fill{background:var(--ring-grad)}
-:root[data-palette="nasaq360"] .ring-clock.caps :is(.o-fill,.o-glint){-webkit-mask:var(--m-fill) center/100% 100% no-repeat;-webkit-mask-composite:source-over;
-  mask:var(--m-fill) center/100% 100% no-repeat}
-:root[data-palette="nasaq360"] .auth-brand .orbit{width:60px;height:60px}
-:root[data-palette="nasaq360"] .auth-brand .orbit .brand-mark{width:38px;height:38px}
-:root[data-palette="nasaq360"] :is(.brand-name,.auth-brand h2)::after{content:"360";display:inline-block;direction:ltr;
-  font-family:Alexandria,sans-serif;font-weight:900;font-size:.5em;margin-inline-start:.3em;vertical-align:.8em;
-  background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent}
-:root[data-palette="nasaq360"] .brand-latin::after{content:" 360"}
+
+
+
+
+
+
+
+
 
 /* الأزرار الأساسية: سماوي بنص ليلي، وعند المرور ينقلب (ورق في الداكن، ليل في الفاتح) */
-:root[data-palette="nasaq360"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
-  .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button){
-  background:var(--cta); color:var(--on-cta); box-shadow:none; font-family:var(--font-head); font-weight:600;
-  transition:background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out);
-}
-:root[data-palette="nasaq360"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
-  .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button):hover{
-  background:var(--cta-hover); color:var(--on-cta-hover); box-shadow:none;
-}
+
+
 /* الحالات النشطة بلون الفعل نفسه */
-:root[data-palette="nasaq360"] .tab.active,
-:root[data-palette="nasaq360"] .task-filters button.active,
-:root[data-palette="nasaq360"] .pswitch button.active{background:var(--cta);border-color:transparent;color:var(--on-cta)}
-:root[data-palette="nasaq360"] .rank{background:var(--cta);color:var(--on-cta);font-family:var(--font-head);font-weight:800}
-@media (max-width:999px){
-  :root[data-palette="nasaq360"] .tab.active{background:transparent;color:var(--focus)}
-}
+
+
+
 /* الحقول: سهم القائمة بلون «الضباب» */
-:root[data-palette="nasaq360"] :is(.add select,.pull select,.exp-add select){
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA1BE' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-}
+
 
 /* الدلالات: العاجل تعبئةً بأحمر «مباشر»، والإنجاز بنص يقرأ على النعناعي */
-:root[data-palette="nasaq360"] .imp.a{background:var(--live)}
-:root[data-palette="nasaq360"] .day-done.is-done{color:var(--on-done)}
+
+
 
 /* التدرّج: شرائط التقدّم تمتلئ بطيف الحلقة من اليمين */
-:root[data-palette="nasaq360"] :is(.progress .fill,.proj-bar i){background:var(--grad-line)}
+
 
 /* بطاقة الترحيب: هالة أثير ومدارات 360 بدل نقشة الشعار */
-:root[data-palette="nasaq360"] .greet-card::before{opacity:1;
-  background:
-    radial-gradient(ellipse 36% 95% at 7% 25%,var(--aura-1),transparent 70%),
-    radial-gradient(ellipse 30% 80% at 24% 115%,var(--aura-2),transparent 70%),
-    repeating-radial-gradient(circle at -60px 50%,transparent 0 26px,var(--orbit-line) 26px 27px);
-  -webkit-mask:linear-gradient(to right,#000,transparent 68%);
-          mask:linear-gradient(to right,#000,transparent 68%)}
+
 
 /* ختام اليوم: ليل ثابت في الوضعين، بوهج سماوي خلف الرمز */
-:root[data-palette="nasaq360"] .close-day{color:#EEF1F7;
-  background:radial-gradient(circle at 88% 50%,rgba(0,183,212,.26),transparent 55%),linear-gradient(135deg,#1D2040,#14162A);
-  box-shadow:inset 0 0 0 1px #2C3058,0 10px 26px rgba(20,22,42,.22);
-  --orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg)}
-:root[data-palette="nasaq360"] .close-day .orbit{width:68px;height:68px}
-:root[data-palette="nasaq360"] .close-day .close-mark{width:34px;height:38px}
-:root[data-palette="nasaq360"] .close-day .close-mark{--bm-1:#EEF1F7;--bm-2:#34F5B5;--bm-dot:#00B7D4}
+
+
+
+
 
 /* ==================== واجهة «360» الكاملة — صفحة «اليوم» في طابع «نَسَق 360» فقط ====================
    التحية وصورتك تملآن الشاشة كواجهة «الجزيرة 360»: العنوان الكبير والسطر والتاريخ ولمحة اليوم وزر الفعل
    على اليمين فوق ستارة ليلية، ثم تذوب الواجهة في خلفية الصفحة وتتوالى الأقسام بظهور هادئ عند التمرير. */
 .hero-meta,.hero-dots,.hero-cue{display:none}
-:root[data-palette="nasaq360"][data-tab="board"] .content{padding-top:0}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-card{
-  --hp:0;   /* تقدّم التمرير عبر الواجهة (0..1) — يضبطه الـJS */
-  /* بعرض الصفحة كاملًا: يتجاوز حدّ 1560px العام للمحتوى (.content > *) وحشوة الجانبين */
-  min-height:100vh;min-height:100svh;max-width:none;margin:0 -28px var(--gap);
-  /* النص في مجرى الصفحة (لا تموضع مطلق): إن طال عن الشاشة كبرت الواجهة ولم يُقصّ */
-  display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;
-  padding:96px clamp(24px,6vw,96px) clamp(130px,20vh,210px);
-  border:0;border-radius:0;box-shadow:none;background:#080914;color:#EEF1F7;overflow:hidden;isolation:isolate}
+
+
 /* بلا صورة: ليل المدار — هالات بنفسجية ونعناعية وسماوية، وحلقات الأثير */
-:root[data-palette="nasaq360"][data-tab="board"] .greet-card::before{opacity:1;z-index:0;-webkit-mask:none;mask:none;
-  background:
-    radial-gradient(ellipse 55% 70% at 20% 30%,rgba(106,67,184,.38),transparent 70%),
-    radial-gradient(ellipse 45% 60% at 42% 105%,rgba(14,158,116,.30),transparent 70%),
-    radial-gradient(ellipse 40% 50% at 88% 18%,rgba(0,183,212,.20),transparent 70%),
-    repeating-radial-gradient(circle at 14% 46%,transparent 0 46px,rgba(255,255,255,.05) 46px 47px)}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo::before{opacity:0}
+
+
 /* الستارة: داكنة من جهة النص (اليمين)، وتذوب في لون الصفحة من الأسفل */
-:root[data-palette="nasaq360"][data-tab="board"] .greet-card::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:
-    linear-gradient(to left,rgba(8,9,20,.88) 0%,rgba(8,9,20,.55) 34%,rgba(8,9,20,.08) 64%,transparent 78%),
-    linear-gradient(to top,var(--board) 0%,color-mix(in srgb,var(--board) 55%,transparent) 8%,transparent 24%),
-    linear-gradient(to bottom,rgba(8,9,20,.4),transparent 16%)}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-media{position:absolute;inset:0;width:auto;max-width:none;height:auto;padding:0;z-index:auto;display:block}
+
+
 /* الصورة: تملأ الواجهة من أعلاها (تحت الشريط الشفاف)، وموضوعها يميل إلى اليسار بعيدًا عن النص
    كواجهة «360»، مع تكبير سينمائي بطيء وانزياح خفيف مع التمرير، وتلاشٍ ناعم عند تبديل الصورة */
-:root[data-palette="nasaq360"][data-tab="board"] .greet-media img{z-index:0;border-radius:0;object-position:32% 28%;
-  translate:0 calc(var(--hp) * 70px);animation:hero-kenburns 22s ease-out both}
+
 @keyframes hero-kenburns{from{scale:1.12}to{scale:1.02}}
 /* أدوات الصورة: أسفل الجهة اليسرى فوق الستارة، بعيدًا عن الشريط العلوي والنص */
-:root[data-palette="nasaq360"][data-tab="board"] :is(.greet-media .hero-empty,.hero-tools){position:absolute;top:auto;bottom:clamp(96px,14vh,140px);
-  inset-inline-end:clamp(20px,4.5vw,64px);inset-inline-start:auto;z-index:4;opacity:calc(1 - var(--hp) * 2)}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-media .hero-empty{
-  border:1px solid rgba(255,255,255,.45);border-radius:4px;background:rgba(8,9,20,.35);color:#fff;padding:9px 16px;font-size:13px;backdrop-filter:blur(6px)}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-media .hero-empty:hover{background:#fff;color:#14162A}
-:root[data-palette="nasaq360"][data-tab="board"] :is(.hero-add,.hero-del){border-radius:4px;padding:8px 14px;font-size:13px;backdrop-filter:blur(6px)}
+
+
+
+
 /* النص: يمين الشاشة، ويتلاشى ويرتفع قليلًا مع التمرير */
-:root[data-palette="nasaq360"][data-tab="board"] .greet-text{position:relative;z-index:2;flex:none;width:min(600px,100%);padding:0;gap:10px;
-  opacity:calc(1 - var(--hp) * 1.35);translate:0 calc(var(--hp) * -46px)}
+
 /* العنوان: مقاسٌ يتنفّس مع عرض الشاشة، وسطرٌ يسع التشكيل، وكسرٌ متوازن لا يترك كلمة وحدها */
-:root[data-palette="nasaq360"][data-tab="board"] .greet-title{color:#fff;font-size:clamp(24px,3.4vw,50px);font-weight:700;line-height:1.4;
-  text-wrap:balance;max-width:16ch;padding-top:.08em;text-shadow:0 4px 30px rgba(0,0,0,.45)}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-tagline{color:#E3E6F0;font-size:clamp(16px,1.5vw,21px);text-shadow:0 2px 14px rgba(0,0,0,.5)}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-date{color:#C4C9DD;margin-top:2px}
-:root[data-palette="nasaq360"][data-tab="board"] .hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+
+
+
+
 .hm-chip{padding:5px 12px;border-radius:4px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#EEF1F7;font-size:13px;backdrop-filter:blur(6px)}
 .hm-chip.late{background:rgba(255,107,110,.18);border-color:rgba(255,107,110,.55);color:#FFD2D3}
 .hm-pri{flex-basis:100%;margin:4px 0 0;font-size:14px;color:#E3E6F0}
 .hm-pri b{color:#7FE3F5;font-weight:600;margin-inline-end:6px}
 /* زر الفعل: مستطيل سماوي عريض كزر «شاهد الآن» */
-:root[data-palette="nasaq360"][data-tab="board"] .plan-day{margin-top:18px;border-radius:4px;padding:15px 44px;min-width:200px;min-height:52px;font-size:16px;font-weight:700;
-  background:#00B7D4;color:#14162A;transition:background-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out)}
-:root[data-palette="nasaq360"][data-tab="board"] .plan-day:hover{background:#fff;color:#14162A}
-:root[data-palette="nasaq360"][data-tab="board"] .plan-day.done{background:rgba(8,9,20,.35);color:#fff;border:1px solid rgba(255,255,255,.55);backdrop-filter:blur(6px)}
-:root[data-palette="nasaq360"][data-tab="board"] .plan-day.done:hover{background:#fff;color:#14162A}
-:root[data-palette="nasaq360"][data-tab="board"] .plan-day:focus-visible{outline:3px solid #7FE3F5;outline-offset:3px}
+
+
+
+
+
 /* نقاط الصور ومؤشر التمرير */
-:root[data-palette="nasaq360"][data-tab="board"] .hero-dots:not(:empty){display:flex;gap:12px;position:absolute;z-index:3;bottom:92px;left:50%;translate:-50% 0;opacity:calc(1 - var(--hp) * 2)}
+
 .hero-dot{width:11px;height:11px;padding:0;border-radius:50%;border:0;background:rgba(255,255,255,.45);cursor:pointer;transition:background-color var(--dur-2) var(--ease-out),transform var(--dur-2) var(--ease-out)}
 .hero-dot:hover{background:rgba(255,255,255,.8)}
 .hero-dot.active{background:#fff;transform:scale(1.15)}
-:root[data-palette="nasaq360"][data-tab="board"] .hero-cue{display:flex;flex-direction:column;align-items:center;gap:2px;position:absolute;z-index:3;bottom:26px;left:50%;translate:-50% 0;
-  border:0;background:none;color:var(--ink-2);font:inherit;font-size:12.5px;cursor:pointer;padding:6px 12px;opacity:calc(1 - var(--hp) * 2.5)}
-:root[data-palette="nasaq360"][data-tab="board"] .hero-cue svg{animation:hero-cue 2.2s ease-in-out infinite}
+
+
 @keyframes hero-cue{0%,100%{translate:0 0}50%{translate:0 6px}}
 /* دخول الواجهة: العناصر تصعد تباعًا عند فتح الصفحة */
-:root[data-palette="nasaq360"][data-tab="board"] .greet-text > *{animation:hero-in .9s cubic-bezier(.2,.7,.2,1) both}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-text > :nth-child(2){animation-delay:.12s}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-text > :nth-child(3){animation-delay:.22s}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-text > :nth-child(4){animation-delay:.32s}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-text > :nth-child(5){animation-delay:.42s}
+
+
+
+
+
 @keyframes hero-in{from{opacity:0;translate:0 22px}to{opacity:1;translate:0 0}}
 /* الأقسام تتوالى بظهور هادئ حين تبلغها */
-:root[data-palette="nasaq360"] .rv{opacity:0;translate:0 28px;transition:opacity .7s ease var(--rv-d,0ms),translate .8s cubic-bezier(.2,.7,.2,1) var(--rv-d,0ms)}
-:root[data-palette="nasaq360"] .rv.in{opacity:1;translate:0 0}
+
+
 @media (max-width:999px){
-  :root[data-palette="nasaq360"][data-tab="board"] .greet-card{margin:0 -12px 14px;min-height:calc(100svh - 56px);padding:84px 20px 150px}
-  :root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo{flex-direction:column}
-  :root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo .greet-media{height:auto}
-  :root[data-palette="nasaq360"][data-tab="board"] .greet-text{width:100%;gap:8px}
-  :root[data-palette="nasaq360"][data-tab="board"] .greet-title{font-size:clamp(22px,6.4vw,34px);line-height:1.45;max-width:14ch}
-  :root[data-palette="nasaq360"][data-tab="board"] .greet-tagline{font-size:15px;line-height:1.7}
-  :root[data-palette="nasaq360"][data-tab="board"] .greet-card::after{background:
-    linear-gradient(to top,var(--board) 0%,color-mix(in srgb,var(--board) 55%,transparent) 7%,rgba(8,9,20,.78) 26%,rgba(8,9,20,.35) 58%,rgba(8,9,20,.45) 100%)}
-  :root[data-palette="nasaq360"][data-tab="board"] .plan-day{width:100%}
-  :root[data-palette="nasaq360"][data-tab="board"] .hero-cue{bottom:90px}
+  
+  
+  
+  
+  
+  
+  
+  
+  
   /* الجوال: موضوع الصورة في الأعلى، والأدوات تحت الشريط العلوي */
-  :root[data-palette="nasaq360"][data-tab="board"] .greet-media img{object-position:50% 22%}
-  :root[data-palette="nasaq360"][data-tab="board"] :is(.greet-media .hero-empty,.hero-tools){top:calc(var(--tb-h) + 12px);bottom:auto;inset-inline-end:14px}
-  :root[data-palette="nasaq360"][data-tab="board"] .hero-dots:not(:empty){bottom:128px}
+  
+  
+  
 }
-@media (prefers-reduced-motion:reduce){
-  :root[data-palette="nasaq360"][data-tab="board"] :is(.greet-media img,.greet-text > *,.hero-cue svg){animation:none}
-  :root[data-palette="nasaq360"][data-tab="board"] :is(.greet-text,.greet-media img){translate:none;opacity:1}
-  :root[data-palette="nasaq360"] .rv{opacity:1;translate:none;transition:none}
-}
-@media print{ .rv{opacity:1 !important;translate:none !important} }
+
+
 
 /* ==================== شريط «مَدار» العلوي — بدل الشريط الجانبي في طابع «نَسَق 360» ====================
    ثلاث حالات للطبقة: شفاف بتدرّج ليلي فوق أعلى الواجهة ← زجاج داكن ما دام فوق الواجهة (tb-over)
    ← زجاج بلون الطابع بعدها (tb-solid). يختفي عند النزول (320ms، تسارع ناعم) ويعود عند الصعود أسرع (220ms).
    الخلفية والتمويه في ::before لا في الشريط نفسه، كي لا ينكسر التنقّل السفلي الثابت في الجوال. */
 .top-add{display:none}
-:root[data-palette="nasaq360"]{--tb-h:72px}
-:root[data-palette="nasaq360"] .app{display:block}
-:root[data-palette="nasaq360"] .sidenav{position:fixed;top:0;inset-inline:0;height:var(--tb-h);z-index:60;
-  flex-direction:row;align-items:center;gap:clamp(14px,2.4vw,36px);padding:0 clamp(20px,4.5vw,64px);
-  background:transparent;border:0;overflow:visible;color:#fff;
-  transition:top var(--dur-3) cubic-bezier(.4,0,.2,1)}
-:root[data-palette="nasaq360"] .sidenav::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:linear-gradient(to bottom,rgba(8,9,20,.72),rgba(8,9,20,.25) 70%,transparent);transition:background-color var(--dur-3) var(--ease-out),opacity var(--dur-3) var(--ease-out)}
-:root[data-palette="nasaq360"] .sidenav.tb-over::before{background:rgba(8,9,20,.55);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
-:root[data-palette="nasaq360"] .sidenav.tb-solid::before{background:color-mix(in srgb,var(--paper) 80%,transparent);
-  -webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:0 1px 0 var(--rule)}
-:root[data-palette="nasaq360"] .sidenav.tb-hidden{top:calc(-1 * var(--tb-h) - 4px);transition-duration:.32s}
-:root[data-palette="nasaq360"] .sidenav:not(.tb-hidden){transition-duration:.22s;transition-timing-function:cubic-bezier(0,0,.2,1)}
+
+
+
+
+
+
+
+
 /* العلامة */
-:root[data-palette="nasaq360"] .sidenav-brand{border:0;padding:0;flex:none}
-:root[data-palette="nasaq360"] .sidenav .brand-latin{display:none}
-:root[data-palette="nasaq360"] .sidenav .brand-name{color:#fff;font-size:24px}
-:root[data-palette="nasaq360"] .sidenav .orbit{width:46px;height:46px}
-:root[data-palette="nasaq360"] .sidenav .orbit .brand-mark{width:28px;height:28px}
-:root[data-palette="nasaq360"] .sidenav .brand-mark{--bm-1:#fff}
+
+
+
+
+
+
 /* الروابط: نص فقط كقائمة «360» — الحالي بالسماوي */
-:root[data-palette="nasaq360"] .sidenav .tabbar{flex-direction:row;gap:4px}
-:root[data-palette="nasaq360"] .sidenav .tab{width:auto;padding:10px 14px;border-radius:4px;background:transparent;color:rgba(255,255,255,.86);font-size:15px;font-weight:500}
-:root[data-palette="nasaq360"] .sidenav .tab .ic{display:none}
-:root[data-palette="nasaq360"] .sidenav .tab:hover{background:transparent;color:#fff}
-:root[data-palette="nasaq360"] .sidenav .tab.active{background:transparent;color:#00B7D4;font-weight:600}
-:root[data-palette="nasaq360"] .side-today{display:none}
+
+
+
+
+
+
 /* الجهة اليسرى: الحالة والأزرار */
-:root[data-palette="nasaq360"] .sidenav-foot{margin:0;margin-inline-start:auto;flex-direction:row;align-items:center;gap:12px;min-width:0}
-:root[data-palette="nasaq360"] .sidenav .tabbar-sync{max-width:240px;padding:6px 12px;flex-wrap:nowrap;border-radius:4px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#E3E6F0}
-:root[data-palette="nasaq360"] .sidenav .tabbar-sync #syncMsg{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-:root[data-palette="nasaq360"] .sidenav .tabbar-sync :is(#syncTime,#stateNote){display:none}
-:root[data-palette="nasaq360"] .sidenav-actions{align-items:center;gap:8px}
-:root[data-palette="nasaq360"] .sidenav .icon-btn{width:38px;height:38px;border-radius:4px;background:transparent;border-color:transparent;color:#fff}
-:root[data-palette="nasaq360"] .sidenav .icon-btn:hover{background:rgba(255,255,255,.12)}
-:root[data-palette="nasaq360"] .top-add{display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border:0;border-radius:4px;
-  background:#00B7D4;color:#14162A;font:inherit;font-family:var(--font-head);font-size:14px;font-weight:700;cursor:pointer;transition:background-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out)}
-:root[data-palette="nasaq360"] .top-add:hover{background:#fff;color:#14162A}
-:root[data-palette="nasaq360"] .sidenav :is(.tab,.icon-btn,.top-add):focus-visible{outline:2px solid #7FE3F5;outline-offset:2px}
+
+
+
+
+
+
+
+
+
+
 /* بعد الواجهة: الشريط بلون الطابع، فالنص بلونه (مهم في الوضع الفاتح) */
-:root[data-palette="nasaq360"] .sidenav.tb-solid{color:var(--ink)}
-:root[data-palette="nasaq360"] .sidenav.tb-solid .brand-name{color:var(--ink)}
-:root[data-palette="nasaq360"] .sidenav.tb-solid .brand-mark{--bm-1:unset}
-:root[data-palette="nasaq360"] .sidenav.tb-solid .tab{color:var(--ink-2)}
-:root[data-palette="nasaq360"] .sidenav.tb-solid .tab:hover{color:var(--ink)}
-:root[data-palette="nasaq360"] .sidenav.tb-solid .tab.active{color:var(--focus)}
-:root[data-palette="nasaq360"] .sidenav.tb-solid .icon-btn{color:var(--ink)}
-:root[data-palette="nasaq360"] .sidenav.tb-solid .icon-btn:hover{background:var(--stripe)}
-:root[data-palette="nasaq360"] .sidenav.tb-solid .tabbar-sync{background:var(--stripe);border-color:var(--rule);color:var(--ink-2)}
+
+
+
+
+
+
+
+
+
 /* المحتوى: الصفحات الأخرى تبدأ تحت الشريط؛ صفحة اليوم تبدأ بالواجهة تحته مباشرة */
-:root[data-palette="nasaq360"] .content{padding-top:calc(var(--tb-h) + 24px)}
-:root[data-palette="nasaq360"][data-tab="board"] .greet-card{padding-top:calc(var(--tb-h) + 48px)}
-@media (max-width:1180px){
-  :root[data-palette="nasaq360"] .sidenav .tabbar-sync{display:none}
-}
+
+
+
 @media (max-width:999px){
-  :root[data-palette="nasaq360"]{--tb-h:56px}
-  :root[data-palette="nasaq360"] .sidenav{padding:0 14px;gap:10px}
-  :root[data-palette="nasaq360"] .sidenav .orbit{width:38px;height:38px}
-  :root[data-palette="nasaq360"] .sidenav .orbit .brand-mark{width:23px;height:23px}
-  :root[data-palette="nasaq360"] .sidenav .brand-name{font-size:20px}
-  :root[data-palette="nasaq360"] .top-add{display:none}
+  
+  
+  
+  
+  
+  
   /* التنقّل السفلي في الجوال يبقى كما هو (زجاجي بلون الطابع) */
-  :root[data-palette="nasaq360"] .sidenav .tabbar{flex-direction:row;background:color-mix(in srgb,var(--paper) 88%,transparent);
-    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
-  :root[data-palette="nasaq360"] .sidenav .tab{flex:1;flex-direction:column;gap:3px;padding:7px 4px;font-size:11.5px;color:var(--ink-2)}
-  :root[data-palette="nasaq360"] .sidenav .tab .ic{display:block}
-  :root[data-palette="nasaq360"] .sidenav .tab.active{color:var(--focus)}
-  :root[data-palette="nasaq360"] .content{padding-top:calc(var(--tb-h) + 14px)}
-  :root[data-palette="nasaq360"][data-tab="board"] .content{padding-top:0}
-  :root[data-palette="nasaq360"][data-tab="board"] .greet-card{min-height:100svh;padding-top:calc(var(--tb-h) + 36px)}
+  
+  
+  
+  
+  
+  
+  
 }
-@media (prefers-reduced-motion:reduce){ :root[data-palette="nasaq360"] .sidenav{transition:none} }
+
 
 /* ---------- لوحات تنبض بالحياة («نَسَق 360» فقط): مشهد أعلى اللوحة يكتسب لونه كلما امتلأت ----------
    --vivid من 0 (فارغة: رمادي باهت) إلى 1 (مكتملة: لون كامل وتوهّج خفيف). المزاج يتبع الوضع كالملصقات. */
 .card-art{display:none}
-:root[data-palette="nasaq360"] .card-art{--vivid:0;display:block;position:relative;height:96px;flex:none;
-  margin:calc(-1 * var(--pad)) calc(-1 * var(--pad)) 16px;border-radius:var(--r) var(--r) 0 0;overflow:hidden;
-  border-bottom:1px solid var(--rule);
-  filter:grayscale(calc(1 - var(--vivid))) opacity(calc(.55 + var(--vivid) * .45));transition:filter .9s ease}
-:root[data-palette="nasaq360"] .card-art .ca-svg{position:absolute;inset:0;width:100%;height:100%;display:block}
-:root[data-palette="nasaq360"] .card-art .ca-svg.is-dark{display:none}
-@media (prefers-color-scheme:dark){
-  :root[data-palette="nasaq360"]:not([data-theme="light"]) .card-art .ca-svg.is-dark{display:block}
-  :root[data-palette="nasaq360"]:not([data-theme="light"]) .card-art .ca-svg.is-light{display:none} }
-:root[data-palette="nasaq360"][data-theme="dark"] .card-art .ca-svg.is-dark{display:block}
-:root[data-palette="nasaq360"][data-theme="dark"] .card-art .ca-svg.is-light{display:none}
+
+
+
+
+
+
 /* مكتملة: لون مشبع وخط سفلي مضيء */
-:root[data-palette="nasaq360"] .card-art.full{filter:saturate(1.15)}
-:root[data-palette="nasaq360"] .card-art.full::after{content:"";position:absolute;inset:auto 0 0 0;height:2px;
-  background:var(--grad-line);box-shadow:0 0 14px 1px rgba(0,183,212,.55)}
-:root[data-palette="nasaq360"] .card-art .ob-arc{transition:stroke-dasharray .9s linear}
-@media (max-width:999px){ :root[data-palette="nasaq360"] .card-art{height:84px;margin:-16px -16px 14px} }
-@media (prefers-reduced-motion:reduce){ :root[data-palette="nasaq360"] .card-art,:root[data-palette="nasaq360"] .card-art .ob-arc{transition:none} }
-@media print{ .card-art{display:none !important} }
-@media (max-width:999px){
-  :root[data-palette="nasaq360"] .sidenav-brand .orbit{width:42px;height:42px}
-  :root[data-palette="nasaq360"] .sidenav-brand .orbit .brand-mark{width:26px;height:26px}
-}
+
+
+
+
+
+
+
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
-@media print{
-  :root{
-    --ink:#14312A !important; --ink-2:#2A544A !important; --paper:#fff !important; --board:#fff !important;
-    --rule:#999 !important; --surface:#fff !important; --stripe:#fff !important; --imp-b-bg:#E4EAE2 !important;
-    --font-head:Amiri,"Traditional Arabic",serif !important;
-    color-scheme:light;
-  }
-  @page{size:A4;margin:12mm}
-  body{background:#fff;padding:0;font-size:12px}
-  .sheet{border:0;max-width:none;grid-template-columns:220px 1fr}
-  .sidenav,.greet-card,.tools,.add,.add-details,.hint,.mini-row,.kill,.exp,.pin,.state,.archive,.actual,.toast,.modal-overlay,.settings-overlay,.auth-overlay,li.details,.two-col,.pomodoro,.exp-add,.exp-add-details,.spotify-box,
-  .c-sched,.c-cal,.c-focus,.c-habits,.c-projects,.task-filters,.progress,.day-summary,.close-day,
-  .onboard,.energy-hint,.idea-to-task,.sub-badge,.pomo-live,.focus-overlay,.palette-overlay{display:none}
-  /* الطباعة: البطاقات تتتابع كورقة واحدة */
-  .app{display:block} .content{padding:0} .dash{display:block} .col{display:contents}
-  .card{border:0;box-shadow:none;padding:0 0 12px;break-inside:avoid-page}
-  .rail{background:#fff}
-  .field,.review input{border-bottom:1px solid #999}
-  ol.tasks li.task{break-inside:avoid}
-  ol.tasks li.task:nth-child(4n+1),.imp.a,.check[aria-checked="true"],.fill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-}
+
 
 /* ---------- دخول وخروج النوافذ واللوحات والتنبيهات (منهج «مَدار» للحركة) ----------
    الدخول: تتلاشى الخلفية وتصعد النافذة من تحت قليلًا بتكبير خفيف وتباطؤ (ease-out).
@@ -1789,8 +1507,43 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .shot:hover .shot-del,.shot-del:focus-visible{opacity:1}
 @media (hover:none){ .shot-del{opacity:1} }
 .card.drop{outline:2px dashed var(--focus);outline-offset:3px}
+}
+@layer utilities{
+@media print{ .rv{opacity:1 !important;translate:none !important} }
+@media print{ .card-art{display:none !important} }
+@media print{
+  :root{
+    --ink:#14312A !important; --ink-2:#2A544A !important; --paper:#fff !important; --board:#fff !important;
+    --rule:#999 !important; --surface:#fff !important; --stripe:#fff !important; --imp-b-bg:#E4EAE2 !important;
+    --font-head:Amiri,"Traditional Arabic",serif !important;
+    color-scheme:light;
+  }
+  @page{size:A4;margin:12mm}
+  body{background:#fff;padding:0;font-size:12px}
+  .sheet{border:0;max-width:none;grid-template-columns:220px 1fr}
+  .sidenav,.greet-card,.tools,.add,.add-details,.hint,.mini-row,.kill,.exp,.pin,.state,.archive,.actual,.toast,.modal-overlay,.settings-overlay,.auth-overlay,li.details,.two-col,.pomodoro,.exp-add,.exp-add-details,.spotify-box,
+  .c-sched,.c-cal,.c-focus,.c-habits,.c-projects,.task-filters,.progress,.day-summary,.close-day,
+  .onboard,.energy-hint,.idea-to-task,.sub-badge,.pomo-live,.focus-overlay,.palette-overlay{display:none}
+  /* الطباعة: البطاقات تتتابع كورقة واحدة */
+  .app{display:block} .content{padding:0} .dash{display:block} .col{display:contents}
+  .card{border:0;box-shadow:none;padding:0 0 12px;break-inside:avoid-page}
+  .rail{background:#fff}
+  .field,.review input{border-bottom:1px solid #999}
+  ol.tasks li.task{break-inside:avoid}
+  ol.tasks li.task:nth-child(4n+1),.imp.a,.check[aria-checked="true"],.fill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+}
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260927c">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260927e">
+<link rel="stylesheet" href="layouts/nav-side.css?v=20260927e">
+<link rel="stylesheet" href="layouts/nav-top.css?v=20260927e">
+<link rel="stylesheet" href="layouts/hero-page.css?v=20260927e">
+<link rel="stylesheet" href="layouts/hero-brief.css?v=20260927e">
+<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260927e">
+<link rel="stylesheet" href="nasaq-ui.css?v=20260927e">
+<link rel="stylesheet" href="themes/classic.css?v=20260927e">
+<link rel="stylesheet" href="themes/nasaq.css?v=20260927e">
+<link rel="stylesheet" href="themes/nasaq360.css?v=20260927e">
 </head>
 <body>
 
@@ -1896,9 +1649,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <div class="set-row"><span>الطابع</span>
           <span class="pswitch" id="setPalette">
             <button data-palette="nasaq" type="button">نَسَق</button>
-            <button data-palette="" type="button">كلاسيكي</button>
-            <button data-palette="vibrant" type="button">حيوي</button>
-            <button data-palette="nasaq360" type="button">مَدار</button>
+            <button data-palette="classic" type="button">كلاسيكي</button>
+            <button data-palette="nasaq360" type="button">نَسَق 360</button>
           </span>
         </div>
         <div class="set-row"><span>الوضع الداكن</span><button id="setThemeBtn" type="button">🌙</button></div>
@@ -2460,7 +2212,6 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
 <div class="toast" id="toastBox"></div>
 
-<script src="nasaq-core.js?v=20260927d"></script>
 <script src="nasaq-pulse.js?v=20260927c"></script>
 <script>
 const AR = n => fmtNum(n);   /* الأرقام إنجليزية — fmtNum وأخواتها في nasaq-core.js */
@@ -2517,8 +2268,7 @@ function isDarkNow(){
   return matchMedia('(prefers-color-scheme: dark)').matches;
 }
 function applyTheme(t){
-  if(t==='light'||t==='dark') document.documentElement.setAttribute('data-theme', t);
-  else document.documentElement.removeAttribute('data-theme');
+  NasaqTheme.apply(NasaqTheme.palette(), t);
   const tb = $('setThemeBtn'); if(tb) tb.textContent = isDarkNow() ? '☀︎ فاتح' : '🌙 داكن';
   const qb = $('themeQuickBtn');
   if(qb){
@@ -2531,14 +2281,9 @@ function applyTheme(t){
   try{ heroVisual = {ctx:'', kind:'', url:''}; showPhoto(); }catch(e){}   /* المشهد يتبع الوضع الفاتح/الداكن */
 }
 /* لون شريط الحالة في الهاتف والتطبيق المثبَّت يتبع خلفية الطابع الحالي */
-function syncThemeColor(){
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if(!meta) return;
-  const c = getComputedStyle(document.documentElement).getPropertyValue('--board').trim();
-  if(c) meta.setAttribute('content', c);
-}
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncThemeColor);
-let theme = ''; try{ theme = localStorage.getItem(TKEY) || ''; }catch(e){}
+/* لون شريط الحالة من NASAQ_THEMES حسب الطابع والوضع (nasaq-core.js) */
+function syncThemeColor(){ NasaqTheme.syncColor(); }
+let theme = NasaqTheme.mode() === 'auto' ? '' : NasaqTheme.mode();
 applyTheme(theme);
 /* زرّان يبدّلان الوضع نفسه: في الإعدادات، وأيقونة سريعة في الشريط العلوي */
 function toggleTheme(){
@@ -2551,15 +2296,12 @@ $('themeQuickBtn').onclick = toggleTheme;
 
 /* ---------- palette ---------- */
 const PKEY = 'daily-board-palette';
-/* «نَسَق» هو الطابع الافتراضي لأي جهاز لم يُختر فيه طابع بعد. الاختيار المحفوظ يُحترم
-   كما هو — والكلاسيكي محفوظ كنص فارغ ''، لذلك نميّزه عن "لا شيء محفوظ" (null). */
-let palette = 'nasaq';
-try{ const saved = localStorage.getItem(PKEY); if(saved !== null) palette = saved; }catch(e){}
+/* الطابع المحفوظ وترحيله («» ← كلاسيكي، «حيوي» ← نَسَق 360، ولا شيء ← نَسَق) في NasaqTheme (nasaq-core.js) */
+let palette = NasaqTheme.palette();
 function applyPalette(p){
-  if(p) document.documentElement.setAttribute('data-palette', p);
-  else document.documentElement.removeAttribute('data-palette');
+  NasaqTheme.apply(p, NasaqTheme.mode());
   document.querySelectorAll('#setPalette button').forEach(b=>{   /* أزرار الطابع وحدها — في الإعدادات مبدّلات أخرى بالشكل نفسه */
-    b.classList.toggle('active', (b.dataset.palette||'')===p);
+    b.classList.toggle('active', b.dataset.palette===p);
   });
   syncThemeColor();
   try{ topbarUpdate(); heroScroll(); }catch(e){}   /* «نَسَق 360» يبدّل الشريط الجانبي إلى علوي */
@@ -2568,9 +2310,11 @@ function applyPalette(p){
   try{ document.documentElement.dataset.period = periodNow(); }catch(e){}
 }
 applyPalette(palette);
+/* ترحيل طابع «حيوي» الموقوف: إشعار مرة واحدة */
+if(NasaqTheme.takeNotice() === 'vibrant') setTimeout(()=>{ try{ showToast('تغيّر طابعك إلى نَسَق 360 بعد إيقاف طابع حيوي'); }catch(e){} }, 1200);
 document.querySelectorAll('#setPalette button').forEach(b=>{
   b.onclick = ()=>{
-    palette = b.dataset.palette || '';
+    palette = b.dataset.palette;
     try{ localStorage.setItem(PKEY, palette); }catch(e){}
     applyPalette(palette);
   };
@@ -3380,7 +3124,7 @@ function ringNextPrayer(m){
 }
 /* الحلقة الكبيرة: طابع «مَدار» وشاشة عريضة — مع المشهد ومع صورك */
 function ringBigWanted(){
-  return document.documentElement.getAttribute('data-palette') === 'nasaq360' && matchMedia('(min-width:1200px)').matches;
+  return document.documentElement.dataset.hero === 'immersive' && document.documentElement.dataset.orbit === 'on' && matchMedia('(min-width:1200px)').matches;
 }
 /* قناع قوس بنهايات دائرية على شبكة 100×100 — الزوايا باتجاه عقارب الساعة من الأعلى */
 function ringArcMask(a0, a1, w){
@@ -3566,7 +3310,7 @@ function ringParts(el){
   }
 }
 function renderRingClock(){
-  const on = document.documentElement.getAttribute('data-palette') === 'nasaq360';
+  const on = document.documentElement.dataset.orbit === 'on';
   const fav = document.querySelector('link[rel="icon"]');
   if(!on){ if(fav && fav.href !== FAV_STATIC) fav.href = FAV_STATIC; return; }
   const done = tasks.filter(t=>t.done).length, total = tasks.length;
@@ -5894,7 +5638,7 @@ function heroSceneSVG(ctx){
   const period = ['fajr','morning','noon','afternoon','maghrib','evening','night'].includes(ctx) ? ctx : periodNow();
   const accent = themeHex('--accent', themeHex('--focus', '#00B7D4'));
   /* في «مَدار» الواجهة ليلية دائمًا: حبر التلال ثابت، وإلا شحبت التلال في الوضع الداكن (حبره فاتح) */
-  const ink = document.documentElement.getAttribute('data-palette') === 'nasaq360' ? '#14162A' : themeHex('--brand', themeHex('--ink', '#14162A'));
+  const ink = document.documentElement.dataset.art === 'glow' ? '#14162A' : themeHex('--brand', themeHex('--ink', '#14162A'));
   const dark = ['evening', 'night', 'fajr'].includes(period);
   const sky = SKY[period].map(c=>mixHex(c, accent, .22));
   const hill = [mixHex(ink, sky[1], .55), mixHex(ink, sky[1], .35), mixHex(ink, sky[1], .18)];
@@ -6194,7 +5938,7 @@ $('heroAddBtn').onclick = openAddPhotoModal;
 $('heroTagBtn').onclick = openPhotoTagsModal;
 
 /* ---------- واجهة «360»: حركة التمرير، ومؤشر «تابع يومك»، وظهور الأقسام تباعًا ---------- */
-function heroMode(){ const r = document.documentElement.dataset; return r.palette === 'nasaq360' && r.tab === 'board'; }
+function heroMode(){ const r = document.documentElement.dataset; return r.hero === 'immersive' && r.tab === 'board'; }
 let heroTick = false;
 function heroScroll(){
   heroTick = false;
@@ -6211,7 +5955,7 @@ let tbLastY = scrollY, tbTick = false;
 function topbarUpdate(){
   tbTick = false;
   const nav = document.querySelector('.sidenav'); if(!nav) return;
-  if(document.documentElement.dataset.palette !== 'nasaq360'){ nav.classList.remove('tb-over','tb-solid','tb-hidden'); return; }
+  if(document.documentElement.dataset.nav !== 'top'){ nav.classList.remove('tb-over','tb-solid','tb-hidden'); return; }
   const y = scrollY, barH = nav.offsetHeight;
   const heroEnd = heroMode() ? $('heroBanner').offsetHeight - barH : 0;
   const solid = !heroMode() ? y > 4 : y > heroEnd;

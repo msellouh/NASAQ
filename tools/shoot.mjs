@@ -23,6 +23,15 @@ const EDGE = arg('edge', 'C:/Program Files (x86)/Microsoft/Edge/Application/msed
 const PORT = 9300 + Math.floor(Math.random() * 500);
 const AUDIT = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'design-audit.js'), 'utf8');
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+/* --freeze: وقت ثابت وعشوائية ثابتة وبلا حركة، لتُقارن لقطات «قبل» و«بعد» بكسلًا بكسلًا */
+const FROZEN = arg('freeze', '');
+const FREEZE = !FROZEN ? '' : `;(()=>{ const T=${JSON.stringify(FROZEN)}, base=new Date(T).getTime(), t0=performance.now(), N=Date;
+  const F=function(...a){ return a.length ? new N(...a) : new N(base + (performance.now()-t0)); };
+  F.prototype=N.prototype; F.now=()=>base + (performance.now()-t0); F.parse=N.parse; F.UTC=N.UTC; Date=F;
+  let s=20260927; Math.random=()=>((s=(s*1103515245+12345)%2147483648)/2147483648);
+  addEventListener('DOMContentLoaded',()=>{ const st=document.createElement('style');
+    st.textContent='*,*::before,*::after{animation-duration:0s!important;animation-delay:0s!important;transition-duration:0s!important;transition-delay:0s!important;caret-color:transparent!important}';
+    document.head.appendChild(st); }); })();`;
 
 function cdp(wsUrl) {
   const ws = new WebSocket(wsUrl); let id = 0; const pending = new Map();
@@ -38,7 +47,8 @@ async function evalIn(c, expr) {
 }
 
 const profile = mkdtempSync(join(tmpdir(), 'nasaq-shoot-'));
-const edge = spawn(EDGE, ['--headless=new', '--disable-gpu', '--no-first-run', '--hide-scrollbars', '--mute-audio',
+const edge = spawn(EDGE, ['--headless=new', '--disable-gpu', '--no-first-run', '--hide-scrollbars', '--mute-audio', '--disable-extensions',
+  '--disable-component-extensions-with-background-pages', '--no-default-browser-check', '--disable-features=msEdgeSidebarV2,msShoppingExp',
   `--remote-debugging-port=${PORT}`, `--user-data-dir=${profile}`, 'about:blank'], { stdio: 'ignore' });
 let version; for (let i = 0; i < 50 && !version; i++) { await sleep(200); try { version = await (await fetch(`http://127.0.0.1:${PORT}/json/version`)).json(); } catch (e) {} }
 if (!version) { edge.kill(); throw new Error('تعذّر تشغيل Edge'); }
@@ -57,7 +67,7 @@ try {
     /* حالة نظيفة لكل حالة: طابع ووضع محدّدان، ونفس الوقت كل مرة */
     await c.send('Page.addScriptToEvaluateOnNewDocument', { source:
       `if(!sessionStorage.__seed){ localStorage.clear(); localStorage.setItem('daily-board-palette', ${JSON.stringify(pal)});
-        localStorage.setItem('daily-board-theme', ${JSON.stringify(mode)}); sessionStorage.__seed = 1; }` });
+        localStorage.setItem('daily-board-theme', ${JSON.stringify(mode)}); sessionStorage.__seed = 1; }` + FREEZE });
     await c.send('Page.navigate', { url: BASE + '/index.html#today' }); await sleep(2500);
     /* 3 مهام تجريبية عبر حقل الإضافة حتى لا تكون الصفحة فارغة */
     await evalIn(c, `(async()=>{ for (const t of ['مراجعة تقرير مشروع G016 المرحلي','اتصال بمنسق عيادة خانيونس','تجهيز كشوف مستفيدي الحليب']){
@@ -66,6 +76,7 @@ try {
     for (const tab of TABS) {
       await evalIn(c, `document.getElementById('tab${tab[0].toUpperCase() + tab.slice(1)}Btn').click(); scrollTo(0,0)`);
       await sleep(tab === 'projects' ? 3500 : 1200);
+      if (FROZEN) await evalIn(c, `document.getAnimations().forEach(a=>{ try{ a.finish(); }catch(e){ a.pause(); a.currentTime=0; } })`);
       const key = `${pal || 'classic'}-${mode}-${w}-${tab}`;
       const height = Math.min(9000, await evalIn(c, 'document.documentElement.scrollHeight'));
       const shot = await c.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true, clip: { x: 0, y: 0, width: w, height, scale: 1 } });

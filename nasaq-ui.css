@@ -1,0 +1,204 @@
+/* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved.
+   ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
+/* نَسَق — المكوّنات المشتركة بين الطوابع (@layer components). كل مكوّن يقرأ متغيرات الطابع.
+   في المرحلة 1: عناصر التحكم «الحديثة» المشتركة بين نَسَق ونَسَق 360 (TODO: تتحول إلى متغيرات في المرحلة 6)،
+   وحلقة المدار (data-orbit) ورسومات التوهج (data-art="glow")، والشعار على قرصه العاجي، و«نبضة»، وإشعار الحقوق. */
+@layer components{
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) h1,:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) h2,:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) h3{font-weight:600;letter-spacing:0}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .sheet{box-shadow:var(--shadow)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) h1{color:var(--brand)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add input,.add select,.add-details input,.add-details textarea,
+  li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
+  .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
+  .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
+  .settings-body input,.auth-form input,.mini-add){
+  background-color:var(--field-bg); border:1px solid var(--field-line); border-radius:10px;
+  transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add input,.add select,.add-details input,.add-details textarea,
+  li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
+  .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
+  .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
+  .settings-body input,.auth-form input,.mini-add):hover{border-color:var(--field-hover)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add input,.add select,.add-details input,.add-details textarea,
+  li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
+  .modal .body input[type=text],.modal .body input[type=url],.braindump,.tl-input,.grat input,.meals input,
+  .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
+  .settings-body input,.auth-form input,.mini-add):focus{
+  outline:none; background-color:var(--surface); border-color:var(--focus); box-shadow:0 0 0 3px var(--ring);
+}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(input,textarea)::placeholder{color:var(--muted);opacity:.8}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add select,.pull select,.exp-add select){
+  appearance:none; -webkit-appearance:none; padding-left:32px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237A8886' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:left 12px center;
+}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .field{
+  /* حقل ظاهر وهو فارغ: تعبئة + حدّ بتباين ≥ 3:1 (WCAG 1.4.11) — كان شفافًا حتى المرور */
+  border:1px solid var(--field-line); border-radius:10px; padding:10px 12px; background:var(--field-bg);
+  transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .field:hover{border-color:var(--field-hover)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .field:focus{outline:none;background:var(--surface);border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+  .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button){
+  background:var(--focus); color:var(--on-accent); border:1px solid transparent; border-radius:10px;
+  font-weight:600; box-shadow:0 1px 2px rgba(18,48,47,.12);
+  transition:background-color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+  .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button):hover{
+  background:color-mix(in srgb, var(--focus) 88%, var(--ink)); box-shadow:0 4px 12px var(--ring);
+}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+  .pomo-controls button.go,.exp-add button,.auth-primary):active{transform:scale(.97)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
+  .modal .row button:not(.primary),.pomo-controls button:not(.go),.cal-head button,.energy button,
+  .water button,.set-actions button:not(.danger)){
+  background:var(--btn-soft); color:var(--ink); border:1px solid transparent; border-radius:10px;
+  transition:background-color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
+  .modal .row button:not(.primary),.pomo-controls button:not(.go),.cal-head button,.energy button,
+  .water button,.set-actions button:not(.danger)):hover{background:var(--btn-soft-hover)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .energy button.active{background:var(--focus-bg);border-color:var(--focus);color:var(--focus-ink)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(#addDetailsBtn,#expAddDetailsBtn){
+  background:var(--btn-soft); color:var(--ink-2); border:1px solid transparent; border-radius:10px; box-shadow:none;
+}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(#addDetailsBtn,#expAddDetailsBtn):hover{background:var(--btn-soft-hover);box-shadow:none}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) :is(#addDetailsBtn,#expAddDetailsBtn)[aria-expanded="true"]{background:var(--focus-bg);color:var(--focus-ink);border-color:var(--focus)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .tab.active{background:var(--focus);color:var(--on-accent)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .tab:hover:not(.active){background:var(--field-bg)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .task-filters button.active{background:var(--focus);border-color:var(--focus);color:var(--on-accent)}
+@media (max-width:999px){
+  /* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .tab.active{background:transparent;color:var(--focus)}
+}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .state{border-color:transparent;background:var(--field-bg)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .pswitch{background:var(--field-bg);border-color:transparent}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .pswitch button.active{background:var(--focus);color:var(--on-accent)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .check{border-radius:50%;border-color:var(--field-hover);transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .check:hover{border-color:var(--done);background:color-mix(in srgb, var(--done) 10%, var(--surface))}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .check[aria-checked="true"]::after{inset:3px 5.5px 5px 5.5px}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .rank{border-radius:50%;width:34px;height:34px;align-self:center;font-size:17px;background:var(--focus);color:var(--on-accent)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .plan-day{background:var(--focus);color:var(--on-accent)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) .plan-nav button.primary{background:var(--focus);border-color:var(--focus);color:var(--on-accent)}
+:root[data-art="glow"] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:repeating-radial-gradient(circle at 0 0,transparent 0 56px,var(--pattern) 56px 57px);transform:translateZ(0)}
+:root[data-orbit="on"] .orbit{display:inline-grid;place-items:center;position:relative;flex:none;border-radius:50%;width:56px;height:56px}
+:root[data-orbit="on"] .orbit::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--orbit);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px))}
+:root[data-orbit="on"] .orbit .brand-mark{width:34px;height:34px}
+:root[data-orbit="on"] :is(.orbit,.ring-clock){--ow:3.5px}
+:root[data-orbit="on"] :is(.orbit,.ring-clock) :is(.o-fill,.o-glint),
+:root[data-orbit="on"] .orbit:not(.clock)::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--ow)),#000 calc(100% - var(--ow) + .5px)),conic-gradient(from 15deg,#000 var(--p),transparent 0);
+  -webkit-mask-composite:source-in;
+          mask:radial-gradient(farthest-side,transparent calc(100% - var(--ow)),#000 calc(100% - var(--ow) + .5px)) intersect,conic-gradient(from 15deg,#000 var(--p),transparent 0)}
+:root[data-orbit="on"] :is(.orbit,.ring-clock) .o-fill{background:var(--orbit);transition:--p .9s cubic-bezier(.2,.8,.2,1)}
+:root[data-orbit="on"] :is(.orbit,.ring-clock) .o-glint,
+:root[data-orbit="on"] .orbit:not(.clock)::after{mix-blend-mode:screen;
+  background:conic-gradient(from 15deg,transparent calc(var(--g) - 26deg),rgba(255,255,255,.85) var(--g),transparent calc(var(--g) + 4deg));
+  animation:orbitGlint 7s cubic-bezier(.45,0,.2,1) infinite}
+:root[data-orbit="on"] :is(.orbit.clock,.ring-clock)::before{opacity:.22}
+:root[data-orbit="on"] :is(.orbit,.ring-clock) .o-now{position:absolute;inset:0;pointer-events:none;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+:root[data-orbit="on"] :is(.orbit,.ring-clock) .o-now b{position:absolute;left:50%;top:calc(var(--ow) / 2);width:var(--dz,7px);height:var(--dz,7px);
+  transform:translate(-50%,-50%) rotate(45deg);background:var(--orbit-dot);border-radius:1px;box-shadow:0 0 0 1.5px var(--dz-ring,var(--board)),0 0 8px var(--orbit-dot-glow)}
+:root[data-orbit="on"] :is(.orbit,.ring-clock).quiet .o-now b{background:var(--orbit-quiet);box-shadow:0 0 0 1.5px var(--dz-ring,var(--board))}
+:root[data-orbit="on"] .ring-clock .o-tick{position:absolute;inset:0;pointer-events:none}
+:root[data-orbit="on"] .ring-clock .o-tick i{position:absolute;left:50%;top:-3px;width:2px;height:calc(var(--ow) + 6px);margin-left:-1px;border-radius:2px;background:currentColor;opacity:.5}
+@media (prefers-reduced-motion:reduce){
+  :root[data-orbit="on"] :is(.orbit,.ring-clock) :is(.o-fill,.o-now){transition:none}
+  :root[data-orbit="on"] :is(.orbit,.ring-clock) .o-glint,:root[data-orbit="on"] .orbit:not(.clock)::after{animation:none;display:none}
+}
+:root[data-orbit="on"] .ring-clock::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--orbit);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--ow)),#000 calc(100% - var(--ow) + .5px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - var(--ow)),#000 calc(100% - var(--ow) + .5px))}
+:root[data-orbit="on"] .greet-card.ring-big #heroRing.rest.prayer-now .o-now b{animation-duration:1.4s}
+:root[data-orbit="on"] .greet-card.ring-big #heroRing.rest .o-now b{background:var(--orbit-dot);animation:seedPulse 3.2s ease-in-out infinite}
+:root[data-orbit="on"] .ring-clock.caps{--ring-grad:var(--ring-caps)}
+:root[data-orbit="on"] .ring-clock.caps::before{background:var(--ring-grad);opacity:.2;
+  -webkit-mask:var(--m-track) center/100% 100% no-repeat;mask:var(--m-track) center/100% 100% no-repeat}
+:root[data-orbit="on"] .ring-clock.caps .o-fill{background:var(--ring-grad)}
+:root[data-orbit="on"] .ring-clock.caps :is(.o-fill,.o-glint){-webkit-mask:var(--m-fill) center/100% 100% no-repeat;-webkit-mask-composite:source-over;
+  mask:var(--m-fill) center/100% 100% no-repeat}
+:root[data-orbit="on"] .auth-brand .orbit{width:60px;height:60px}
+:root[data-orbit="on"] .auth-brand .orbit .brand-mark{width:38px;height:38px}
+:root[data-orbit="on"] .close-day .orbit{width:68px;height:68px}
+:root[data-orbit="on"] .close-day .close-mark{width:34px;height:38px}
+:root[data-orbit="on"] .sidenav .orbit{width:46px;height:46px}
+:root[data-orbit="on"] .sidenav .orbit .brand-mark{width:28px;height:28px}
+@media (max-width:999px){
+  :root[data-orbit="on"] .sidenav .orbit{width:38px;height:38px}
+  :root[data-orbit="on"] .sidenav .orbit .brand-mark{width:23px;height:23px}
+}
+:root[data-art="glow"] .card-art{--vivid:0;display:block;position:relative;height:96px;flex:none;
+  margin:calc(-1 * var(--pad)) calc(-1 * var(--pad)) 16px;border-radius:var(--r) var(--r) 0 0;overflow:hidden;
+  border-bottom:1px solid var(--rule);
+  filter:grayscale(calc(1 - var(--vivid))) opacity(calc(.55 + var(--vivid) * .45));transition:filter .9s ease}
+:root[data-art="glow"] .card-art .ca-svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+:root[data-art="glow"] .card-art .ca-svg.is-dark{display:none}
+@media (prefers-color-scheme:dark){
+  :root[data-art="glow"]:not([data-theme="light"]) .card-art .ca-svg.is-dark{display:block}
+  :root[data-art="glow"]:not([data-theme="light"]) .card-art .ca-svg.is-light{display:none}
+}
+:root[data-art="glow"][data-theme="dark"] .card-art .ca-svg.is-dark{display:block}
+:root[data-art="glow"][data-theme="dark"] .card-art .ca-svg.is-light{display:none}
+:root[data-art="glow"] .card-art.full{filter:saturate(1.15)}
+:root[data-art="glow"] .card-art.full::after{content:"";position:absolute;inset:auto 0 0 0;height:2px;
+  background:var(--grad-line);box-shadow:0 0 14px 1px var(--art-glow)}
+:root[data-art="glow"] .card-art .ob-arc{transition:stroke-dasharray .9s linear}
+@media (max-width:999px){
+  :root[data-art="glow"] .card-art{height:84px;margin:-16px -16px 14px}
+}
+@media (prefers-reduced-motion:reduce){
+  :root[data-art="glow"] .card-art,:root[data-art="glow"] .card-art .ob-arc{transition:none}
+}
+@media (max-width:999px){
+  :root[data-orbit="on"] .sidenav-brand .orbit{width:42px;height:42px}
+  :root[data-orbit="on"] .sidenav-brand .orbit .brand-mark{width:26px;height:26px}
+}
+
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .brand-mark{background:#F7F6F2;border-radius:50%;padding:12%;box-sizing:border-box} }
+.nb-ripple{position:fixed;width:0;height:0;pointer-events:none;z-index:400}
+.nb-ripple i{position:absolute;left:0;top:0;width:120px;height:120px;border-radius:50%;border:1.5px solid var(--rc,var(--done));opacity:0}
+.nasaq-copy{font-size:11.5px;color:var(--muted, #6b7280);text-align:center;letter-spacing:.2px}
+footer.nasaq-copy{padding:18px 16px 26px;opacity:.85}
+.set-legal .nasaq-copy{text-align:start;font-weight:500;margin-top:4px}
+.auth-copy{margin-top:18px;font-size:10.5px;line-height:1.7;opacity:.8}
+:is(.num,.count,.meter,.pomo-time,.fm-time,.sum-item b,.exp-amt,.budget-overall .big,.budget-item .row span,.budget-item .pct,
+    .mins,.actual,.ws-count,.notif-badge,#syncTime,.cal-grid,.week-strip,.kpi b,.pulse-kpi b,table td){font-variant-numeric:tabular-nums}
+}

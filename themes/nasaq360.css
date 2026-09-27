@@ -1,0 +1,312 @@
+/* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved.
+   ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
+/* طابع «نَسَق 360» — مَدار: ليل كحلي، ونعناعي للإنجاز، وسماوي للفعل، وبنفسجي للانتظار.
+   المتغيرات للوضعين، وألوان وقت اليوم، ثم ما بقي من قواعد مظهر خاصة (TODO: تتحول إلى متغيرات في المرحلة 6).
+   لا display ولا position ولا أبعاد هنا — البنية في layouts/* و nasaq-ui.css. */
+@layer theme{
+:root[data-palette="nasaq360"]{
+
+  --ink:#14162A; --ink-2:#3A3F62; --paper:#FFFFFF; --board:#EEF1F7;
+  --rule:#DCE0EC; --done:#087F5D; --hold:#6A43B8; --urgent:#C42B2E;
+  --muted:#5E6485; --focus:#007A99; --r:14px;
+  --surface:#FFFFFF; --stripe:#F5F7FB;
+  --hold-bg:#EEE8FA; --hold-ink:#5A3A9E;
+  --focus-bg:#E0F4F8; --focus-ink:#005F78;
+  --imp-b-bg:#E6E9F3;
+  --brand:#14162A; --accent:#00B7D4;
+  --shadow:0 1px 2px rgba(20,22,42,.06),0 10px 28px rgba(20,22,42,.08);
+  --overlay:rgba(20,22,42,.45);
+  --pattern:rgba(0,122,153,.08);
+  --font-head:Alexandria,"Readex Pro",Tahoma,sans-serif;
+  --font-body:"Readex Pro","Segoe UI",Tahoma,sans-serif;
+  --field-bg:#F3F5FA; --field-line:#8F92A6; --field-hover:#757991;
+  --ring:rgba(0,183,212,.25); --on-accent:#FFFFFF; --btn-soft:#E6E9F3; --btn-soft-hover:#DADEEC;
+  /* الزر الأساسي: سماوي 360 بنص ليلي، وينقلب عند المرور كما في الجزيرة 360 */
+  --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#14162A; --on-cta-hover:#EEF1F7;
+  --live:#C42B2E; --on-done:#FFFFFF;
+  --bm-1:#14162A; --bm-2:#087F5D; --bm-dot:#007A99;
+  /* الحلقة: 330° مخروطية تبدأ بعد فجوة 30° عند الثانية عشرة — نعناعي ← سماوي ← بنفسجي */
+  --orbit:conic-gradient(from 15deg,#0E9E74 0deg,#0086A8 150deg,#6A43B8 300deg,#6A43B8 330deg,transparent 330deg);
+  --grad-line:linear-gradient(to left,#0E9E74,#0086A8 55%,#6A43B8);
+  --grad-text:linear-gradient(90deg,#0E9E74,#0086A8 55%,#6A43B8);
+  --aura-1:rgba(106,67,184,.12); --aura-2:rgba(14,158,116,.10); --orbit-line:rgba(0,122,153,.16);
+  color-scheme:light;
+  --done-bg:#E2F3EC;
+  --urgent-bg:#FBE8E8;
+  --c-exec:#007A99;
+  --c-admin:#6A43B8;
+  --c-ops:#087F5D;
+  --c-ind:#C42B2E;
+  --c-soft:#CDE9F0;
+  --tb-h:72px;
+  --gut:clamp(16px,4vw,56px);
+}
+:root[data-theme="dark"][data-palette="nasaq360"]{
+
+  --ink:#EEF1F7; --ink-2:#C4C9DD; --paper:#1D2040; --board:#14162A;
+  --rule:#2C3058; --done:#34F5B5; --hold:#B69CF5; --urgent:#FF6B6E;
+  --muted:#9AA1BE; --focus:#00B7D4;
+  --surface:#1D2040; --stripe:#22264A;
+  --hold-bg:#2A2350; --hold-ink:#C9B5FF;
+  --focus-bg:#0F3246; --focus-ink:#7FE3F5;
+  --imp-b-bg:#2A2E55;
+  --brand:#EEF1F7; --accent:#00B7D4;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 30px rgba(0,0,0,.35);
+  --overlay:rgba(8,9,20,.72);
+  --pattern:rgba(0,183,212,.07);
+  --field-bg:#171A31; --field-line:#686C87; --field-hover:#80849D;
+  --ring:rgba(0,183,212,.3); --on-accent:#14162A; --btn-soft:#262A4F; --btn-soft-hover:#30355F;
+  --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#EEF1F7; --on-cta-hover:#14162A;
+  --live:#D92F32; --on-done:#14162A;
+  --bm-1:#EEF1F7; --bm-2:#34F5B5; --bm-dot:#00B7D4;
+  --orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg);
+  --grad-line:linear-gradient(to left,#34F5B5,#00B7D4 55%,#7B55CC);
+  --grad-text:linear-gradient(90deg,#34F5B5,#00B7D4 55%,#7B55CC);
+  --aura-1:rgba(123,85,204,.32); --aura-2:rgba(52,245,181,.14); --orbit-line:rgba(0,183,212,.2);
+  color-scheme:dark;
+  --done-bg:#10362F;
+  --urgent-bg:#3B1E2A;
+  --c-exec:#00B7D4;
+  --c-admin:#B69CF5;
+  --c-ops:#34F5B5;
+  --c-ind:#FF6B6E;
+  --c-soft:#26405E;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"])[data-palette="nasaq360"]{
+
+    --ink:#EEF1F7; --ink-2:#C4C9DD; --paper:#1D2040; --board:#14162A;
+    --rule:#2C3058; --done:#34F5B5; --hold:#B69CF5; --urgent:#FF6B6E;
+    --muted:#9AA1BE; --focus:#00B7D4;
+    --surface:#1D2040; --stripe:#22264A;
+    --hold-bg:#2A2350; --hold-ink:#C9B5FF;
+    --focus-bg:#0F3246; --focus-ink:#7FE3F5;
+    --imp-b-bg:#2A2E55;
+    --brand:#EEF1F7; --accent:#00B7D4;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 30px rgba(0,0,0,.35);
+    --overlay:rgba(8,9,20,.72);
+    --pattern:rgba(0,183,212,.07);
+    --field-bg:#171A31; --field-line:#686C87; --field-hover:#80849D;
+    --ring:rgba(0,183,212,.3); --on-accent:#14162A; --btn-soft:#262A4F; --btn-soft-hover:#30355F;
+    --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#EEF1F7; --on-cta-hover:#14162A;
+    --live:#D92F32; --on-done:#14162A;
+    --bm-1:#EEF1F7; --bm-2:#34F5B5; --bm-dot:#00B7D4;
+    --orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg);
+    --grad-line:linear-gradient(to left,#34F5B5,#00B7D4 55%,#7B55CC);
+    --grad-text:linear-gradient(90deg,#34F5B5,#00B7D4 55%,#7B55CC);
+    --aura-1:rgba(123,85,204,.32); --aura-2:rgba(52,245,181,.14); --orbit-line:rgba(0,183,212,.2);
+    color-scheme:dark;
+    --done-bg:#10362F;
+    --urgent-bg:#3B1E2A;
+    --c-exec:#00B7D4;
+    --c-admin:#B69CF5;
+    --c-ops:#34F5B5;
+    --c-ind:#FF6B6E;
+    --c-soft:#26405E;
+  }
+}
+:root[data-theme="dark"] .brand-mark,
+:root[data-palette="nasaq360"] .sidenav:not(.tb-solid) .brand-mark,
+.close-day .brand-mark{background:#F7F6F2;border-radius:50%;padding:12%;box-sizing:border-box}
+:root[data-palette="nasaq360"][data-period="fajr"]{--aura-1:rgba(170,110,205,.16);--aura-2:rgba(255,150,165,.12);--pattern:rgba(150,100,190,.075)}
+:root[data-palette="nasaq360"][data-period="morning"]{--aura-1:rgba(14,158,116,.14);--aura-2:rgba(0,183,212,.10);--pattern:rgba(14,158,116,.075)}
+:root[data-palette="nasaq360"][data-period="noon"]{--aura-1:rgba(0,183,212,.14);--aura-2:rgba(0,134,168,.10);--pattern:rgba(0,134,168,.08)}
+:root[data-palette="nasaq360"][data-period="afternoon"]{--aura-1:rgba(214,168,79,.14);--aura-2:rgba(0,183,212,.08);--pattern:rgba(160,130,60,.075)}
+:root[data-palette="nasaq360"][data-period="maghrib"]{--aura-1:rgba(240,150,70,.16);--aura-2:rgba(210,90,90,.10);--pattern:rgba(200,110,60,.08)}
+:root[data-theme="dark"][data-palette="nasaq360"][data-period="fajr"]{--aura-1:rgba(170,110,205,.30);--aura-2:rgba(255,150,165,.14);--pattern:rgba(190,140,230,.07)}
+:root[data-theme="dark"][data-palette="nasaq360"][data-period="morning"]{--aura-1:rgba(52,245,181,.18);--aura-2:rgba(0,183,212,.16);--pattern:rgba(52,245,181,.06)}
+:root[data-theme="dark"][data-palette="nasaq360"][data-period="noon"]{--aura-1:rgba(0,183,212,.24);--aura-2:rgba(52,245,181,.10);--pattern:rgba(0,183,212,.07)}
+:root[data-theme="dark"][data-palette="nasaq360"][data-period="afternoon"]{--aura-1:rgba(214,168,79,.22);--aura-2:rgba(0,183,212,.10);--pattern:rgba(214,168,79,.06)}
+:root[data-theme="dark"][data-palette="nasaq360"][data-period="maghrib"]{--aura-1:rgba(240,150,70,.26);--aura-2:rgba(210,90,90,.14);--pattern:rgba(240,150,70,.06)}
+/* ألوان حلقة المدار ورسوماته — يقرؤها nasaq-ui.css */
+:root[data-palette="nasaq360"]{--orbit-dot:#D6A84F;--orbit-dot-glow:rgba(214,168,79,.55);--orbit-quiet:#9AA1BE;--art-glow:rgba(0,183,212,.55);
+  --ring-caps:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 340deg,#34F5B5 360deg)}
+:root[data-palette="nasaq360"] .close-day .close-mark{--bm-1:#EEF1F7;--bm-2:#34F5B5;--bm-dot:#00B7D4}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo .greet-media::after{opacity:.3}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .fm-controls button{border-radius:4px}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] body{font-family:var(--font-body);background-image:none}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] :is(h1,h2,h3){font-weight:700}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .greet-title{font-weight:800}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .greet-tagline{font-weight:400}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] :is(.pomo-time,.count,.sum-item b,.budget-overall .big,.exp-amt){font-weight:800;font-variant-numeric:tabular-nums}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .ring-clock{border-radius:50%;--dz-ring:#080914}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card.ring-big #heroRing{color:#EEF1F7}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] :is(.brand-name,.auth-brand h2)::after{content:"360";font-family:Alexandria,sans-serif;font-weight:900;font-size:.5em;background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent;direction:ltr;margin-inline-start:.3em;vertical-align:.8em}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .brand-latin::after{content:" 360"}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+  .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button){background:var(--cta);color:var(--on-cta);box-shadow:none;font-family:var(--font-head);font-weight:600;transition:background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
+  .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button):hover{background:var(--cta-hover);color:var(--on-cta-hover);box-shadow:none}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .tab.active,
+:root[data-palette="nasaq360"] .task-filters button.active,
+:root[data-palette="nasaq360"] .pswitch button.active{background:var(--cta);border-color:transparent;color:var(--on-cta)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .rank{background:var(--cta);color:var(--on-cta);font-family:var(--font-head);font-weight:800}
+@media (max-width:999px){
+  /* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .tab.active{background:transparent;color:var(--focus)}
+}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] :is(.add select,.pull select,.exp-add select){background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA1BE' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .imp.a{background:var(--live)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .day-done.is-done{color:var(--on-done)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] :is(.progress .fill,.proj-bar i){background:var(--grad-line)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .greet-card::before{opacity:1;background:
+    radial-gradient(ellipse 36% 95% at 7% 25%,var(--aura-1),transparent 70%),
+    radial-gradient(ellipse 30% 80% at 24% 115%,var(--aura-2),transparent 70%),
+    repeating-radial-gradient(circle at -60px 50%,transparent 0 26px,var(--orbit-line) 26px 27px);-webkit-mask:linear-gradient(to right,#000,transparent 68%);mask:linear-gradient(to right,#000,transparent 68%)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .close-day{color:#EEF1F7;background:radial-gradient(circle at 88% 50%,rgba(0,183,212,.26),transparent 55%),linear-gradient(135deg,#1D2040,#14162A);box-shadow:inset 0 0 0 1px #2C3058,0 10px 26px rgba(20,22,42,.22);--orbit:conic-gradient(from 15deg,#34F5B5 0deg,#00B7D4 150deg,#7B55CC 300deg,#7B55CC 330deg,transparent 330deg)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card{border:0;border-radius:0;box-shadow:none;background:#080914;color:#EEF1F7}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card::before{opacity:1;background:
+    radial-gradient(ellipse 55% 70% at 20% 30%,rgba(106,67,184,.38),transparent 70%),
+    radial-gradient(ellipse 45% 60% at 42% 105%,rgba(14,158,116,.30),transparent 70%),
+    radial-gradient(ellipse 40% 50% at 88% 18%,rgba(0,183,212,.20),transparent 70%),
+    repeating-radial-gradient(circle at 14% 46%,transparent 0 46px,rgba(255,255,255,.05) 46px 47px)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card.has-photo::before{opacity:0}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card::after{background:
+    linear-gradient(to left,rgba(8,9,20,.88) 0%,rgba(8,9,20,.55) 34%,rgba(8,9,20,.08) 64%,transparent 78%),
+    linear-gradient(to top,var(--board) 0%,color-mix(in srgb,var(--board) 55%,transparent) 8%,transparent 24%),
+    linear-gradient(to bottom,rgba(8,9,20,.4),transparent 16%)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-media img{border-radius:0}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] :is(.greet-media .hero-empty,.hero-tools){opacity:calc(1 - var(--hp) * 2)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-media .hero-empty{border:1px solid rgba(255,255,255,.45);border-radius:4px;background:rgba(8,9,20,.35);color:#fff;font-size:13px;backdrop-filter:blur(6px)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-media .hero-empty:hover{background:#fff;color:#14162A}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] :is(.hero-add,.hero-del){border-radius:4px;font-size:13px;backdrop-filter:blur(6px)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-text{opacity:calc(1 - var(--hp) * 1.35)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-title{color:#fff;font-size:clamp(24px,3.4vw,50px);font-weight:700;line-height:1.4;text-wrap:balance;text-shadow:0 4px 30px rgba(0,0,0,.45)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-tagline{color:#E3E6F0;font-size:clamp(16px,1.5vw,21px);text-shadow:0 2px 14px rgba(0,0,0,.5)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-date{color:#C4C9DD}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .plan-day{border-radius:4px;font-size:16px;font-weight:700;background:#00B7D4;color:#14162A;transition:background-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .plan-day:hover{background:#fff;color:#14162A}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .plan-day.done{background:rgba(8,9,20,.35);color:#fff;border:1px solid rgba(255,255,255,.55);backdrop-filter:blur(6px)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .plan-day.done:hover{background:#fff;color:#14162A}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .plan-day:focus-visible{outline:3px solid #7FE3F5;outline-offset:3px}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .hero-dots:not(:empty){opacity:calc(1 - var(--hp) * 2)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .hero-cue{border:0;background:none;color:var(--ink-2);font:inherit;font-size:12.5px;cursor:pointer;opacity:calc(1 - var(--hp) * 2.5)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .rv{opacity:0;transition:opacity .7s ease var(--rv-d,0ms),translate .8s cubic-bezier(.2,.7,.2,1) var(--rv-d,0ms);translate:0 28px}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .rv.in{opacity:1;translate:0 0}
+@media (max-width:999px){
+  /* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-title{font-size:clamp(22px,6.4vw,34px);line-height:1.45}
+  /* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-tagline{font-size:15px;line-height:1.7}
+  /* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] .greet-card::after{background:
+    linear-gradient(to top,var(--board) 0%,color-mix(in srgb,var(--board) 55%,transparent) 7%,rgba(8,9,20,.78) 26%,rgba(8,9,20,.35) 58%,rgba(8,9,20,.45) 100%)}
+}
+@media (prefers-reduced-motion:reduce){
+  /* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"][data-tab="board"] :is(.greet-text,.greet-media img){opacity:1}
+  /* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .rv{opacity:1;transition:none;translate:none}
+}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav{background:transparent;border:0;color:#fff;transition:top var(--dur-3) cubic-bezier(.4,0,.2,1)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav::before{background:linear-gradient(to bottom,rgba(8,9,20,.72),rgba(8,9,20,.25) 70%,transparent);transition:background-color var(--dur-3) var(--ease-out),opacity var(--dur-3) var(--ease-out)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav.tb-over::before{background:rgba(8,9,20,.55);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav.tb-solid::before{background:color-mix(in srgb,var(--paper) 80%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:0 1px 0 var(--rule)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav.tb-hidden{transition-duration:.32s}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav:not(.tb-hidden){transition-duration:.22s;transition-timing-function:cubic-bezier(0,0,.2,1)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav-brand{border:0}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav .brand-name{color:#fff;font-size:24px}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav .brand-mark{--bm-1:#fff}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav .tab{border-radius:4px;background:transparent;color:rgba(255,255,255,.86);font-size:15px;font-weight:500}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav .tab:hover{background:transparent;color:#fff}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav .tab.active{background:transparent;color:#00B7D4;font-weight:600}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav .tabbar-sync{border-radius:4px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#E3E6F0}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav .icon-btn{border-radius:4px;background:transparent;border-color:transparent;color:#fff}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav .icon-btn:hover{background:rgba(255,255,255,.12)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .top-add{border:0;border-radius:4px;background:#00B7D4;color:#14162A;font:inherit;font-family:var(--font-head);font-size:14px;font-weight:700;cursor:pointer;transition:background-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .top-add:hover{background:#fff;color:#14162A}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav :is(.tab,.icon-btn,.top-add):focus-visible{outline:2px solid #7FE3F5;outline-offset:2px}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav.tb-solid{color:var(--ink)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav.tb-solid .brand-name{color:var(--ink)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav.tb-solid .brand-mark{--bm-1:unset}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav.tb-solid .tab{color:var(--ink-2)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav.tb-solid .tab:hover{color:var(--ink)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav.tb-solid .tab.active{color:var(--focus)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav.tb-solid .icon-btn{color:var(--ink)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav.tb-solid .icon-btn:hover{background:var(--stripe)}
+/* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav.tb-solid .tabbar-sync{background:var(--stripe);border-color:var(--rule);color:var(--ink-2)}
+@media (max-width:999px){
+  /* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav .brand-name{font-size:20px}
+  /* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav .tabbar{background:color-mix(in srgb,var(--paper) 88%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+  /* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav .tab{font-size:11.5px;color:var(--ink-2)}
+  /* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav .tab.active{color:var(--focus)}
+}
+@media (prefers-reduced-motion:reduce){
+  /* TODO: يتحول إلى متغير في المرحلة 6 */
+:root[data-palette="nasaq360"] .sidenav{transition:none}
+}
+}

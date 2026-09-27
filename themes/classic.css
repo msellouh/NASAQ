@@ -1,0 +1,49 @@
+/* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved.
+   ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
+/* طابع «كلاسيكي» — الدفتر. في هذه المرحلة: ألوانه كما كانت (وهي الأساس الافتراضي لكل الطوابع،
+   لذلك :root بلا طابع). تُستبدل بلوحة الدفتر وعلاماته في المرحلة 3. */
+@layer theme{
+:root{
+  --ink:#14312A; --ink-2:#2A544A; --paper:#FBFAF6; --board:#EDF0EA;
+  --rule:#D3DBD2; --done:#2F7A5B; --hold:#C08A0C; --urgent:#A8402F;
+  --muted:#6D7C74; --focus:#1F6F8B; --r:10px;
+  --surface:#ffffff; --stripe:#F5F7F3;
+  --hold-bg:#FDF6E3; --hold-ink:#8A6300;
+  --focus-bg:#EAF3F6; --focus-ink:#14556B;
+  --imp-b-bg:#E4EAE2;
+  --shadow:0 14px 34px rgba(20,49,42,.16);
+  --overlay:rgba(20,49,42,.38);
+  --pattern:rgba(20,49,42,.055);
+  --font-head:Amiri,"Traditional Arabic",serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E9ECE4; --ink-2:#B7C4B3; --paper:#1B1E19; --board:#14160F;
+    --rule:#343B2C; --done:#57B389; --hold:#E7B24C; --urgent:#E4816B;
+    --muted:#8E9A88; --focus:#6FC0E0;
+    --surface:#20241B; --stripe:#1F231A;
+    --hold-bg:#33301A; --hold-ink:#E7B24C;
+    --focus-bg:#182A30; --focus-ink:#8FD3EC;
+    --imp-b-bg:#262C1F;
+    --shadow:0 14px 34px rgba(0,0,0,.55);
+    --overlay:rgba(0,0,0,.6);
+    --pattern:rgba(255,255,255,.045);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E9ECE4; --ink-2:#B7C4B3; --paper:#1B1E19; --board:#14160F;
+  --rule:#343B2C; --done:#57B389; --hold:#E7B24C; --urgent:#E4816B;
+  --muted:#8E9A88; --focus:#6FC0E0;
+  --surface:#20241B; --stripe:#1F231A;
+  --hold-bg:#33301A; --hold-ink:#E7B24C;
+  --focus-bg:#182A30; --focus-ink:#8FD3EC;
+  --imp-b-bg:#262C1F;
+  --shadow:0 14px 34px rgba(0,0,0,.55);
+  --overlay:rgba(0,0,0,.6);
+  --pattern:rgba(255,255,255,.045);
+  color-scheme:dark;
+}
+:root[data-theme="light"]{ color-scheme:light; }
+}

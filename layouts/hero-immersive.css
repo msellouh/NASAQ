@@ -1,0 +1,55 @@
+/* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved.
+   ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
+/* واجهة «غامرة» لصفحة اليوم — تُفعَّل بـ data-hero="immersive". بنية فقط: الألوان من ملف الطابع. */
+@layer layouts{
+:root[data-hero="immersive"][data-tab="board"] .hero-glance{display:flex;align-items:center;gap:22px;margin-top:14px;flex-wrap:wrap}
+:root[data-hero="immersive"][data-tab="board"] .hero-glance .hero-meta{margin-top:0;flex:1;min-width:220px}
+:root[data-hero="immersive"][data-tab="board"] .ring-clock{display:block;position:relative;flex:none;width:118px;height:118px;--ow:6px;--dz:11px}
+:root[data-hero="immersive"][data-tab="board"] .greet-card.ring-big #heroRing{position:absolute;left:50%;top:34%;z-index:2;width:min(40vh,360px);height:min(40vh,360px);transform:translate(-50%,-50%);--ow:5px;--dz:13px}
+:root[data-hero="immersive"][data-tab="board"] .content{padding-top:0}
+:root[data-hero="immersive"][data-tab="board"] .greet-card{--hp:0;/* تقدّم التمرير عبر الواجهة (0..1) — يضبطه الـJS */
+  /* بعرض الصفحة كاملًا: يتجاوز حدّ 1560px العام للمحتوى (.content > *) وحشوة الجانبين */
+  min-height:100vh;min-height:100svh;max-width:none;margin:0 -28px var(--gap);/* النص في مجرى الصفحة (لا تموضع مطلق): إن طال عن الشاشة كبرت الواجهة ولم يُقصّ */
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:96px clamp(24px,6vw,96px) clamp(130px,20vh,210px);overflow:hidden;isolation:isolate}
+:root[data-hero="immersive"][data-tab="board"] .greet-card::before{z-index:0;-webkit-mask:none;mask:none}
+:root[data-hero="immersive"][data-tab="board"] .greet-card::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none}
+:root[data-hero="immersive"][data-tab="board"] .greet-media{position:absolute;inset:0;width:auto;max-width:none;height:auto;padding:0;z-index:auto;display:block}
+:root[data-hero="immersive"][data-tab="board"] .greet-media img{z-index:0;object-position:32% 28%;translate:0 calc(var(--hp) * 70px);animation:hero-kenburns 22s ease-out both}
+:root[data-hero="immersive"][data-tab="board"] :is(.greet-media .hero-empty,.hero-tools){position:absolute;top:auto;bottom:clamp(96px,14vh,140px);inset-inline-end:clamp(20px,4.5vw,64px);inset-inline-start:auto;z-index:4}
+:root[data-hero="immersive"][data-tab="board"] .greet-media .hero-empty{padding:9px 16px}
+:root[data-hero="immersive"][data-tab="board"] :is(.hero-add,.hero-del){padding:8px 14px}
+:root[data-hero="immersive"][data-tab="board"] .greet-text{position:relative;z-index:2;flex:none;width:min(600px,100%);padding:0;gap:10px;translate:0 calc(var(--hp) * -46px)}
+:root[data-hero="immersive"][data-tab="board"] .greet-title{max-width:16ch;padding-top:.08em}
+:root[data-hero="immersive"][data-tab="board"] .greet-date{margin-top:2px}
+:root[data-hero="immersive"][data-tab="board"] .hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+:root[data-hero="immersive"][data-tab="board"] .plan-day{margin-top:18px;padding:15px 44px;min-width:200px;min-height:52px}
+:root[data-hero="immersive"][data-tab="board"] .hero-dots:not(:empty){display:flex;gap:12px;position:absolute;z-index:3;bottom:92px;left:50%;translate:-50% 0}
+:root[data-hero="immersive"][data-tab="board"] .hero-cue{display:flex;flex-direction:column;align-items:center;gap:2px;position:absolute;z-index:3;bottom:26px;left:50%;translate:-50% 0;padding:6px 12px}
+:root[data-hero="immersive"][data-tab="board"] .hero-cue svg{animation:hero-cue 2.2s ease-in-out infinite}
+:root[data-hero="immersive"][data-tab="board"] .greet-text > *{animation:hero-in .9s cubic-bezier(.2,.7,.2,1) both}
+:root[data-hero="immersive"][data-tab="board"] .greet-text > :nth-child(2){animation-delay:.12s}
+:root[data-hero="immersive"][data-tab="board"] .greet-text > :nth-child(3){animation-delay:.22s}
+:root[data-hero="immersive"][data-tab="board"] .greet-text > :nth-child(4){animation-delay:.32s}
+:root[data-hero="immersive"][data-tab="board"] .greet-text > :nth-child(5){animation-delay:.42s}
+@media (max-width:999px){
+  :root[data-hero="immersive"][data-tab="board"] .greet-card{margin:0 -12px 14px;min-height:calc(100svh - 56px);padding:84px 20px 150px}
+  :root[data-hero="immersive"][data-tab="board"] .greet-card.has-photo{flex-direction:column}
+  :root[data-hero="immersive"][data-tab="board"] .greet-card.has-photo .greet-media{height:auto}
+  :root[data-hero="immersive"][data-tab="board"] .greet-text{width:100%;gap:8px}
+  :root[data-hero="immersive"][data-tab="board"] .greet-title{max-width:14ch}
+  :root[data-hero="immersive"][data-tab="board"] .plan-day{width:100%}
+  :root[data-hero="immersive"][data-tab="board"] .hero-cue{bottom:90px}
+  :root[data-hero="immersive"][data-tab="board"] .greet-media img{object-position:50% 22%}
+  :root[data-hero="immersive"][data-tab="board"] :is(.greet-media .hero-empty,.hero-tools){top:calc(var(--tb-h) + 12px);bottom:auto;inset-inline-end:14px}
+  :root[data-hero="immersive"][data-tab="board"] .hero-dots:not(:empty){bottom:128px}
+}
+@media (prefers-reduced-motion:reduce){
+  :root[data-hero="immersive"][data-tab="board"] :is(.greet-media img,.greet-text > *,.hero-cue svg){animation:none}
+  :root[data-hero="immersive"][data-tab="board"] :is(.greet-text,.greet-media img){translate:none}
+}
+:root[data-hero="immersive"][data-tab="board"] .greet-card{padding-top:calc(var(--tb-h) + 48px)}
+@media (max-width:999px){
+  :root[data-hero="immersive"][data-tab="board"] .content{padding-top:0}
+  :root[data-hero="immersive"][data-tab="board"] .greet-card{min-height:100svh;padding-top:calc(var(--tb-h) + 36px)}
+}
+}

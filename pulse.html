@@ -1,7 +1,7 @@
 <!doctype html>
 <!-- نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved.
    ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. -->
-<html lang="ar" dir="rtl" class="madar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -12,11 +12,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800&family=Readex+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script>
-  /* الوضع الداكن كما اختاره صاحب اللوح */
-  try{ var t = localStorage.getItem('daily-board-theme'); if(t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); }catch(e){}
-</script>
+<script src="nasaq-core.js?v=20260927e"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
 <style>
+@layer tokens, base, layouts, components, theme, utilities;
+@layer base{
 /* ==================== نبض المشاريع ====================
    يجيب كل صباح عن سؤال واحد: أي مشروع يحتاج انتباهي اليوم، ولماذا؟
    البيانات نفسها التي تعرضها صفحة المشاريع (projects_list من نوشن، أو آخر نسخة محفوظة، أو ملف التطوير المحلي).
@@ -165,8 +164,18 @@ dialog[open]{animation:dlgIn var(--dur-3) var(--ease-out)}
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
   :where(button,a):active{scale:none}
 }
+}
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260927c">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260927e">
+<link rel="stylesheet" href="layouts/nav-side.css?v=20260927e">
+<link rel="stylesheet" href="layouts/nav-top.css?v=20260927e">
+<link rel="stylesheet" href="layouts/hero-page.css?v=20260927e">
+<link rel="stylesheet" href="layouts/hero-brief.css?v=20260927e">
+<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260927e">
+<link rel="stylesheet" href="nasaq-ui.css?v=20260927e">
+<link rel="stylesheet" href="themes/classic.css?v=20260927e">
+<link rel="stylesheet" href="themes/nasaq.css?v=20260927e">
+<link rel="stylesheet" href="themes/nasaq360.css?v=20260927e">
 </head>
 <body>
 <header class="tb">
@@ -187,7 +196,6 @@ dialog[open]{animation:dlgIn var(--dur-3) var(--ease-out)}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="upFile" hidden accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,image/*">
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
-<script src="nasaq-core.js?v=20260927d"></script>
 <script src="nasaq-pulse.js?v=20260927c"></script>
 <script>
 const $ = id => document.getElementById(id);

@@ -280,3 +280,74 @@ window.safeUrl = function(u, kind){
   if(kind === 'img' && (scheme === 'blob' || /^data:image\/(png|jpe?g|gif|webp|avif|bmp);/i.test(bare))) return s;
   return '#';
 };
+
+/* ---------- الطوابع: تعريف كل طابع في مكان واحد ----------
+   كلاسيكي (دفتر) ونَسَق (الهوية، الافتراضي) ونَسَق 360 (غامر). كل اختلاف بين الطوابع يُبنى على
+   متغيرات ملف الطابع (themes/*.css) وعلى السمات التي تضعها applyTheme على <html>:
+   data-palette (الطابع) و data-theme (الوضع) و data-nav و data-hero و data-field و data-art و data-orbit.
+   المتغيرات لا تبدّل شكل مكوّن كامل (تنقل جانبي/علوي، واجهة، حقل) — لذلك السمات. */
+window.NASAQ_THEMES = {
+  classic:  { name:'كلاسيكي',  desc:'دفتر ورقي هادئ',          nav:'side', hero:'page',      field:'underline', art:'ink',  orbit:'off',
+              fonts:['Amiri:700','IBM Plex Sans Arabic:400;600','Aref Ruqaa:400'],        themeColor:{light:'#F5F0E3', dark:'#1B1A17'} },
+  nasaq:    { name:'نَسَق',     desc:'هوية نَسَق للعمل اليومي',   nav:'side', hero:'brief',     field:'box',       art:'flat', orbit:'off',
+              fonts:['IBM Plex Sans Arabic:400;600;700'],                                  themeColor:{light:'#F7F6F2', dark:'#0C1A1B'} },
+  nasaq360: { name:'نَسَق 360', desc:'ليلي غامر للتركيز',          nav:'top',  hero:'immersive', field:'box',       art:'glow', orbit:'on',
+              fonts:['Alexandria:700;800','Readex Pro:400;600;700'],                      themeColor:{light:'#EEF1F7', dark:'#14162A'} }
+};
+window.NasaqTheme = (function(){
+  var PKEY = 'daily-board-palette', TKEY = 'daily-board-theme', NKEY = 'daily-board-theme-notice';
+  var root = document.documentElement, mq = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : null;
+  function get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function put(k, v){ try{ v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); }catch(e){} }
+  /* الطابع المحفوظ مع الترحيل: '' (كلاسيكي قديمًا) ← classic، و vibrant (أُوقف) ← nasaq360 مع إشعار مرة واحدة،
+     ولا شيء محفوظ ← nasaq (الافتراضي). */
+  function palette(){
+    var p = get(PKEY);
+    if(p === '') { p = 'classic'; put(PKEY, p); }
+    else if(p === 'vibrant') { p = 'nasaq360'; put(PKEY, p); put(NKEY, 'vibrant'); }
+    return NASAQ_THEMES[p] ? p : 'nasaq';
+  }
+  /* الوضع: light أو dark أو auto (يتبع الجهاز) — الافتراضي auto، و'' القديم = auto */
+  function mode(){ var m = get(TKEY); return m === 'light' || m === 'dark' ? m : 'auto'; }
+  function isDark(){ var t = root.getAttribute('data-theme'); return t === 'dark' || (t !== 'light' && !!(mq && mq.matches)); }
+  function fontsHref(list){
+    return 'https://fonts.googleapis.com/css2?' + list.map(function(f){
+      var p = f.split(':'); return 'family=' + p[0].replace(/ /g, '+') + (p[1] ? ':wght@' + p[1] : '');
+    }).join('&') + '&display=swap';
+  }
+  function syncColor(){
+    var t = NASAQ_THEMES[root.getAttribute('data-palette')] || NASAQ_THEMES.nasaq;
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if(!meta){ meta = document.createElement('meta'); meta.name = 'theme-color'; (document.head || root).appendChild(meta); }
+    meta.setAttribute('content', t.themeColor[isDark() ? 'dark' : 'light']);
+  }
+  function apply(p, m){
+    p = NASAQ_THEMES[p] ? p : 'nasaq';
+    var t = NASAQ_THEMES[p];
+    root.setAttribute('data-palette', p);
+    if(m === 'light' || m === 'dark') root.setAttribute('data-theme', m); else root.removeAttribute('data-theme');
+    root.setAttribute('data-nav', t.nav); root.setAttribute('data-hero', t.hero);
+    root.setAttribute('data-field', t.field); root.setAttribute('data-art', t.art); root.setAttribute('data-orbit', t.orbit);
+    /* خطوط الطابع النشط وحده */
+    var href = fontsHref(t.fonts), link = document.getElementById('nasaq-fonts');
+    if(!link){ link = document.createElement('link'); link.id = 'nasaq-fonts'; link.rel = 'stylesheet'; (document.head || root).appendChild(link); }
+    if(link.getAttribute('href') !== href) link.setAttribute('href', href);
+    syncColor();
+    /* الصفحات المضمّنة (projects.html?embed=1) تتبع الأم فورًا */
+    try{ Array.prototype.forEach.call(document.querySelectorAll('iframe[src*="embed=1"]'), function(f){
+      if(f.contentWindow) f.contentWindow.postMessage({ type:'nasaq-theme', palette:p, mode:m }, location.origin);
+    }); }catch(e){}
+    try{ root.dispatchEvent(new CustomEvent('nasaq-theme', { detail:{ palette:p, mode:m } })); }catch(e){}
+  }
+  function setPalette(p){ put(PKEY, p); apply(p, mode()); }
+  function setMode(m){ put(TKEY, m === 'light' || m === 'dark' ? m : null); apply(palette(), m); }
+  /* إشعار الترحيل مرة واحدة (vibrant ← nasaq360) */
+  function takeNotice(){ var n = get(NKEY); if(n) put(NKEY, null); return n; }
+  if(mq && mq.addEventListener) mq.addEventListener('change', syncColor);
+  window.addEventListener('message', function(ev){
+    if(ev.origin !== location.origin || !ev.data || ev.data.type !== 'nasaq-theme') return;
+    apply(ev.data.palette, ev.data.mode);
+  });
+  apply(palette(), mode());
+  return { palette:palette, mode:mode, apply:apply, setPalette:setPalette, setMode:setMode, isDark:isDark, syncColor:syncColor, takeNotice:takeNotice };
+})();

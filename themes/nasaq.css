@@ -1,0 +1,63 @@
+/* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved.
+   ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
+/* طابع «نَسَق» — الهوية (الافتراضي): متغيرات الألوان للوضعين. */
+@layer theme{
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"])[data-palette="nasaq"]{
+    --ink:#E8EFEE; --ink-2:#BCCDCB; --paper:#112426; --board:#0C1A1B;
+    --rule:#22393B; --done:#8FC1A5; --hold:#E0B865; --urgent:#E6A08B;
+    --muted:#8EA5A3; --focus:#7CC4BC;
+    --surface:#152C2E; --stripe:#132829;
+    --hold-bg:#2E2814; --hold-ink:#E0B865;
+    --focus-bg:#173B3B; --focus-ink:#A9DCD6;
+    --imp-b-bg:#1A3334;
+    --brand:#7CC4BC; --accent:#E0B865;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.4);
+    --overlay:rgba(0,0,0,.6);
+    --pattern:rgba(255,255,255,.03);
+  }
+}
+:root[data-palette="nasaq"]{
+  --ink:#202A2A; --ink-2:#3E4A4A; --paper:#FFFFFF; --board:#F7F6F2;
+  --rule:#E4E4E4; --done:#547563; --hold:#88682E; --urgent:#9F5F4D;
+  --muted:#627070; --focus:#174C4F; --r:12px;
+  --surface:#FFFFFF; --stripe:#FAF9F6;
+  --hold-bg:#F6EEDC; --hold-ink:#7A5B22;
+  --focus-bg:#DCEBE9; --focus-ink:#174C4F;
+  --imp-b-bg:#E8F0EE;
+  --brand:#174C4F; --accent:#D6A84F;
+  --shadow:0 1px 2px rgba(23,76,79,.05),0 8px 24px rgba(23,76,79,.06);
+  --overlay:rgba(23,76,79,.3);
+  --pattern:rgba(23,76,79,.035);
+  --font-head:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+}
+:root[data-theme="dark"][data-palette="nasaq"]{
+  --ink:#E8EFEE; --ink-2:#BCCDCB; --paper:#112426; --board:#0C1A1B;
+  --rule:#22393B; --done:#8FC1A5; --hold:#E0B865; --urgent:#E6A08B;
+  --muted:#8EA5A3; --focus:#7CC4BC; --r:12px;
+  --surface:#152C2E; --stripe:#132829;
+  --hold-bg:#2E2814; --hold-ink:#E0B865;
+  --focus-bg:#173B3B; --focus-ink:#A9DCD6;
+  --imp-b-bg:#1A3334;
+  --brand:#7CC4BC; --accent:#E0B865;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.4);
+  --overlay:rgba(0,0,0,.6);
+  --pattern:rgba(255,255,255,.03);
+  --font-head:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+}
+:root[data-palette="nasaq"]{
+  --field-bg:#F7F6F2; --field-line:#899393; --field-hover:#717D7D;
+  --ring:rgba(23,76,79,.16); --on-accent:#FFFFFF; --btn-soft:#DCEBE9; --btn-soft-hover:#CDE2DF;
+}
+:root[data-theme="dark"][data-palette="nasaq"]{
+  --field-bg:#0E1F20; --field-line:#557270; --field-hover:#6A8A87;
+  --ring:rgba(124,196,188,.25); --on-accent:#0C1A1B; --btn-soft:#173B3B; --btn-soft-hover:#1D4646;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"])[data-palette="nasaq"]{
+    --field-bg:#0E1F20; --field-line:#557270; --field-hover:#6A8A87;
+    --ring:rgba(124,196,188,.25); --on-accent:#0C1A1B; --btn-soft:#173B3B; --btn-soft-hover:#1D4646;
+  }
+}
+:root[data-palette="nasaq"] .close-day{background:#174C4F;color:#fff}
+}
