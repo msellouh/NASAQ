@@ -37,3 +37,6 @@ desktop.ini
 # ملفات محلية مؤقتة
 000000.txt
 nasaq-rights-files/
+
+# لقطات وفحوص أداة التصميم (tools/shoot.mjs) — محلية فقط
+tools/shots/
