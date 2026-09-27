@@ -241,6 +241,13 @@ footer.nasaq-copy{padding:var(--sp-4) var(--sp-4) var(--sp-5);opacity:.85}
 .tc-name{font-family:var(--font-head);font-weight:700;font-size:var(--fs-base);margin-top:var(--sp-1)}
 .tc-desc{font-size:var(--fs-xs);color:var(--text-2)}
 kbd{font:inherit;font-size:var(--fs-xs);padding:0 var(--sp-1);border:1px solid var(--border-strong);border-radius:var(--r-sm);background:var(--surface-2)}
+/* ---------- الطباعة على الشاشة (المرحلة 4) ----------
+   العناوين متوازنة الأسطر، والفقرات «جميلة» بلا كلمة يتيمة، وأقصى عرض للفقرة 65 حرفًا؛
+   والأسماء الطويلة تُقصّ بعد سطرين بـ«…» والنص الكامل في title. */
+:where(h1,h2,h3,.card-head h2,.greet-title,.tc-title){text-wrap:balance}
+:where(p,.set-hint,.closing-sub,.waqfa-text){text-wrap:pretty}
+:where(p){max-width:65ch}
+:is(.t-text,.proj-name,.pp-name,.p-name,.card-title):not(.editing){display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 }
 /* تبديل الطابع: تلاشٍ 200ms على لون الخلفية والنص فقط */
 @layer utilities{

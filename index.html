@@ -21,7 +21,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=Alexandria:wght@600;700;800;900&family=Readex+Pro:wght@300;400;500;600&family=Amiri+Quran&display=swap" rel="stylesheet">
+<!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده؛ وخط الطابع الافتراضي «نَسَق» يُحمَّل مسبقًا -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
 <style>
 @layer tokens, base, layouts, components, theme, utilities;
 @layer base{
@@ -218,7 +219,7 @@ li.details textarea{resize:vertical;min-height:34px}
 .wait-acts button{border:0;background:none;cursor:pointer;font:inherit;font-size:var(--fs-sm);min-width:28px;min-height:28px;border-radius:var(--r-md);color:var(--ink-2)}
 .wait-acts button:hover{background:var(--stripe)}
 .wait-acts .wait-done{color:var(--done);font-weight:700}
-.wait-badge{margin-inline-start:var(--sp-2);padding:1px var(--sp-2);border-radius:var(--r-pill);background:var(--hold-bg);color:var(--hold-ink);font-size:var(--fs-xs);font-weight:600;font-family:"IBM Plex Sans Arabic",sans-serif;vertical-align:1px}
+.wait-badge{margin-inline-start:var(--sp-2);padding:1px var(--sp-2);border-radius:var(--r-pill);background:var(--hold-bg);color:var(--hold-ink);font-size:var(--fs-xs);font-weight:600;font-family:var(--font-body);vertical-align:1px}
 .plan-tag.stale{background:var(--hold-bg);color:var(--hold-ink)}
 .mini-row{display:flex;gap:var(--sp-1);margin-top:var(--sp-2);min-width:0}
 .mini-add{flex:1;min-width:0;border:1px dashed var(--rule);border-radius:var(--r-md);background:transparent;font:inherit;font-size:var(--fs-sm);padding:var(--sp-2) var(--sp-2);color:inherit}
@@ -236,7 +237,7 @@ li.details textarea{resize:vertical;min-height:34px}
 .archive summary::-webkit-details-marker{display:none}
 .archive summary::before{content:"◂";font-family:inherit;font-size:var(--fs-base);color:var(--muted);transition:transform var(--dur-2) var(--ease-out)}
 .archive[open] summary::before{transform:rotate(-90deg)}
-.archive summary b{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:var(--fs-sm);font-weight:400;color:var(--muted)}
+.archive summary b{font-family:var(--font-body);font-size:var(--fs-sm);font-weight:400;color:var(--muted)}
 .arc-tools{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-3) 0 var(--sp-2)}
 .arc-tools input[type=search]{flex:1;min-width:170px;border:1px solid var(--rule);border-radius:var(--r-md);background:var(--surface);font:inherit;font-size:var(--fs-base);padding:var(--sp-2) var(--sp-2);color:inherit}
 .arc-tools button{font:inherit;font-size:var(--fs-sm);padding:var(--sp-2) var(--sp-3);border-radius:var(--r-md);cursor:pointer;border:1px solid var(--rule);background:var(--surface);color:var(--ink)}
@@ -572,7 +573,7 @@ ol.tasks li.task.flash{animation:task-flash 1.6s ease-out}
 /* ---------- قائمة البداية ---------- */
 .card.onboard{margin-bottom:var(--gap,var(--sp-4))}
 .card.onboard[hidden]{display:none}
-.ob-count{margin-inline-start:var(--sp-2);font-family:"IBM Plex Sans Arabic",sans-serif;font-size:var(--fs-xs);font-weight:600;color:var(--muted)}
+.ob-count{margin-inline-start:var(--sp-2);font-family:var(--font-body);font-size:var(--fs-xs);font-weight:600;color:var(--muted)}
 .ob-bar{height:6px;border-radius:var(--r-pill);background:var(--stripe);overflow:hidden;margin:calc(-1 * var(--sp-1)) 0 var(--sp-3)}
 .ob-bar i{display:block;height:100%;background:var(--accent,var(--focus));border-radius:var(--r-pill);transition:width var(--dur-4) var(--ease-out)}
 /* معرض الملصقات — على طريقة معارض «الجزيرة 360» / هوية «مَدار».
@@ -617,7 +618,7 @@ ol.tasks li.task.flash{animation:task-flash 1.6s ease-out}
 /* ستارة سفلية تضمن تباين العنوان فوق أي مشهد — فاتحة نهارًا، داكنة ليلًا */
 .ob-poster::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--ob-scrim)}
 .ob-cap{position:absolute;inset-inline:10px;bottom:12px;display:flex;flex-direction:column;align-items:center;gap:var(--sp-1)}
-.ob-title{font-family:Alexandria,"Readex Pro","IBM Plex Sans Arabic",sans-serif;font-weight:700;font-size:clamp(17px,1.45vw,21px);line-height:1.2;text-shadow:var(--ob-shade)}
+.ob-title{font-family:var(--font-display);font-weight:700;font-size:clamp(17px,1.45vw,21px);line-height:1.2;text-shadow:var(--ob-shade)}
 .ob-title em{display:block;font-style:normal;color:var(--ob-hue)}
 .ob-sub{font-size:var(--fs-xs);line-height:1.45;color:var(--ob-sub)}
 .ob-chip{margin-top:var(--sp-1);padding:3px var(--sp-3);border-radius:var(--r-md);background:var(--primary);color:var(--on-primary);font-size:var(--fs-xs);font-weight:700;white-space:nowrap}
@@ -870,7 +871,7 @@ body.focus-open{overflow:hidden}
 .tools .primary:hover{background:var(--ink-2)}
 /* زرّا النسخ والطباعة في سطر عنوان الأرشيف */
 .archive summary .arc-actions{margin:0 auto 0 0;max-width:none;gap:var(--sp-2);flex-wrap:nowrap}
-.archive summary .arc-actions button{font-family:"IBM Plex Sans Arabic",sans-serif;font-size:var(--fs-sm);font-weight:600;padding:var(--sp-2) var(--sp-3);min-height:36px}
+.archive summary .arc-actions button{font-family:var(--font-body);font-size:var(--fs-sm);font-weight:600;padding:var(--sp-2) var(--sp-3);min-height:36px}
 @media (max-width:560px){ .archive summary{flex-wrap:wrap} .archive summary .arc-actions{margin-inline-start:0;width:100%;justify-content:flex-start} }
 
 /* ---------- toast ---------- */
@@ -1207,7 +1208,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
 
 .ring-clock .o-core{position:absolute;inset:18%;display:grid;place-items:center;align-content:center;gap:2px;text-align:center}
-.ring-clock .o-core b{font:800 var(--fs-lg)/1 Alexandria,sans-serif;direction:ltr}
+.ring-clock .o-core b{font:700 var(--fs-lg)/1 var(--font-display);direction:ltr}
 .ring-clock .o-core small{font-size:var(--fs-xs);opacity:.75}
 .ring-clock .o-tick em,.ring-clock .o-gap{display:none}
 /* الواجهة الكبيرة (عرض 1200px فأكثر): الحلقة كبيرة في منتصف الصورة مرفوعة نحو أعلاها، وخطها رفيع.
@@ -3706,8 +3707,8 @@ const OB_ART = {
     '<path class="ob-arc" pathLength="100" d="M135.5 58A60 60 0 1 1 104.5 58" fill="none" stroke="url(#'+id+'-ring)" stroke-width="8" stroke-linecap="round"/>' +
     (o && o.banner ? '<circle cx="120" cy="116" r="7" fill="'+H+'" opacity=".8"/><path d="M120 116V84M120 116l16 10" stroke="'+P.txt+'" stroke-width="4" stroke-linecap="round"/>' :
     '<circle cx="135.5" cy="58" r="6" fill="'+P.txt+'"/>' +
-    '<text x="120" y="130" text-anchor="middle" font-family="Alexandria, Readex Pro, sans-serif" font-weight="700" font-size="40" fill="'+P.txt+'">25</text>' +
-    '<text x="120" y="150" text-anchor="middle" font-family="Readex Pro, sans-serif" font-size="11" fill="'+P.txt2+'">دقيقة</text>')},
+    '<text x="120" y="130" text-anchor="middle" style="font-family:var(--font-display)" font-weight="700" font-size="40" fill="'+P.txt+'">25</text>' +
+    '<text x="120" y="150" text-anchor="middle" style="font-family:var(--font-body)" font-size="11" fill="'+P.txt2+'">دقيقة</text>')},
   /* ثلاث أوراق متراكبة: ورقة مسطّرة، وبطاقة بلون الخطوة، وليلية بحلقة — «اختر طابعك» */
   theme: {glowY:.34, scene:(P, H, id)=>
     '<g transform="rotate(-10 110 130)"><rect x="46" y="66" width="86" height="108" rx="10" fill="'+P.card+'" stroke="'+H+'" stroke-opacity=".55" stroke-width="1.5"/>' +
@@ -3950,6 +3951,7 @@ function appendTaskRow(list, t, priValues){
   txt.className='t-text'; txt.textContent = t.text;
   if(t.notes) txt.title = t.notes;
   makeEditable(txt, ()=>t.text, v=>{ if(v) t.text = v; }, ()=>{ t.dirty = true; sync(); });
+  txt.title = t.text + (t.notes ? '\n' + t.notes : '') + '\n(اضغط للتعديل)';   /* النص الكامل: العنوان يُقصّ بعد سطرين */
   /* شارة الخطوات الفرعية «2/4» — تفتح التفاصيل بدل تعديل النص */
   if(t.subs && t.subs.length){
     const sd = t.subs.filter(s=>s.done).length;
@@ -5862,6 +5864,11 @@ function pickWaqfa(){
 }
 function renderWaqfa(){
   const card = $('waqfaCard'); if(!card) return;
+  if(!document.getElementById('nasaq-font-quran')){
+    const l = document.createElement('link'); l.id = 'nasaq-font-quran'; l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&display=swap';
+    document.head.appendChild(l);
+  }
   const st = waqfaState(), pendingCount = WAQFA.filter(w=>!st.approved.includes(w.id) && !st.removed.includes(w.id)).length;
   card.hidden = false;
   $('waqfaReview').hidden = !pendingCount;
