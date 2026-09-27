@@ -431,6 +431,7 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
 .gantt th.now{box-shadow:inset 0 -3px 0 #D6A84F}
 .g-prev{font-size:12px;font-weight:600;color:#006C75;background:#E6F6F7;border:1px dashed #00B2C1;border-radius:999px;padding:2px 10px}
 .g-dur{justify-content:flex-start}
+.g-btns{display:flex;flex-wrap:wrap;gap:8px}
 .g-dur input{width:80px}
 .g-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:12px;color:var(--ink-2)}
 .g-legend i{display:inline-block;width:14px;height:14px;border-radius:3px;margin-inline-end:6px;vertical-align:-2px;border:1px solid #008F9B}
@@ -1206,7 +1207,7 @@ function ganttCard(p){
     (M.preview ? '<span class="g-prev">مقترح من قالب «' + esc(M.preview.label) + '»</span>' : '') + '</div>' +
     (M.preview ? '<p class="note" style="margin:0 0 10px">لا خطة تنفيذ لهذا المشروع بعد، فهذا جدول مقترح من مدته ونوعه. أنشئ الخطة من بطاقة «خطة التنفيذ» لتعتمده وتتابع إنجاز بنوده.</p>' : '') +
     '<div class="g-tools"><label>حالة الجدول في تاريخ <input type="date" data-gasof="' + esc(p.id) + '" value="' + iso(asOf) + '"></label>' +
-    '<button class="btn" type="button" data-act="gantt-copy">انسخ الجدول للتقرير</button></div>' +
+    '<span class="g-btns"><button class="btn" type="button" data-act="gantt-copy">انسخ الجدول للتقرير</button><button class="btn cta" type="button" data-act="report">مسودة تقرير مرحلي</button></span></div>' +
     '<div class="g-wrap"><table class="gantt"><thead>' + head1 + head2 + '</thead><tbody>' + body + '</tbody></table></div>' +
     '<div class="g-legend"><span><i class="dn2"></i>منجز</span><span><i class="dn1"></i>منجز (المراحل الأولى)</span><span><i class="dn3"></i>التوثيق والتقارير</span><span><i class="pl"></i>مخطط لم يُنجز بعد</span><span><i class="nowk"></i>أسبوع التاريخ المختار</span></div>' +
     '<p class="note">الإنجاز من حالة كل بند في الخطة: «منجز» حتى تاريخ إنجازه، و«جارٍ» حتى تاريخ الجدول. عدّل التواريخ والحالات من بطاقة «خطة التنفيذ».</p></article>';
@@ -1214,7 +1215,14 @@ function ganttCard(p){
 /* نسخة للتقرير: الجدول نفسه بتنسيق Word المعتمد (Sakkal Majalla 13 عريض، ألوان التقرير المرجعي) — يُلصق في Word مباشرة */
 async function ganttCopy(p){
   const card = $('ganttCard'); if(!card) return;
-  const t = card.querySelector('table.gantt').cloneNode(true);
+  const t = wordGantt(card.querySelector('table.gantt').cloneNode(true));
+  const html = '<meta charset="utf-8">' + t.outerHTML;
+  try{
+    await navigator.clipboard.write([new ClipboardItem({'text/html': new Blob([html], {type: 'text/html'}), 'text/plain': new Blob([t.innerText], {type: 'text/plain'})})]);
+    toast('نُسخ الجدول — الصقه في Word في قسم «أنشطة المشروع»');
+  }catch(e){ toast('تعذّر النسخ: ' + e.message, true); }
+}
+function wordGantt(t){
   const C = {mon: ['#81D0D9', '#44546A'], wk: ['#006C75', '#FFFFFF'], lblHead: ['#00B2C1', '#FFFFFF'], ph: ['#00B2C1', '#FFFFFF'], it: ['#81D0D9', '#44546A'],
     phfill: '#008F9B', dn1: '#FCE4D6', dn2: '#E2EFDA', dn3: '#BCF6E4', pl: '#D9D9D9'};
   const base = 'border:0.5pt solid #006C75;font-family:\'Sakkal Majalla\';font-size:13pt;font-weight:bold;text-align:center;vertical-align:middle;padding:2pt 3pt;';
@@ -1229,11 +1237,8 @@ async function ganttCopy(p){
     c.setAttribute('style', base + 'background:' + bg + ';color:' + fg + ';' + (c.classList.contains('g-lbl') ? 'text-align:right;white-space:nowrap;' : 'width:16pt;'));
     c.removeAttribute('class'); c.removeAttribute('title');
   });
-  const html = '<meta charset="utf-8">' + t.outerHTML;
-  try{
-    await navigator.clipboard.write([new ClipboardItem({'text/html': new Blob([html], {type: 'text/html'}), 'text/plain': new Blob([t.innerText], {type: 'text/plain'})})]);
-    toast('نُسخ الجدول — الصقه في Word في قسم «أنشطة المشروع»');
-  }catch(e){ toast('تعذّر النسخ: ' + e.message, true); }
+  t.removeAttribute('class');
+  return t;
 }
 async function ganttSaveDur(p){
   const n = parseInt(($('gDurN') || {}).value, 10), u = ($('gDurU') || {}).value, s = p.start || p.approvalDate;
@@ -1258,6 +1263,142 @@ document.addEventListener('change', e => {
   GANTT_ASOF[inp.dataset.gasof] = inp.value || '';
   const p = DATA.projects.find(x => x.id === inp.dataset.gasof); if(p) refreshCard('ganttCard', ganttCard(p));
 });
+
+/* ---------- مسودة التقرير المرحلي — على هيكل تقرير Al-Cela المعتمد ----------
+   تجمع من بيانات المشروع: الغلاف، المحتويات، الملخص، الجدول الزمني، الأنشطة المتبقية ونسبها، الأعمال
+   المخططة، الموازنة، ثم الأهداف والتحديات (تُكتب في الصفحة نفسها) وتوثيق المراحل. تُطبع PDF أو تُنسخ
+   إلى Word ثم تُكمَّل بمهارة «تنسيق تقارير Medics». الألوان والأحجام من مواصفات التقرير المرجعي. */
+function reportHTML(p){
+  const asOf = GANTT_ASOF[p.id] ? toDate(GANTT_ASOF[p.id]) : today, asIso = iso(asOf);
+  const M = ganttModel(p), f = fin(p), s = p.start || p.approvalDate;
+  const nRep = delsOf(p).filter(d => /مرحلي/.test(d.kind || '') && d.status === 'صدر').length + 1;
+  const items = M ? M.stages.flatMap(g => g.items) : [];
+  const doneAt = it => it.status === 'منجز' && (!it.done || toDate(it.done) <= asOf);
+  const prog = it => doneAt(it) ? 1 : it.status === 'جارٍ' ? Math.max(.1, Math.min(.9, (asOf - toDate(it.start)) / Math.max(DAY, toDate(it.end) - toDate(it.start)))) : 0;
+  const total = items.length ? items.reduce((a, it) => a + prog(it), 0) / items.length : null;
+  const timeP = s && p.end ? Math.max(0, Math.min(1, (asOf - toDate(s)) / Math.max(DAY, toDate(p.end) - toDate(s)))) : null;
+  const d = x => x ? toDate(x).toLocaleDateString('ar-EG-u-nu-latn', {day: 'numeric', month: 'long', year: 'numeric'}) : '—';
+  const weeks = M ? M.weeks.length : 0;
+  const manual = t => '<div class="manual" contenteditable="true" data-ph="' + esc(t) + '"></div>';
+  /* الجدول الزمني بتنسيق Word كما يُلصق */
+  let gantt = '<p class="hint">لا جدول: أدخل مدة المشروع من بطاقته.</p>';
+  if(M){ const box = document.createElement('div'); box.innerHTML = ganttCard(p); gantt = wordGantt(box.querySelector('table.gantt')).outerHTML; }
+  const summary = [
+    ['اسم المشروع', esc(p.name)], ['رقم المشروع', esc(p.code || '—')], ['الجهة المانحة', esc(p.donor || '—') + (p.donorCountry && !/غير مصن/.test(p.donorCountry) ? ' — ' + esc(p.donorCountry) : '')],
+    ['مكان التنفيذ', esc(p.country || 'قطاع غزة')], ['الجهات الشريكة', esc([].concat(p.entities || []).join('، ') || '—')],
+    ['تاريخ البدء', d(s)], ['تاريخ الانتهاء', d(p.end)], ['مدة المشروع', weeks ? AR(weeks) + ' أسبوعًا' : '—'],
+    ['قيمة المشروع', money(f.A || null)], ['منسق المشروع', esc(p.coordinator || '—')],
+    ['نسبة الإنجاز حتى ' + d(asIso), total == null ? '—' : pct(total) + (timeP != null ? ' <small>(المدة المنقضية ' + pct(timeP) + ')</small>' : '')],
+    ['عدد المستفيدين', manual('يُكتب يدويًا')]
+  ];
+  const sumT = '<table class="t-sum">' + summary.map(([k, v], i) => '<tr class="' + (i % 2 ? 'w' : 'c') + '"><th>' + k + '</th><td>' + v + '</td></tr>').join('') + '</table>';
+  const remT = M ? '<table class="t-rem"><tr><th>#</th><th>النشاط</th><th>نسبة الإنجاز</th><th>التفاصيل</th></tr>' + M.stages.map((g, i) => {
+      const pr = g.items.reduce((a, it) => a + prog(it), 0) / g.items.length;
+      return '<tr><th>' + AR(i + 1) + '</th><td class="act">' + esc(g.name) + '</td><td class="pc">' + pct(pr) + '</td><td class="det"><ul>' +
+        g.items.map(it => '<li>' + esc(it.title) + ' — <b>' + (doneAt(it) ? 'منجز' : it.status === 'جارٍ' ? 'جارٍ' : toDate(it.start) > asOf ? 'يبدأ ' + fmtDate(it.start, false) : 'لم يبدأ') + '</b></li>').join('') + '</ul></td></tr>';
+    }).join('') + '</table>' : '';
+  const next = items.filter(it => !doneAt(it) && toDate(it.start) <= new Date(asOf.getTime() + 30 * DAY) && toDate(it.end) >= asOf);
+  const planned = next.length ? '<ul class="plan">' + next.map(it => '<li><b>' + esc(it.title) + '</b> <span>(' + esc(it.stage || '') + ' · ' + fmtDate(it.start, false) + ' – ' + fmtDate(it.end, false) + ')</span></li>').join('') + '</ul>'
+    : '<p class="hint">لا بنود مخططة في الثلاثين يومًا القادمة.</p>';
+  const budRows = [['المبلغ الكلي حسب الاعتماد', f.A], ['النسبة الإدارية', f.ADM], ['مبلغ التنفيذ حسب الاعتماد', f.E], ['المصاريف التشغيلية', f.OPS],
+    ['مبلغ التنفيذ الفعلي', f.F], ['حسب الترسية أو التعاقد', f.C], ['المستلم من المانح', p.received]].filter(([, v]) => v != null && v !== '' && Number(v));
+  const budT = '<table class="t-bud"><tr><th>#</th><th>البند</th><th>المبلغ</th></tr>' + budRows.map(([k, v], i) => '<tr><th>' + AR(i + 1) + '</th><td>' + k + '</td><td>' + money(v) + '</td></tr>').join('') +
+    (p.received != null && f.A ? '<tr class="tot"><th></th><td>المتبقي من المانح</td><td>' + money(f.A - num(p.received)) + '</td></tr>' : '') + '</table>';
+  const photos = '<div class="photos">' + [1, 2, 3, 4].map(i => '<figure><div>صورة ' + AR(i) + '</div><figcaption contenteditable="true">وصف الصورة</figcaption></figure>').join('') + '</div>' +
+    (p.drive || p.folder ? '<p class="link">رابط المرفقات: <a href="' + esc(p.drive || p.folder) + '">مجلد المشروع في درايف</a></p>' : '');
+  const H = ['ملخص المشروع', 'أنشطة المشروع', 'الأنشطة المتبقية ونسب الإنجاز', 'الأعمال المخططة', 'موازنة المشروع', 'أهداف المشروع', 'تحديات المشروع', 'توثيق مراحل المشروع'];
+  const foot = '<footer><span class="org">' + esc(ORG_INFO.full) + '</span><b>' + esc(p.name) + '</b><i class="pg"></i></footer>';
+  const sheet = (cls, body) => '<section class="sheet ' + cls + '"><div class="in">' + body + '</div>' + foot + '</section>';
+  const h1 = (i, extra) => '<h1 id="s' + i + '"' + (extra || '') + '>' + H[i] + '</h1>';
+  const title = 'التقرير المرحلي ' + AR(nRep) + ' — ' + (p.code || '');
+  return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>' + esc(title) + '</title><style>' + REPORT_CSS + '</style></head><body>' +
+    '<div class="bar"><b>مسودة ' + esc(title) + '</b><span>حتى ' + d(asIso) + ' · الحقول المنقطة تُكتب هنا قبل الطباعة</span>' +
+    '<button onclick="print()">اطبع أو احفظ PDF</button><button id="cp">انسخ إلى Word</button></div>' +
+    '<section class="sheet cover"><div class="cv"><small>' + esc(ORG_INFO.full) + '</small><h2>التقرير المرحلي ' + AR(nRep) + '</h2><h3>' + esc(p.name) + '</h3>' +
+      '<p>' + esc(p.code || '') + (p.donor ? ' · ' + esc(p.donor) : '') + '</p><p>' + d(asIso) + '</p></div></section>' +
+    sheet('toc', '<h1 class="toc-h">المحتويات</h1><ol>' + H.map((h, i) => '<li><a href="#s' + i + '">' + h + '</a></li>').join('') + '</ol>') +
+    sheet('', h1(0) + sumT) +
+    sheet('wide', h1(1) + '<p class="cap">الجدول الزمني حتى ' + d(asIso) + (M && M.preview ? ' — مقترح من قالب «' + esc(M.preview.label) + '» لعدم وجود خطة تنفيذ' : '') + '</p>' + gantt +
+      '<p class="legend"><i style="background:#E2EFDA"></i>منجز <i style="background:#FCE4D6"></i>منجز (المراحل الأولى) <i style="background:#BCF6E4"></i>التوثيق والتقارير <i style="background:#D9D9D9"></i>مخطط</p>') +
+    sheet('', h1(2) + remT + h1(3, ' class="follow"') + planned) +
+    sheet('', h1(4) + budT) +
+    sheet('', h1(5) + manual('أهداف المشروع كما في المقترح المعتمد — تُكتب يدويًا') + h1(6, ' class="follow"') + manual('التحديات التي واجهت التنفيذ في هذه الفترة وكيف عولجت')) +
+    sheet('', h1(7) + photos) +
+    '<script>document.getElementById("cp").onclick=async()=>{const b=document.querySelector("body").cloneNode(true);b.querySelector(".bar").remove();' +
+    'const h="<meta charset=utf-8>"+b.innerHTML;try{await navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([h],{type:"text/html"}),"text/plain":new Blob([b.innerText],{type:"text/plain"})})]);alert("نُسخ التقرير — الصقه في قالب Word ثم طبّق «نسق التقرير»")}catch(e){alert(e.message)}};' +
+    'document.querySelectorAll(".sheet .pg").forEach((e,i)=>e.textContent=i+1);<\/script></body></html>';
+}
+function openReport(p){
+  const w = window.open('', '_blank');
+  if(!w){ toast('اسمح بالنوافذ المنبثقة لفتح المسودة', true); return; }
+  w.document.open(); w.document.write(reportHTML(p)); w.document.close();
+}
+const REPORT_CSS = `
+@page{size:A4;margin:0}
+@page land{size:A4 landscape;margin:0}
+*{box-sizing:border-box}
+body{margin:0;background:#E9ECEF;font-family:'Sakkal Majalla','Traditional Arabic','IBM Plex Sans Arabic',serif;color:#000;font-size:14pt}
+.bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 16px;background:#006C75;color:#fff;font:600 14px 'IBM Plex Sans Arabic',system-ui,sans-serif}
+.bar span{opacity:.8;margin-inline-end:auto}
+.bar button{font:inherit;border:0;border-radius:8px;padding:7px 14px;background:#fff;color:#006C75;cursor:pointer}
+.sheet{position:relative;width:210mm;min-height:297mm;margin:18px auto;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.12);display:flex;flex-direction:column;overflow:hidden;
+  background-image:radial-gradient(circle at 100% 0,transparent 0 118px,rgba(0,178,193,.07) 119px 121px,transparent 122px 160px,rgba(0,178,193,.06) 161px 163px,transparent 164px)}
+.sheet.wide{width:297mm;min-height:210mm;page:land}
+.in{flex:1;padding:45pt 72pt 20pt}
+.wide .in{padding:30pt 36pt 12pt}
+footer{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin:0 72pt 22pt;padding-top:8pt;border-top:1.5pt solid #006C75}
+footer .org{font-size:10pt;color:#44546A;white-space:nowrap}
+footer b{font-size:16pt;color:#006C75;text-align:center;max-width:120mm;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+footer .pg{justify-self:end;width:28px;height:28px;border-radius:50%;background:#FFC000;color:#fff;font:bold 13pt/28px 'Sakkal Majalla',serif;text-align:center;font-style:normal}
+h1{font-size:18pt;color:#006C75;text-decoration:underline;margin:0 0 12pt}
+h1.follow{margin-top:24pt}
+.toc-h{text-align:center;color:#005057;font-size:16pt}
+.toc ol{font-size:12pt;font-weight:bold;line-height:2.1;padding-inline-start:20pt}
+.toc a{color:#000;text-decoration:none}
+.cover{background:#006C75;background-image:radial-gradient(circle at 15% 85%,transparent 0 140px,rgba(255,255,255,.08) 141px 143px,transparent 144px 200px,rgba(255,255,255,.06) 201px 203px,transparent 204px),radial-gradient(circle at 95% 5%,transparent 0 90px,rgba(220,172,24,.25) 91px 93px,transparent 94px)}
+.cover .cv{margin:auto 26mm;color:#fff}
+.cover small{font-size:14pt;opacity:.85}
+.cover h2{font-size:40pt;color:#DCAC18;margin:14pt 0 6pt}
+.cover h3{font-size:22pt;margin:0 0 18pt;line-height:1.4}
+.cover p{font-size:15pt;color:#DCAC18;margin:4pt 0}
+table{border-collapse:collapse;width:100%;font-weight:bold}
+.t-sum th,.t-sum td{border:.5pt solid #fff;padding:4pt 10pt;line-height:1.5;font-size:14pt}
+.t-sum th{width:34%;text-align:center}
+.t-sum tr.c th,.t-sum tr.c td{background:#00B2C1;color:#fff}
+.t-sum tr.w th,.t-sum tr.w td{background:#fff;color:#44546A;border-color:#00B2C1}
+.t-sum small{font-weight:normal;font-size:12pt}
+.t-rem th,.t-rem td,.t-bud th,.t-bud td{border:.5pt solid #008F9B;padding:4pt 8pt;vertical-align:middle}
+.t-rem tr:first-child th,.t-bud tr:first-child th{background:#006C75;color:#fff;font-size:14pt}
+.t-rem th{background:#006C75;color:#fff;width:28pt}
+.t-rem .act{background:#81D0D9;color:#44546A;font-size:13pt;text-align:center;width:28%}
+.t-rem .pc{text-align:center;width:16%}
+.t-rem .det ul{margin:0;padding-inline-start:14pt;font-size:12pt;font-weight:normal}
+.t-bud{width:80%;margin:auto}
+.t-bud th{background:#006C75;color:#fff;width:40pt}
+.t-bud td{color:#006C75;text-align:center}
+.t-bud tr.tot td,.t-bud tr.tot th{background:#006C75;color:#fff}
+.cap{font-size:13pt;color:#44546A;margin:0 0 8pt}
+.wide table th,.wide table td{font-size:10pt!important;padding:0 2pt!important;height:15pt;line-height:1.1}
+.legend{font-size:12pt;color:#44546A}
+.legend i{display:inline-block;width:12px;height:12px;border:.5pt solid #008F9B;margin:0 10px 0 4px;vertical-align:-1px}
+.plan{line-height:1.8}
+.plan span{font-weight:normal;color:#44546A;font-size:12pt}
+.hint{color:#8a94a0;font-size:13pt}
+.manual{min-height:70pt;border:1.5px dashed #00B2C1;border-radius:6px;padding:8pt 10pt;outline:0;line-height:1.6}
+.manual:empty::before{content:attr(data-ph);color:#8a94a0}
+td .manual{min-height:0;border-width:1px;padding:0 6pt;color:#44546A}
+.photos{display:grid;grid-template-columns:1fr 1fr;gap:16pt}
+.photos figure{margin:0}
+.photos figure div{aspect-ratio:4/3;border:7pt solid #fff;box-shadow:0 3px 12px rgba(0,0,0,.25);background:#EEF3F4;display:grid;place-items:center;color:#8a94a0}
+.photos figcaption{text-align:center;font-size:12pt;margin-top:6pt;outline:0}
+.link a{color:#0563C1}
+@media print{
+  body{background:#fff}
+  .bar{display:none}
+  .sheet{margin:0;box-shadow:none;break-after:page}
+  .manual{border-color:transparent}
+  .manual:empty::before{content:''}
+}`;
 /* حذف المشروع من مكان واحد: أرشفة صفحته واستحقاقاته وخطته في نوشن، ونقل مجلده في درايف إلى المهملات.
    يشترط كتابة كوده، والجسر يتحقق منه مرة ثانية. الأرشفة والمهملات تُسترجعان نحو ٣٠ يومًا. */
 function dangerCard(p){
@@ -2246,6 +2387,9 @@ $('driveForm').addEventListener('submit', async e => {
 function readHash(){
   const h = decodeURIComponent(location.hash.slice(1));
   if(h === 'stats'){ S.view = 'stats'; return; }
+  const rm = h.match(/^report=([^@]+)(?:@(\d{4}-\d{2}-\d{2}))?$/);
+  if(rm){ const rp = DATA.projects.find(x => x.code === rm[1] || x.id === rm[1]);
+    if(rp){ if(rm[2]) GANTT_ASOF[rp.id] = rm[2]; setTimeout(() => { document.open(); document.write(reportHTML(rp)); document.close(); }, 0); } return; }
   S.view = 'list';
   if(!h) return;
   const p = DATA.projects.find(x => x.code === h || x.id === h);
@@ -2279,6 +2423,7 @@ $('detail').addEventListener('click', e => {
   else if(act === 'delete') deleteProject(p);
   else if(act === 'gantt-copy') ganttCopy(p);
   else if(act === 'gantt-dur') ganttSaveDur(p);
+  else if(act === 'report') openReport(p);
   else if(act === 'up') pickFiles(p, b.dataset.slot);
   else if(act === 'money-edit') openMoneyDlg(p);
 });
