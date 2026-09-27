@@ -412,10 +412,10 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
 .g-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:13px;color:var(--ink-2)}
 .g-tools input{padding:6px 9px;margin-inline-start:6px}
 .g-wrap{overflow-x:auto;border:1px solid #006C75;border-radius:8px}
-.gantt{border-collapse:collapse;font-size:12px;font-weight:700;min-width:100%}
+.gantt{border-collapse:collapse;font-size:12px;font-weight:700;width:100%;table-layout:fixed}
+.gantt col.g-c0{width:240px}
 .gantt th,.gantt td{border:1px solid #008F9B;height:26px;text-align:center;padding:0}
-.gantt td,.gantt .g-wk{min-width:24px;width:24px}
-.gantt .g-lbl{position:sticky;inset-inline-start:0;z-index:1;text-align:start;padding:3px 10px;white-space:nowrap;min-width:220px;max-width:320px;overflow:hidden;text-overflow:ellipsis}
+.gantt .g-lbl{position:sticky;inset-inline-start:0;z-index:1;text-align:start;padding:3px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gantt thead .g-lbl{background:#00B2C1;color:#fff}
 .gantt .g-mon{background:#81D0D9;color:#44546A;padding:4px 2px}
 .gantt .g-wk{background:#006C75;color:#fff;font-size:10.5px}
@@ -1155,9 +1155,9 @@ function ganttModel(p){
   const e0 = new Date(Math.max(...items.map(x => toDate(x.end)), ...(p.end ? [toDate(p.end)] : [])));
   const nW = Math.max(1, Math.ceil((e0 - s0 + DAY) / (7 * DAY)));
   const weeks = [...Array(nW)].map((_, i) => { const a = new Date(s0.getTime() + i * 7 * DAY); return {a, b: new Date(a.getTime() + 6 * DAY)}; });
-  const months = [];
-  weeks.forEach((w, i) => { const k = w.a.getFullYear() * 12 + w.a.getMonth(), last = months[months.length - 1];
-    if(last && last.k === k) last.n++; else months.push({k, n: 1, label: w.a.toLocaleDateString('ar-EG-u-nu-latn', {month: 'long', year: 'numeric'})}); });
+  /* شهر المشروع = 4 أسابيع ثابتة (الشهر 1 = W1–W4) كما في جداول التقارير المعتمدة، لا الشهر الميلادي */
+  const months = [], fd = x => x.toLocaleDateString('ar-EG-u-nu-latn', {day: 'numeric', month: 'short'});
+  for(let i = 0; i < weeks.length; i += 4){ const g = weeks.slice(i, i + 4); months.push({n: g.length, label: fd(g[0].a) + ' – ' + fd(g[g.length - 1].b)}); }
   const stages = [];
   items.slice().sort((a, b) => (num(a.order) - num(b.order)) || (toDate(a.start) - toDate(b.start))).forEach(it => {
     const k = it.stage || 'بلا مرحلة'; let g = stages.find(x => x.name === k); if(!g) stages.push(g = {name: k, items: []}); g.items.push(it);
@@ -1208,7 +1208,7 @@ function ganttCard(p){
     (M.preview ? '<p class="note" style="margin:0 0 10px">لا خطة تنفيذ لهذا المشروع بعد، فهذا جدول مقترح من مدته ونوعه. أنشئ الخطة من بطاقة «خطة التنفيذ» لتعتمده وتتابع إنجاز بنوده.</p>' : '') +
     '<div class="g-tools"><label>حالة الجدول في تاريخ <input type="date" data-gasof="' + esc(p.id) + '" value="' + iso(asOf) + '"></label>' +
     '<span class="g-btns"><button class="btn" type="button" data-act="gantt-copy">انسخ الجدول للتقرير</button><button class="btn cta" type="button" data-act="report">مسودة تقرير مرحلي</button></span></div>' +
-    '<div class="g-wrap"><table class="gantt"><thead>' + head1 + head2 + '</thead><tbody>' + body + '</tbody></table></div>' +
+    '<div class="g-wrap"><table class="gantt" style="min-width:' + (240 + M.weeks.length * 22) + 'px"><colgroup><col class="g-c0"><col span="' + M.weeks.length + '"></colgroup><thead>' + head1 + head2 + '</thead><tbody>' + body + '</tbody></table></div>' +
     '<div class="g-legend"><span><i class="dn2"></i>منجز</span><span><i class="dn1"></i>منجز (المراحل الأولى)</span><span><i class="dn3"></i>التوثيق والتقارير</span><span><i class="pl"></i>مخطط لم يُنجز بعد</span><span><i class="nowk"></i>أسبوع التاريخ المختار</span></div>' +
     '<p class="note">الإنجاز من حالة كل بند في الخطة: «منجز» حتى تاريخ إنجازه، و«جارٍ» حتى تاريخ الجدول. عدّل التواريخ والحالات من بطاقة «خطة التنفيذ».</p></article>';
 }
@@ -1237,7 +1237,7 @@ function wordGantt(t){
     c.setAttribute('style', base + 'background:' + bg + ';color:' + fg + ';' + (c.classList.contains('g-lbl') ? 'text-align:right;white-space:nowrap;' : 'width:16pt;'));
     c.removeAttribute('class'); c.removeAttribute('title');
   });
-  t.removeAttribute('class');
+  t.removeAttribute('class'); t.querySelectorAll('colgroup').forEach(c => c.remove());
   return t;
 }
 async function ganttSaveDur(p){
