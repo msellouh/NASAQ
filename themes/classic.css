@@ -82,7 +82,7 @@
   background-image:repeating-linear-gradient(to bottom,transparent 0 calc(var(--rule-h) - 1px),var(--art-rule) calc(var(--rule-h) - 1px) var(--rule-h));background-attachment:local}
 :root[data-palette="classic"] .braindump{border-color:transparent;border-radius:0;font-family:var(--font-hand);font-size:var(--fs-md);padding-top:0}
 /* 2) خط الهامش الأحمر: مزدوج (1px ثم فراغ 2px ثم 1px) في جهة البداية (اليمين) من كل بطاقة ورقية */
-:root[data-palette="classic"] .card:not(.c-ideas,.onboard){padding-inline-start:calc(var(--pad) + var(--art-margin-x) - 6px);
+:root[data-palette="classic"] .card:not(.c-ideas,.onboard){padding-inline-start:calc(var(--pad,var(--card-pad,var(--sp-5))) + var(--art-margin-x) - 6px);   /* --pad معرَّف في اللوح وحده؛ الاحتياطي لصفحتي المشاريع والنبض */
   background-image:linear-gradient(to left,transparent var(--art-margin-x),var(--art-margin) var(--art-margin-x) calc(var(--art-margin-x) + 1px),
     transparent calc(var(--art-margin-x) + 1px) calc(var(--art-margin-x) + 3px),var(--art-margin) calc(var(--art-margin-x) + 3px) calc(var(--art-margin-x) + 4px),transparent 0)}
 :root[data-palette="classic"] .card{box-shadow:var(--elev-1)}
