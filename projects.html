@@ -17,6 +17,7 @@
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
 <script src="nasaq-core.js?v=20260927e"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
 <script src="nasaq-art.js?v=20260927e"></script>
+<script src="nasaq-icons.js?v=20260927e"></script>
 <style>
 @layer tokens, base, layouts, components, theme, utilities;
 @layer base{
@@ -962,7 +963,7 @@ function openNamesReview(){
     try{
       const r = await post({action: 'std_name_set', org: ORG, std, ids});
       DATA.projects.forEach(p => { if(ids.includes(p.id)) p.stdName = std; });
-      sec.classList.add('done'); b.textContent = '✓ اعتُمد لـ' + r.updated;
+      sec.classList.add('done'); b.innerHTML = icon('check') + ' اعتُمد لـ' + esc(r.updated);
       sec.querySelectorAll('li small').forEach((sm, i) => { if(sec.querySelectorAll('li input')[i].checked){ sm.textContent = std; sm.className = ''; } });
     }catch(err){ b.disabled = false; b.textContent = 'اعتمد'; toast(err.message || 'تعذّر الحفظ', true); }
   });
@@ -1482,7 +1483,7 @@ function phaseStepper(p){
   const fillW = idx < 0 ? 0 : (idx / (PHASES.length - 1)) * 88;
   return '<div class="steps"><span class="fill" style="width:' + fillW + '%"></span>' + PHASES.map((ph, i) => {
     const cls = idx < 0 ? '' : i < idx ? 'done' : i === idx ? 'now' : '';
-    return '<div class="step ' + cls + '"' + (i === idx ? ' aria-current="step"' : '') + '><div class="dot">' + (i < idx ? '✓' : AR(i + 1)) + '</div>' + ph + '</div>';
+    return '<div class="step ' + cls + '"' + (i === idx ? ' aria-current="step"' : '') + '><div class="dot">' + (i < idx ? icon('check') : AR(i + 1)) + '</div>' + ph + '</div>';
   }).join('') + '</div>';
 }
 const suggestTpl = p => TEMPLATES.find(t => t.test(p)).key;
@@ -1513,10 +1514,10 @@ function planCard(p){
   const fillW = st.length > 1 ? ((nowIdx < 0 ? st.length - 1 : nowIdx) / (st.length - 1)) * 88 : 0;
   const stepper = '<div class="steps"><span class="fill" style="width:' + fillW + '%"></span>' + st.map((s, i) =>
     '<div class="step ' + (s.state === 'todo' ? '' : s.state) + '"' + (s.state === 'now' ? ' aria-current="step"' : '') + '><div class="dot">' +
-      (s.state === 'done' ? '✓' : AR(i + 1)) + '</div>' + esc(s.name) + '<small><bdi>' + AR(s.done) + ' من ' + AR(s.total) + '</bdi></small></div>').join('') + '</div>';
+      (s.state === 'done' ? icon('check') : AR(i + 1)) + '</div>' + esc(s.name) + '<small><bdi>' + AR(s.done) + ' من ' + AR(s.total) + '</bdi></small></div>').join('') + '</div>';
   const range = s => s.start || s.end ? (s.start && s.end && s.start !== s.end ? dayLbl(s.start, false) + ' – ' + dayLbl(s.end, false) : 'حتى ' + dayLbl(s.end || s.start, false)) : '';
   const groups = st.map((s, i) => '<section class="stage ' + s.state + '">' +
-    '<div class="stage-h"><span class="no">' + (s.state === 'done' ? '✓' : AR(i + 1)) + '</span><h3>' + esc(s.name) + '</h3>' +
+    '<div class="stage-h"><span class="no">' + (s.state === 'done' ? icon('check') : AR(i + 1)) + '</span><h3>' + esc(s.name) + '</h3>' +
       '<small><bdi>' + AR(s.done) + ' من ' + AR(s.total) + '</bdi>' + (range(s) ? ' | <bdi>' + range(s) + '</bdi>' : '') + '</small>' +
       '<span class="end"><button class="btn ghost sm" type="button" data-act="add" data-stage="' + esc(s.name) + '">' + ICON_PLUS + 'بند</button></span></div>' +
     '<ul class="pis">' + s.items.map(planRow).join('') + '</ul></section>').join('');
@@ -1943,13 +1944,13 @@ function projTable(rows){
       '<td class="nm"><a href="#' + encodeURIComponent(p.code || p.id) + '" title="فتح بطاقة المشروع">' + esc(p.name) + '</a></td>' +
       '<td>' + esc(p.donor || '—') + '</td><td>' + esc(p.coordinator || '—') + '</td><td>' + (p.end ? dayLbl(p.end, false) : '—') + '</td><td>' + statusPill(p.status) + '</td>' +
       '<td>' + money(p.approved) + '</td><td>' + money(p.exec) + '</td>' +
-      (f => '<td class="' + (f.issues.length ? 'hi' : '') + '"' + (f.issues.length ? ' title="' + esc(f.issues.join(' | ')) + '"' : '') + '>' + (f.F ? money(f.F) : '—') + (f.issues.length ? ' ⚠' : '') + '</td>')(fin(p)) +
+      (f => '<td class="' + (f.issues.length ? 'hi' : '') + '"' + (f.issues.length ? ' title="' + esc(f.issues.join(' | ')) + '"' : '') + '>' + (f.F ? money(f.F) : '—') + (f.issues.length ? ' ' + icon('alert') : '') + '</td>')(fin(p)) +
       '<td class="' + (sp > 1.0001 ? 'hi' : '') + '">' + P(sp) + '</td><td>' + P(V('adminP')(p)) + '</td>' +
       '<td class="' + (rc >= 0.9999 ? 'ok' : '') + '">' + P(rc) + '</td>' +
       '<td>' + (p.docsChecked ? AR((p.docsDone || []).length) + '/' + AR(DOCS_N) : '—') + '</td><td>' + P(pl) + '</td></tr>';
   }).join('');
   const head = TCOLS.map(c => '<th><button type="button" data-sort="' + c[0] + '" class="' + (c[0] === S.tsort ? 'on' : '') + '">' + c[1] +
-    (c[0] === S.tsort ? (S.tdir < 0 ? ' ↓' : ' ↑') : '') + '</button></th>').join('');
+    (c[0] === S.tsort ? (S.tdir < 0 ? ' ' + icon('arrow-down') : ' ' + icon('arrow-up')) : '') + '</button></th>').join('');
   return card('جدول المشاريع', '<div class="st-scroll"><table class="st-table"><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table></div>',
     cnt(rows.length, W_PROJ) + ' | انقر عنوان العمود للترتيب، والصف أو اسم المشروع لفتح بطاقته');
 }
@@ -2184,7 +2185,7 @@ function budCalc(){
   box.innerHTML = !A ? 'أدخل المبلغ الكلي لتبدأ الحاسبة.' :
     '<span>التنفيذ الكلي<b>' + money(E) + '</b></span><span>الموزّع (مصاريف + فاتورة)<b>' + money(dist) + '</b></span>' +
     '<span>الباقي<b class="rem">' + money(rem) + '</b></span>' +
-    '<span class="st">' + (st === 'ok' ? '✓ تم توزيع كامل قيمة التنفيذ' : ADM > A ? 'الإدارية أكبر من المبلغ الكلي'
+    '<span class="st">' + (st === 'ok' ? icon('check') + ' تم توزيع كامل قيمة التنفيذ' : ADM > A ? 'الإدارية أكبر من المبلغ الكلي'
       : INV < 0 ? 'المصاريف غير المباشرة أكبر من التنفيذ الكلي' : rem < 0 ? 'المصاريف تجاوزت قيمة التنفيذ' : 'لا يزال هناك مبلغ غير موزّع') + '</span>';
   return {A, ADM, E, IND, INV, rem, ok: st === 'ok', lines};
 }
@@ -2216,7 +2217,7 @@ function moneyCheck(){
     msgs.push('الكلي − الإدارية = ' + money(v.approved - n(v.admin)) + '، وحسب الاعتماد ' + money(v.exec));
   if(v.exec != null && v.net != null && Math.abs(v.exec - v.net - n(v.otherOps)) >= 1)
     msgs.push('الفعلي + التشغيلية = ' + money(v.net + n(v.otherOps)) + '، وحسب الاعتماد ' + money(v.exec));
-  el.textContent = msgs.length ? '⚠ ' + msgs.join(' | ') : (v.approved != null && v.exec != null ? '✓ المعادلة متوازنة' : '');
+  el.innerHTML = msgs.length ? icon('alert') + ' ' + esc(msgs.join(' | ')) : (v.approved != null && v.exec != null ? icon('check') + ' المعادلة متوازنة' : '');
   el.style.color = msgs.length ? 'var(--urgent)' : 'var(--done)';
 }
 function openMoneyDlg(p){
@@ -2382,7 +2383,7 @@ $('peopleList').addEventListener('click', e => {
 /* نافذة أرشيف درايف */
 $('driveBtn').addEventListener('click', () => {
   const root = DATA.driveRoot;
-  $('driveNow').innerHTML = root ? 'المجلد المربوط الآن: <a class="link" href="https://drive.google.com/drive/folders/' + esc(root) + '" target="_blank" rel="noopener">فتح مجلد الأرشيف ↗</a>' : 'لم يُربط أرشيف ' + ORG_INFO.name + ' بعد.';
+  $('driveNow').innerHTML = root ? 'المجلد المربوط الآن: <a class="link" href="https://drive.google.com/drive/folders/' + esc(root) + '" target="_blank" rel="noopener">فتح مجلد الأرشيف ' + icon('external') + '</a>' : 'لم يُربط أرشيف ' + ORG_INFO.name + ' بعد.';
   $('driveForm').root.value = '';
   $('driveDlg').showModal();
 });

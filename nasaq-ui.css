@@ -3,6 +3,14 @@
 /* نَسَق — المكوّنات المشتركة بين الطوابع (@layer components). كل مكوّن يقرأ متغيرات الطابع.
    في المرحلة 1: عناصر التحكم «الحديثة» المشتركة بين نَسَق ونَسَق 360 (TODO: تتحول إلى متغيرات في المرحلة 6)،
    وحلقة المدار (data-orbit) ورسومات التوهج (data-art="glow")، والشعار على قرصه العاجي، و«نبضة»، وإشعار الحقوق. */
+/* ---------- الأيقونات (المرحلة 5): Lucide عبر nasaq-icons.js ----------
+   في طبقة base عمدًا: مقاس افتراضي تتجاوزه قواعد المكوّنات الخاصة (.tab .ic، .card-head .ic).
+   16px داخل النص، و20px في الأزرار والعناوين، والسماكة من الطابع، واللون currentColor. */
+@layer base{
+svg.ic{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px;fill:none;stroke:currentColor;stroke-width:var(--icon-stroke,1.75)}
+:is(button,.btn,.icon-btn,h1,h2,h3)>svg.ic{width:20px;height:20px;vertical-align:-4px}
+:is([dir="rtl"],:dir(rtl)) svg.ic-dir{transform:scaleX(-1)}
+}
 @layer components{
 /* TODO: يتحول إلى متغير في المرحلة 6 */
 :root:is([data-palette="nasaq"],[data-palette="nasaq360"]) h1,:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) h2,:root:is([data-palette="nasaq"],[data-palette="nasaq360"]) h3{font-weight:600;letter-spacing:0}

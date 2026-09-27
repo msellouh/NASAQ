@@ -14,6 +14,7 @@
 <!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده؛ وخط الطابع الافتراضي «نَسَق» يُحمَّل مسبقًا -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
 <script src="nasaq-core.js?v=20260927e"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
+<script src="nasaq-icons.js?v=20260927e"></script>
 <style>
 @layer tokens, base, layouts, components, theme, utilities;
 @layer base{
@@ -79,7 +80,7 @@ button.kpi:hover{border-color:var(--ink-2);translate:0 -2px}
 .fcard .code{font:700 var(--fs-xs)/1 var(--font-head);color:var(--focus);letter-spacing:.3px}
 .fcard h3{font-size:var(--fs-md);line-height:1.45}
 .fcard ul{margin:0;padding:0;list-style:none;display:grid;gap:var(--sp-1);font-size:var(--fs-sm);color:var(--ink-2)}
-.fcard li::before{content:"◆";color:var(--accent);font-size:var(--fs-xs);margin-inline-end:var(--sp-2);vertical-align:2px}
+.fcard li::before{content:"";display:inline-block;width:6px;height:6px;background:var(--accent);transform:rotate(45deg);margin-inline-end:var(--sp-2);vertical-align:2px}
 
 /* الاستحقاقات */
 .dues{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
@@ -294,7 +295,7 @@ function render(){
       '<span class="st' + (o.x.status === 'قيد الإعداد' ? ' prep' : '') + '">' + esc(o.x.status || 'لم يبدأ') + '</span>' +
       '<span class="when ' + w.cls + '">' + w.txt + '<small>' + fmtDay(o.x.due) + '</small></span></button>' +
       '<div class="dact">' +
-        '<button type="button" data-act="task" data-d="' + id + '"' + (tasked ? ' class="done" title="أُضيفت إلى مهامك"' : '') + '>' + (tasked ? '✓ في مهامك' : 'حوّل إلى مهمة') + '</button>' +
+        '<button type="button" data-act="task" data-d="' + id + '"' + (tasked ? ' class="done" title="أُضيفت إلى مهامك"' : '') + '>' + (tasked ? icon('check') + ' في مهامك' : 'حوّل إلى مهمة') + '</button>' +
         '<select data-act="status" data-d="' + id + '" aria-label="حالة التقرير"' + off + '>' + ['لم يبدأ', 'قيد الإعداد', 'متأخر', 'صدر'].filter(v=>v !== 'متأخر' || o.x.status === 'متأخر').map(v=>'<option' + ((o.x.status || 'لم يبدأ') === v ? ' selected' : '') + '>' + v + '</option>').join('') + '</select>' +
         '<button type="button" data-act="upload" data-d="' + id + '"' + off + '>ارفع التقرير</button>' +
         '<button type="button" data-act="defer" data-d="' + id + '"' + off + '>تأجيل</button>' +

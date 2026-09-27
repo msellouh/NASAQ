@@ -13,7 +13,7 @@
  *
  * عند تغيير قائمة SHELL أو منطق هذا الملف: ارفع رقم CACHE ليُستبدل القديم.
  */
-const CACHE = 'daily-board-v5';   /* v4: صفحتا المشاريع والنبض والملفات المشتركة تعمل بلا اتصال */
+const CACHE = 'daily-board-v6';   /* v4: صفحتا المشاريع والنبض والملفات المشتركة تعمل بلا اتصال */
 const SHELL = [
   './',
   './index.html',
@@ -23,6 +23,7 @@ const SHELL = [
   './nasaq-pulse.js',
   './nasaq-brand.js',
   './nasaq-art.js',
+  './nasaq-icons.js',
   './nasaq-theme.css',
   './nasaq-ui.css',
   './themes/classic.css',

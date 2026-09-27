@@ -13,6 +13,7 @@
 <meta name="theme-color" content="#F7F6F2">
 <script src="nasaq-core.js?v=20260927e"></script>
 <script src="nasaq-art.js?v=20260927e"></script>
+<script src="nasaq-icons.js?v=20260927e"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -235,7 +236,7 @@ li.details textarea{resize:vertical;min-height:34px}
 .archive{margin-top:var(--sp-6);border-top:2px solid var(--ink);padding-top:var(--sp-3)}
 .archive summary{font-family:var(--font-head);font-size:var(--fs-xl);font-weight:700;cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:var(--sp-2)}
 .archive summary::-webkit-details-marker{display:none}
-.archive summary::before{content:"◂";font-family:inherit;font-size:var(--fs-base);color:var(--muted);transition:transform var(--dur-2) var(--ease-out)}
+.archive summary::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:var(--mask-chevron) center/contain no-repeat;mask:var(--mask-chevron) center/contain no-repeat;font-family:inherit;font-size:var(--fs-base);color:var(--muted);transition:transform var(--dur-2) var(--ease-out)}
 .archive[open] summary::before{transform:rotate(-90deg)}
 .archive summary b{font-family:var(--font-body);font-size:var(--fs-sm);font-weight:400;color:var(--muted)}
 .arc-tools{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-3) 0 var(--sp-2)}
@@ -558,7 +559,7 @@ li.details .subs{grid-column:1 / -1;display:flex;flex-direction:column;gap:var(-
 .subs-list li.done span{text-decoration:line-through;color:var(--muted)}
 .sub-check{width:18px;height:18px;padding:0;border:1.5px solid var(--ink-2);border-radius:var(--r-md);background:var(--surface);cursor:pointer;display:grid;place-items:center;color:var(--paper);font-size:var(--fs-xs);line-height:1}
 .sub-check[aria-checked="true"]{background:var(--done);border-color:var(--done)}
-.sub-check[aria-checked="true"]::after{content:"✓"}
+.sub-check[aria-checked="true"]::after{content:"";width:12px;height:12px;background:currentColor;-webkit-mask:var(--mask-check) center/contain no-repeat;mask:var(--mask-check) center/contain no-repeat}
 .subs-list .kill{opacity:.55}
 .subs-list li:hover .kill{opacity:1}
 li.details input.sub-add{max-width:420px}
@@ -1611,12 +1612,12 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <div class="settings-overlay" id="settingsOverlay" hidden>
   <div class="settings-panel">
     <div class="settings-head">
-      <h2>⚙️ الإعدادات</h2>
-      <button id="settingsClose" type="button" title="إغلاق">×</button>
+      <h2><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg> الإعدادات</h2>
+      <button id="settingsClose" type="button" title="إغلاق" aria-label="إغلاق الإعدادات"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button>
     </div>
     <div class="settings-body">
       <section>
-        <h3>👤 الحساب</h3>
+        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-user"/></svg> الحساب</h3>
         <div class="set-row"><span>المستخدم</span><b id="setUser">—</b></div>
         <div class="set-row"><span>الصلاحية</span><b id="setRole">—</b></div>
         <div class="set-sub">تغيير كلمة السر</div>
@@ -1630,7 +1631,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </section>
 
       <section>
-        <h3>🔗 الربط بنوشن</h3>
+        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-link"/></svg> الربط بنوشن</h3>
         <div class="set-row"><span>الحالة</span><b id="setBridgeState">—</b></div>
         <input type="url" id="setBridgeUrl" placeholder="https://script.google.com/macros/s/…">
         <div class="set-actions"><button id="setBridgeSave" type="button">حفظ الرابط واختباره</button></div>
@@ -1639,7 +1640,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </section>
 
       <section>
-        <h3>🎨 المظهر</h3>
+        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-palette"/></svg> المظهر</h3>
         <div class="theme-cards" id="themeCards" role="radiogroup" aria-label="الطابع"></div>
         <div class="set-row"><span id="modeLabel">الوضع</span>
           <span class="pswitch" id="setMode" role="radiogroup" aria-labelledby="modeLabel">
@@ -1654,7 +1655,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </section>
 
       <section id="setAlive">
-        <h3>🔔 الأصوات والإشعارات</h3>
+        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-bell"/></svg> الأصوات والإشعارات</h3>
         <div class="set-row"><label for="setSoundOn">الأصوات</label><input type="checkbox" class="set-toggle" id="setSoundOn"></div>
         <div class="set-row"><label for="setClickOn">صوت النقر على الأزرار</label><input type="checkbox" class="set-toggle" id="setClickOn"></div>
         <div class="set-row"><label for="setVolume">مستوى الصوت</label><input type="range" class="set-range" id="setVolume" min="0" max="100" step="5"></div>
@@ -1692,7 +1693,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </section>
 
       <section>
-        <h3>🎵 سبوتيفاي</h3>
+        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-music"/></svg> سبوتيفاي</h3>
         <div class="set-row"><span>الحالة</span><b id="setSpotifyState">غير مربوط</b></div>
         <div class="set-actions">
           <button id="setSpotifySetup" type="button">إعداد Client ID</button>
@@ -1701,14 +1702,14 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </section>
 
       <section id="setAdminSection" hidden>
-        <h3>👑 إدارة المستخدمين</h3>
+        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-crown"/></svg> إدارة المستخدمين</h3>
         <div class="set-row"><span>التسجيل</span><b id="setSignupState">—</b></div>
         <div id="setUsersList" class="admin-users"></div>
         <div class="set-hint">حذف مستخدم يمسح حسابه وكل بياناته المخزَّنة نهائيًا — لا يمكن التراجع.</div>
       </section>
 
       <section>
-        <h3>💾 البيانات</h3>
+        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-save"/></svg> البيانات</h3>
         <div class="set-actions">
           <button id="setBackup" type="button">نسخة احتياطية</button>
           <button id="setRestore" type="button">استعادة</button>
@@ -1792,16 +1793,16 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <div class="greet-date"><bdi id="weekday">—</bdi>، <bdi id="date">—</bdi><span class="greet-sep" id="hijriSep" hidden> | </span><bdi class="greet-hijri" id="hijriDate" hidden></bdi></div>
     <!-- لمحة اليوم: تظهر في واجهة «360» الكاملة فقط -->
     <div class="hero-glance"><div class="ring-clock" id="heroRing" role="img"></div><div class="brief-ring" id="briefRing" role="img"><b id="briefPct">0%</b></div><div class="hero-meta" id="heroMeta"></div></div>
-    <button class="plan-day" id="planDayBtn" type="button">☀️ خطّط يومك</button>
+    <button class="plan-day" id="planDayBtn" type="button"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg> خطّط يومك</button>
   </div>
   <div class="greet-media">
     <div class="hero-scene" id="heroScene" aria-hidden="true" hidden></div>
     <img id="heroImg" alt="" hidden>
-    <button class="hero-empty" id="heroEmpty" type="button">🖼️ أضف صورة</button>
+    <button class="hero-empty" id="heroEmpty" type="button"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-image"/></svg> أضف صورة</button>
     <div class="hero-tools">
       <button class="hero-add" id="heroTagBtn" type="button" title="صورك ومتى تناسب كل واحدة" hidden>صورك</button>
       <button class="hero-add" id="heroAddBtn" type="button" title="أضف صورة">+ صورة</button>
-      <button class="hero-del" id="heroDelBtn" type="button" title="احذف هذه الصورة" hidden>×</button>
+      <button class="hero-del" id="heroDelBtn" type="button" title="احذف هذه الصورة" aria-label="احذف هذه الصورة" hidden><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button>
     </div>
   </div>
   <div class="hero-dots" id="heroDots" aria-label="صورك"></div>
@@ -1822,7 +1823,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <section class="card c-pri">
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>أولويات اليوم</h2></div>
       <div class="pinned">
-        <span class="pin-ic">📌</span>
+        <span class="pin-ic"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg></span>
         <input id="pinnedEvent" placeholder="حدث اليوم المهم — اجتماع، موعد، مكالمة...">
       </div>
       <div class="pri" id="pri">
@@ -1907,7 +1908,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>أفكار عابرة</h2></div>
       <textarea class="braindump" id="brainDump" placeholder="ما الذي يشغلك؟ اتركه هنا الآن، ورتّبه لاحقًا. والصق لقطة شاشة (Ctrl+V) لتحفظها فكرةً."></textarea>
       <div class="shots" id="ideaShots" aria-label="لقطات محفوظة"></div>
-      <button type="button" class="card-link idea-to-task" id="ideaToTask">↩ حوّل السطر الحالي إلى مهمة</button>
+      <button type="button" class="card-link idea-to-task" id="ideaToTask"><svg class="ic ic-dir" aria-hidden="true" focusable="false"><use href="#i-dir-return"/></svg> حوّل السطر الحالي إلى مهمة</button>
 
       <h3 class="sub">بانتظار رد</h3>
       <ul class="mini" id="waitList"></ul>
@@ -1948,12 +1949,12 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <section class="card c-focus">
       <div class="card-art" data-art="focus" aria-hidden="true"></div>
       <div class="card-head"><h2 id="pomoTitle"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M10 2h4"/></svg>التركيز</h2>
-        <button type="button" class="card-link" id="focusModeBtn" title="وضع التركيز بملء الشاشة">⛶ وضع التركيز</button></div>
+        <button type="button" class="card-link" id="focusModeBtn" title="وضع التركيز بملء الشاشة"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-maximize"/></svg> وضع التركيز</button></div>
       <div class="pomodoro">
         <div class="pomo-time" id="pomoTime">25:00</div>
         <div class="pomo-controls">
           <button class="go" id="pomoToggle" type="button">ابدأ</button>
-          <button id="pomoReset" type="button" title="تصفير">↺</button>
+          <button id="pomoReset" type="button" title="تصفير" aria-label="تصفير المؤقت"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-rotate"/></svg></button>
         </div>
         <select id="pomoTask" aria-label="المهمة المرتبطة"><option value="">— بلا مهمة محددة —</option></select>
         <div class="pomo-hint" id="pomoHint"></div>
@@ -2029,7 +2030,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <div class="fm-bar" aria-hidden="true"><i id="fmFill"></i></div>
   <div class="fm-controls">
     <button type="button" class="fm-go" id="fmToggle">ابدأ</button>
-    <button type="button" id="fmReset">↺ من جديد</button>
+    <button type="button" id="fmReset"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-rotate"/></svg> من جديد</button>
     <button type="button" id="fmExit">خروج <kbd>Esc</kbd></button>
   </div>
   <p class="fm-note">شيء واحد في كل مرة. ما يخطر ببالك الآن، اكتبه في «أفكار عابرة» بعد الجلسة.</p>
@@ -2083,7 +2084,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 </section>
 <div class="page-grid">
   <section class="card">
-    <div class="card-head"><h3>🌅 روتين الصباح</h3></div>
+    <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-sunrise"/></svg> روتين الصباح</h3></div>
     <ul class="mini" id="amList"></ul>
     <div class="mini-row">
       <input class="mini-add" id="amInput" placeholder="أضف عادة صباحية">
@@ -2092,7 +2093,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </section>
 
   <section class="card">
-    <div class="card-head"><h3>🌙 الروتين المسائي</h3></div>
+    <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-moon"/></svg> الروتين المسائي</h3></div>
     <ul class="mini" id="pmList"></ul>
     <div class="mini-row">
       <input class="mini-add" id="pmInput" placeholder="أضف عادة مسائية">
@@ -2107,18 +2108,18 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </section>
 
   <section class="card">
-    <div class="card-head"><h3>🔋 مستوى الطاقة اليوم</h3></div>
+    <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-4"/></svg> مستوى الطاقة اليوم</h3></div>
     <div class="energy" id="energyPicker">
-      <button data-v="1" type="button" title="منخفض جدًا">🔋</button>
-      <button data-v="2" type="button" title="منخفض">🔋</button>
-      <button data-v="3" type="button" title="متوسط">🔋</button>
-      <button data-v="4" type="button" title="جيد">🔋</button>
-      <button data-v="5" type="button" title="ممتاز">🔋</button>
+      <button data-v="1" type="button" title="منخفض جدًا" aria-label="الطاقة: منخفض جدًا"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-1"/></svg></button>
+      <button data-v="2" type="button" title="منخفض" aria-label="الطاقة: منخفض"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-2"/></svg></button>
+      <button data-v="3" type="button" title="متوسط" aria-label="الطاقة: متوسط"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-3"/></svg></button>
+      <button data-v="4" type="button" title="جيد" aria-label="الطاقة: جيد"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-4"/></svg></button>
+      <button data-v="5" type="button" title="ممتاز" aria-label="الطاقة: ممتاز"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-5"/></svg></button>
     </div>
   </section>
 
   <section class="card">
-    <div class="card-head"><h3>🙏 لحظات الامتنان</h3></div>
+    <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-heart"/></svg> لحظات الامتنان</h3></div>
     <div class="grat" id="gratWrap">
       <input data-i="0" placeholder="1. أنا ممتن لـ...">
       <input data-i="1" placeholder="2.">
@@ -2127,14 +2128,14 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </section>
 
   <section class="card">
-    <div class="card-head"><h3>🍽️ الوجبات والماء</h3></div>
+    <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-utensils"/></svg> الوجبات والماء</h3></div>
     <div class="meals">
       <input id="mealBreak" placeholder="الإفطار">
       <input id="mealLunch" placeholder="الغداء">
       <input id="mealDinner" placeholder="العشاء">
     </div>
     <div class="water">
-      <span>💧 ترطيب:</span>
+      <span><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-droplet"/></svg> ترطيب:</span>
       <button id="waterMinus" type="button">-</button>
       <b id="waterCount">0</b>
       <button id="waterPlus" type="button">+</button>
@@ -2143,7 +2144,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </section>
 
   <section class="card page-wide">
-    <div class="card-head"><h3>🎵 مشغّل سبوتيفاي</h3></div>
+    <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-music"/></svg> مشغّل سبوتيفاي</h3></div>
     <div class="spotify-box" id="spotifyBox">
       <div class="spotify-signedout" id="spotifySignedOut">
         <p>اربط حساب سبوتيفاي لعرض قوائم التشغيل الخاصة بك هنا.</p>
@@ -2153,7 +2154,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="spotify-signedin" id="spotifySignedIn" hidden>
         <select id="spotifyPlaylist" aria-label="اختر قائمة تشغيل"></select>
         <div class="spotify-embed-wrap"><iframe id="spotifyEmbed" width="100%" height="152" frameborder="0" allow="encrypted-media" loading="lazy"></iframe></div>
-        <div class="spotify-hint">حساب مجاني: التشغيل هنا معاينة 30 ثانية فقط. <a id="spotifyOpenApp" href="#" target="_blank" rel="noopener">افتح القائمة كاملة في سبوتيفاي ↗</a></div>
+        <div class="spotify-hint">حساب مجاني: التشغيل هنا معاينة 30 ثانية فقط. <a id="spotifyOpenApp" href="#" target="_blank" rel="noopener">افتح القائمة كاملة في سبوتيفاي <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-external"/></svg></a></div>
         <button id="spotifyDisconnectBtn" type="button" class="linklike">قطع الربط</button>
       </div>
     </div>
@@ -2197,7 +2198,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </section>
   <aside class="exp-side">
     <section class="card">
-      <div class="card-head"><h3>📊 ميزانية هذا الشهر</h3></div>
+      <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg> ميزانية هذا الشهر</h3></div>
       <div class="budget-overall" id="budgetOverall"></div>
       <div class="budget-list" id="budgetList"></div>
       <div class="exp-sync-note" id="expSyncNote"></div>
@@ -2805,7 +2806,7 @@ $('pgo').onclick = ()=>{
         });
         const td=document.createElement('td');
         const b=document.createElement('button');
-        b.className='back'; b.textContent='↩'; b.title='أضفها إلى لوح اليوم';
+        b.className='back'; b.innerHTML = icon('dir-return'); b.title = 'أضفها إلى لوح اليوم'; b.setAttribute('aria-label', 'أضفها إلى لوح اليوم');
         b.onclick=()=>{
           tasks.push({id:Date.now()+Math.random(), notionId:r.pageId, text:r.text, proj:r.project||'', donor:r.donor||'',
             imp:'ب', due:r.due||'', mins:r.est||'', actual:r.actual||'', notes:r.notes||'', done:false, state:0,
@@ -3013,7 +3014,7 @@ function updatePlanBtn(){
   const b = $('planDayBtn'); if(!b) return;
   const done = plannedToday();
   b.classList.toggle('done', done);
-  b.textContent = done ? '✓ خطّطت يومك — راجع الخطة' : '☀️ خطّط يومك';
+  b.innerHTML = done ? icon('check') + ' خطّطت يومك — راجع الخطة' : icon('sun') + ' خطّط يومك';
 }
 function openPlanDay(){
   const today = iso(new Date());
@@ -3041,7 +3042,7 @@ function openPlanDay(){
 
     if(step === 1){
       const doneY = archive.concat(tasks).filter(t=>t.done && dayOf(t.doneAt) === yest);
-      body.appendChild(el('p', 'plan-lead', doneY.length ? 'أنجزت أمس ' + AR(doneY.length) + (doneY.length === 1 ? ' مهمة' : ' مهام') + ' ✦' : 'لا مهام مسجّلة كمنجزة أمس — اليوم بداية جديدة.'));
+      body.appendChild(el('p', 'plan-lead', doneY.length ? 'أنجزت أمس ' + AR(doneY.length) + (doneY.length === 1 ? ' مهمة' : ' مهام') : 'لا مهام مسجّلة كمنجزة أمس — اليوم بداية جديدة.'));
       if(doneY.length){
         const ul = el('ul', 'plan-list');
         doneY.slice(0, 8).forEach(t=>ul.appendChild(el('li', 'plan-done', t.text)));
@@ -3119,7 +3120,7 @@ function openPlanDay(){
       });
       body.append(ul, sum); refreshSum();
       next('→ السابق', ()=>{ step = 2; draw(); }, false);
-      next('لنبدأ اليوم ✦', ()=>{
+      next('لنبدأ اليوم', ()=>{
         const picked = open.filter(t=>chosen.has(t.id)).map(t=>t.text.trim());
         const fields = [...document.querySelectorAll('.pri .field')];
         const rest = current.filter(v=>!picked.includes(v));
@@ -3127,7 +3128,7 @@ function openPlanDay(){
         fields.forEach((f, i)=>{ f.value = final[i] || ''; });
         try{ localStorage.setItem(PLAN_KEY, today); }catch(e){}
         save(); render(); updatePlanBtn(); m.close();
-        showToast('يومك على نَسَق ✦ — خطوة واحدة تكفي للبدء.');
+        showToast('يومك على نَسَق — خطوة واحدة تكفي للبدء.');
       });
     }
   }
@@ -3565,7 +3566,7 @@ function renderOnboard(){
   ];
   const n = steps.filter(s=>s.done).length;
   /* اكتملت الخطوات: تختفي القائمة — إلا إن أعدتها من الإعدادات (pinned) فتبقى متوهّجة كلها */
-  if(n === steps.length && !st.pinned){ setOnboard({hidden:true}); box.hidden = true; showToast('أكملت خطوات البداية كلها — يومك الآن على نَسَق ✨'); return; }
+  if(n === steps.length && !st.pinned){ setOnboard({hidden:true}); box.hidden = true; showToast('أكملت خطوات البداية كلها — يومك الآن على نَسَق.'); return; }
   box.hidden = false; box.innerHTML = '';
   const head = document.createElement('div'); head.className = 'card-head';
   const h = document.createElement('h2'); h.textContent = 'ابدأ مع نَسَق';
@@ -3603,7 +3604,7 @@ function renderOnboard(){
     ti.append(document.createTextNode(s.l1), em);
     const su = document.createElement('span'); su.className = 'ob-sub'; su.textContent = s.sub;
     const ch = document.createElement('span'); ch.className = 'ob-chip';
-    ch.textContent = s.done ? '✓ تمّت' : (i === nextIdx ? 'ابدأ هنا' : 'الخطوة ' + AR(i + 1));
+    ch.innerHTML = s.done ? icon('check') + ' تمّت' : (i === nextIdx ? 'ابدأ هنا' : 'الخطوة ' + AR(i + 1));
     cap.append(ti, su, ch);
     b.appendChild(cap);
     b.onclick = s.go;
@@ -3811,7 +3812,7 @@ function renderShots(fresh){
     const im = document.createElement('img'); im.src = safeUrl(sh.src, 'img'); im.alt = 'لقطة محفوظة'; im.loading = 'lazy';
     im.onclick = ()=>openModal({title: 'لقطة — ' + fmtDate(new Date(sh.at), {day: 'numeric', month: 'long'}),
       bodyHTML: '<img src="' + esc(safeUrl(sh.src, 'img')) + '" alt="" style="width:100%;border-radius:8px;display:block">', actions: [{label: 'إغلاق', primary: true}]});
-    const del = document.createElement('button'); del.type = 'button'; del.className = 'shot-del'; del.textContent = '×'; del.title = 'احذف اللقطة'; del.setAttribute('aria-label', 'احذف اللقطة');
+    const del = document.createElement('button'); del.type = 'button'; del.className = 'shot-del'; del.innerHTML = icon('x'); del.title = 'احذف اللقطة'; del.setAttribute('aria-label', 'احذف اللقطة'); del.setAttribute('aria-label', 'احذف اللقطة');
     del.onclick = ()=>{ const k = ideaShots.findIndex(x=>x.id === sh.id); if(k < 0) return; const [gone] = ideaShots.splice(k, 1); renderShots(); sync();
       showToast('حُذفت اللقطة', ()=>{ ideaShots.splice(k, 0, gone); renderShots(); sync(); }); };
     w.append(im, del); box.appendChild(w);
@@ -4014,14 +4015,14 @@ function appendTaskRow(list, t, priValues){
 
   const exp = document.createElement('button');
   exp.className='exp'; exp.type='button'; exp.title='تفاصيل';
-  exp.textContent = expandedIds.has(t.id) ? '▴' : '▾';
+  exp.innerHTML = icon(expandedIds.has(t.id) ? 'chevron-up' : 'chevron-down');
   exp.onclick = ()=>{
     if(expandedIds.has(t.id)) expandedIds.delete(t.id); else expandedIds.add(t.id);
     render();
   };
 
   const kill = document.createElement('button');
-  kill.className='kill'; kill.textContent='×'; kill.title='احذف';
+  kill.className='kill'; kill.innerHTML = icon('x'); kill.title = 'احذف'; kill.setAttribute('aria-label', 'احذف');
   kill.onclick = ()=>{
     const idx = tasks.findIndex(x=>x.id===t.id);
     const removed = t;
@@ -4131,7 +4132,7 @@ function renderHabitsMini(){
     box.appendChild(b);
   });
   const w = document.createElement('div'); w.className = 'habit water-mini';
-  w.textContent = '💧 الماء: ' + AR(water) + ' أكواب';
+  w.innerHTML = icon('droplet') + ' الماء: ' + AR(water) + ' أكواب';
   box.appendChild(w);
   if(!items.length){
     const e = document.createElement('div'); e.className = 'empty-sm';
@@ -4173,7 +4174,7 @@ function renderDetailsRow(t){
   if(!t.done){
     const fb = document.createElement('button');
     fb.type = 'button'; fb.className = 'focus-go';
-    fb.textContent = '▶ ركّز عليها 25 دقيقة';
+    fb.innerHTML = icon('play') + ' ركّز عليها 25 دقيقة';
     fb.onclick = ()=>focusOnTask(t);
     sh.appendChild(fb);
   }
@@ -4187,7 +4188,7 @@ function renderDetailsRow(t){
     c.onclick = ()=>{ s.done = !s.done; if(s.done) playSound('sub'); sync(); };
     const tx = document.createElement('span'); tx.textContent = s.text;
     const k = document.createElement('button');
-    k.type = 'button'; k.className = 'kill'; k.textContent = '×'; k.title = 'احذف الخطوة';
+    k.type = 'button'; k.className = 'kill'; k.innerHTML = icon('x'); k.title = 'احذف الخطوة'; k.setAttribute('aria-label', 'احذف الخطوة');
     k.onclick = ()=>{ t.subs.splice(i, 1); sync(); };
     r.append(c, tx, k); ul.appendChild(r);
   });
@@ -4223,11 +4224,11 @@ function renderWaits(){
     age.textContent = waitAgeText(d) + (waitStale(w) ? ' — حان وقت المتابعة' : '');
     body.append(tx, age);
     const acts = document.createElement('span'); acts.className = 'wait-acts';
-    const btn = (cls, label, title, fn)=>{ const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = label;
+    const btn = (cls, label, title, fn)=>{ const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.innerHTML = icon(label);
       b.title = title; b.setAttribute('aria-label', title + ': ' + w); b.onclick = fn; acts.appendChild(b); };
-    btn('wait-done', '✓', 'وصل الرد', ()=>waitResolve(i, 'reply'));
-    btn('wait-nudge', '🔔', 'ذكّرني — مهمة متابعة لليوم', ()=>waitNudge(i));
-    btn('kill', '×', 'احذف', ()=>waitResolve(i, 'delete'));
+    btn('wait-done', 'check', 'وصل الرد', ()=>waitResolve(i, 'reply'));
+    btn('wait-nudge', 'bell', 'ذكّرني — مهمة متابعة لليوم', ()=>waitNudge(i));
+    btn('kill', 'x', 'احذف', ()=>waitResolve(i, 'delete'));
     li.append(body, acts); ul.appendChild(li);
   });
   /* شارة بجانب العنوان: كم بندًا تجاوز 3 أيام بلا رد */
@@ -4248,7 +4249,7 @@ function renderMini(id, arr, del){
     const li=document.createElement('li');
     const s=document.createElement('span'); s.textContent=v;
     const k=document.createElement('button');
-    k.className='kill'; k.textContent='×'; k.title='احذف'; k.onclick=()=>del(i);
+    k.className='kill'; k.innerHTML = icon('x'); k.title = 'احذف'; k.setAttribute('aria-label', 'احذف'); k.onclick=()=>del(i);
     li.append(s,k); ul.appendChild(li);
   });
 }
@@ -4481,7 +4482,7 @@ function showDueForDay(key){
           showDueForDay(key);
           setDot('ok','تم تعليمها منجزة في نوشن'); markSynced();
         })
-        .catch(e=>{ btn.disabled = false; btn.textContent = '○'; setDot('err','تعذّر التحديث: '+e.message); });
+        .catch(e=>{ btn.disabled = false; btn.innerHTML = icon('circle'); setDot('err','تعذّر التحديث: '+e.message); });
     });
     if(!notionOK()) btn.disabled = true;
     line.appendChild(btn);
@@ -4493,7 +4494,7 @@ function showDueForDay(key){
     const tag = document.createElement('span'); tag.className='from-notion'; tag.textContent='من نوشن';
     line.appendChild(tag);
     const back = document.createElement('button');
-    back.className='back'; back.textContent='↩'; back.title='أضفها إلى لوح اليوم';
+    back.className='back'; back.innerHTML = icon('dir-return'); back.title = 'أضفها إلى لوح اليوم'; back.setAttribute('aria-label', 'أضفها إلى لوح اليوم');
     back.onclick = ()=>{
       tasks.push({id:Date.now()+Math.random(), notionId:r.pageId, text:r.text, proj:r.project||'', donor:r.donor||'',
         imp:'ب', due:r.due||'', mins:r.est||'', actual:r.actual||'', notes:r.notes||'', done:false, state:0,
@@ -4535,7 +4536,7 @@ function dayDoneBtn(isDone, onClick){
   const b = document.createElement('button');
   b.className = 'day-done' + (isDone ? ' is-done' : '');
   b.type = 'button';
-  b.textContent = isDone ? '✓' : '○';
+  b.innerHTML = icon(isDone ? 'check' : 'circle');
   b.title = isDone ? 'منجزة' : 'علّمها كمنجزة';
   b.setAttribute('aria-label', b.title);
   b.onclick = e=>{ if(!isDone) playSound('done'); onClick(e); };
@@ -4567,7 +4568,7 @@ function updatePomoLive(){
   renderPomoClock();
   $('pomoToggle').textContent = pomoLabel();
   const active = pomoRunning || pomoRemaining < POMO_DEFAULT;
-  document.title = pomoRunning ? '⏱ ' + fmtClock(pomoRemaining) + ' — ' + BASE_TITLE : BASE_TITLE;
+  document.title = pomoRunning ? '(' + fmtClock(pomoRemaining) + ') ' + BASE_TITLE : BASE_TITLE;
   /* وضع التركيز */
   const t = pomoTaskObj();
   $('fmTime').textContent = fmtClock(pomoRemaining);
@@ -4581,7 +4582,7 @@ function updatePomoLive(){
     document.querySelectorAll('li.task[data-id="' + CSS.escape(String(t.id)) + '"]').forEach(li=>{
       li.classList.add('timing');
       const b = document.createElement('span'); b.className = 'pomo-live' + (pomoRunning ? '' : ' paused');
-      b.textContent = '⏱ ' + fmtClock(pomoRemaining);
+      b.innerHTML = icon('timer') + ' ' + fmtClock(pomoRemaining);
       b.title = pomoRunning ? 'جلسة تركيز جارية' : 'جلسة تركيز متوقفة مؤقتًا';
       li.querySelector('.mins')?.prepend(b);
     });
@@ -4690,17 +4691,17 @@ updatePomoLive();
 
 /* ---------- لوحة الأوامر (Ctrl+K): انتقل، نفّذ، ابحث في المهام، أو أضف مهمة ---------- */
 const PAL_COMMANDS = [
-  {ic:'◧', t:'اذهب إلى: اليوم',      k:'اليوم لوح الرئيسية today', run:()=>showTab('board')},
-  {ic:'☑', t:'اذهب إلى: المهام',     k:'المهام قائمة tasks',       run:()=>showTab('tasks')},
-  {ic:'❋', t:'اذهب إلى: العادات',    k:'العادات روتين طاقة habits', run:()=>showTab('flow')},
-  {ic:'▤', t:'اذهب إلى: المشاريع',   k:'المشاريع مديكس هيوميرا projects', run:()=>showTab('projects')},
-  {ic:'¤', t:'اذهب إلى: المصروفات',  k:'المصروفات ميزانية expenses', run:()=>showTab('expenses')},
-  {ic:'☀', t:'خطّط يومك',            k:'خطط تخطيط الصباح plan',     run:()=>openPlanDay()},
-  {ic:'⛶', t:'وضع التركيز',          k:'تركيز مؤقت بومودورو focus', run:()=>openFocusMode()},
-  {ic:'◐', t:'بدّل الوضع الداكن',    k:'داكن فاتح ليلي theme dark', run:()=>toggleTheme()},
-  {ic:'⎘', t:'انسخ ملخص اليوم',      k:'نسخ ملخص copy',             run:()=>$('copyBtn').click()},
-  {ic:'⏲', t:'ساعات عملي',           k:'ساعات العمل سعة capacity',  run:()=>openCapacityModal()},
-  {ic:'⚙', t:'الإعدادات',             k:'اعدادات إعدادات settings',  run:()=>openSettings()}
+  {ic:'today', t:'اذهب إلى: اليوم',      k:'اليوم لوح الرئيسية today', run:()=>showTab('board')},
+  {ic:'list-checks', t:'اذهب إلى: المهام',     k:'المهام قائمة tasks',       run:()=>showTab('tasks')},
+  {ic:'sprout', t:'اذهب إلى: العادات',    k:'العادات روتين طاقة habits', run:()=>showTab('flow')},
+  {ic:'folder', t:'اذهب إلى: المشاريع',   k:'المشاريع مديكس هيوميرا projects', run:()=>showTab('projects')},
+  {ic:'wallet', t:'اذهب إلى: المصروفات',  k:'المصروفات ميزانية expenses', run:()=>showTab('expenses')},
+  {ic:'sun', t:'خطّط يومك',            k:'خطط تخطيط الصباح plan',     run:()=>openPlanDay()},
+  {ic:'maximize', t:'وضع التركيز',          k:'تركيز مؤقت بومودورو focus', run:()=>openFocusMode()},
+  {ic:'contrast', t:'بدّل الوضع الداكن',    k:'داكن فاتح ليلي theme dark', run:()=>toggleTheme()},
+  {ic:'copy', t:'انسخ ملخص اليوم',      k:'نسخ ملخص copy',             run:()=>$('copyBtn').click()},
+  {ic:'clock', t:'ساعات عملي',           k:'ساعات العمل سعة capacity',  run:()=>openCapacityModal()},
+  {ic:'settings', t:'الإعدادات',             k:'اعدادات إعدادات settings',  run:()=>openSettings()}
 ];
 let palItems = [], palIndex = 0, palReturn = null;
 /* يطابق مع تجاهل التشكيل والهمزات، كي تجد «خطط» ما كُتب «خطّط» */
@@ -4713,7 +4714,7 @@ function renderPalette(){
   const item = (ic, text, meta, run) => {
     const li = document.createElement('li');
     li.className = 'pal-item'; li.setAttribute('role','option'); li.id = 'pal-' + palItems.length;
-    const a = document.createElement('span'); a.className = 'pal-ic'; a.setAttribute('aria-hidden','true'); a.textContent = ic;
+    const a = document.createElement('span'); a.className = 'pal-ic'; a.setAttribute('aria-hidden','true'); a.innerHTML = icon(ic);
     const b = document.createElement('span'); b.className = 'pal-txt'; b.textContent = text;
     li.append(a, b);
     if(meta){ const m = document.createElement('span'); m.className = 'pal-meta'; m.textContent = meta; li.appendChild(m); }
@@ -4725,7 +4726,7 @@ function renderPalette(){
   /* \b لا يعمل مع الحروف العربية، لذلك نتحقق من الفاصل صراحةً */
   const wantsAdd = /^(أضف|اضف|add)(?=[\s:：]|$)/i.test(raw);
   const addText = wantsAdd ? raw.replace(/^(أضف|اضف|add)\s*[:：]?\s*/i, '') : '';
-  if(raw && wantsAdd && addText){ item('＋', 'أضف مهمة: ' + addText, 'Enter', ()=>{ const t = quickTask(addText); showToast('أُضيفت: ' + t.text); }); }
+  if(raw && wantsAdd && addText){ item('plus', 'أضف مهمة: ' + addText, 'Enter', ()=>{ const t = quickTask(addText); showToast('أُضيفت: ' + t.text); }); }
   const cmds = PAL_COMMANDS.filter(c=>!q || palNorm(c.t + ' ' + c.k).includes(q));
   if(cmds.length){ group('أوامر'); cmds.forEach(c=>item(c.ic, c.t, '', c.run)); }
   if(q){
@@ -4733,10 +4734,10 @@ function renderPalette(){
       .sort((a,b)=>Number(a.done) - Number(b.done)).slice(0, 8);
     if(found.length){
       group('مهام');
-      found.forEach(t=>item(t.done ? '✓' : '○', t.text, [t.proj, t.due ? arDate(t.due) : ''].filter(Boolean).join(' | '), ()=>revealTask(t)));
-      found.filter(t=>!t.done).slice(0, 2).forEach(t=>item('▶', 'ركّز على: ' + t.text, '25 د', ()=>focusOnTask(t)));
+      found.forEach(t=>item(t.done ? 'check' : 'circle', t.text, [t.proj, t.due ? arDate(t.due) : ''].filter(Boolean).join(' | '), ()=>revealTask(t)));
+      found.filter(t=>!t.done).slice(0, 2).forEach(t=>item('play', 'ركّز على: ' + t.text, '25 د', ()=>focusOnTask(t)));
     }
-    if(!wantsAdd){ item('＋', 'أضف «' + raw + '» مهمةً جديدة', '', ()=>{ const t = quickTask(raw); showToast('أُضيفت: ' + t.text); }); }
+    if(!wantsAdd){ item('plus', 'أضف «' + raw + '» مهمةً جديدة', '', ()=>{ const t = quickTask(raw); showToast('أُضيفت: ' + t.text); }); }
   }
   if(!palItems.length){ const e = document.createElement('li'); e.className = 'pal-empty'; e.textContent = 'لا نتائج.'; ul.appendChild(e); }
   palIndex = 0; markPalette();
@@ -5120,7 +5121,7 @@ document.querySelectorAll('#setHeroImages button').forEach(b=>{
 function tgStateText(d){
   if(!d.token) return 'لم يُضَف رمز البوت بعد';
   if(!d.chat) return 'الرمز موجود — اضغط Start في محادثة البوت ثم شغّل SETUP_telegram';
-  return d.trigger ? 'يعمل ✓' : 'مربوط — ينقصه تشغيل SETUP_telegram_trigger';
+  return d.trigger ? 'يعمل' : 'مربوط — ينقصه تشغيل SETUP_telegram_trigger';
 }
 $('setTgCheck').onclick = ()=>{
   if(!notionOK()){ $('setTgState').textContent = 'متاح لصاحب اللوح فقط'; return; }
@@ -5189,7 +5190,7 @@ function renderArchive(){
       cells.forEach(c=>{ const td=document.createElement('td'); td.textContent=c; tr.appendChild(td); });
       const td = document.createElement('td');
       const b = document.createElement('button');
-      b.className='back'; b.textContent='↺'; b.title='أعدها إلى لوح اليوم';
+      b.className='back'; b.innerHTML = icon('rotate'); b.title = 'أعدها إلى لوح اليوم'; b.setAttribute('aria-label', 'أعدها إلى لوح اليوم');
       b.onclick = ()=>{
         archive = archive.filter(x=>x.id!==t.id);
         tasks.push({...t, done:false, state:0, doneAt:undefined, createdAt:new Date().toISOString()});
@@ -5304,7 +5305,7 @@ $('newDay').onclick = ()=>{
         sync();
         playSound('close');   /* توقيع نَسَق الصوتي */
         try{ localStorage.setItem(STAMP_KEY, iso(new Date())); }catch(e){} renderStamp();
-        showToast(d.length ? 'يومك أخذ نَسَقه ✦ — بدأ يوم جديد.' : 'بدأ يوم جديد. خطوة واحدة تكفي للبدء.');
+        showToast(d.length ? 'يومك أخذ نَسَقه — بدأ يوم جديد.' : 'بدأ يوم جديد. خطوة واحدة تكفي للبدء.');
       }}
     ]
   });
@@ -5326,7 +5327,7 @@ $('copyBtn').onclick = ()=>{
   const pri = [...document.querySelectorAll('.pri .field')].map(f=>f.value.trim()).filter(Boolean);
   const L = ['لوح '+$('date').textContent];
   const pinned = $('pinnedEvent').value.trim();
-  if(pinned) L.push('','📌 '+pinned);
+  if(pinned) L.push('','حدث اليوم: '+pinned);
   if(pri.length) L.push('','الأولويات:',...pri.map((p,i)=>AR(i+1)+'. '+p));
   const d=tasks.filter(t=>t.done), u=tasks.filter(t=>!t.done);
   if(d.length) L.push('','أُنجز:',...d.map(t=>'• '+t.text+(t.proj?' — '+t.proj:'')));
@@ -5424,7 +5425,7 @@ function renderChecklist(ulId, arr, toggle, del){
     chk.onclick=()=>toggle(i);
     const span=document.createElement('span'); span.textContent=item.text;
     li.className = item.done ? 'flow-done' : '';
-    const k=document.createElement('button'); k.className='kill'; k.textContent='×'; k.title='احذف'; k.onclick=()=>del(i);
+    const k=document.createElement('button'); k.className='kill'; k.innerHTML = icon('x'); k.title = 'احذف'; k.setAttribute('aria-label', 'احذف'); k.onclick=()=>del(i);
     li.append(chk,span,k);
     ul.appendChild(li);
   });
@@ -5466,7 +5467,7 @@ function renderHabitWeek(){
   ['habitWeek', 'habitWeekMini'].forEach(id=>{ const b = $(id); if(b) drawHabitWeek(b); });
   const s = habitStreak();
   const st = $('habitStreak');
-  if(st) st.textContent = s ? '🔥 ' + AR(s) + (s === 1 ? ' يوم' : ' أيام') + ' متتالية' : '';
+  if(st) st.innerHTML = s ? icon('flame') + ' ' + AR(s) + (s === 1 ? ' يوم' : ' أيام') + ' متتالية' : '';
 }
 function drawHabitWeek(box){
   const hist = flow.history || {};
@@ -5917,12 +5918,12 @@ function openWaqfaReview(){
     const src = document.createElement('div'); src.className = 'waqfa-src'; src.textContent = w.s;
     const les = document.createElement('div'); les.className = 'waqfa-lesson'; const lb = document.createElement('b'); lb.textContent = 'عبرة:'; les.append(lb, document.createTextNode(w.l));
     const acts = document.createElement('div'); acts.className = 'rev-acts';
-    const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'ok' + (s0.approved.includes(w.id) ? ' on' : ''); ok.textContent = s0.approved.includes(w.id) ? '✓ معتمد' : 'اعتمد';
+    const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'ok' + (s0.approved.includes(w.id) ? ' on' : ''); ok.innerHTML = s0.approved.includes(w.id) ? icon('check') + ' معتمد' : 'اعتمد';
     const no = document.createElement('button'); no.type = 'button'; no.textContent = 'احذف';
     ok.onclick = ()=>{
       const s = waqfaState();
       if(s.approved.includes(w.id)){ s.approved = s.approved.filter(x=>x !== w.id); ok.className = 'ok'; ok.textContent = 'اعتمد'; item.classList.remove('approved'); }
-      else { s.approved.push(w.id); s.removed = s.removed.filter(x=>x !== w.id); ok.className = 'ok on'; ok.textContent = '✓ معتمد'; item.classList.add('approved'); }
+      else { s.approved.push(w.id); s.removed = s.removed.filter(x=>x !== w.id); ok.className = 'ok on'; ok.innerHTML = icon('check') + ' معتمد'; item.classList.add('approved'); }
       saveWaqfa(s); renderWaqfa();
     };
     no.onclick = ()=>{
@@ -5962,7 +5963,7 @@ function openPhotoTagsModal(){
           };
           tags.appendChild(b);
         });
-        const del = document.createElement('button'); del.type = 'button'; del.className = 'kill'; del.textContent = '×'; del.title = 'احذف الصورة';
+        const del = document.createElement('button'); del.type = 'button'; del.className = 'kill'; del.innerHTML = icon('x'); del.title = 'احذف الصورة'; del.setAttribute('aria-label', 'احذف الصورة');
         del.onclick = ()=>{ if(!p.dbId) return; row.remove(); deletePhotoRecord(p.dbId).then(loadAllPhotos).catch(()=>{}); };
         row.append(im, tags, del); box.appendChild(row);
       });
@@ -6214,7 +6215,7 @@ function renderExpenses(){
     const acc = document.createElement('div'); acc.className='exp-acc'; acc.textContent = x.accountName||'—';
     const amt = document.createElement('div'); amt.className='exp-amt'; amt.textContent = fmtMoney(x.amount);
     const kill = document.createElement('button');
-    kill.className='kill'; kill.textContent='×'; kill.title='احذف';
+    kill.className='kill'; kill.innerHTML = icon('x'); kill.title = 'احذف'; kill.setAttribute('aria-label', 'احذف');
     kill.onclick = ()=>{
       const idx = expenses.findIndex(e=>e.id===x.id);
       const removed = x;
