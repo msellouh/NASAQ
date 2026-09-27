@@ -5,12 +5,12 @@
    وصحّة كل مشروع (الوقت مقابل الإنجاز، والأسباب، ودرجة الإلحاح). الأرقام إنجليزية. */
 window.NasaqPulse = (function(){
 const AR = n => String(n);
-const LOC = 'ar-EG-u-nu-latn';
+const LOC = NASAQ_LOCALE;   /* من nasaq-core.js */
 const today = (()=>{ const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
 const toDate = s => { if(!s) return null; const d = new Date(String(s).slice(0, 10) + 'T00:00:00'); return isNaN(d) ? null : d; };
 const daysTo = s => { const d = toDate(s); return d ? Math.round((d - today) / 864e5) : null; };
 const RUNNING = new Set(['قيد التنفيذ', 'نشط']);
-const fmtDay = s => { const d = toDate(s); return d ? d.toLocaleDateString(LOC, {day: 'numeric', month: 'short'}) : '—'; };
+const fmtDay = s => { const d = toDate(s); return d ? fmtDate(d, {day: 'numeric', month: 'short'}) : '—'; };
 /* المعدود بصيغته الصحيحة: 1 مشروع، 2 مشروعان، 3–10 مشاريع، 11+ مشروعًا */
 function cnt(n, f){ return n === 1 ? f[0] : n === 2 ? f[1] : AR(n) + ' ' + (n <= 10 ? f[2] : f[3]); }
 const W_PROJ = ['مشروع واحد', 'مشروعان', 'مشاريع', 'مشروعًا'], W_REP = ['تقرير واحد', 'تقريران', 'تقارير', 'تقريرًا'];

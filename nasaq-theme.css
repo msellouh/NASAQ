@@ -1,7 +1,7 @@
 /* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved.
    ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
 /* ---------- رموز الحركة (لكل الأطباع) — منهج «مَدار» للحركة ----------
-   الوصول بتباطؤ، والمغادرة بتسارع وأسرع (~٦٥٪)، والمدد بحسب حجم العنصر ومسافته.
+   الوصول بتباطؤ، والمغادرة بتسارع وأسرع (~65٪)، والمدد بحسب حجم العنصر ومسافته.
    dur-1 ضغط وتلميح · dur-2 مرور ومفاتيح صغيرة · dur-3 لوحات وبطاقات ونوافذ · dur-4 عناصر كبيرة. */
 :root{
   --dur-1:110ms; --dur-2:180ms; --dur-3:280ms; --dur-4:420ms;
@@ -38,7 +38,7 @@
   --cta:#00B7D4; --on-cta:#14162A; --cta-hover:#14162A; --on-cta-hover:#EEF1F7;
   --live:#C42B2E; --on-done:#FFFFFF;
   --bm-1:#14162A; --bm-2:#087F5D; --bm-dot:#007A99;
-  /* الحلقة: ٣٣٠° مخروطية تبدأ بعد فجوة ٣٠° عند الثانية عشرة — نعناعي ← سماوي ← بنفسجي */
+  /* الحلقة: 330° مخروطية تبدأ بعد فجوة 30° عند الثانية عشرة — نعناعي ← سماوي ← بنفسجي */
   --orbit:conic-gradient(from 15deg,#0E9E74 0deg,#0086A8 150deg,#6A43B8 300deg,#6A43B8 330deg,transparent 330deg);
   --grad-line:linear-gradient(to left,#0E9E74,#0086A8 55%,#6A43B8);
   --grad-text:linear-gradient(90deg,#0E9E74,#0086A8 55%,#6A43B8);
@@ -153,3 +153,7 @@
 footer.nasaq-copy{padding:18px 16px 26px;opacity:.85}
 .set-legal .nasaq-copy{text-align:start;font-weight:500;margin-top:4px}
 .auth-copy{margin-top:18px;font-size:10.5px;line-height:1.7;opacity:.8}
+
+/* أرقام ثابتة العرض في العدادات والجداول والمبالغ والتقويم — فلا تهتز الأرقام حين تتغيّر */
+:is(.num,.count,.meter,.pomo-time,.fm-time,.sum-item b,.exp-amt,.budget-overall .big,.budget-item .row span,.budget-item .pct,
+    .mins,.actual,.ws-count,.notif-badge,#syncTime,.cal-grid,.week-strip,.kpi b,.pulse-kpi b,table td){font-variant-numeric:tabular-nums}

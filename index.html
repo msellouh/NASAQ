@@ -478,9 +478,10 @@ body{padding:0}
 .greet-tagline{margin:2px 0 0;font-size:18px;color:var(--ink-2);font-weight:500}
 .greet-date{margin-top:10px;font-size:13.5px;color:var(--muted)}
 /* التاريخ الهجري بجانب الميلادي، يفصلهما خط رفيع */
-.greet-hijri{margin-inline-start:10px;padding-inline-start:10px;border-inline-start:1px solid currentColor;border-inline-start-color:color-mix(in srgb,currentColor 35%,transparent)}
-.greet-hijri[hidden]{display:none}
-.greet-date > span{unicode-bidi:isolate}
+.greet-hijri[hidden],.greet-sep[hidden]{display:none}
+/* كل تاريخ معزول (bdi) والفاصل « | » نص حقيقي بينهما، فلا يلتصق «2026» بـ«14 ربيع الآخر» */
+.greet-date > bdi{unicode-bidi:isolate}
+.greet-sep{white-space:pre;opacity:.55}
 /* نقشة نَسَق: الشعار مكرّرًا بإزاحة متناوبة، بلون الهوية وشفافية 10% — بدل التدرّج.
    تُرسم كقناع (mask) فيأخذ لونها من المتغيّر، فتصلح لكل طابع وللوضع الداكن. */
 .greet-card::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.1;background:var(--brand,var(--ink));
@@ -1789,7 +1790,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 @media (hover:none){ .shot-del{opacity:1} }
 .card.drop{outline:2px dashed var(--focus);outline-offset:3px}
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260927">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260927c">
 </head>
 <body>
 
@@ -1808,7 +1809,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <div class="auth-form" id="authLogin">
       <input id="loginUser" placeholder="اسم المستخدم" autocomplete="username">
       <input id="loginPass" type="password" placeholder="كلمة السر" autocomplete="current-password">
-      <label class="auth-remember"><input type="checkbox" id="rememberMe"><span>احفظ بيانات الدخول على هذا الجهاز</span></label>
+      <label class="auth-remember"><input type="checkbox" id="rememberMe"><span>ابقَ مسجّل الدخول على هذا الجهاز</span></label>
       <button class="auth-primary" id="loginBtn" type="button">دخول</button>
       <div class="auth-links">
         <button class="linklike" id="toRegister" type="button">إنشاء حساب جديد</button>
@@ -2038,7 +2039,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <div class="greet-text">
     <h1 class="greet-title" id="heroGreet">صباح الخير</h1>
     <p class="greet-tagline">لكل شيء مكان، ولكل يوم نَسَق.</p>
-    <div class="greet-date"><span id="weekday">—</span>، <span id="date">—</span><span class="greet-hijri" id="hijriDate" hidden></span></div>
+    <div class="greet-date"><bdi id="weekday">—</bdi>، <bdi id="date">—</bdi><span class="greet-sep" id="hijriSep" hidden> | </span><bdi class="greet-hijri" id="hijriDate" hidden></bdi></div>
     <!-- لمحة اليوم: تظهر في واجهة «360» الكاملة فقط -->
     <div class="hero-glance"><div class="ring-clock" id="heroRing" role="img"></div><div class="hero-meta" id="heroMeta"></div></div>
     <button class="plan-day" id="planDayBtn" type="button">☀️ خطّط يومك</button>
@@ -2085,7 +2086,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="card-art" data-art="task" aria-hidden="true"></div>
       <div class="card-head">
         <h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8 12 3 3 5-6"/></svg>مهام اليوم</h2>
-        <div class="meter"><span id="doneCount">0</span> من <span id="totalCount">0</span> منجزة · <b id="load">—</b></div>
+        <div class="meter"><span id="doneCount">0</span> من <span id="totalCount">0</span> منجزة | <b id="load">—</b></div>
       </div>
       <div class="progress" aria-hidden="true"><div class="fill" id="fill"></div></div>
       <div class="cap-warn" id="capWarn" role="status" hidden></div>
@@ -2101,7 +2102,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </div>
 
       <div class="add">
-        <input id="tText" placeholder="أضف إلى يومك — أو اختصار: #مشروع @مانح !أ 30 2026-09-10">
+        <input id="tText" placeholder="أضف إلى يومك — أو اختصار: #مشروع @مانح !أ 30 &#x2066;2026-09-10&#x2069;">
         <input id="tProj" placeholder="المشروع أو الجهة" list="projList">
         <datalist id="projList"></datalist>
         <select id="tImp" aria-label="الأهمية">
@@ -2119,7 +2120,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <datalist id="donorList"></datalist>
         <textarea id="addNotes" placeholder="ملاحظات (اختياري)" rows="1"></textarea>
       </div>
-      <div class="hint">اختصار سريع: <code>#المشروع</code> · <code>@المانح</code> · <code>!أ</code>/<code>!ب</code>/<code>!ج</code> للأهمية · رقم للدقائق · <code>YYYY-MM-DD</code> للاستحقاق · اضغط الحالة لتبديلها، والنص لتعديله.</div>
+      <div class="hint">اختصار سريع: <code>#المشروع</code>، <code>@المانح</code>، <code>!أ</code>/<code>!ب</code>/<code>!ج</code> للأهمية، رقم للدقائق، <code>YYYY-MM-DD</code> للاستحقاق، اضغط الحالة لتبديلها، والنص لتعديله.</div>
 
       <ol class="tasks" id="list"></ol>
     </section>
@@ -2288,7 +2289,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <div class="palette" role="dialog" aria-modal="true" aria-label="لوحة الأوامر">
     <input type="text" id="palInput" placeholder="ابحث عن مهمة، أو اكتب أمرًا… (أضف: نص المهمة)" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="palList">
     <ul class="pal-list" id="palList" role="listbox"></ul>
-    <div class="pal-foot"><kbd>↑</kbd><kbd>↓</kbd> تنقّل · <kbd>Enter</kbd> تنفيذ · <kbd>Esc</kbd> إغلاق</div>
+    <div class="pal-foot"><kbd>↑</kbd><kbd>↓</kbd> تنقّل، <kbd>Enter</kbd> تنفيذ، <kbd>Esc</kbd> إغلاق</div>
   </div>
 </div>
 
@@ -2327,7 +2328,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <h2 class="page-title">العادات</h2>
     <p class="page-sub">روتينك وطاقتك وامتنانك — مساحتك الشخصية، خارج قائمة المهام.</p>
   </div>
-  <div class="page-date"><span id="flowWeekday">—</span>، <span id="flowDate">—</span></div>
+  <div class="page-date"><bdi id="flowWeekday">—</bdi>، <bdi id="flowDate">—</bdi></div>
 </section>
 <div class="page-grid">
   <section class="card">
@@ -2426,7 +2427,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <section class="card exp-main">
     <div class="card-head"><h3>سجّل مصروفًا</h3></div>
     <div class="exp-add">
-      <input id="expAmount" type="text" inputmode="decimal" placeholder="المبلغ — ٍ أو مثل 15+7.5">
+      <input id="expAmount" type="text" inputmode="decimal" placeholder="المبلغ بالشيكل — أو مثل &#x2066;15+7.5&#x2069;">
       <select id="expCategory" aria-label="التصنيف"><option value="">التصنيف</option></select>
       <select id="expAccount" aria-label="من حساب"><option value="">من حساب</option></select>
       <input id="expText" placeholder="العملية — مثال: قهوة">
@@ -2459,10 +2460,10 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
 <div class="toast" id="toastBox"></div>
 
-<script src="nasaq-core.js?v=20260927"></script>
-<script src="nasaq-pulse.js?v=20260927"></script>
+<script src="nasaq-core.js?v=20260927d"></script>
+<script src="nasaq-pulse.js?v=20260927c"></script>
 <script>
-const AR = n => Number(n).toLocaleString('ar-EG-u-nu-latn');
+const AR = n => fmtNum(n);   /* الأرقام إنجليزية — fmtNum وأخواتها في nasaq-core.js */
 const $ = id => document.getElementById(id);
 function localYMD(dt){ return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); }
 function iso(d){
@@ -2481,9 +2482,6 @@ let tasks = [], waits = [], laters = [], archive = [], timeline = {};
 let waitMeta = {};
 const WAIT_STALE_DAYS = 3;
 const expandedIds = new Set();
-const AR_DIGITS = '0123456789';
-/* الأرقام إنجليزية في المنصة كلها (قرار صاحب اللوح 2026-09-25): الدالة باقية كي لا تتغيّر مواضع استدعائها */
-const arDigits = s => String(s);
 const EMPTY_ICON = '<svg class="empty-ic" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
   '<path d="M8 26l24-12 24 12-24 12-24-12z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'+
   '<path d="M8 26v14l24 12 24-12V26" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'+
@@ -2500,15 +2498,13 @@ const now = new Date();
    يُعاد حسابه مع تحديث التحية، فيتبدّل بعد منتصف الليل والصفحة مفتوحة. */
 function renderDates(){
   const d = new Date();
-  $('date').textContent = d.toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
-  $('weekday').textContent = d.toLocaleDateString('ar-EG-u-nu-latn',{weekday:'long'});
+  $('date').textContent = fmtDate(d);
+  $('weekday').textContent = fmtDate(d, {weekday:'long'});
   const h = $('hijriDate'); if(!h) return;
-  try{
-    const f = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'long',year:'numeric'});
-    if(f.resolvedOptions().calendar !== 'islamic-umalqura') throw 0;   /* متصفح لا يدعم أم القرى: لا نعرض تاريخًا تقريبيًا */
-    h.textContent = f.format(d).replace(/\s*هـ$/, '') + ' هـ';
-    h.hidden = false;
-  }catch(e){ h.hidden = true; }
+  const hj = fmtHijri(d);   /* '' في متصفح لا يدعم أم القرى: لا نعرض تاريخًا تقريبيًا */
+  if(hj){ h.textContent = hj.replace(/\s*هـ$/, '') + ' هـ'; h.hidden = false; }
+  else h.hidden = true;
+  $('hijriSep').hidden = h.hidden;
 }
 renderDates();
 
@@ -2763,8 +2759,8 @@ try{ stateUpdatedAt = Number(localStorage.getItem(SKEY)) || 0; }catch(e){}
 let bootUpdatedAt = stateUpdatedAt;
 let applyingRemote = false, statePushTimer = null, statePushing = false;
 
-function setStateNote(msg){ const el = $('stateNote'); if(el) el.textContent = msg ? ('· '+msg) : ''; }
-function clockNow(){ return new Date().toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'}); }
+function setStateNote(msg){ const el = $('stateNote'); if(el) el.textContent = msg ? ('| '+msg) : ''; }
+function clockNow(){ return fmtTime(new Date()); }
 
 function fullState(){
   return { board: snapshot(), flow: flow, expenses: expenses };
@@ -2881,13 +2877,13 @@ let bridge = '';
 try{ bridge = localStorage.getItem(BKEY) || ''; }catch(e){}
 if(!bridge && DEFAULT_BRIDGE) bridge = DEFAULT_BRIDGE;
 
-/* ---------- جلسة المستخدم ---------- */
-const AUTHKEY = 'daily-board-auth';
-let auth = null;
-try{ auth = JSON.parse(localStorage.getItem(AUTHKEY) || 'null'); }catch(e){}
-function saveAuth(a){
+/* ---------- جلسة المستخدم ----------
+   التخزين في NasaqAuth (nasaq-core.js): رمز الجلسة وحده، في localStorage إن اختار
+   «ابقَ مسجّل الدخول» وإلا في sessionStorage. persist غير محدَّد = يبقى حيث هو. */
+let auth = NasaqAuth.load();
+function saveAuth(a, persist){
   auth = a;
-  try{ a ? localStorage.setItem(AUTHKEY, JSON.stringify(a)) : localStorage.removeItem(AUTHKEY); }catch(e){}
+  NasaqAuth.save(a, persist);
 }
 /* نوشن متاح لصاحب الجسر وحده — لأن مفاتيحه ملكه */
 function notionOK(){ return !!(bridge && auth && auth.isOwner); }
@@ -2903,7 +2899,7 @@ function setDot(cls, msg){
 }
 function markSynced(){
   const t = new Date();
-  $('syncTime').textContent = '· آخر مزامنة ' + t.toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'});
+  $('syncTime').textContent = '| آخر مزامنة ' + fmtTime(t);
 }
 /* النقل إلى الجسر صار في nasaq-core.js — تستعمله هذه الصفحة وصفحة المشاريع.
    يبقى هنا ما يخصّ اللوح وحده: إضافة رمز الجلسة، وفحص الرد، والعودة لشاشة الدخول. */
@@ -2946,8 +2942,8 @@ $('setBridgeSave').onclick = ()=>{
 };
 
 function fillOptions(d){
-  $('projList').innerHTML = (d.projects||[]).map(p=>'<option value="'+p.replace(/"/g,'&quot;')+'">').join('');
-  $('donorList').innerHTML = (d.donors||[]).map(p=>'<option value="'+p.replace(/"/g,'&quot;')+'">').join('');
+  $('projList').innerHTML = (d.projects||[]).map(p=>'<option value="'+esc(p)+'">').join('');
+  $('donorList').innerHTML = (d.donors||[]).map(p=>'<option value="'+esc(p)+'">').join('');
 }
 function loadOptions(){ post({action:'options'}).then(fillOptions).catch(()=>{}); }
 
@@ -3005,7 +3001,7 @@ $('pgo').onclick = ()=>{
       });
       $('pres').innerHTML=''; $('pres').appendChild(tbl);
     })
-    .catch(e=>{ $('pres').innerHTML='<div class="empty">تعذّر البحث: '+e.message+'</div>'; });
+    .catch(e=>{ $('pres').innerHTML='<div class="empty">تعذّر البحث: '+esc(e.message)+'</div>'; });
 };
 
 /* ---------- helpers ---------- */
@@ -3023,7 +3019,7 @@ function fmtDays(n){
   if(n<11) return AR(n)+' أيام';
   return AR(n)+' يومًا';
 }
-function arDate(s){ return new Date(s).toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long'}); }
+function arDate(s){ return fmtDate(s, {day:'numeric',month:'long'}); }
 function openDays(t){ return dayNum(t.doneAt||Date.now()) - dayNum(t.createdAt); }
 
 function makeEditable(el, getVal, setVal, onCommit){
@@ -3062,10 +3058,12 @@ function parseQuickAdd(raw){
   if(donorM){ out.donor = donorM[1].replace(/-/g,' '); text = text.replace(donorM[0],' '); }
   const impM = text.match(/!(أ|ب|ج)/);
   if(impM){ out.imp = impM[1]; text = text.replace(impM[0],' '); }
-  const dueM = text.match(/\b(\d{4}-\d{2}-\d{2})\b/);
-  if(dueM){ out.due = dueM[1]; text = text.replace(dueM[0],' '); }
-  const minM = text.match(/(?:^|\s)(\d{1,3})(?=\s|$)/);
-  if(minM){ out.mins = minM[1]; text = text.replace(minM[0],' '); }
+  /* التاريخ والدقائق تُقبل بالأرقام العربية (٠-٩) أيضًا وتُحفظ بالإنجليزية */
+  const D = '[0-9\u0660-\u0669\u06F0-\u06F9]';
+  const dueM = text.match(new RegExp('(?:^|[^0-9\u0660-\u0669\u06F0-\u06F9])(' + D + '{4}-' + D + '{2}-' + D + '{2})(?![0-9\u0660-\u0669\u06F0-\u06F9])'));
+  if(dueM){ out.due = toLatinDigits(dueM[1]); text = text.replace(dueM[1],' '); }
+  const minM = text.match(new RegExp('(?:^|\\s)(' + D + '{1,3})(?=\\s|$)'));
+  if(minM){ out.mins = toLatinDigits(minM[1]); text = text.replace(minM[0],' '); }
   out.text = text.replace(/\s+/g,' ').trim();
   return out;
 }
@@ -3288,7 +3286,7 @@ function openPlanDay(){
       const refreshSum = ()=>{
         const mins = open.filter(t=>chosen.has(t.id)).reduce((s,t)=>s + (Number(t.mins)||0), 0);
         const all = open.reduce((s,t)=>s + (Number(t.mins)||0), 0), cap = workMins();
-        sum.textContent = 'الأولويات: ' + (mins ? fmtMins(mins) : '—') + ' · كل المفتوح: ' + (all ? fmtMins(all) : '—') + ' من يوم عمل ' + fmtMins(cap) + (all > cap ? ' — أطول من يومك، فكّر في تأجيل شيء' : '');
+        sum.textContent = 'الأولويات: ' + (mins ? fmtMins(mins) : '—') + '، كل المفتوح: ' + (all ? fmtMins(all) : '—') + ' من يوم عمل ' + fmtMins(cap) + (all > cap ? ' — أطول من يومك، فكّر في تأجيل شيء' : '');
         sum.classList.toggle('over', all > cap);
       };
       const ul = el('ul', 'plan-list');
@@ -3600,7 +3598,7 @@ function renderRingClock(){
     if(c){ c.querySelector('b').textContent = pct + '%'; c.querySelector('small').textContent = (q && !(el === hr0 && big)) ? 'هدوء' : ringFmt(m); }
   });
   const nx = ringNextPrayer(m);
-  const line = (total ? pct + '% من مهامك' : 'لا مهام بعد') + ' · ' + ringFmt(m) + (nx ? ' · ' + nx : '');
+  const line = (total ? pct + '% من مهامك' : 'لا مهام بعد') + ' | ' + ringFmt(m) + (nx ? ' | ' + nx : '');
   const brand = $('brandHome'); if(brand) brand.title = line;
   const hr = $('heroRing'); if(hr) hr.setAttribute('aria-label', line);
   if(fav) try{ fav.href = ringIcon(pct, a, q); }catch(e){}
@@ -3675,7 +3673,7 @@ function renderEnergyHint(){
   short.forEach(t=>{
     const b = document.createElement('button'); b.type = 'button'; b.className = 'eh-task';
     const nm = document.createElement('bdi'); nm.textContent = t.text;   /* يعزل الأسماء اللاتينية عن الأرقام بعدها */
-    b.append(nm, document.createTextNode(' · ' + fmtMins(t.mins)));
+    b.append(nm, document.createTextNode(' | ' + fmtMins(t.mins)));
     b.title = 'اعرضها في القائمة';
     b.onclick = ()=>revealTask(t);
     box.appendChild(b);
@@ -3981,9 +3979,9 @@ function renderShots(fresh){
   box.innerHTML = '';
   ideaShots.forEach((sh, i)=>{
     const w = document.createElement('figure'); w.className = 'shot' + (fresh && i === 0 ? ' fresh' : '');
-    const im = document.createElement('img'); im.src = sh.src; im.alt = 'لقطة محفوظة'; im.loading = 'lazy';
-    im.onclick = ()=>openModal({title: 'لقطة — ' + new Date(sh.at).toLocaleDateString('ar-EG-u-nu-latn', {day: 'numeric', month: 'long'}),
-      bodyHTML: '<img src="' + sh.src + '" alt="" style="width:100%;border-radius:8px;display:block">', actions: [{label: 'إغلاق', primary: true}]});
+    const im = document.createElement('img'); im.src = safeUrl(sh.src, 'img'); im.alt = 'لقطة محفوظة'; im.loading = 'lazy';
+    im.onclick = ()=>openModal({title: 'لقطة — ' + fmtDate(new Date(sh.at), {day: 'numeric', month: 'long'}),
+      bodyHTML: '<img src="' + esc(safeUrl(sh.src, 'img')) + '" alt="" style="width:100%;border-radius:8px;display:block">', actions: [{label: 'إغلاق', primary: true}]});
     const del = document.createElement('button'); del.type = 'button'; del.className = 'shot-del'; del.textContent = '×'; del.title = 'احذف اللقطة'; del.setAttribute('aria-label', 'احذف اللقطة');
     del.onclick = ()=>{ const k = ideaShots.findIndex(x=>x.id === sh.id); if(k < 0) return; const [gone] = ideaShots.splice(k, 1); renderShots(); sync();
       showToast('حُذفت اللقطة', ()=>{ ideaShots.splice(k, 0, gone); renderShots(); sync(); }); };
@@ -4134,7 +4132,7 @@ function appendTaskRow(list, t, priValues){
   }
 
   const proj = document.createElement('div');
-  proj.className='proj'; proj.textContent = [t.proj, t.donor].filter(Boolean).join(' · ');
+  proj.className='proj'; proj.textContent = [t.proj, t.donor].filter(Boolean).join('، ');
   makeEditable(proj, ()=>t.proj||'', v=>{ t.proj = v; }, ()=>{ t.dirty = true; sync(); });
 
   const imp = document.createElement('div');
@@ -4229,7 +4227,7 @@ function renderDaySummary(){
     [AR(doneT.length), 'مهام منجزة'],
     [actual ? fmtMins(actual) : '—', 'وقت فعلي'],
     [AR(ideas), 'أفكار ملتقطة'],
-    [hAll ? AR(hDone)+'/'+AR(hAll) : '—', 'عادات']
+    [hAll ? AR(hDone)+' من '+AR(hAll) : '—', 'عادات']
   ];
   box.innerHTML = '';
   items.forEach(([v, l])=>{
@@ -4429,7 +4427,7 @@ function to12h(h24){
   const period = hh < 12 ? 'ص' : 'م';
   let hour12 = hh % 12;
   if(hour12 === 0) hour12 = 12;
-  return arDigits(String(hour12).padStart(2,'0'))+':'+arDigits('00')+' '+period;
+  return String(hour12).padStart(2,'0')+':00 '+period;
 }
 /* جدول اليوم الحيّ: أقسام اليوم، خط «الآن»، ربط مهمة بالساعة (بمدتها)، ومواعيد تقويم Google */
 const TL_SECTIONS = {'06:00':'صباحًا', '12:00':'ظهرًا', '17:00':'مساءً'};
@@ -4468,7 +4466,7 @@ function renderTimeline(){
     body.append(inp, chip);
     gcalEvents.filter(e=>!e.allDay && Number(String(e.start).slice(0, 2)) === hh).forEach(e=>{
       const ev = document.createElement('div'); ev.className = 'tl-event';
-      ev.textContent = arDigits(e.start) + (e.end ? '–' + arDigits(e.end) : '') + ' · ' + e.title;
+      ev.textContent = e.start + (e.end ? '–' + e.end : '') + ' | ' + e.title;
       ev.title = 'من تقويم Google';
       body.appendChild(ev);
     });
@@ -4503,7 +4501,7 @@ function renderTlFoot(){
   const allDay = gcalEvents.filter(e=>e.allDay);
   if(allDay.length){
     const d = document.createElement('div'); d.className = 'tl-allday';
-    d.textContent = 'طوال اليوم: ' + allDay.map(e=>e.title).join(' · ');
+    d.textContent = 'طوال اليوم: ' + allDay.map(e=>e.title).join('، ');
     f.appendChild(d);
   }
   if(gcalState === 'ok' || gcalState === 'cached'){
@@ -4573,7 +4571,7 @@ function refreshCalendarFromNotion(){
 }
 function renderCalendar(){
   const grid = $('calGrid'); grid.innerHTML='';
-  $('calLabel').textContent = calMonth.toLocaleDateString('ar-EG-u-nu-latn',{month:'long',year:'numeric'});
+  $('calLabel').textContent = fmtDate(calMonth, {month:'long',year:'numeric'});
   const year = calMonth.getFullYear(), month = calMonth.getMonth();
   const firstDow = new Date(year,month,1).getDay();
   const daysInMonth = new Date(year,month+1,0).getDate();
@@ -4627,12 +4625,12 @@ function showDueForDay(key){
       showDueForDay(key);
     }));
     line.appendChild(document.createTextNode(
-      t.text + (t.proj?' — '+t.proj:'') + (t.donor?' · '+t.donor:'')));
+      t.text + (t.proj?' — '+t.proj:'') + (t.donor?'، '+t.donor:'')));
     line.appendChild(dayStatusChip(t.done ? 'done' : t.state===1 ? 'doing' : t.state===2 ? 'wait' : 'todo'));
     li.appendChild(line);
     const meta = [];
     if(t.mins) meta.push('مقدّر '+fmtMins(t.mins)); if(t.actual) meta.push('فعلي '+fmtMins(t.actual));
-    if(meta.length){ const m=document.createElement('span'); m.className='meta'; m.textContent=meta.join(' · '); li.appendChild(m); }
+    if(meta.length){ const m=document.createElement('span'); m.className='meta'; m.textContent=meta.join(' | '); li.appendChild(m); }
     ul.appendChild(li);
   });
   notionOnly.forEach(r=>{
@@ -4656,7 +4654,7 @@ function showDueForDay(key){
     line.appendChild(btn);
 
     line.appendChild(document.createTextNode(
-      r.text + (r.project?' — '+r.project:'') + (r.donor?' · '+r.donor:'')));
+      r.text + (r.project?' — '+r.project:'') + (r.donor?'، '+r.donor:'')));
     line.appendChild(dayStatusChip(notionState(r.status)));
 
     const tag = document.createElement('span'); tag.className='from-notion'; tag.textContent='من نوشن';
@@ -4673,7 +4671,7 @@ function showDueForDay(key){
     li.appendChild(line);
     const meta = [];
     if(r.est) meta.push('مقدّر '+fmtMins(r.est)); if(r.actual) meta.push('فعلي '+fmtMins(r.actual));
-    if(meta.length){ const m=document.createElement('span'); m.className='meta'; m.textContent=meta.join(' · '); li.appendChild(m); }
+    if(meta.length){ const m=document.createElement('span'); m.className='meta'; m.textContent=meta.join(' | '); li.appendChild(m); }
     ul.appendChild(li);
   });
   box.appendChild(ul);
@@ -4718,14 +4716,14 @@ const POMO_DEFAULT = 25*60;
 let pomoRemaining = POMO_DEFAULT, pomoRunning = false, pomoInterval = null;
 function fmtClock(total){
   const m = Math.floor(total/60), s = total%60;
-  return arDigits(String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'));
+  return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
 }
 function renderPomoClock(){ $('pomoTime').textContent = fmtClock(pomoRemaining); }
 function renderPomoOptions(){
   const sel = $('pomoTask');
   const prev = sel.value;
   sel.innerHTML = '<option value="">— بلا مهمة محددة —</option>' +
-    tasks.filter(t=>!t.done).map(t=>'<option value="'+t.id+'">'+t.text.replace(/</g,'&lt;')+'</option>').join('');
+    tasks.filter(t=>!t.done).map(t=>'<option value="'+esc(t.id)+'">'+esc(t.text)+'</option>').join('');
   if([...sel.options].some(o=>o.value===prev)) sel.value = prev;
 }
 /* المؤقّت واحد يخدم ثلاثة أماكن: بطاقة التركيز، سطر المهمة (عدّ حيّ)، ووضع التركيز بملء الشاشة */
@@ -4902,7 +4900,7 @@ function renderPalette(){
       .sort((a,b)=>Number(a.done) - Number(b.done)).slice(0, 8);
     if(found.length){
       group('مهام');
-      found.forEach(t=>item(t.done ? '✓' : '○', t.text, [t.proj, t.due ? arDate(t.due) : ''].filter(Boolean).join(' · '), ()=>revealTask(t)));
+      found.forEach(t=>item(t.done ? '✓' : '○', t.text, [t.proj, t.due ? arDate(t.due) : ''].filter(Boolean).join(' | '), ()=>revealTask(t)));
       found.filter(t=>!t.done).slice(0, 2).forEach(t=>item('▶', 'ركّز على: ' + t.text, '25 د', ()=>focusOnTask(t)));
     }
     if(!wantsAdd){ item('＋', 'أضف «' + raw + '» مهمةً جديدة', '', ()=>{ const t = quickTask(raw); showToast('أُضيفت: ' + t.text); }); }
@@ -5074,7 +5072,7 @@ const hmToMin = s=>{ const p = String(s || '0:0').split(':').map(Number); return
 const nowMin = (d = new Date())=>d.getHours() * 60 + d.getMinutes();
 function fmtMinAr(m){
   const h = Math.floor(m / 60) % 24, mm = m % 60, h12 = h % 12 || 12;
-  return arDigits(h12 + ':' + String(mm).padStart(2, '0')) + ' ' + (h < 12 ? 'ص' : 'م');
+  return h12 + ':' + String(mm).padStart(2, '0') + ' ' + (h < 12 ? 'ص' : 'م');
 }
 function minutesAr(n){ return n === 1 ? 'دقيقة' : n === 2 ? 'دقيقتين' : AR(n) + (n <= 10 ? ' دقائق' : ' دقيقة'); }
 /* طريقة الهيئة المصرية العامة للمساحة: الفجر 19٫5°، العشاء 17٫5°، العصر شافعي. تحقّقتُ منها مقابل مواقيت القدس المنشورة */
@@ -5161,7 +5159,7 @@ function notifAge(ms){
   const m = Math.round((Date.now() - ms) / 60000);
   if(m < 1) return 'الآن'; if(m < 60) return 'منذ ' + minutesAr(m);
   const h = Math.round(m / 60); if(h < 24) return 'منذ ' + (h === 1 ? 'ساعة' : h === 2 ? 'ساعتين' : AR(h) + ' ساعات');
-  return new Date(ms).toLocaleDateString('ar-EG-u-nu-latn', {day:'numeric', month:'long'});
+  return fmtDate(new Date(ms), {day:'numeric', month:'long'});
 }
 function renderNotifs(){
   const unread = notifs.filter(n=>!n.read).length, badge = $('notifBadge');
@@ -5375,9 +5373,9 @@ function renderArchive(){
   const avg = archive.length ? archive.reduce((s,t)=>s+openDays(t),0)/archive.length : 0;
   $('arcStats').innerHTML =
     'الإجمالي: <b>'+AR(archive.length)+'</b> مهمة' +
-    ' · الوقت المقدّر: <b>'+(fmtMins(est)||'—')+'</b>' +
-    ' · الوقت الفعلي المسجَّل: <b>'+(fmtMins(act)||'—')+'</b>' +
-    ' · متوسط عمر المهمة: <b>'+fmtDays(Math.round(avg))+'</b>';
+    ' | الوقت المقدّر: <b>'+(fmtMins(est)||'—')+'</b>' +
+    ' | الوقت الفعلي المسجَّل: <b>'+(fmtMins(act)||'—')+'</b>' +
+    ' | متوسط عمر المهمة: <b>'+fmtDays(Math.round(avg))+'</b>';
 }
 $('arcSearch').addEventListener('input', renderArchive);
 
@@ -5513,14 +5511,14 @@ $('expBtn').onclick = ()=>{
   const all = archive.concat(tasks.map(t=>({...t, pending:true})));
   if(!all.length){ openModal({title:'لا توجد بيانات', bodyHTML:'<p>لا توجد مهام للتصدير بعد.</p>', actions:[{label:'حسنًا', primary:true}]}); return; }
   const head = ['المهمة','المشروع','المانح','الأهمية','الحالة','تاريخ الإضافة','تاريخ الاستحقاق','تاريخ الإنجاز','عدد الأيام','الوقت المقدّر (دقيقة)','الوقت الفعلي (دقيقة)','ملاحظات'];
-  const esc = v => '"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const csvCell = v => '"'+String(v==null?'':v).replace(/"/g,'""')+'"';
   const rows = all.map(t=>[
     t.text, t.proj||'', t.donor||'', t.imp||'',
     t.pending ? (t.done?'منجزة اليوم':'قيد العمل') : 'منجزة',
     iso(t.createdAt), t.due?iso(t.due):'', t.doneAt?iso(t.doneAt):'',
     t.doneAt?openDays(t):'', t.mins||'', t.actual||'', t.notes||''
-  ].map(esc).join(','));
-  download('سجل-المهام-'+iso(Date.now())+'.csv', '﻿sep=,\r\n'+[head.map(esc).join(','), ...rows].join('\r\n'), 'text/csv');
+  ].map(csvCell).join(','));
+  download('سجل-المهام-'+iso(Date.now())+'.csv', '﻿sep=,\r\n'+[head.map(csvCell).join(','), ...rows].join('\r\n'), 'text/csv');
 };
 
 /* ---------- backup & restore ---------- */
@@ -5560,8 +5558,8 @@ render();
 renderTimeline();
 
 /* ---------- Daily Flow ---------- */
-$('flowDate').textContent = now.toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
-$('flowWeekday').textContent = now.toLocaleDateString('ar-EG-u-nu-latn',{weekday:'long'});
+$('flowDate').textContent = fmtDate(now);
+$('flowWeekday').textContent = fmtDate(now, {weekday:'long'});
 
 const FKEY = 'daily-flow-v1';
 let flow = {amRoutine:[], pmRoutine:[], energy:0, grat:['','',''], meals:{breakfast:'',lunch:'',dinner:''}, water:0, lastDate:''};
@@ -5638,7 +5636,7 @@ function drawHabitWeek(box){
     const bar = document.createElement('div'); bar.className = 'hw-bar';
     const fill = document.createElement('i'); fill.style.height = pct + '%'; bar.appendChild(fill);
     const lbl = document.createElement('span');
-    lbl.textContent = d.toLocaleDateString('ar-EG-u-nu-latn', {weekday:'short'});
+    lbl.textContent = fmtDate(d, {weekday:'short'});
     cell.append(bar, lbl); box.appendChild(cell);
   }
 }
@@ -5949,7 +5947,8 @@ function applyHeroVisual(ctx){
     $('heroBanner').classList.add('has-photo');
     const img = $('heroImg');
     img.hidden = false;
-    if(img.getAttribute('src') !== cur.url){ img.classList.add('swapping'); img.onload = img.onerror = ()=>img.classList.remove('swapping'); img.src = cur.url; }
+    const src = safeUrl(cur.url, 'img');
+    if(img.getAttribute('src') !== src){ img.classList.add('swapping'); img.onload = img.onerror = ()=>img.classList.remove('swapping'); img.src = src; }
     $('heroDelBtn').hidden = !cur.dbId;
     heroVisual = {ctx, kind:'photo', url:cur.url};
     try{ renderRingClock(); }catch(e){}
@@ -6102,7 +6101,7 @@ function openPhotoTagsModal(){
       photoList.forEach(p=>{
         if(!p.dbId) return;
         const row = document.createElement('div'); row.className = 'pm-row';
-        const im = document.createElement('img'); im.src = p.url; im.alt = '';
+        const im = document.createElement('img'); im.src = safeUrl(p.url, 'img'); im.alt = '';
         const tags = document.createElement('div'); tags.className = 'tag-pick';
         const chosen = new Set(Array.isArray(p.tags) ? p.tags : []);
         Object.entries(PHOTO_TAGS).forEach(([k, label])=>{
@@ -6133,7 +6132,7 @@ function showPhoto(){
   catch(e){
     $('heroBanner').classList.toggle('has-photo', has);
     $('heroImg').hidden = !has;
-    if(has){ const cur = photoList[photoIdx % photoList.length]; $('heroImg').src = cur.url; $('heroDelBtn').hidden = !cur.dbId; }
+    if(has){ const cur = photoList[photoIdx % photoList.length]; $('heroImg').src = safeUrl(cur.url, 'img'); $('heroDelBtn').hidden = !cur.dbId; }
   }
   /* نقاط التنقّل بين صورك (تظهر في واجهة «360» حين تكون أكثر من صورة) */
   const dots = $('heroDots'); dots.innerHTML = '';
@@ -6285,13 +6284,12 @@ function loadExpenses(){
     if(Array.isArray(d)) expenses = d;
   }catch(e){}
 }
-function fmtMoney(n){ return AR(Math.round(Number(n)*100)/100) + ' ₪'; }
 function safeEval(expr){
   if(!/^[\d+\-*/.() ]+$/.test(expr)) return null;
   try{ const r = Function('"use strict";return ('+expr+')')(); return isFinite(r) ? r : null; }catch(e){ return null; }
 }
 $('expAmount').addEventListener('blur', ()=>{
-  const v = $('expAmount').value.trim();
+  const v = toLatinDigits($('expAmount').value.trim());
   if(v && /[+\-*/]/.test(v)){
     const r = safeEval(v);
     if(r!=null) $('expAmount').value = Math.round(r*100)/100;
@@ -6305,7 +6303,7 @@ $('expAddDetailsBtn').onclick = ()=>{
 };
 
 function addExpense(){
-  let amtRaw = $('expAmount').value.trim();
+  let amtRaw = toLatinDigits($('expAmount').value.trim());
   if(/[+\-*/]/.test(amtRaw)){ const r = safeEval(amtRaw); if(r!=null) amtRaw = String(r); }
   const amount = Number(amtRaw);
   if(!amtRaw || !isFinite(amount) || amount<=0){ $('expAmount').focus(); return; }
@@ -6398,8 +6396,8 @@ function loadExpenseOptions(){
   if(!notionOK()) return;
   post({action:'expense_options'}).then(d=>{
     expCategories = d.categories||[]; expAccounts = d.accounts||[];
-    $('expCategory').innerHTML = '<option value="">التصنيف</option>' + expCategories.map(c=>'<option value="'+c.replace(/"/g,'&quot;')+'">'+c+'</option>').join('');
-    $('expAccount').innerHTML = '<option value="">من حساب</option>' + expAccounts.map(a=>'<option value="'+a.id+'">'+a.name.replace(/</g,'&lt;')+'</option>').join('');
+    $('expCategory').innerHTML = '<option value="">التصنيف</option>' + expCategories.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
+    $('expAccount').innerHTML = '<option value="">من حساب</option>' + expAccounts.map(a=>'<option value="'+esc(a.id)+'">'+esc(a.name)+'</option>').join('');
     expOptionsLoaded = true;
   }).catch(()=>{});
 }
@@ -6415,7 +6413,7 @@ function renderBudgetDashboard(d){
   overall.innerHTML =
     '<div class="big">'+fmtMoney(d.totalActual)+'</div>'+
     '<div class="sub">من '+(d.totalPlanned>0?fmtMoney(d.totalPlanned):'بلا حدّ مخطط')+
-      (d.totalPlanned>0 ? (' · المتبقي '+fmtMoney(remaining)) : '')+'</div>'+
+      (d.totalPlanned>0 ? (' | المتبقي '+fmtMoney(remaining)) : '')+'</div>'+
     (d.totalPlanned>0 ? renderBudgetBar(pct) : '');
 
   const list = $('budgetList');
@@ -6423,7 +6421,7 @@ function renderBudgetDashboard(d){
   list.innerHTML = d.items.map(it=>{
     const p = it.planned>0 ? Math.round(it.actual/it.planned*100) : null;
     return '<div class="budget-item">'+
-      '<div class="row"><b>'+it.category+'</b><span>'+fmtMoney(it.actual)+(it.planned>0?' / '+fmtMoney(it.planned):'')+'</span></div>'+
+      '<div class="row"><b>'+esc(it.category)+'</b><span>'+fmtMoney(it.actual)+(it.planned>0?' / '+fmtMoney(it.planned):'')+'</span></div>'+
       (p!=null ? renderBudgetBar(p) + '<div class="pct">'+AR(p)+'% من الحد المخطط</div>' : '')+
     '</div>';
   }).join('');
@@ -6438,9 +6436,9 @@ function loadBudgetSummary(){
   $('expSyncNote').textContent = 'يُحدَّث…';
   post({action:'expense_summary', month}).then(d=>{
     renderBudgetDashboard(d);
-    $('expSyncNote').textContent = 'آخر تحديث ' + new Date().toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'});
+    $('expSyncNote').textContent = 'آخر تحديث ' + fmtTime(new Date());
   }).catch(e=>{
-    $('budgetOverall').innerHTML = '<div class="sub">تعذّر تحميل الميزانية: '+e.message+'</div>';
+    $('budgetOverall').innerHTML = '<div class="sub">تعذّر تحميل الميزانية: '+esc(e.message)+'</div>';
     $('expSyncNote').textContent = '';
   });
 }
@@ -6478,7 +6476,7 @@ function openSpotifySetupModal(){
   openModal({
     title:'إعداد ربط سبوتيفاي',
     bodyHTML:'<p>سجّل تطبيقًا مجانيًا على <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com/dashboard</a>، وأضف رابط هذه الصفحة بالضبط كـ Redirect URI:</p>'+
-      '<p style="direction:ltr;text-align:left;background:var(--stripe);padding:6px 8px;border-radius:6px;font-size:12px;word-break:break-all">'+spotifyRedirectUri()+'</p>'+
+      '<p style="direction:ltr;text-align:left;background:var(--stripe);padding:6px 8px;border-radius:6px;font-size:12px;word-break:break-all">'+esc(spotifyRedirectUri())+'</p>'+
       '<p>ثم الصق Client ID التطبيق هنا:</p><input type="text" id="spotifyCidInput" placeholder="Client ID">',
     onRender:(el)=>{ const inp=el.querySelector('#spotifyCidInput'); inp.value = getSpotifyClientId(); inp.focus(); },
     actions:[
@@ -6555,7 +6553,7 @@ async function spotifyLoadPlaylists(){
   try{
     const d = await spotifyApi('/me/playlists?limit=50');
     const sel = $('spotifyPlaylist');
-    sel.innerHTML = (d.items||[]).map(p=>'<option value="'+p.id+'">'+p.name.replace(/</g,'&lt;')+'</option>').join('');
+    sel.innerHTML = (d.items||[]).map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
     if(d.items && d.items.length) spotifySelectPlaylist(d.items[0].id);
     spotifyShowSignedIn();
   }catch(e){ spotifyShowSignedOut(); }
@@ -6598,7 +6596,7 @@ function renderAdminUsers(d){
     const who = document.createElement('div'); who.className = 'who';
     const name = document.createElement('b'); name.textContent = u.username;
     const meta = document.createElement('span');
-    meta.textContent = (u.email||'—') + (u.createdAt ? ' · ' + new Date(u.createdAt).toLocaleDateString('ar-EG-u-nu-latn') : '');
+    meta.textContent = (u.email||'—') + (u.createdAt ? ' | ' + fmtDate(new Date(u.createdAt), {day:'numeric', month:'numeric', year:'numeric'}) : '');
     who.append(name, meta);
     row.appendChild(who);
     if(u.isOwner){
@@ -6612,7 +6610,7 @@ function renderAdminUsers(d){
             close();
             post({action:'admin_delete_user', username:u.username})
               .then(()=>loadAdminUsers())
-              .catch(e=>openModal({title:'تعذّر الحذف', bodyHTML:'<p>'+e.message+'</p>', actions:[{label:'حسنًا', primary:true}]}));
+              .catch(e=>openModal({title:'تعذّر الحذف', bodyHTML:'<p>'+esc(e.message)+'</p>', actions:[{label:'حسنًا', primary:true}]}));
           }}]});
       };
       row.appendChild(del);
@@ -6707,7 +6705,7 @@ function bootConnected(){
       resetLocalForUser(d.user);   /* حارس: لا يفعل شيئًا ما دام المستخدم نفسه */
       saveAuth({token:auth.token, user:d.user, isOwner:d.isOwner});
       setDot('ok', d.notion ? ('متصل بـ '+(d.title||'ToDos'))
-                            : ('مسجّل: '+d.user + (d.notionError ? ' · نوشن: '+d.notionError : '')));
+                            : ('مسجّل: '+d.user + (d.notionError ? '، نوشن: '+d.notionError : '')));
       markSynced();
       applyOwnerVisibility();
       if(d.options) fillOptions(d.options);
@@ -6746,32 +6744,28 @@ function resetLocalForUser(newUser){
 
 function afterAuth(d){
   resetLocalForUser(d.user);
-  saveAuth({token:d.token, user:d.user, isOwner:d.isOwner});
+  saveAuth({token:d.token, user:d.user, isOwner:d.isOwner}, $('rememberMe').checked);
   hideAuth();
   bootConnected();
 }
 
-/* ---------- حفظ بيانات الدخول على هذا الجهاز ----------
-   مخزَّنة كنص صريح في متصفح هذا الجهاز وحده — لا تُرسل ولا تُزامَن.
-   لا تفعّلها على جهاز مشترك. */
-const REMEMBER_KEY = 'daily-board-remember';
+/* ---------- ابقَ مسجّل الدخول على هذا الجهاز ----------
+   كلمة السر لا تُحفظ في المتصفح أبدًا (مدير كلمات السر في المتصفح يعرض حفظها بأمان عبر
+   autocomplete). المؤشَّر: رمز الجلسة في localStorage ويُطلب من الجسر جلسة طويلة،
+   مع حفظ اسم المستخدم وحده لتعبئة الحقل. غير المؤشَّر: الرمز في sessionStorage فقط.
+   المفتاح القديم daily-board-remember (كان فيه كلمة السر نصًّا صريحًا) يُحذف في NasaqAuth. */
 function loadRemembered(){
-  let r = null;
-  try{ r = JSON.parse(localStorage.getItem(REMEMBER_KEY) || 'null'); }catch(e){}
-  if(!r) return;
+  const u = NasaqAuth.rememberedUser();
+  if(!u) return;
   $('rememberMe').checked = true;
-  $('loginUser').value = r.u || '';
-  $('loginPass').value = r.p || '';
+  $('loginUser').value = u;
 }
-function saveRemembered(u, p){
-  try{
-    if($('rememberMe').checked) localStorage.setItem(REMEMBER_KEY, JSON.stringify({u:u, p:p}));
-    else localStorage.removeItem(REMEMBER_KEY);
-  }catch(e){}
+function saveRemembered(u){
+  NasaqAuth.rememberUser($('rememberMe').checked ? u : '');
 }
 $('rememberMe').onchange = ()=>{
-  /* إلغاء التأشير يمحو المحفوظ فورًا، لا عند الدخول التالي */
-  if(!$('rememberMe').checked){ try{ localStorage.removeItem(REMEMBER_KEY); }catch(e){} }
+  /* إلغاء التأشير يمحو الاسم المحفوظ فورًا، لا عند الدخول التالي */
+  if(!$('rememberMe').checked) NasaqAuth.rememberUser('');
 };
 loadRemembered();
 
@@ -6779,15 +6773,15 @@ $('loginBtn').onclick = ()=>{
   const u = $('loginUser').value.trim(), p = $('loginPass').value;
   if(!u || !p){ setAuthMsg('أدخل اسم المستخدم وكلمة السر','err'); return; }
   setAuthMsg('جارٍ الدخول…');
-  post({action:'auth_login', username:u, password:p})
-    .then(d=>{ saveRemembered(u, p); return afterAuth(d); })
+  post({action:'auth_login', username:u, password:p, remember:$('rememberMe').checked})
+    .then(d=>{ saveRemembered(u); $('loginPass').value = ''; return afterAuth(d); })
     .catch(e=>setAuthMsg(e.message,'err'));
 };
 $('registerBtn').onclick = ()=>{
   setAuthMsg('جارٍ إنشاء الحساب…');
   post({action:'auth_register',
     username:$('regUser').value.trim(), password:$('regPass').value,
-    email:$('regEmail').value.trim(), code:$('regCode').value.trim()
+    email:$('regEmail').value.trim(), code:$('regCode').value.trim(), remember:$('rememberMe').checked
   }).then(afterAuth).catch(e=>setAuthMsg(e.message,'err'));
 };
 $('resSendBtn').onclick = ()=>{
@@ -6801,7 +6795,7 @@ $('resSendBtn').onclick = ()=>{
 $('resConfirmBtn').onclick = ()=>{
   setAuthMsg('جارٍ التعيين…');
   post({action:'auth_reset_confirm',
-    username:$('resUser').value.trim(), code:$('resCode').value.trim(), password:$('resPass').value
+    username:$('resUser').value.trim(), code:$('resCode').value.trim(), password:$('resPass').value, remember:$('rememberMe').checked
   }).then(afterAuth).catch(e=>setAuthMsg(e.message,'err'));
 };
 $('toRegister').onclick = ()=>showAuth('register');
