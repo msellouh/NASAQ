@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800;900&family=Readex+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
-<script src="nasaq-core.js?v=20260927c"></script>
+<script src="nasaq-core.js?v=20260927d"></script>
 <script>
 /* الوضع المحفوظ في نَسَق — قبل الرسم حتى لا يومض */
 (function(){ try{
@@ -1313,7 +1313,7 @@ function reportHTML(p){
   const budT = '<table class="t-bud"><tr><th>#</th><th>البند</th><th>المبلغ</th></tr>' + budRows.map(([k, v], i) => '<tr><th>' + AR(i + 1) + '</th><td>' + k + '</td><td>' + money(v) + '</td></tr>').join('') +
     (p.received != null && f.A ? '<tr class="tot"><th></th><td>المتبقي من المانح</td><td>' + money(f.A - num(p.received)) + '</td></tr>' : '') + '</table>';
   const photos = '<div class="photos">' + [1, 2, 3, 4].map(i => '<figure><div>صورة ' + AR(i) + '</div><figcaption contenteditable="true">وصف الصورة</figcaption></figure>').join('') + '</div>' +
-    (p.drive || p.folder ? '<p class="link">رابط المرفقات: <a href="' + esc(p.drive || p.folder) + '">مجلد المشروع في درايف</a></p>' : '');
+    (p.drive || p.folder ? '<p class="link">رابط المرفقات: <a href="' + esc(safeUrl(p.drive || p.folder)) + '">مجلد المشروع في درايف</a></p>' : '');
   const H = ['ملخص المشروع', 'أنشطة المشروع', 'الأنشطة المتبقية ونسب الإنجاز', 'الأعمال المخططة', 'موازنة المشروع', 'أهداف المشروع', 'تحديات المشروع', 'توثيق مراحل المشروع'];
   const foot = '<footer><span class="org">' + esc(ORG_INFO.full) + '</span><b>' + esc(p.name) + '</b><i class="pg"></i></footer>';
   const sheet = (cls, body) => '<section class="sheet ' + cls + '"><div class="in">' + body + '</div>' + foot + '</section>';
@@ -1463,8 +1463,8 @@ function heroCard(p){
     (p.brief ? '<div class="brief">' + esc(p.brief) + '</div>' : '') +
     (p.notes ? '<div class="brief">ملاحظة: ' + esc(p.notes) + '</div>' : '') +
     '<div class="acts">' +
-      (drive ? '<a class="btn cta sm" href="' + esc(drive) + '" target="_blank" rel="noopener">مجلد المشروع في درايف</a>' : '') +
-      (p.url ? '<a class="btn soft sm" href="' + esc(p.url) + '" target="_blank" rel="noopener">فتح في نوشن</a>' : '') +
+      (drive ? '<a class="btn cta sm" href="' + esc(safeUrl(drive)) + '" target="_blank" rel="noopener">مجلد المشروع في درايف</a>' : '') +
+      (p.url ? '<a class="btn soft sm" href="' + esc(safeUrl(p.url)) + '" target="_blank" rel="noopener">فتح في نوشن</a>' : '') +
     '</div>' +
   '</article>';
 }
@@ -1696,7 +1696,7 @@ function fileKind(name){
 function fileChip(f){
   const [cls, lbl] = fileKind(f.name);
   const base = String(f.name).replace(/\.[^.]+$/, '');
-  return '<a class="file ' + cls + '" href="' + esc(f.url) + '" target="_blank" rel="noopener" title="' +
+  return '<a class="file ' + cls + '" href="' + esc(safeUrl(f.url)) + '" target="_blank" rel="noopener" title="' +
     esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' | ' + dayLbl(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></a>';
 }
 /* رفع ملف إلى خانة: يُحفظ في مجلد الخانة داخل مجلد المشروع باسم موحّد «الكود- نوع المستند- اسم المشروع» */
@@ -1752,7 +1752,7 @@ function docsCard(p){
       (busy ? '<span class="spin"></span>جارٍ الرفع…' : '＋ أضف ملفًا') + '</button>' : '';
     return '<div class="slot ' + (ok ? 'ok' : later ? 'later' : 'miss') + '"><span class="ic">' + ICON_CHECK + '</span><div>' +
       '<div class="slot-h">' + d + '<em>' + (ok ? 'مرفق' + (list.length ? ' | ' + cnt(list.length, W_FILE) : '') : later ? 'لاحقًا' : 'ناقص') + '</em>' +
-        (sl && sl.url ? '<a class="link" href="' + esc(sl.url) + '" target="_blank" rel="noopener">فتح المجلد</a>' : '') + '</div>' +
+        (sl && sl.url ? '<a class="link" href="' + esc(safeUrl(sl.url)) + '" target="_blank" rel="noopener">فتح المجلد</a>' : '') + '</div>' +
       (shown.length || upBtn ? '<div class="files">' + shown.map(fileChip).join('') +
         (list.length > 4 ? '<button class="more" type="button" data-act="more" data-key="' + esc(key) + '">' + (open ? 'عرض أقل' : '+ ' + cnt(list.length - 4, W_FILE)) + '</button>' : '') + upBtn + '</div>' : '') +
     '</div></div>';
@@ -1763,7 +1763,7 @@ function docsCard(p){
   const head = '<article class="card" id="docsCard"><div class="card-h"><span class="dring" style="--p:' + Math.round(ratio * 100) + '" aria-hidden="true"><b>' + AR(Math.round(ratio * 100)) + '%</b></span>' +
       '<div><h2>مستندات المشروع</h2><small>' + (!checked && !f ? (DATA.driveRoot ? 'لم يُفحص المجلد بعد' : 'الأرشيف غير مربوط') :
         AR(nDone) + ' من ' + AR(DOCS_N) + ' مرفقة' + (nMissing ? ' | ' + AR(nMissing) + ' ناقصة حتى هذه المرحلة' : '')) + '</small></div>' +
-      '<span class="end">' + (driveUrl ? '<a class="btn soft sm" href="' + esc(driveUrl) + '" target="_blank" rel="noopener">المجلد في درايف</a>' : '') +
+      '<span class="end">' + (driveUrl ? '<a class="btn soft sm" href="' + esc(safeUrl(driveUrl)) + '" target="_blank" rel="noopener">المجلد في درايف</a>' : '') +
         (SOURCE === 'live' ? '<button class="btn ghost sm" type="button" data-act="files-refresh">' + (loading ? 'جارٍ القراءة…' : 'قراءة الملفات من درايف') + '</button>' : '') + '</span></div>';
   if(!checked && !f && !DATA.driveRoot) return head + '<p class="note" style="margin:0">لم يُربط أرشيف درايف لمؤسسة ' + ORG_INFO.name +
     ' بعد. اربطه من زر الأرشيف أعلى الصفحة، فتُقرأ مجلدات مشاريعها (المسماة بالكود مثل ' + (ORG === 'humera' ? 'H001-' : 'G050-') + ') ملفًا ملفًا.</p></article>';

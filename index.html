@@ -2459,7 +2459,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
 <div class="toast" id="toastBox"></div>
 
-<script src="nasaq-core.js?v=20260927c"></script>
+<script src="nasaq-core.js?v=20260927d"></script>
 <script src="nasaq-pulse.js?v=20260927c"></script>
 <script>
 const AR = n => fmtNum(n);   /* الأرقام إنجليزية — fmtNum وأخواتها في nasaq-core.js */
@@ -3978,9 +3978,9 @@ function renderShots(fresh){
   box.innerHTML = '';
   ideaShots.forEach((sh, i)=>{
     const w = document.createElement('figure'); w.className = 'shot' + (fresh && i === 0 ? ' fresh' : '');
-    const im = document.createElement('img'); im.src = sh.src; im.alt = 'لقطة محفوظة'; im.loading = 'lazy';
+    const im = document.createElement('img'); im.src = safeUrl(sh.src, 'img'); im.alt = 'لقطة محفوظة'; im.loading = 'lazy';
     im.onclick = ()=>openModal({title: 'لقطة — ' + fmtDate(new Date(sh.at), {day: 'numeric', month: 'long'}),
-      bodyHTML: '<img src="' + esc(sh.src) + '" alt="" style="width:100%;border-radius:8px;display:block">', actions: [{label: 'إغلاق', primary: true}]});
+      bodyHTML: '<img src="' + esc(safeUrl(sh.src, 'img')) + '" alt="" style="width:100%;border-radius:8px;display:block">', actions: [{label: 'إغلاق', primary: true}]});
     const del = document.createElement('button'); del.type = 'button'; del.className = 'shot-del'; del.textContent = '×'; del.title = 'احذف اللقطة'; del.setAttribute('aria-label', 'احذف اللقطة');
     del.onclick = ()=>{ const k = ideaShots.findIndex(x=>x.id === sh.id); if(k < 0) return; const [gone] = ideaShots.splice(k, 1); renderShots(); sync();
       showToast('حُذفت اللقطة', ()=>{ ideaShots.splice(k, 0, gone); renderShots(); sync(); }); };
@@ -5946,7 +5946,8 @@ function applyHeroVisual(ctx){
     $('heroBanner').classList.add('has-photo');
     const img = $('heroImg');
     img.hidden = false;
-    if(img.getAttribute('src') !== cur.url){ img.classList.add('swapping'); img.onload = img.onerror = ()=>img.classList.remove('swapping'); img.src = cur.url; }
+    const src = safeUrl(cur.url, 'img');
+    if(img.getAttribute('src') !== src){ img.classList.add('swapping'); img.onload = img.onerror = ()=>img.classList.remove('swapping'); img.src = src; }
     $('heroDelBtn').hidden = !cur.dbId;
     heroVisual = {ctx, kind:'photo', url:cur.url};
     try{ renderRingClock(); }catch(e){}
@@ -6099,7 +6100,7 @@ function openPhotoTagsModal(){
       photoList.forEach(p=>{
         if(!p.dbId) return;
         const row = document.createElement('div'); row.className = 'pm-row';
-        const im = document.createElement('img'); im.src = p.url; im.alt = '';
+        const im = document.createElement('img'); im.src = safeUrl(p.url, 'img'); im.alt = '';
         const tags = document.createElement('div'); tags.className = 'tag-pick';
         const chosen = new Set(Array.isArray(p.tags) ? p.tags : []);
         Object.entries(PHOTO_TAGS).forEach(([k, label])=>{
@@ -6130,7 +6131,7 @@ function showPhoto(){
   catch(e){
     $('heroBanner').classList.toggle('has-photo', has);
     $('heroImg').hidden = !has;
-    if(has){ const cur = photoList[photoIdx % photoList.length]; $('heroImg').src = cur.url; $('heroDelBtn').hidden = !cur.dbId; }
+    if(has){ const cur = photoList[photoIdx % photoList.length]; $('heroImg').src = safeUrl(cur.url, 'img'); $('heroDelBtn').hidden = !cur.dbId; }
   }
   /* نقاط التنقّل بين صورك (تظهر في واجهة «360» حين تكون أكثر من صورة) */
   const dots = $('heroDots'); dots.innerHTML = '';

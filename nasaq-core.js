@@ -262,3 +262,21 @@ window.toLatinDigits = function(s){
     try{ el.setSelectionRange(pos, pos); }catch(err){}
   }, true);
 })();
+
+/* ---------- الروابط الآتية من نوشن أو درايف أو المستخدم ----------
+   safeUrl(u) لا يقبل إلا https: وhttp: وmailto: وtel: والمسارات النسبية، ويرجع '#' لغيرها
+   (javascript: وdata: وvbscript: …). يُطبَّق على كل href وsrc من البيانات، ثم esc() إن دخل HTML.
+   safeUrl(u, 'img') لوسم <img> فقط: يقبل أيضًا blob: وdata:image/… لأن الصور المرفوعة من الجهاز
+   ولقطات الأفكار تُحفظ بهما، ولا تُنفَّذ فيهما سكربتات داخل <img>. */
+window.safeUrl = function(u, kind){
+  var s = String(u == null ? '' : u).trim();
+  if(!s) return '#';
+  /* المتصفح يتجاهل المسافات ومحارف التحكم داخل البادئة (java\tscript:)، فنفحصها بعد حذفها */
+  var bare = s.replace(/[\u0000- \u007F-\u009F]+/g, '');
+  var m = bare.match(/^([a-z][a-z0-9+.\-]*):/i);
+  if(!m) return s;   /* مسار نسبي (أو //نطاق، ويرث http/https من الصفحة) */
+  var scheme = m[1].toLowerCase();
+  if(/^(https?|mailto|tel)$/.test(scheme)) return s;
+  if(kind === 'img' && (scheme === 'blob' || /^data:image\/(png|jpe?g|gif|webp|avif|bmp);/i.test(bare))) return s;
+  return '#';
+};
