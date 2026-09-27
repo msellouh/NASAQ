@@ -3,23 +3,33 @@
 /* نَسَق — عامل الخدمة (Service Worker)
  *
  * ثلاث وظائف:
- *  ١. يجعل اللوح قابلًا للتثبيت كتطبيق على الهاتف والحاسوب.
- *  ٢. يفتح اللوح بآخر نسخة محفوظة إن انقطع الاتصال.
- *  ٣. الضغط على إشعار من نَسَق يعيدك إلى اللوح المفتوح (أو يفتحه).
+ *  1. يجعل اللوح قابلًا للتثبيت كتطبيق على الهاتف والحاسوب.
+ *  2. يفتح كل صفحة (اللوح، المشاريع، النبض) بآخر نسخة محفوظة منها إن انقطع الاتصال.
+ *  3. الضغط على إشعار من نَسَق يعيدك إلى اللوح المفتوح (أو يفتحه).
  *
- * الصفحة تُجلب "من الشبكة أولًا" دائمًا، كي يصل أي تعديل فور رفعه ولا يعلق أحد
- * على نسخة قديمة. ولا يتدخّل أبدًا في طلبات الجسر أو نوشن أو الخطوط (نطاقات أخرى).
+ * الصفحات وملفات JS وCSS الخاصة بالمنصة تُجلب "من الشبكة أولًا" دائمًا، كي يصل أي تعديل
+ * فور رفعه ولا يعلق أحد على نسخة قديمة؛ والذاكرة احتياط عند انقطاع الاتصال فقط.
+ * ولا يتدخّل أبدًا في طلبات الجسر أو نوشن أو الخطوط (نطاقات أخرى).
  *
  * عند تغيير قائمة SHELL أو منطق هذا الملف: ارفع رقم CACHE ليُستبدل القديم.
  */
-const CACHE = 'daily-board-v3';   /* v3: أيقونات الشعار الجديد (ورقتان بحروف الاسم ومعينان) */
+const CACHE = 'daily-board-v4';   /* v4: صفحتا المشاريع والنبض والملفات المشتركة تعمل بلا اتصال */
 const SHELL = [
   './',
   './index.html',
+  './projects.html',
+  './pulse.html',
+  './nasaq-core.js',
+  './nasaq-pulse.js',
+  './nasaq-brand.js',
+  './nasaq-theme.css',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './icons/icon-maskable-512.png',
+  './icons/apple-touch-icon.png',
   './icons/favicon-32.png'
+  /* مجلد brand/ لا تستعمله الصفحات وقت التشغيل: الشعار مضمَّن في nasaq-brand.js */
 ];
 
 self.addEventListener('install', e => {
@@ -42,14 +52,32 @@ self.addEventListener('fetch', e => {
 
   const isPage = req.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('.html');
   if (isPage) {
-    /* no-cache: يتحقق من الخادم في كل فتح (رد 304 خفيف إن لم يتغيّر شيء) */
+    /* كل صفحة تُحفظ باسمها (بلا ?embed=1 أو ?org=…، فالملف واحد) وترجع من نسختها هي عند الانقطاع.
+       no-cache: يتحقق من الخادم في كل فتح (رد 304 خفيف إن لم يتغيّر شيء) */
+    const key = new URL(url.pathname.endsWith('/') ? url.pathname + 'index.html' : url.pathname, url).href;
     e.respondWith(
       fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' })
         .then(res => {
-          if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); }
+          if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(key, copy)); }
           return res;
         })
-        .catch(() => caches.match('./index.html'))
+        .catch(() => caches.match(key).then(hit => hit || (req.mode === 'navigate' ? caches.match('./index.html') : undefined))
+          .then(hit => hit || Response.error()))
+    );
+    return;
+  }
+
+  /* ملفات JS وCSS الخاصة بالمنصة: من الشبكة أولًا ثم الذاكرة. تُطلب بـ ?v=… فتُحفظ نسخة واحدة
+     باسم الملف بلا الاستعلام، ولا تتراكم نسخة لكل رقم إصدار */
+  if (/\.(js|css)$/.test(url.pathname)) {
+    const key = url.origin + url.pathname;
+    e.respondWith(
+      fetch(req)
+        .then(res => {
+          if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(key, copy)); }
+          return res;
+        })
+        .catch(() => caches.match(key).then(hit => hit || Response.error()))
     );
     return;
   }
