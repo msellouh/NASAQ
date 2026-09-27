@@ -408,6 +408,30 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
 .ngroup li code{font-size:12px;color:var(--focus)}
 .ngroup li small{color:var(--muted);font-size:12px}
 .ngroup li small.diff{color:var(--hold)}
+/* الجدول الزمني — ألوان تقرير Al-Cela المرجعي */
+.g-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:13px;color:var(--ink-2)}
+.g-tools input{padding:6px 9px;margin-inline-start:6px}
+.g-wrap{overflow-x:auto;border:1px solid #006C75;border-radius:8px}
+.gantt{border-collapse:collapse;font-size:12px;font-weight:700;min-width:100%}
+.gantt th,.gantt td{border:1px solid #008F9B;height:26px;text-align:center;padding:0}
+.gantt td,.gantt .g-wk{min-width:24px;width:24px}
+.gantt .g-lbl{position:sticky;inset-inline-start:0;z-index:1;text-align:start;padding:3px 10px;white-space:nowrap;min-width:220px;max-width:320px;overflow:hidden;text-overflow:ellipsis}
+.gantt thead .g-lbl{background:#00B2C1;color:#fff}
+.gantt .g-mon{background:#81D0D9;color:#44546A;padding:4px 2px}
+.gantt .g-wk{background:#006C75;color:#fff;font-size:10.5px}
+.gantt .g-ph .g-lbl{background:#00B2C1;color:#fff}
+.gantt .g-it .g-lbl{background:#81D0D9;color:#44546A;font-weight:600}
+.gantt td{background:#fff}
+.gantt td.ph{background:#008F9B}
+.gantt td.dn1,.g-legend .dn1{background:#FCE4D6}
+.gantt td.dn2,.g-legend .dn2{background:#E2EFDA}
+.gantt td.dn3,.g-legend .dn3{background:#BCF6E4}
+.gantt td.pl,.g-legend .pl{background:#D9D9D9}
+.gantt .now{box-shadow:inset 0 0 0 2px #D6A84F}
+.gantt th.now{box-shadow:inset 0 -3px 0 #D6A84F}
+.g-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:12px;color:var(--ink-2)}
+.g-legend i{display:inline-block;width:14px;height:14px;border-radius:3px;margin-inline-end:6px;vertical-align:-2px;border:1px solid #008F9B}
+.g-legend .nowk{background:#fff;box-shadow:inset 0 0 0 2px #D6A84F}
 .danger-zone{border-color:color-mix(in srgb,var(--urgent) 35%,var(--rule))}
 .danger-zone h2{color:var(--urgent)}
 .btn-danger{background:var(--urgent);color:#fff;border:1px solid var(--urgent);border-radius:4px;padding:8px 16px;font-weight:600}
@@ -770,26 +794,26 @@ const DOCS_N = DOC_GROUPS.reduce((t, g) => t + g[1].length, 0);
 /* قوالب خطط التنفيذ — نقطة بداية فقط؛ لكل مشروع مراحله الخاصة تُعدَّل بعد الإنشاء.
    البند الثاني في كل عنصر (اختياري) خانة المستند التي تثبت إنجازه، فيُعلَّم منجزًا إن كان مرفقًا. */
 const TEMPLATES = [
-  { key:'cash', label:'مساعدات نقدية', test: p => /^H/.test(p.code || '') || /نقدي|زكاة|كفالات/.test(p.name || ''), stages:[
+  { key:'cash', label:'مساعدات نقدية', weights:[1, 2, 3, 1.2], test: p => /^H/.test(p.code || '') || /نقدي|زكاة|كفالات/.test(p.name || ''), stages:[
     ['الاعتماد', [['استلام الاعتماد','اعتماد التسويق'], ['اعتماد التنفيذ','اعتماد التنفيذ']]],
     ['التجهيز', [['حصر المستفيدين وإعداد الكشوف'], ['التحقق من الكشوف واعتمادها']]],
     ['التوزيع', [['صرف المساعدات'], ['توقيعات الاستلام والتوثيق','صور التنفيذ']]],
     ['الإغلاق', [['التقرير الختامي','تقرير ختامي'], ['الإغلاق المالي','سند القبض']]] ]},
-  { key:'surgery', label:'عمليات جراحية / ختان', test: p => /عمليات|جراح|ختان|نبض/.test(p.name || ''), stages:[
+  { key:'surgery', label:'عمليات جراحية / ختان', weights:[1, 2, 6, 1.5], test: p => /عمليات|جراح|ختان|نبض/.test(p.name || ''), stages:[
     ['الاعتماد', [['استلام اعتماد التسويق','اعتماد التسويق'], ['اعتماد التنفيذ','اعتماد التنفيذ']]],
     ['التجهيز', [['الاتفاق مع المستشفى','البروتوكولات والاتفاقيات'], ['إعداد كشوف المرضى المستفيدين'], ['جدولة العمليات']]],
     ['التنفيذ', [['إجراء العمليات'], ['التوثيق المصور','صور التنفيذ'], ['تقرير مرحلي للمانح','تقرير مرحلي']]],
     ['الإغلاق', [['التقرير الختامي','تقرير ختامي'], ['الفاتورة وسند القبض',['الفاتورة','سند القبض']], ['الإغلاق المالي']]] ]},
-  { key:'clinic', label:'عيادة / فريق طبي / خدمات', test: p => /عيادة|كلينك|clinic|فريق|كير|care|خدمات|علاج|تشغيل/i.test(p.name || ''), stages:[
+  { key:'clinic', label:'عيادة / فريق طبي / خدمات', weights:[1, 9, 1.5], test: p => /عيادة|كلينك|clinic|فريق|كير|care|خدمات|علاج|تشغيل/i.test(p.name || ''), stages:[
     ['الاعتماد', [['استلام اعتماد التسويق','اعتماد التسويق'], ['اعتماد التنفيذ','اعتماد التنفيذ']]],
     ['التشغيل', [['تجهيز الفريق والمكان'], ['بدء تقديم الخدمة'], ['إحصائية المراجعين الشهرية','مستندات المشروع']]],
     ['الإغلاق', [['التقرير الختامي','تقرير ختامي'], ['الفاتورة وسند القبض',['الفاتورة','سند القبض']], ['الإغلاق المالي']]] ]},
-  { key:'distribution', label:'توزيع (حليب، طرود، مياه، وجبات، أدوية)', test: p => /توزيع|حليب|طرود|طرد|مياه|مياة|سقيا|وجبات|مطبخ|زيوت|أدوية|مصاحف/.test(p.name || ''), stages:[
+  { key:'distribution', label:'توزيع (حليب، طرود، مياه، وجبات، أدوية)', weights:[1, 3, 4, 1.2], test: p => /توزيع|حليب|طرود|طرد|مياه|مياة|سقيا|وجبات|مطبخ|زيوت|أدوية|مصاحف/.test(p.name || ''), stages:[
     ['الاعتماد', [['استلام اعتماد التسويق','اعتماد التسويق'], ['اعتماد التنفيذ','اعتماد التنفيذ']]],
     ['الشراء', [['عروض الأسعار'], ['أمر الشراء والتعاقد مع المورد','ملفات الشركات والمؤسسات'], ['استلام البضاعة وفحصها','طلبات الاحتياج ومحاضر الاستلام']]],
     ['التوزيع', [['اعتماد كشف المستفيدين'], ['التوزيع الميداني','صور التنفيذ'], ['محاضر التسليم والتوثيق']]],
     ['الإغلاق', [['التقرير الختامي','تقرير ختامي'], ['الفاتورة وسند القبض',['الفاتورة','سند القبض']], ['الإغلاق المالي']]] ]},
-  { key:'construction', label:'تأهيل / إنشاء / توريد أجهزة', test: p => /تأهيل|إنشاء|توسعة|تطوير|صيانة|توريد|تأثيث|مولد|بئر|أسرة|سماعات/.test(p.name || ''), stages:[
+  { key:'construction', label:'تأهيل / إنشاء / توريد أجهزة', weights:[1, 2.5, 9, 1.5, 1.5], test: p => /تأهيل|إنشاء|توسعة|تطوير|صيانة|توريد|تأثيث|مولد|بئر|أسرة|سماعات/.test(p.name || ''), stages:[
     ['الاعتماد', [['استلام اعتماد التسويق','اعتماد التسويق'], ['اعتماد التنفيذ','اعتماد التنفيذ']]],
     ['التعاقد', [['طرح العروض وتقييمها'], ['اختيار المقاول أو المورد','ملفات الشركات والمؤسسات'], ['توقيع العقد','البروتوكولات والاتفاقيات']]],
     ['التنفيذ', [['بدء الأعمال أو التوريد'], ['تقرير مرحلي للمانح','تقرير مرحلي'], ['الاستلام الابتدائي','طلبات الاحتياج ومحاضر الاستلام']]],
@@ -1103,10 +1127,91 @@ function renderList(rows){
 function renderDetail(){
   const p = DATA.projects.find(x => x.id === S.sel);
   if(!p){ $('detail').innerHTML = '<div class="card empty">اختر مشروعًا من القائمة لعرض تفاصيله.</div>'; return; }
-  $('detail').innerHTML = heroCard(p) + planCard(p) + timelineCard(p) + moneyCard(p) + docsCard(p) + dangerCard(p);
+  $('detail').innerHTML = heroCard(p) + planCard(p) + ganttCard(p) + timelineCard(p) + moneyCard(p) + docsCard(p) + dangerCard(p);
   $('detail').querySelectorAll('.card').forEach((c, i) => { c.classList.add('rise'); c.style.animationDelay = (i * 50) + 'ms'; });
   if(SOURCE === 'live' && DATA.driveRoot && p.code && (!FILES[p.code] || FILES_STALE.has(p.code)) && !filesLoading.has(p.code)) fetchFiles(p);
 }
+
+/* ---------- الجدول الزمني الأسبوعي — بنمط تقارير Medics المعتمدة (تقرير Al-Cela) ----------
+   المراحل صفوف بلون الهوية، وتحتها البنود؛ الأسابيع أعمدة مجمّعة تحت الأشهر. الخانة الرمادية مخطط
+   لم يُنجز بعد، والملوّنة منجز (خوخي للمراحل الأولى، أخضر للتنفيذ، نعناعي للتوثيق) — كما في الجداول
+   التي تُرفق بكل تقرير مرحلي. «حالة الجدول في تاريخ» تعيد رسمه كما كان يوم أي تقرير. */
+const GANTT_ASOF = {};
+function ganttModel(p){
+  const items = planOf(p).filter(x => x.start && x.end && toDate(x.end) >= toDate(x.start));
+  if(!items.length) return null;
+  const s0 = new Date(Math.min(...items.map(x => toDate(x.start)), ...(p.start ? [toDate(p.start)] : [])));
+  const e0 = new Date(Math.max(...items.map(x => toDate(x.end)), ...(p.end ? [toDate(p.end)] : [])));
+  const nW = Math.max(1, Math.ceil((e0 - s0 + DAY) / (7 * DAY)));
+  const weeks = [...Array(nW)].map((_, i) => { const a = new Date(s0.getTime() + i * 7 * DAY); return {a, b: new Date(a.getTime() + 6 * DAY)}; });
+  const months = [];
+  weeks.forEach((w, i) => { const k = w.a.getFullYear() * 12 + w.a.getMonth(), last = months[months.length - 1];
+    if(last && last.k === k) last.n++; else months.push({k, n: 1, label: w.a.toLocaleDateString('ar-EG-u-nu-latn', {month: 'long', year: 'numeric'})}); });
+  const stages = [];
+  items.slice().sort((a, b) => (num(a.order) - num(b.order)) || (toDate(a.start) - toDate(b.start))).forEach(it => {
+    const k = it.stage || 'بلا مرحلة'; let g = stages.find(x => x.name === k); if(!g) stages.push(g = {name: k, items: []}); g.items.push(it);
+  });
+  return {weeks, months, stages};
+}
+function ganttCell(it, w, asOf, si, nStages){
+  const a = toDate(it.start), b = toDate(it.end);
+  if(w.b < a || w.a > b) return '';
+  /* «منجز»: كامل مدته منجزة إن سبق تاريخُ إنجازه تاريخَ الجدول، وإلا حتى تاريخ الجدول. «جارٍ»: حتى تاريخ الجدول. */
+  const doneAt = it.status === 'منجز' ? (it.done ? toDate(it.done) : b) : null;
+  const isDone = doneAt && doneAt <= asOf ? true : (it.status === 'منجز' || it.status === 'جارٍ') && w.a <= asOf;
+  if(!isDone) return 'pl';
+  return /توثيق|تقارير/.test(it.stage || '') ? 'dn3' : si < 2 && nStages > 2 ? 'dn1' : 'dn2';
+}
+function ganttCard(p){
+  const M = ganttModel(p);
+  if(!M) return '';
+  const asOf = GANTT_ASOF[p.id] ? toDate(GANTT_ASOF[p.id]) : today;
+  const nowI = M.weeks.findIndex(w => asOf >= w.a && asOf <= new Date(w.b.getTime() + DAY - 1));
+  const head1 = '<tr><th class="g-lbl" rowspan="2">المرحلة / البند</th>' + M.months.map((m, i) => '<th class="g-mon" colspan="' + m.n + '" title="' + esc(m.label) + '">الشهر ' + (i + 1) + '</th>').join('') + '</tr>';
+  const head2 = '<tr>' + M.weeks.map((w, i) => '<th class="g-wk' + (i === nowI ? ' now' : '') + '" title="' + fmtDate(iso(w.a), false) + ' – ' + fmtDate(iso(w.b), false) + '">W' + (i + 1) + '</th>').join('') + '</tr>';
+  const body = M.stages.map((g, si) => {
+    const ga = new Date(Math.min(...g.items.map(x => toDate(x.start)))), gb = new Date(Math.max(...g.items.map(x => toDate(x.end))));
+    const phase = '<tr class="g-ph"><th class="g-lbl">' + AR(si + 1) + '. ' + esc(g.name) + '</th>' + M.weeks.map((w, i) => '<td class="' + (w.b >= ga && w.a <= gb ? 'ph' : '') + (i === nowI ? ' now' : '') + '"></td>').join('') + '</tr>';
+    const rows = g.items.map(it => '<tr class="g-it"><th class="g-lbl" title="' + esc((it.status || '') + (it.owner ? ' · ' + it.owner : '')) + '">' + esc(it.title) + '</th>' +
+      M.weeks.map((w, i) => '<td class="' + ganttCell(it, w, asOf, si, M.stages.length) + (i === nowI ? ' now' : '') + '"></td>').join('') + '</tr>').join('');
+    return phase + rows;
+  }).join('');
+  return '<article class="card" id="ganttCard"><div class="card-h"><h2>الجدول الزمني الأسبوعي</h2><small>بنمط التقارير المرحلية المعتمدة — ' + AR(M.weeks.length) + ' أسبوعًا</small></div>' +
+    '<div class="g-tools"><label>حالة الجدول في تاريخ <input type="date" data-gasof="' + esc(p.id) + '" value="' + iso(asOf) + '"></label>' +
+    '<button class="btn" type="button" data-act="gantt-copy">انسخ الجدول للتقرير</button></div>' +
+    '<div class="g-wrap"><table class="gantt"><thead>' + head1 + head2 + '</thead><tbody>' + body + '</tbody></table></div>' +
+    '<div class="g-legend"><span><i class="dn2"></i>منجز</span><span><i class="dn1"></i>منجز (المراحل الأولى)</span><span><i class="dn3"></i>التوثيق والتقارير</span><span><i class="pl"></i>مخطط لم يُنجز بعد</span><span><i class="nowk"></i>أسبوع التاريخ المختار</span></div>' +
+    '<p class="note">الإنجاز من حالة كل بند في الخطة: «منجز» حتى تاريخ إنجازه، و«جارٍ» حتى تاريخ الجدول. عدّل التواريخ والحالات من بطاقة «خطة التنفيذ».</p></article>';
+}
+/* نسخة للتقرير: الجدول نفسه بتنسيق Word المعتمد (Sakkal Majalla 13 عريض، ألوان التقرير المرجعي) — يُلصق في Word مباشرة */
+async function ganttCopy(p){
+  const card = $('ganttCard'); if(!card) return;
+  const t = card.querySelector('table.gantt').cloneNode(true);
+  const C = {mon: ['#81D0D9', '#44546A'], wk: ['#006C75', '#FFFFFF'], lblHead: ['#00B2C1', '#FFFFFF'], ph: ['#00B2C1', '#FFFFFF'], it: ['#81D0D9', '#44546A'],
+    phfill: '#008F9B', dn1: '#FCE4D6', dn2: '#E2EFDA', dn3: '#BCF6E4', pl: '#D9D9D9'};
+  const base = 'border:0.5pt solid #006C75;font-family:\'Sakkal Majalla\';font-size:13pt;font-weight:bold;text-align:center;vertical-align:middle;padding:2pt 3pt;';
+  t.setAttribute('dir', 'rtl'); t.setAttribute('style', 'border-collapse:collapse;direction:rtl;');
+  t.querySelectorAll('th,td').forEach(c => {
+    let bg = '#FFFFFF', fg = '#44546A';
+    if(c.classList.contains('g-mon')) [bg, fg] = C.mon;
+    else if(c.classList.contains('g-wk')) [bg, fg] = C.wk;
+    else if(c.classList.contains('g-lbl')) [bg, fg] = c.closest('thead') ? C.lblHead : c.closest('tr').classList.contains('g-ph') ? C.ph : C.it;
+    else if(c.classList.contains('ph')) bg = C.phfill;
+    else ['dn1', 'dn2', 'dn3', 'pl'].forEach(k => { if(c.classList.contains(k)) bg = C[k]; });
+    c.setAttribute('style', base + 'background:' + bg + ';color:' + fg + ';' + (c.classList.contains('g-lbl') ? 'text-align:right;white-space:nowrap;' : 'width:16pt;'));
+    c.removeAttribute('class'); c.removeAttribute('title');
+  });
+  const html = '<meta charset="utf-8">' + t.outerHTML;
+  try{
+    await navigator.clipboard.write([new ClipboardItem({'text/html': new Blob([html], {type: 'text/html'}), 'text/plain': new Blob([t.innerText], {type: 'text/plain'})})]);
+    toast('نُسخ الجدول — الصقه في Word في قسم «أنشطة المشروع»');
+  }catch(e){ toast('تعذّر النسخ: ' + e.message, true); }
+}
+document.addEventListener('change', e => {
+  const inp = e.target.closest('input[data-gasof]'); if(!inp) return;
+  GANTT_ASOF[inp.dataset.gasof] = inp.value || '';
+  const p = DATA.projects.find(x => x.id === inp.dataset.gasof); if(p) refreshCard('ganttCard', ganttCard(p));
+});
 /* حذف المشروع من مكان واحد: أرشفة صفحته واستحقاقاته وخطته في نوشن، ونقل مجلده في درايف إلى المهملات.
    يشترط كتابة كوده، والجسر يتحقق منه مرة ثانية. الأرشفة والمهملات تُسترجعان نحو ٣٠ يومًا. */
 function dangerCard(p){
@@ -1686,15 +1791,29 @@ async function createFromTemplate(p, key){
   const s = p.start || p.approvalDate, e = p.end;
   const span = s && e && toDate(e) > toDate(s) ? toDate(e) - toDate(s) : 0;
   const docs = new Set(p.docsDone || []), n = tpl.stages.length, items = [];
+  /* المراحل لا تتساوى مدةً: التنفيذ يأخذ أكثر الوقت. الوزن لكل مرحلة من القالب (وإلا بالتساوي)،
+     وبنود المرحلة تتتابع داخلها بتداخل خفيف كما في جداول التقارير المعتمدة. */
+  const W = tpl.weights && tpl.weights.length === n ? tpl.weights : tpl.stages.map(() => 1), WT = W.reduce((a, b) => a + b, 0);
+  const at = f => span ? iso(new Date(toDate(s).getTime() + span * f)) : '';
+  let acc = 0;
   tpl.stages.forEach(([stage, list], si) => {
-    const a = span ? iso(new Date(toDate(s).getTime() + span * si / n)) : '';
-    const b = span ? iso(new Date(toDate(s).getTime() + span * (si + 1) / n)) : '';
+    const f0 = acc / WT, f1 = (acc + W[si]) / WT; acc += W[si];
+    const m = list.length;
     list.forEach(([title, doc], ii) => {
+      const a = f0 + (f1 - f0) * ii / m, b = Math.min(f1, f0 + (f1 - f0) * (ii + 1.35) / m);
       const done = doc ? [].concat(doc).every(d => docs.has(d)) : false;
       items.push({ id: newId(SOURCE === 'live' ? 'tmp' : 'lp'), project: p.id, title, stage, order: si * 100 + ii * 10,
-        status: done ? 'منجز' : 'لم يبدأ', start: a, end: b, done: done ? (p.docsChecked || iso(today)) : '', owner: p.coordinator || '', notes: '' });
+        status: done ? 'منجز' : 'لم يبدأ', start: at(a), end: at(b), done: done ? (p.docsChecked || iso(today)) : '', owner: p.coordinator || '', notes: '' });
     });
   });
+  /* التوثيق والتقارير على طول المشروع (صف ثابت في جداول التقارير المعتمدة) */
+  if(!tpl.stages.some(([st]) => /توثيق|تقارير/.test(st))){
+    [['توثيق مراحل المشروع', 'صور التنفيذ'], ['التقارير المالية والإدارية']].forEach(([title, doc], ii) => {
+      const done = doc ? docs.has(doc) : false;
+      items.push({ id: newId(SOURCE === 'live' ? 'tmp' : 'lp'), project: p.id, title, stage: 'التوثيق والتقارير', order: 9000 + ii * 10,
+        status: done ? 'منجز' : 'جارٍ', start: at(0.04), end: at(1), done: '', owner: p.coordinator || '', notes: '' });
+    });
+  }
   DATA.plan.push(...items); rerender();
   try{
     if(SOURCE === 'live'){
@@ -2108,6 +2227,7 @@ $('detail').addEventListener('click', e => {
   else if(act === 'more'){ const k = b.dataset.key; EXPANDED.has(k) ? EXPANDED.delete(k) : EXPANDED.add(k); refreshCard('docsCard', docsCard(p)); }
   else if(act === 'files-refresh'){ delete FILES[p.code]; fetchFiles(p, true); refreshCard('docsCard', docsCard(p)); }
   else if(act === 'delete') deleteProject(p);
+  else if(act === 'gantt-copy') ganttCopy(p);
   else if(act === 'up') pickFiles(p, b.dataset.slot);
   else if(act === 'money-edit') openMoneyDlg(p);
 });
