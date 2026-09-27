@@ -477,9 +477,10 @@ body{padding:0}
 .greet-tagline{margin:2px 0 0;font-size:18px;color:var(--ink-2);font-weight:500}
 .greet-date{margin-top:10px;font-size:13.5px;color:var(--muted)}
 /* التاريخ الهجري بجانب الميلادي، يفصلهما خط رفيع */
-.greet-hijri{margin-inline-start:10px;padding-inline-start:10px;border-inline-start:1px solid currentColor;border-inline-start-color:color-mix(in srgb,currentColor 35%,transparent)}
-.greet-hijri[hidden]{display:none}
-.greet-date > span{unicode-bidi:isolate}
+.greet-hijri[hidden],.greet-sep[hidden]{display:none}
+/* كل تاريخ معزول (bdi) والفاصل « | » نص حقيقي بينهما، فلا يلتصق «2026» بـ«14 ربيع الآخر» */
+.greet-date > bdi{unicode-bidi:isolate}
+.greet-sep{white-space:pre;opacity:.55}
 /* نقشة نَسَق: الشعار مكرّرًا بإزاحة متناوبة، بلون الهوية وشفافية 10% — بدل التدرّج.
    تُرسم كقناع (mask) فيأخذ لونها من المتغيّر، فتصلح لكل طابع وللوضع الداكن. */
 .greet-card::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.1;background:var(--brand,var(--ink));
@@ -1788,7 +1789,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 @media (hover:none){ .shot-del{opacity:1} }
 .card.drop{outline:2px dashed var(--focus);outline-offset:3px}
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260927">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260927c">
 </head>
 <body>
 
@@ -2037,7 +2038,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <div class="greet-text">
     <h1 class="greet-title" id="heroGreet">صباح الخير</h1>
     <p class="greet-tagline">لكل شيء مكان، ولكل يوم نَسَق.</p>
-    <div class="greet-date"><span id="weekday">—</span>، <span id="date">—</span><span class="greet-hijri" id="hijriDate" hidden></span></div>
+    <div class="greet-date"><bdi id="weekday">—</bdi>، <bdi id="date">—</bdi><span class="greet-sep" id="hijriSep" hidden> | </span><bdi class="greet-hijri" id="hijriDate" hidden></bdi></div>
     <!-- لمحة اليوم: تظهر في واجهة «360» الكاملة فقط -->
     <div class="hero-glance"><div class="ring-clock" id="heroRing" role="img"></div><div class="hero-meta" id="heroMeta"></div></div>
     <button class="plan-day" id="planDayBtn" type="button">☀️ خطّط يومك</button>
@@ -2084,7 +2085,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="card-art" data-art="task" aria-hidden="true"></div>
       <div class="card-head">
         <h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8 12 3 3 5-6"/></svg>مهام اليوم</h2>
-        <div class="meter"><span id="doneCount">0</span> من <span id="totalCount">0</span> منجزة · <b id="load">—</b></div>
+        <div class="meter"><span id="doneCount">0</span> من <span id="totalCount">0</span> منجزة | <b id="load">—</b></div>
       </div>
       <div class="progress" aria-hidden="true"><div class="fill" id="fill"></div></div>
       <div class="cap-warn" id="capWarn" role="status" hidden></div>
@@ -2100,7 +2101,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </div>
 
       <div class="add">
-        <input id="tText" placeholder="أضف إلى يومك — أو اختصار: #مشروع @مانح !أ 30 2026-09-10">
+        <input id="tText" placeholder="أضف إلى يومك — أو اختصار: #مشروع @مانح !أ 30 &#x2066;2026-09-10&#x2069;">
         <input id="tProj" placeholder="المشروع أو الجهة" list="projList">
         <datalist id="projList"></datalist>
         <select id="tImp" aria-label="الأهمية">
@@ -2118,7 +2119,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <datalist id="donorList"></datalist>
         <textarea id="addNotes" placeholder="ملاحظات (اختياري)" rows="1"></textarea>
       </div>
-      <div class="hint">اختصار سريع: <code>#المشروع</code> · <code>@المانح</code> · <code>!أ</code>/<code>!ب</code>/<code>!ج</code> للأهمية · رقم للدقائق · <code>YYYY-MM-DD</code> للاستحقاق · اضغط الحالة لتبديلها، والنص لتعديله.</div>
+      <div class="hint">اختصار سريع: <code>#المشروع</code>، <code>@المانح</code>، <code>!أ</code>/<code>!ب</code>/<code>!ج</code> للأهمية، رقم للدقائق، <code>YYYY-MM-DD</code> للاستحقاق، اضغط الحالة لتبديلها، والنص لتعديله.</div>
 
       <ol class="tasks" id="list"></ol>
     </section>
@@ -2287,7 +2288,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <div class="palette" role="dialog" aria-modal="true" aria-label="لوحة الأوامر">
     <input type="text" id="palInput" placeholder="ابحث عن مهمة، أو اكتب أمرًا… (أضف: نص المهمة)" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="palList">
     <ul class="pal-list" id="palList" role="listbox"></ul>
-    <div class="pal-foot"><kbd>↑</kbd><kbd>↓</kbd> تنقّل · <kbd>Enter</kbd> تنفيذ · <kbd>Esc</kbd> إغلاق</div>
+    <div class="pal-foot"><kbd>↑</kbd><kbd>↓</kbd> تنقّل، <kbd>Enter</kbd> تنفيذ، <kbd>Esc</kbd> إغلاق</div>
   </div>
 </div>
 
@@ -2326,7 +2327,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <h2 class="page-title">العادات</h2>
     <p class="page-sub">روتينك وطاقتك وامتنانك — مساحتك الشخصية، خارج قائمة المهام.</p>
   </div>
-  <div class="page-date"><span id="flowWeekday">—</span>، <span id="flowDate">—</span></div>
+  <div class="page-date"><bdi id="flowWeekday">—</bdi>، <bdi id="flowDate">—</bdi></div>
 </section>
 <div class="page-grid">
   <section class="card">
@@ -2425,7 +2426,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <section class="card exp-main">
     <div class="card-head"><h3>سجّل مصروفًا</h3></div>
     <div class="exp-add">
-      <input id="expAmount" type="text" inputmode="decimal" placeholder="المبلغ — ٍ أو مثل 15+7.5">
+      <input id="expAmount" type="text" inputmode="decimal" placeholder="المبلغ بالشيكل — أو مثل &#x2066;15+7.5&#x2069;">
       <select id="expCategory" aria-label="التصنيف"><option value="">التصنيف</option></select>
       <select id="expAccount" aria-label="من حساب"><option value="">من حساب</option></select>
       <input id="expText" placeholder="العملية — مثال: قهوة">
@@ -2458,10 +2459,10 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
 <div class="toast" id="toastBox"></div>
 
-<script src="nasaq-core.js?v=20260927b"></script>
-<script src="nasaq-pulse.js?v=20260927"></script>
+<script src="nasaq-core.js?v=20260927c"></script>
+<script src="nasaq-pulse.js?v=20260927c"></script>
 <script>
-const AR = n => Number(n).toLocaleString('ar-EG-u-nu-latn');
+const AR = n => fmtNum(n);   /* الأرقام إنجليزية — fmtNum وأخواتها في nasaq-core.js */
 const $ = id => document.getElementById(id);
 function localYMD(dt){ return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); }
 function iso(d){
@@ -2480,9 +2481,6 @@ let tasks = [], waits = [], laters = [], archive = [], timeline = {};
 let waitMeta = {};
 const WAIT_STALE_DAYS = 3;
 const expandedIds = new Set();
-const AR_DIGITS = '0123456789';
-/* الأرقام إنجليزية في المنصة كلها (قرار صاحب اللوح 2026-09-25): الدالة باقية كي لا تتغيّر مواضع استدعائها */
-const arDigits = s => String(s);
 const EMPTY_ICON = '<svg class="empty-ic" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
   '<path d="M8 26l24-12 24 12-24 12-24-12z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'+
   '<path d="M8 26v14l24 12 24-12V26" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'+
@@ -2499,15 +2497,13 @@ const now = new Date();
    يُعاد حسابه مع تحديث التحية، فيتبدّل بعد منتصف الليل والصفحة مفتوحة. */
 function renderDates(){
   const d = new Date();
-  $('date').textContent = d.toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
-  $('weekday').textContent = d.toLocaleDateString('ar-EG-u-nu-latn',{weekday:'long'});
+  $('date').textContent = fmtDate(d);
+  $('weekday').textContent = fmtDate(d, {weekday:'long'});
   const h = $('hijriDate'); if(!h) return;
-  try{
-    const f = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'long',year:'numeric'});
-    if(f.resolvedOptions().calendar !== 'islamic-umalqura') throw 0;   /* متصفح لا يدعم أم القرى: لا نعرض تاريخًا تقريبيًا */
-    h.textContent = f.format(d).replace(/\s*هـ$/, '') + ' هـ';
-    h.hidden = false;
-  }catch(e){ h.hidden = true; }
+  const hj = fmtHijri(d);   /* '' في متصفح لا يدعم أم القرى: لا نعرض تاريخًا تقريبيًا */
+  if(hj){ h.textContent = hj.replace(/\s*هـ$/, '') + ' هـ'; h.hidden = false; }
+  else h.hidden = true;
+  $('hijriSep').hidden = h.hidden;
 }
 renderDates();
 
@@ -2762,8 +2758,8 @@ try{ stateUpdatedAt = Number(localStorage.getItem(SKEY)) || 0; }catch(e){}
 let bootUpdatedAt = stateUpdatedAt;
 let applyingRemote = false, statePushTimer = null, statePushing = false;
 
-function setStateNote(msg){ const el = $('stateNote'); if(el) el.textContent = msg ? ('· '+msg) : ''; }
-function clockNow(){ return new Date().toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'}); }
+function setStateNote(msg){ const el = $('stateNote'); if(el) el.textContent = msg ? ('| '+msg) : ''; }
+function clockNow(){ return fmtTime(new Date()); }
 
 function fullState(){
   return { board: snapshot(), flow: flow, expenses: expenses };
@@ -2902,7 +2898,7 @@ function setDot(cls, msg){
 }
 function markSynced(){
   const t = new Date();
-  $('syncTime').textContent = '· آخر مزامنة ' + t.toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'});
+  $('syncTime').textContent = '| آخر مزامنة ' + fmtTime(t);
 }
 /* النقل إلى الجسر صار في nasaq-core.js — تستعمله هذه الصفحة وصفحة المشاريع.
    يبقى هنا ما يخصّ اللوح وحده: إضافة رمز الجلسة، وفحص الرد، والعودة لشاشة الدخول. */
@@ -3022,7 +3018,7 @@ function fmtDays(n){
   if(n<11) return AR(n)+' أيام';
   return AR(n)+' يومًا';
 }
-function arDate(s){ return new Date(s).toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long'}); }
+function arDate(s){ return fmtDate(s, {day:'numeric',month:'long'}); }
 function openDays(t){ return dayNum(t.doneAt||Date.now()) - dayNum(t.createdAt); }
 
 function makeEditable(el, getVal, setVal, onCommit){
@@ -3061,10 +3057,12 @@ function parseQuickAdd(raw){
   if(donorM){ out.donor = donorM[1].replace(/-/g,' '); text = text.replace(donorM[0],' '); }
   const impM = text.match(/!(أ|ب|ج)/);
   if(impM){ out.imp = impM[1]; text = text.replace(impM[0],' '); }
-  const dueM = text.match(/\b(\d{4}-\d{2}-\d{2})\b/);
-  if(dueM){ out.due = dueM[1]; text = text.replace(dueM[0],' '); }
-  const minM = text.match(/(?:^|\s)(\d{1,3})(?=\s|$)/);
-  if(minM){ out.mins = minM[1]; text = text.replace(minM[0],' '); }
+  /* التاريخ والدقائق تُقبل بالأرقام العربية (٠-٩) أيضًا وتُحفظ بالإنجليزية */
+  const D = '[0-9\u0660-\u0669\u06F0-\u06F9]';
+  const dueM = text.match(new RegExp('(?:^|[^0-9\u0660-\u0669\u06F0-\u06F9])(' + D + '{4}-' + D + '{2}-' + D + '{2})(?![0-9\u0660-\u0669\u06F0-\u06F9])'));
+  if(dueM){ out.due = toLatinDigits(dueM[1]); text = text.replace(dueM[1],' '); }
+  const minM = text.match(new RegExp('(?:^|\\s)(' + D + '{1,3})(?=\\s|$)'));
+  if(minM){ out.mins = toLatinDigits(minM[1]); text = text.replace(minM[0],' '); }
   out.text = text.replace(/\s+/g,' ').trim();
   return out;
 }
@@ -3287,7 +3285,7 @@ function openPlanDay(){
       const refreshSum = ()=>{
         const mins = open.filter(t=>chosen.has(t.id)).reduce((s,t)=>s + (Number(t.mins)||0), 0);
         const all = open.reduce((s,t)=>s + (Number(t.mins)||0), 0), cap = workMins();
-        sum.textContent = 'الأولويات: ' + (mins ? fmtMins(mins) : '—') + ' · كل المفتوح: ' + (all ? fmtMins(all) : '—') + ' من يوم عمل ' + fmtMins(cap) + (all > cap ? ' — أطول من يومك، فكّر في تأجيل شيء' : '');
+        sum.textContent = 'الأولويات: ' + (mins ? fmtMins(mins) : '—') + '، كل المفتوح: ' + (all ? fmtMins(all) : '—') + ' من يوم عمل ' + fmtMins(cap) + (all > cap ? ' — أطول من يومك، فكّر في تأجيل شيء' : '');
         sum.classList.toggle('over', all > cap);
       };
       const ul = el('ul', 'plan-list');
@@ -3599,7 +3597,7 @@ function renderRingClock(){
     if(c){ c.querySelector('b').textContent = pct + '%'; c.querySelector('small').textContent = (q && !(el === hr0 && big)) ? 'هدوء' : ringFmt(m); }
   });
   const nx = ringNextPrayer(m);
-  const line = (total ? pct + '% من مهامك' : 'لا مهام بعد') + ' · ' + ringFmt(m) + (nx ? ' · ' + nx : '');
+  const line = (total ? pct + '% من مهامك' : 'لا مهام بعد') + ' | ' + ringFmt(m) + (nx ? ' | ' + nx : '');
   const brand = $('brandHome'); if(brand) brand.title = line;
   const hr = $('heroRing'); if(hr) hr.setAttribute('aria-label', line);
   if(fav) try{ fav.href = ringIcon(pct, a, q); }catch(e){}
@@ -3674,7 +3672,7 @@ function renderEnergyHint(){
   short.forEach(t=>{
     const b = document.createElement('button'); b.type = 'button'; b.className = 'eh-task';
     const nm = document.createElement('bdi'); nm.textContent = t.text;   /* يعزل الأسماء اللاتينية عن الأرقام بعدها */
-    b.append(nm, document.createTextNode(' · ' + fmtMins(t.mins)));
+    b.append(nm, document.createTextNode(' | ' + fmtMins(t.mins)));
     b.title = 'اعرضها في القائمة';
     b.onclick = ()=>revealTask(t);
     box.appendChild(b);
@@ -3981,7 +3979,7 @@ function renderShots(fresh){
   ideaShots.forEach((sh, i)=>{
     const w = document.createElement('figure'); w.className = 'shot' + (fresh && i === 0 ? ' fresh' : '');
     const im = document.createElement('img'); im.src = sh.src; im.alt = 'لقطة محفوظة'; im.loading = 'lazy';
-    im.onclick = ()=>openModal({title: 'لقطة — ' + new Date(sh.at).toLocaleDateString('ar-EG-u-nu-latn', {day: 'numeric', month: 'long'}),
+    im.onclick = ()=>openModal({title: 'لقطة — ' + fmtDate(new Date(sh.at), {day: 'numeric', month: 'long'}),
       bodyHTML: '<img src="' + esc(sh.src) + '" alt="" style="width:100%;border-radius:8px;display:block">', actions: [{label: 'إغلاق', primary: true}]});
     const del = document.createElement('button'); del.type = 'button'; del.className = 'shot-del'; del.textContent = '×'; del.title = 'احذف اللقطة'; del.setAttribute('aria-label', 'احذف اللقطة');
     del.onclick = ()=>{ const k = ideaShots.findIndex(x=>x.id === sh.id); if(k < 0) return; const [gone] = ideaShots.splice(k, 1); renderShots(); sync();
@@ -4133,7 +4131,7 @@ function appendTaskRow(list, t, priValues){
   }
 
   const proj = document.createElement('div');
-  proj.className='proj'; proj.textContent = [t.proj, t.donor].filter(Boolean).join(' · ');
+  proj.className='proj'; proj.textContent = [t.proj, t.donor].filter(Boolean).join('، ');
   makeEditable(proj, ()=>t.proj||'', v=>{ t.proj = v; }, ()=>{ t.dirty = true; sync(); });
 
   const imp = document.createElement('div');
@@ -4228,7 +4226,7 @@ function renderDaySummary(){
     [AR(doneT.length), 'مهام منجزة'],
     [actual ? fmtMins(actual) : '—', 'وقت فعلي'],
     [AR(ideas), 'أفكار ملتقطة'],
-    [hAll ? AR(hDone)+'/'+AR(hAll) : '—', 'عادات']
+    [hAll ? AR(hDone)+' من '+AR(hAll) : '—', 'عادات']
   ];
   box.innerHTML = '';
   items.forEach(([v, l])=>{
@@ -4428,7 +4426,7 @@ function to12h(h24){
   const period = hh < 12 ? 'ص' : 'م';
   let hour12 = hh % 12;
   if(hour12 === 0) hour12 = 12;
-  return arDigits(String(hour12).padStart(2,'0'))+':'+arDigits('00')+' '+period;
+  return String(hour12).padStart(2,'0')+':00 '+period;
 }
 /* جدول اليوم الحيّ: أقسام اليوم، خط «الآن»، ربط مهمة بالساعة (بمدتها)، ومواعيد تقويم Google */
 const TL_SECTIONS = {'06:00':'صباحًا', '12:00':'ظهرًا', '17:00':'مساءً'};
@@ -4467,7 +4465,7 @@ function renderTimeline(){
     body.append(inp, chip);
     gcalEvents.filter(e=>!e.allDay && Number(String(e.start).slice(0, 2)) === hh).forEach(e=>{
       const ev = document.createElement('div'); ev.className = 'tl-event';
-      ev.textContent = arDigits(e.start) + (e.end ? '–' + arDigits(e.end) : '') + ' · ' + e.title;
+      ev.textContent = e.start + (e.end ? '–' + e.end : '') + ' | ' + e.title;
       ev.title = 'من تقويم Google';
       body.appendChild(ev);
     });
@@ -4502,7 +4500,7 @@ function renderTlFoot(){
   const allDay = gcalEvents.filter(e=>e.allDay);
   if(allDay.length){
     const d = document.createElement('div'); d.className = 'tl-allday';
-    d.textContent = 'طوال اليوم: ' + allDay.map(e=>e.title).join(' · ');
+    d.textContent = 'طوال اليوم: ' + allDay.map(e=>e.title).join('، ');
     f.appendChild(d);
   }
   if(gcalState === 'ok' || gcalState === 'cached'){
@@ -4572,7 +4570,7 @@ function refreshCalendarFromNotion(){
 }
 function renderCalendar(){
   const grid = $('calGrid'); grid.innerHTML='';
-  $('calLabel').textContent = calMonth.toLocaleDateString('ar-EG-u-nu-latn',{month:'long',year:'numeric'});
+  $('calLabel').textContent = fmtDate(calMonth, {month:'long',year:'numeric'});
   const year = calMonth.getFullYear(), month = calMonth.getMonth();
   const firstDow = new Date(year,month,1).getDay();
   const daysInMonth = new Date(year,month+1,0).getDate();
@@ -4626,12 +4624,12 @@ function showDueForDay(key){
       showDueForDay(key);
     }));
     line.appendChild(document.createTextNode(
-      t.text + (t.proj?' — '+t.proj:'') + (t.donor?' · '+t.donor:'')));
+      t.text + (t.proj?' — '+t.proj:'') + (t.donor?'، '+t.donor:'')));
     line.appendChild(dayStatusChip(t.done ? 'done' : t.state===1 ? 'doing' : t.state===2 ? 'wait' : 'todo'));
     li.appendChild(line);
     const meta = [];
     if(t.mins) meta.push('مقدّر '+fmtMins(t.mins)); if(t.actual) meta.push('فعلي '+fmtMins(t.actual));
-    if(meta.length){ const m=document.createElement('span'); m.className='meta'; m.textContent=meta.join(' · '); li.appendChild(m); }
+    if(meta.length){ const m=document.createElement('span'); m.className='meta'; m.textContent=meta.join(' | '); li.appendChild(m); }
     ul.appendChild(li);
   });
   notionOnly.forEach(r=>{
@@ -4655,7 +4653,7 @@ function showDueForDay(key){
     line.appendChild(btn);
 
     line.appendChild(document.createTextNode(
-      r.text + (r.project?' — '+r.project:'') + (r.donor?' · '+r.donor:'')));
+      r.text + (r.project?' — '+r.project:'') + (r.donor?'، '+r.donor:'')));
     line.appendChild(dayStatusChip(notionState(r.status)));
 
     const tag = document.createElement('span'); tag.className='from-notion'; tag.textContent='من نوشن';
@@ -4672,7 +4670,7 @@ function showDueForDay(key){
     li.appendChild(line);
     const meta = [];
     if(r.est) meta.push('مقدّر '+fmtMins(r.est)); if(r.actual) meta.push('فعلي '+fmtMins(r.actual));
-    if(meta.length){ const m=document.createElement('span'); m.className='meta'; m.textContent=meta.join(' · '); li.appendChild(m); }
+    if(meta.length){ const m=document.createElement('span'); m.className='meta'; m.textContent=meta.join(' | '); li.appendChild(m); }
     ul.appendChild(li);
   });
   box.appendChild(ul);
@@ -4717,7 +4715,7 @@ const POMO_DEFAULT = 25*60;
 let pomoRemaining = POMO_DEFAULT, pomoRunning = false, pomoInterval = null;
 function fmtClock(total){
   const m = Math.floor(total/60), s = total%60;
-  return arDigits(String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'));
+  return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
 }
 function renderPomoClock(){ $('pomoTime').textContent = fmtClock(pomoRemaining); }
 function renderPomoOptions(){
@@ -4901,7 +4899,7 @@ function renderPalette(){
       .sort((a,b)=>Number(a.done) - Number(b.done)).slice(0, 8);
     if(found.length){
       group('مهام');
-      found.forEach(t=>item(t.done ? '✓' : '○', t.text, [t.proj, t.due ? arDate(t.due) : ''].filter(Boolean).join(' · '), ()=>revealTask(t)));
+      found.forEach(t=>item(t.done ? '✓' : '○', t.text, [t.proj, t.due ? arDate(t.due) : ''].filter(Boolean).join(' | '), ()=>revealTask(t)));
       found.filter(t=>!t.done).slice(0, 2).forEach(t=>item('▶', 'ركّز على: ' + t.text, '25 د', ()=>focusOnTask(t)));
     }
     if(!wantsAdd){ item('＋', 'أضف «' + raw + '» مهمةً جديدة', '', ()=>{ const t = quickTask(raw); showToast('أُضيفت: ' + t.text); }); }
@@ -5073,7 +5071,7 @@ const hmToMin = s=>{ const p = String(s || '0:0').split(':').map(Number); return
 const nowMin = (d = new Date())=>d.getHours() * 60 + d.getMinutes();
 function fmtMinAr(m){
   const h = Math.floor(m / 60) % 24, mm = m % 60, h12 = h % 12 || 12;
-  return arDigits(h12 + ':' + String(mm).padStart(2, '0')) + ' ' + (h < 12 ? 'ص' : 'م');
+  return h12 + ':' + String(mm).padStart(2, '0') + ' ' + (h < 12 ? 'ص' : 'م');
 }
 function minutesAr(n){ return n === 1 ? 'دقيقة' : n === 2 ? 'دقيقتين' : AR(n) + (n <= 10 ? ' دقائق' : ' دقيقة'); }
 /* طريقة الهيئة المصرية العامة للمساحة: الفجر 19٫5°، العشاء 17٫5°، العصر شافعي. تحقّقتُ منها مقابل مواقيت القدس المنشورة */
@@ -5160,7 +5158,7 @@ function notifAge(ms){
   const m = Math.round((Date.now() - ms) / 60000);
   if(m < 1) return 'الآن'; if(m < 60) return 'منذ ' + minutesAr(m);
   const h = Math.round(m / 60); if(h < 24) return 'منذ ' + (h === 1 ? 'ساعة' : h === 2 ? 'ساعتين' : AR(h) + ' ساعات');
-  return new Date(ms).toLocaleDateString('ar-EG-u-nu-latn', {day:'numeric', month:'long'});
+  return fmtDate(new Date(ms), {day:'numeric', month:'long'});
 }
 function renderNotifs(){
   const unread = notifs.filter(n=>!n.read).length, badge = $('notifBadge');
@@ -5374,9 +5372,9 @@ function renderArchive(){
   const avg = archive.length ? archive.reduce((s,t)=>s+openDays(t),0)/archive.length : 0;
   $('arcStats').innerHTML =
     'الإجمالي: <b>'+AR(archive.length)+'</b> مهمة' +
-    ' · الوقت المقدّر: <b>'+(fmtMins(est)||'—')+'</b>' +
-    ' · الوقت الفعلي المسجَّل: <b>'+(fmtMins(act)||'—')+'</b>' +
-    ' · متوسط عمر المهمة: <b>'+fmtDays(Math.round(avg))+'</b>';
+    ' | الوقت المقدّر: <b>'+(fmtMins(est)||'—')+'</b>' +
+    ' | الوقت الفعلي المسجَّل: <b>'+(fmtMins(act)||'—')+'</b>' +
+    ' | متوسط عمر المهمة: <b>'+fmtDays(Math.round(avg))+'</b>';
 }
 $('arcSearch').addEventListener('input', renderArchive);
 
@@ -5559,8 +5557,8 @@ render();
 renderTimeline();
 
 /* ---------- Daily Flow ---------- */
-$('flowDate').textContent = now.toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
-$('flowWeekday').textContent = now.toLocaleDateString('ar-EG-u-nu-latn',{weekday:'long'});
+$('flowDate').textContent = fmtDate(now);
+$('flowWeekday').textContent = fmtDate(now, {weekday:'long'});
 
 const FKEY = 'daily-flow-v1';
 let flow = {amRoutine:[], pmRoutine:[], energy:0, grat:['','',''], meals:{breakfast:'',lunch:'',dinner:''}, water:0, lastDate:''};
@@ -5637,7 +5635,7 @@ function drawHabitWeek(box){
     const bar = document.createElement('div'); bar.className = 'hw-bar';
     const fill = document.createElement('i'); fill.style.height = pct + '%'; bar.appendChild(fill);
     const lbl = document.createElement('span');
-    lbl.textContent = d.toLocaleDateString('ar-EG-u-nu-latn', {weekday:'short'});
+    lbl.textContent = fmtDate(d, {weekday:'short'});
     cell.append(bar, lbl); box.appendChild(cell);
   }
 }
@@ -6284,13 +6282,12 @@ function loadExpenses(){
     if(Array.isArray(d)) expenses = d;
   }catch(e){}
 }
-function fmtMoney(n){ return AR(Math.round(Number(n)*100)/100) + ' ₪'; }
 function safeEval(expr){
   if(!/^[\d+\-*/.() ]+$/.test(expr)) return null;
   try{ const r = Function('"use strict";return ('+expr+')')(); return isFinite(r) ? r : null; }catch(e){ return null; }
 }
 $('expAmount').addEventListener('blur', ()=>{
-  const v = $('expAmount').value.trim();
+  const v = toLatinDigits($('expAmount').value.trim());
   if(v && /[+\-*/]/.test(v)){
     const r = safeEval(v);
     if(r!=null) $('expAmount').value = Math.round(r*100)/100;
@@ -6304,7 +6301,7 @@ $('expAddDetailsBtn').onclick = ()=>{
 };
 
 function addExpense(){
-  let amtRaw = $('expAmount').value.trim();
+  let amtRaw = toLatinDigits($('expAmount').value.trim());
   if(/[+\-*/]/.test(amtRaw)){ const r = safeEval(amtRaw); if(r!=null) amtRaw = String(r); }
   const amount = Number(amtRaw);
   if(!amtRaw || !isFinite(amount) || amount<=0){ $('expAmount').focus(); return; }
@@ -6414,7 +6411,7 @@ function renderBudgetDashboard(d){
   overall.innerHTML =
     '<div class="big">'+fmtMoney(d.totalActual)+'</div>'+
     '<div class="sub">من '+(d.totalPlanned>0?fmtMoney(d.totalPlanned):'بلا حدّ مخطط')+
-      (d.totalPlanned>0 ? (' · المتبقي '+fmtMoney(remaining)) : '')+'</div>'+
+      (d.totalPlanned>0 ? (' | المتبقي '+fmtMoney(remaining)) : '')+'</div>'+
     (d.totalPlanned>0 ? renderBudgetBar(pct) : '');
 
   const list = $('budgetList');
@@ -6437,7 +6434,7 @@ function loadBudgetSummary(){
   $('expSyncNote').textContent = 'يُحدَّث…';
   post({action:'expense_summary', month}).then(d=>{
     renderBudgetDashboard(d);
-    $('expSyncNote').textContent = 'آخر تحديث ' + new Date().toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'});
+    $('expSyncNote').textContent = 'آخر تحديث ' + fmtTime(new Date());
   }).catch(e=>{
     $('budgetOverall').innerHTML = '<div class="sub">تعذّر تحميل الميزانية: '+esc(e.message)+'</div>';
     $('expSyncNote').textContent = '';
@@ -6597,7 +6594,7 @@ function renderAdminUsers(d){
     const who = document.createElement('div'); who.className = 'who';
     const name = document.createElement('b'); name.textContent = u.username;
     const meta = document.createElement('span');
-    meta.textContent = (u.email||'—') + (u.createdAt ? ' · ' + new Date(u.createdAt).toLocaleDateString('ar-EG-u-nu-latn') : '');
+    meta.textContent = (u.email||'—') + (u.createdAt ? ' | ' + fmtDate(new Date(u.createdAt), {day:'numeric', month:'numeric', year:'numeric'}) : '');
     who.append(name, meta);
     row.appendChild(who);
     if(u.isOwner){
@@ -6706,7 +6703,7 @@ function bootConnected(){
       resetLocalForUser(d.user);   /* حارس: لا يفعل شيئًا ما دام المستخدم نفسه */
       saveAuth({token:auth.token, user:d.user, isOwner:d.isOwner});
       setDot('ok', d.notion ? ('متصل بـ '+(d.title||'ToDos'))
-                            : ('مسجّل: '+d.user + (d.notionError ? ' · نوشن: '+d.notionError : '')));
+                            : ('مسجّل: '+d.user + (d.notionError ? '، نوشن: '+d.notionError : '')));
       markSynced();
       applyOwnerVisibility();
       if(d.options) fillOptions(d.options);
