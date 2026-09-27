@@ -27,3 +27,13 @@ secrets.*
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# المزامنة بين الجهازين (Syncthing) — ملفاته الداخلية ونسخه القديمة ونسخ التعارض
+.stfolder/
+.stversions/
+.stignore
+*.sync-conflict-*
+
+# ملفات محلية مؤقتة
+000000.txt
+nasaq-rights-files/
