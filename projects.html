@@ -1198,7 +1198,11 @@ function ganttCard(p){
   const head2 = '<tr>' + M.weeks.map((w, i) => '<th class="g-wk' + (i === nowI ? ' now' : '') + '" title="' + fmtDate(iso(w.a), false) + ' – ' + fmtDate(iso(w.b), false) + '">W' + (i + 1) + '</th>').join('') + '</tr>';
   const body = M.stages.map((g, si) => {
     const ga = new Date(Math.min(...g.items.map(x => toDate(x.start)))), gb = new Date(Math.max(...g.items.map(x => toDate(x.end))));
-    const phase = '<tr class="g-ph"><th class="g-lbl">' + AR(si + 1) + '. ' + esc(g.name) + '</th>' + M.weeks.map((w, i) => '<td class="' + (w.b >= ga && w.a <= gb ? 'ph' : '') + (i === nowI ? ' now' : '') + '"></td>').join('') + '</tr>';
+    /* صف المرحلة غير مقسّم: خلية مدمجة واحدة بالتظليل على امتداد بنودها، وقبلها وبعدها فراغ مدمج */
+    const on = M.weeks.map(w => w.b >= ga && w.a <= gb), i0 = on.indexOf(true), i1 = on.lastIndexOf(true), nW = M.weeks.length;
+    const gap = n => n > 0 ? '<td colspan="' + n + '"></td>' : '';
+    const phase = '<tr class="g-ph"><th class="g-lbl">' + AR(si + 1) + '. ' + esc(g.name) + '</th>' +
+      (i0 < 0 ? gap(nW) : gap(i0) + '<td class="ph" colspan="' + (i1 - i0 + 1) + '"></td>' + gap(nW - 1 - i1)) + '</tr>';
     const rows = g.items.map(it => '<tr class="g-it"><th class="g-lbl" title="' + esc((it.status || '') + (it.owner ? ' · ' + it.owner : '')) + '">' + esc(it.title) + '</th>' +
       M.weeks.map((w, i) => '<td class="' + ganttCell(it, w, asOf, si, M.stages.length) + (i === nowI ? ' now' : '') + '"></td>').join('') + '</tr>').join('');
     return phase + rows;
@@ -1234,7 +1238,7 @@ function wordGantt(t){
     else if(c.classList.contains('g-lbl')) [bg, fg] = c.closest('thead') ? C.lblHead : c.closest('tr').classList.contains('g-ph') ? C.ph : C.it;
     else if(c.classList.contains('ph')) bg = C.phfill;
     else ['dn1', 'dn2', 'dn3', 'pl'].forEach(k => { if(c.classList.contains(k)) bg = C[k]; });
-    c.setAttribute('style', base + 'background:' + bg + ';color:' + fg + ';' + (c.classList.contains('g-lbl') ? 'text-align:right;white-space:nowrap;' : 'width:16pt;'));
+    c.setAttribute('style', base + 'background:' + bg + ';color:' + fg + ';' + (c.classList.contains('g-lbl') ? 'text-align:right;white-space:nowrap;' : c.colSpan > 1 ? '' : 'width:16pt;'));
     c.removeAttribute('class'); c.removeAttribute('title');
   });
   t.removeAttribute('class'); t.querySelectorAll('colgroup').forEach(c => c.remove());
