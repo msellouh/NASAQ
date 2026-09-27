@@ -429,6 +429,9 @@ dialog .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
 .gantt td.pl,.g-legend .pl{background:#D9D9D9}
 .gantt .now{box-shadow:inset 0 0 0 2px #D6A84F}
 .gantt th.now{box-shadow:inset 0 -3px 0 #D6A84F}
+.g-prev{font-size:12px;font-weight:600;color:#006C75;background:#E6F6F7;border:1px dashed #00B2C1;border-radius:999px;padding:2px 10px}
+.g-dur{justify-content:flex-start}
+.g-dur input{width:80px}
 .g-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:12px;color:var(--ink-2)}
 .g-legend i{display:inline-block;width:14px;height:14px;border-radius:3px;margin-inline-end:6px;vertical-align:-2px;border:1px solid #008F9B}
 .g-legend .nowk{background:#fff;box-shadow:inset 0 0 0 2px #D6A84F}
@@ -1138,8 +1141,15 @@ function renderDetail(){
    التي تُرفق بكل تقرير مرحلي. «حالة الجدول في تاريخ» تعيد رسمه كما كان يوم أي تقرير. */
 const GANTT_ASOF = {};
 function ganttModel(p){
-  const items = planOf(p).filter(x => x.start && x.end && toDate(x.end) >= toDate(x.start));
-  if(!items.length) return null;
+  let items = planOf(p).filter(x => x.start && x.end && toDate(x.end) >= toDate(x.start)), preview = null;
+  /* لا خطة بتواريخ؟ جدول مقترح من القالب المناسب لنوع المشروع (لا يُحفظ) */
+  if(!items.length){
+    const s = p.start || p.approvalDate;
+    if(!(s && p.end && toDate(p.end) > toDate(s))) return null;
+    preview = TEMPLATES.find(t => t.test(p));
+    items = tplItems(p, preview);
+    if(p.status === 'مكتمل') items.forEach(x => { x.status = 'منجز'; x.done = x.end; });
+  }
   const s0 = new Date(Math.min(...items.map(x => toDate(x.start)), ...(p.start ? [toDate(p.start)] : [])));
   const e0 = new Date(Math.max(...items.map(x => toDate(x.end)), ...(p.end ? [toDate(p.end)] : [])));
   const nW = Math.max(1, Math.ceil((e0 - s0 + DAY) / (7 * DAY)));
@@ -1151,7 +1161,7 @@ function ganttModel(p){
   items.slice().sort((a, b) => (num(a.order) - num(b.order)) || (toDate(a.start) - toDate(b.start))).forEach(it => {
     const k = it.stage || 'بلا مرحلة'; let g = stages.find(x => x.name === k); if(!g) stages.push(g = {name: k, items: []}); g.items.push(it);
   });
-  return {weeks, months, stages};
+  return {weeks, months, stages, preview};
 }
 function ganttCell(it, w, asOf, si, nStages){
   const a = toDate(it.start), b = toDate(it.end);
@@ -1162,9 +1172,25 @@ function ganttCell(it, w, asOf, si, nStages){
   if(!isDone) return 'pl';
   return /توثيق|تقارير/.test(it.stage || '') ? 'dn3' : si < 2 && nStages > 2 ? 'dn1' : 'dn2';
 }
+/* مدة المشروع ← تاريخ النهاية (كما في نموذج المشروع الجديد) */
+function addDur(st, n, u){
+  const d = toDate(st);
+  if(u === 'm'){ const day = d.getDate(); d.setMonth(d.getMonth() + n); if(d.getDate() < day) d.setDate(0); }
+  else d.setDate(d.getDate() + n * (u === 'w' ? 7 : 1));
+  d.setDate(d.getDate() - 1);
+  return iso(d);
+}
 function ganttCard(p){
   const M = ganttModel(p);
-  if(!M) return '';
+  if(!M){
+    const s = p.start || p.approvalDate;
+    return '<article class="card" id="ganttCard"><div class="card-h"><h2>الجدول الزمني الأسبوعي</h2></div>' +
+      (s ? '<p class="note" style="margin:0 0 10px">يُرسم الجدول من مدة المشروع. البداية ' + fmtDate(s) + (p.start ? '' : ' (تاريخ الاعتماد)') + ' — أدخل المدة لتُحسب النهاية وتُحفظ في نوشن.</p>' +
+        '<div class="g-tools g-dur"><label>مدة المشروع <input type="number" min="1" max="120" id="gDurN" inputmode="numeric" placeholder="6"></label>' +
+        '<select id="gDurU" aria-label="وحدة المدة"><option value="m">أشهر</option><option value="w">أسابيع</option><option value="d">أيام</option></select>' +
+        '<span class="note" id="gDurOut" style="margin:0"></span><button class="btn cta" type="button" data-act="gantt-dur">احفظ المدة وارسم الجدول</button></div>'
+        : '<p class="note" style="margin:0">لا تاريخ بداية ولا تاريخ اعتماد لهذا المشروع — أضفهما في نوشن ليُرسم الجدول.</p>') + '</article>';
+  }
   const asOf = GANTT_ASOF[p.id] ? toDate(GANTT_ASOF[p.id]) : today;
   const nowI = M.weeks.findIndex(w => asOf >= w.a && asOf <= new Date(w.b.getTime() + DAY - 1));
   const head1 = '<tr><th class="g-lbl" rowspan="2">المرحلة / البند</th>' + M.months.map((m, i) => '<th class="g-mon" colspan="' + m.n + '" title="' + esc(m.label) + '">الشهر ' + (i + 1) + '</th>').join('') + '</tr>';
@@ -1176,7 +1202,9 @@ function ganttCard(p){
       M.weeks.map((w, i) => '<td class="' + ganttCell(it, w, asOf, si, M.stages.length) + (i === nowI ? ' now' : '') + '"></td>').join('') + '</tr>').join('');
     return phase + rows;
   }).join('');
-  return '<article class="card" id="ganttCard"><div class="card-h"><h2>الجدول الزمني الأسبوعي</h2><small>بنمط التقارير المرحلية المعتمدة — ' + AR(M.weeks.length) + ' أسبوعًا</small></div>' +
+  return '<article class="card" id="ganttCard"><div class="card-h"><h2>الجدول الزمني الأسبوعي</h2><small>بنمط التقارير المرحلية المعتمدة — ' + AR(M.weeks.length) + ' أسبوعًا</small>' +
+    (M.preview ? '<span class="g-prev">مقترح من قالب «' + esc(M.preview.label) + '»</span>' : '') + '</div>' +
+    (M.preview ? '<p class="note" style="margin:0 0 10px">لا خطة تنفيذ لهذا المشروع بعد، فهذا جدول مقترح من مدته ونوعه. أنشئ الخطة من بطاقة «خطة التنفيذ» لتعتمده وتتابع إنجاز بنوده.</p>' : '') +
     '<div class="g-tools"><label>حالة الجدول في تاريخ <input type="date" data-gasof="' + esc(p.id) + '" value="' + iso(asOf) + '"></label>' +
     '<button class="btn" type="button" data-act="gantt-copy">انسخ الجدول للتقرير</button></div>' +
     '<div class="g-wrap"><table class="gantt"><thead>' + head1 + head2 + '</thead><tbody>' + body + '</tbody></table></div>' +
@@ -1207,6 +1235,24 @@ async function ganttCopy(p){
     toast('نُسخ الجدول — الصقه في Word في قسم «أنشطة المشروع»');
   }catch(e){ toast('تعذّر النسخ: ' + e.message, true); }
 }
+async function ganttSaveDur(p){
+  const n = parseInt(($('gDurN') || {}).value, 10), u = ($('gDurU') || {}).value, s = p.start || p.approvalDate;
+  if(!(n > 0) || !s){ toast('أدخل مدة المشروع', true); return; }
+  const end = addDur(s, n, u), b = document.querySelector('[data-act="gantt-dur"]');
+  if(b){ b.disabled = true; b.textContent = 'جارٍ الحفظ…'; }
+  try{
+    if(SOURCE === 'live'){
+      await post({action: 'project_dates', org: ORG, id: p.id, end, ...(p.start ? {} : {start: s})});
+      toast('حُفظت النهاية ' + fmtDate(end) + ' في نوشن');
+    }else toast('النهاية ' + fmtDate(end) + ' — في هذه النسخة فقط، لا تُحفظ في نوشن');
+    p.end = end; if(!p.start) p.start = s; rerender();
+  }catch(err){ if(b){ b.disabled = false; b.textContent = 'احفظ المدة وارسم الجدول'; } toast(err.message || 'تعذّر الحفظ', true); }
+}
+document.addEventListener('input', e => {
+  if(!/^gDur[NU]$/.test(e.target.id)) return;
+  const p = DATA.projects.find(x => x.id === S.sel), n = parseInt($('gDurN').value, 10), s = p && (p.start || p.approvalDate);
+  $('gDurOut').textContent = s && n > 0 ? 'تنتهي ' + fmtDate(addDur(s, n, $('gDurU').value)) : '';
+});
 document.addEventListener('change', e => {
   const inp = e.target.closest('input[data-gasof]'); if(!inp) return;
   GANTT_ASOF[inp.dataset.gasof] = inp.value || '';
@@ -1786,8 +1832,7 @@ function toggleItem(id){
   it.done = it.status === 'منجز' ? iso(today) : null;
   rerender(); saveItem(it, prev);
 }
-async function createFromTemplate(p, key){
-  const tpl = TEMPLATES.find(t => t.key === key); if(!tpl) return;
+function tplItems(p, tpl){
   const s = p.start || p.approvalDate, e = p.end;
   const span = s && e && toDate(e) > toDate(s) ? toDate(e) - toDate(s) : 0;
   const docs = new Set(p.docsDone || []), n = tpl.stages.length, items = [];
@@ -1814,6 +1859,11 @@ async function createFromTemplate(p, key){
         status: done ? 'منجز' : 'جارٍ', start: at(0.04), end: at(1), done: '', owner: p.coordinator || '', notes: '' });
     });
   }
+  return items;
+}
+async function createFromTemplate(p, key){
+  const tpl = TEMPLATES.find(t => t.key === key); if(!tpl) return;
+  const items = tplItems(p, tpl);
   DATA.plan.push(...items); rerender();
   try{
     if(SOURCE === 'live'){
@@ -2228,6 +2278,7 @@ $('detail').addEventListener('click', e => {
   else if(act === 'files-refresh'){ delete FILES[p.code]; fetchFiles(p, true); refreshCard('docsCard', docsCard(p)); }
   else if(act === 'delete') deleteProject(p);
   else if(act === 'gantt-copy') ganttCopy(p);
+  else if(act === 'gantt-dur') ganttSaveDur(p);
   else if(act === 'up') pickFiles(p, b.dataset.slot);
   else if(act === 'money-edit') openMoneyDlg(p);
 });
