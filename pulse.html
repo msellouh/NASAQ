@@ -187,11 +187,11 @@ dialog[open]{animation:dlgIn var(--dur-3) var(--ease-out)}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="upFile" hidden accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,image/*">
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
-<script src="nasaq-core.js?v=20260927a"></script>
+<script src="nasaq-core.js?v=20260927b"></script>
 <script src="nasaq-pulse.js?v=20260927"></script>
 <script>
 const $ = id => document.getElementById(id);
-const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* esc() — تهريب النصوص قبل HTML — مشتركة في nasaq-core.js */
 /* الأرقام إنجليزية في المنصة كلها (قرار صاحب اللوح) */
 const AR = n => String(n);
 const LOC = 'ar-EG-u-nu-latn';

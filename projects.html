@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800;900&family=Readex+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
-<script src="nasaq-core.js?v=20260927a"></script>
+<script src="nasaq-core.js?v=20260927b"></script>
 <script>
 /* الوضع المحفوظ في نَسَق — قبل الرسم حتى لا يومض */
 (function(){ try{
@@ -743,7 +743,7 @@ dialog[open]::backdrop{animation:m-fade-in var(--dur-3) var(--ease-out)}
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
-const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* esc() — تهريب النصوص قبل HTML — مشتركة في nasaq-core.js */
 const AR = n => Number(n).toLocaleString('ar-EG-u-nu-latn');
 const money = n => (n == null || n === '') ? '—' : AR(Math.round(Number(n))) + ' $';
 const pct = x => (x == null || !isFinite(x)) ? '—' : AR(Math.round(x * 1000) / 10) + '%';

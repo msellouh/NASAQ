@@ -192,3 +192,12 @@ window.NasaqAuth = (function(){
   return { load: load, save: save, clear: clear, persistent: persistent,
            rememberedUser: rememberedUser, rememberUser: rememberUser };
 })();
+
+/* ---------- تهريب النصوص قبل إدخالها في HTML ----------
+   كل نص يأتي من نوشن أو من المستخدم ويُدمج في innerHTML أو في خاصية (value="…" / title="…")
+   يمرّ عبر esc(). ما لا يحتاج وسومًا يُكتب بـ textContent مباشرة. */
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c];
+  });
+}

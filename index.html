@@ -2458,7 +2458,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
 <div class="toast" id="toastBox"></div>
 
-<script src="nasaq-core.js?v=20260927a"></script>
+<script src="nasaq-core.js?v=20260927b"></script>
 <script src="nasaq-pulse.js?v=20260927"></script>
 <script>
 const AR = n => Number(n).toLocaleString('ar-EG-u-nu-latn');
@@ -2945,8 +2945,8 @@ $('setBridgeSave').onclick = ()=>{
 };
 
 function fillOptions(d){
-  $('projList').innerHTML = (d.projects||[]).map(p=>'<option value="'+p.replace(/"/g,'&quot;')+'">').join('');
-  $('donorList').innerHTML = (d.donors||[]).map(p=>'<option value="'+p.replace(/"/g,'&quot;')+'">').join('');
+  $('projList').innerHTML = (d.projects||[]).map(p=>'<option value="'+esc(p)+'">').join('');
+  $('donorList').innerHTML = (d.donors||[]).map(p=>'<option value="'+esc(p)+'">').join('');
 }
 function loadOptions(){ post({action:'options'}).then(fillOptions).catch(()=>{}); }
 
@@ -3004,7 +3004,7 @@ $('pgo').onclick = ()=>{
       });
       $('pres').innerHTML=''; $('pres').appendChild(tbl);
     })
-    .catch(e=>{ $('pres').innerHTML='<div class="empty">تعذّر البحث: '+e.message+'</div>'; });
+    .catch(e=>{ $('pres').innerHTML='<div class="empty">تعذّر البحث: '+esc(e.message)+'</div>'; });
 };
 
 /* ---------- helpers ---------- */
@@ -3982,7 +3982,7 @@ function renderShots(fresh){
     const w = document.createElement('figure'); w.className = 'shot' + (fresh && i === 0 ? ' fresh' : '');
     const im = document.createElement('img'); im.src = sh.src; im.alt = 'لقطة محفوظة'; im.loading = 'lazy';
     im.onclick = ()=>openModal({title: 'لقطة — ' + new Date(sh.at).toLocaleDateString('ar-EG-u-nu-latn', {day: 'numeric', month: 'long'}),
-      bodyHTML: '<img src="' + sh.src + '" alt="" style="width:100%;border-radius:8px;display:block">', actions: [{label: 'إغلاق', primary: true}]});
+      bodyHTML: '<img src="' + esc(sh.src) + '" alt="" style="width:100%;border-radius:8px;display:block">', actions: [{label: 'إغلاق', primary: true}]});
     const del = document.createElement('button'); del.type = 'button'; del.className = 'shot-del'; del.textContent = '×'; del.title = 'احذف اللقطة'; del.setAttribute('aria-label', 'احذف اللقطة');
     del.onclick = ()=>{ const k = ideaShots.findIndex(x=>x.id === sh.id); if(k < 0) return; const [gone] = ideaShots.splice(k, 1); renderShots(); sync();
       showToast('حُذفت اللقطة', ()=>{ ideaShots.splice(k, 0, gone); renderShots(); sync(); }); };
@@ -4724,7 +4724,7 @@ function renderPomoOptions(){
   const sel = $('pomoTask');
   const prev = sel.value;
   sel.innerHTML = '<option value="">— بلا مهمة محددة —</option>' +
-    tasks.filter(t=>!t.done).map(t=>'<option value="'+t.id+'">'+t.text.replace(/</g,'&lt;')+'</option>').join('');
+    tasks.filter(t=>!t.done).map(t=>'<option value="'+esc(t.id)+'">'+esc(t.text)+'</option>').join('');
   if([...sel.options].some(o=>o.value===prev)) sel.value = prev;
 }
 /* المؤقّت واحد يخدم ثلاثة أماكن: بطاقة التركيز، سطر المهمة (عدّ حيّ)، ووضع التركيز بملء الشاشة */
@@ -5512,14 +5512,14 @@ $('expBtn').onclick = ()=>{
   const all = archive.concat(tasks.map(t=>({...t, pending:true})));
   if(!all.length){ openModal({title:'لا توجد بيانات', bodyHTML:'<p>لا توجد مهام للتصدير بعد.</p>', actions:[{label:'حسنًا', primary:true}]}); return; }
   const head = ['المهمة','المشروع','المانح','الأهمية','الحالة','تاريخ الإضافة','تاريخ الاستحقاق','تاريخ الإنجاز','عدد الأيام','الوقت المقدّر (دقيقة)','الوقت الفعلي (دقيقة)','ملاحظات'];
-  const esc = v => '"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const csvCell = v => '"'+String(v==null?'':v).replace(/"/g,'""')+'"';
   const rows = all.map(t=>[
     t.text, t.proj||'', t.donor||'', t.imp||'',
     t.pending ? (t.done?'منجزة اليوم':'قيد العمل') : 'منجزة',
     iso(t.createdAt), t.due?iso(t.due):'', t.doneAt?iso(t.doneAt):'',
     t.doneAt?openDays(t):'', t.mins||'', t.actual||'', t.notes||''
-  ].map(esc).join(','));
-  download('سجل-المهام-'+iso(Date.now())+'.csv', '﻿sep=,\r\n'+[head.map(esc).join(','), ...rows].join('\r\n'), 'text/csv');
+  ].map(csvCell).join(','));
+  download('سجل-المهام-'+iso(Date.now())+'.csv', '﻿sep=,\r\n'+[head.map(csvCell).join(','), ...rows].join('\r\n'), 'text/csv');
 };
 
 /* ---------- backup & restore ---------- */
@@ -6397,8 +6397,8 @@ function loadExpenseOptions(){
   if(!notionOK()) return;
   post({action:'expense_options'}).then(d=>{
     expCategories = d.categories||[]; expAccounts = d.accounts||[];
-    $('expCategory').innerHTML = '<option value="">التصنيف</option>' + expCategories.map(c=>'<option value="'+c.replace(/"/g,'&quot;')+'">'+c+'</option>').join('');
-    $('expAccount').innerHTML = '<option value="">من حساب</option>' + expAccounts.map(a=>'<option value="'+a.id+'">'+a.name.replace(/</g,'&lt;')+'</option>').join('');
+    $('expCategory').innerHTML = '<option value="">التصنيف</option>' + expCategories.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
+    $('expAccount').innerHTML = '<option value="">من حساب</option>' + expAccounts.map(a=>'<option value="'+esc(a.id)+'">'+esc(a.name)+'</option>').join('');
     expOptionsLoaded = true;
   }).catch(()=>{});
 }
@@ -6422,7 +6422,7 @@ function renderBudgetDashboard(d){
   list.innerHTML = d.items.map(it=>{
     const p = it.planned>0 ? Math.round(it.actual/it.planned*100) : null;
     return '<div class="budget-item">'+
-      '<div class="row"><b>'+it.category+'</b><span>'+fmtMoney(it.actual)+(it.planned>0?' / '+fmtMoney(it.planned):'')+'</span></div>'+
+      '<div class="row"><b>'+esc(it.category)+'</b><span>'+fmtMoney(it.actual)+(it.planned>0?' / '+fmtMoney(it.planned):'')+'</span></div>'+
       (p!=null ? renderBudgetBar(p) + '<div class="pct">'+AR(p)+'% من الحد المخطط</div>' : '')+
     '</div>';
   }).join('');
@@ -6439,7 +6439,7 @@ function loadBudgetSummary(){
     renderBudgetDashboard(d);
     $('expSyncNote').textContent = 'آخر تحديث ' + new Date().toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'});
   }).catch(e=>{
-    $('budgetOverall').innerHTML = '<div class="sub">تعذّر تحميل الميزانية: '+e.message+'</div>';
+    $('budgetOverall').innerHTML = '<div class="sub">تعذّر تحميل الميزانية: '+esc(e.message)+'</div>';
     $('expSyncNote').textContent = '';
   });
 }
@@ -6477,7 +6477,7 @@ function openSpotifySetupModal(){
   openModal({
     title:'إعداد ربط سبوتيفاي',
     bodyHTML:'<p>سجّل تطبيقًا مجانيًا على <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com/dashboard</a>، وأضف رابط هذه الصفحة بالضبط كـ Redirect URI:</p>'+
-      '<p style="direction:ltr;text-align:left;background:var(--stripe);padding:6px 8px;border-radius:6px;font-size:12px;word-break:break-all">'+spotifyRedirectUri()+'</p>'+
+      '<p style="direction:ltr;text-align:left;background:var(--stripe);padding:6px 8px;border-radius:6px;font-size:12px;word-break:break-all">'+esc(spotifyRedirectUri())+'</p>'+
       '<p>ثم الصق Client ID التطبيق هنا:</p><input type="text" id="spotifyCidInput" placeholder="Client ID">',
     onRender:(el)=>{ const inp=el.querySelector('#spotifyCidInput'); inp.value = getSpotifyClientId(); inp.focus(); },
     actions:[
@@ -6554,7 +6554,7 @@ async function spotifyLoadPlaylists(){
   try{
     const d = await spotifyApi('/me/playlists?limit=50');
     const sel = $('spotifyPlaylist');
-    sel.innerHTML = (d.items||[]).map(p=>'<option value="'+p.id+'">'+p.name.replace(/</g,'&lt;')+'</option>').join('');
+    sel.innerHTML = (d.items||[]).map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
     if(d.items && d.items.length) spotifySelectPlaylist(d.items[0].id);
     spotifyShowSignedIn();
   }catch(e){ spotifyShowSignedOut(); }
@@ -6611,7 +6611,7 @@ function renderAdminUsers(d){
             close();
             post({action:'admin_delete_user', username:u.username})
               .then(()=>loadAdminUsers())
-              .catch(e=>openModal({title:'تعذّر الحذف', bodyHTML:'<p>'+e.message+'</p>', actions:[{label:'حسنًا', primary:true}]}));
+              .catch(e=>openModal({title:'تعذّر الحذف', bodyHTML:'<p>'+esc(e.message)+'</p>', actions:[{label:'حسنًا', primary:true}]}));
           }}]});
       };
       row.appendChild(del);
