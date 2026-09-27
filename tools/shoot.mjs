@@ -19,6 +19,7 @@ const MODES = arg('modes', 'light,dark').split(',');
 const WIDTHS = arg('widths', '1440,390').split(',').map(Number);
 const TABS = arg('tabs', 'board,tasks,flow,projects,expenses').split(',');
 const AUDIT_TABS = new Set(arg('audit', 'board').split(','));
+const PREP = arg('prep', '');
 const EDGE = arg('edge', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe');
 const PORT = 9300 + Math.floor(Math.random() * 500);
 const AUDIT = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'design-audit.js'), 'utf8');
@@ -73,6 +74,7 @@ try {
     await evalIn(c, `(async()=>{ for (const t of ['مراجعة تقرير مشروع G016 المرحلي','اتصال بمنسق عيادة خانيونس','تجهيز كشوف مستفيدي الحليب']){
       const i=document.getElementById('tText'); i.value=t; i.dispatchEvent(new Event('input',{bubbles:true}));
       document.getElementById('addBtn').click(); await new Promise(r=>setTimeout(r,150)); } })()`);
+    if (PREP) await evalIn(c, PREP);   /* --prep: تجهيز حالة للتصوير (مهمة منجزة، ختم…) */
     for (const tab of TABS) {
       await evalIn(c, `document.getElementById('tab${tab[0].toUpperCase() + tab.slice(1)}Btn').click(); scrollTo(0,0)`);
       await sleep(tab === 'projects' ? 3500 : 1200);

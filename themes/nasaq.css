@@ -69,4 +69,9 @@
 /* نقش الشعار في الواجهة والحالات الفارغة فقط، بشفافية ≤ 3% — لا في كل الصفحة */
 :root[data-palette="nasaq"] body{background-image:none}
 :root[data-palette="nasaq"] .greet-card::before{opacity:.03}
+/* الإنجاز في «نَسَق»: الدائرة تمتلئ بـ Teal مع علامة ✓، ونبضة واحدة لنقطة الزعفران */
+:root[data-palette="nasaq"] .check[aria-checked="true"]{background:var(--primary);border-color:var(--primary)}
+:root[data-palette="nasaq"] li.just-done .check{animation:nasaq-pulse calc(var(--dur-4) * var(--motion-scale,1)) var(--ease-out) both}
+@keyframes nasaq-pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 70%,transparent)} 100%{box-shadow:0 0 0 10px transparent}}
+@media (prefers-reduced-motion:reduce){ :root[data-palette="nasaq"] li.just-done .check{animation:none} }
 }

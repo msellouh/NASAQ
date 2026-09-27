@@ -26,9 +26,10 @@
     plan:  {art:{dark:'#E8B24C', light:'#D6962E'}, text:{dark:'#E8B24C', light:'#88682E'}},
     habit: {art:{dark:'#34F5B5', light:'#0E9E74'}, text:{dark:'#34F5B5', light:'#087F5D'}},
     focus: {art:{dark:'#B69CF5', light:'#7C55D0'}, text:{dark:'#C9B5FF', light:'#6A43B8'}},
-    idea:  {art:{dark:'#FFC35A', light:'#D68A12'}, text:{dark:'#FFC35A', light:'#8A5A00'}}
+    idea:  {art:{dark:'#FFC35A', light:'#D68A12'}, text:{dark:'#FFC35A', light:'#8A5A00'}},
+    theme: {art:{dark:'#7FE3F5', light:'#0086A8'}, text:{dark:'#7FE3F5', light:'#006F8C'}}
   };
-  function sameSteps(art, text){ var o = {}; ['task','pri','plan','habit','focus','idea'].forEach(function(k){ o[k] = {art:art, text:text}; }); return o; }
+  function sameSteps(art, text){ var o = {}; ['task','pri','plan','habit','focus','idea','theme'].forEach(function(k){ o[k] = {art:art, text:text}; }); return o; }
 
   /* ---------- «نَسَق»: مسطح بلونين من الهوية ---------- */
   var FLAT = {
