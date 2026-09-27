@@ -12,6 +12,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#F7F6F2">
 <script src="nasaq-core.js?v=20260927e"></script>
+<script src="nasaq-art.js?v=20260927e"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2926,7 +2927,7 @@ function openCapacityModal(){
 }
 
 /* ---------- ألوان المشاريع: لون ثابت يُشتق من الاسم، من ألوان الهوية الهادئة ---------- */
-const PROJ_COLORS = ['#2F6F6B','#C99A45','#668A9A','#C87861','#82758E','#6F9B83','#D6A84F','#8A7F6E'];
+const PROJ_COLORS = NASAQ_ART.projects;   /* nasaq-art.js */
 function projColor(name){
   const s = String(name || '').trim(); if(!s) return '';
   /* FNV-1a: توزيع أفضل من h*31 الذي كان يعطي مشاريع مختلفة اللون نفسه */
@@ -3178,7 +3179,8 @@ function ringFrame(el, P){
     b.style.width = b.style.height = size.toFixed(2) + 'px';
     b.style.transform = 'translate(-50%,-50%) rotate(' + th.toFixed(2) + 'deg) translateY(' + (-rr).toFixed(2) + 'px) rotate(' + (45 - th + th * spin).toFixed(2) + 'deg) scale(' + squeeze.toFixed(3) + ')';
     /* يبقى ذهبيًا أثناء الطيران، ويبهت إلى الرمادي عند الوصول إن كان الوقت وقت هدوء */
-    b.style.background = el.classList.contains('quiet') ? mixRGB([214, 168, 79], [154, 161, 190], eOut(rz(P, .45, .6))) : '#D6A84F';
+    const RA = nasaqArt().ring;
+    b.style.background = el.classList.contains('quiet') ? mixRGB(RA.dotRGB, RA.quietRGB, eOut(rz(P, .45, .6))) : RA.dot;
     /* «نبضة» لحظة الوصول: حلقة ماسية تتسع وتتلاشى */
     const pg = rz(P, .5, .66);
     b.style.setProperty('--pingS', (1 + 1.8 * eOut(pg)).toFixed(3));
@@ -3353,20 +3355,20 @@ function ringIcon(pct, a, q){
   const c = cv.getContext('2d'), cx = s / 2, w = 3.6, R = s / 2 - w / 2 - 1;
   const dark = document.documentElement.getAttribute('data-theme') === 'dark' ||
     (!document.documentElement.hasAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
-  const rad = x=>(x - 90) * Math.PI / 180;
-  c.fillStyle = dark ? '#14162A' : '#FFFFFF'; c.beginPath(); c.arc(cx, cx, s / 2, 0, Math.PI * 2); c.fill();
+  const rad = x=>(x - 90) * Math.PI / 180, A = nasaqArt(dark ? 'dark' : 'light'), RC = A.ring[A.mode];
+  c.fillStyle = RC.bg; c.beginPath(); c.arc(cx, cx, s / 2, 0, Math.PI * 2); c.fill();
   c.lineCap = 'round'; c.lineWidth = w;
-  c.strokeStyle = dark ? 'rgba(238,241,247,.18)' : 'rgba(20,22,42,.12)';
+  c.strokeStyle = RC.track;
   c.beginPath(); c.arc(cx, cx, R, rad(RING_ARC0), rad(RING_ARC0 + RING_ARC)); c.stroke();
   if(pct > 0){
-    const L = dark ? ['#34F5B5', '#00B7D4', '#7B55CC'] : ['#0E9E74', '#0086A8', '#6A43B8'];
+    const L = RC.grad;
     let g = L[1];
     if(c.createConicGradient){ g = c.createConicGradient(rad(RING_ARC0), cx, cx); g.addColorStop(0, L[0]); g.addColorStop(150 / 360, L[1]); g.addColorStop(300 / 360, L[2]); g.addColorStop(1, L[2]); }
     c.strokeStyle = g; c.beginPath(); c.arc(cx, cx, R, rad(RING_ARC0), rad(RING_ARC0 + pct / 100 * RING_ARC)); c.stroke();
   }
   const x = cx + R * Math.cos(rad(a)), y = cx + R * Math.sin(rad(a)), k = 3.4;
-  c.save(); c.translate(x, y); c.rotate(Math.PI / 4); c.fillStyle = q ? '#9AA1BE' : '#D6A84F'; c.fillRect(-k / 2, -k / 2, k, k); c.restore();
-  c.fillStyle = dark ? '#EEF1F7' : '#14162A'; c.font = '700 ' + (pct === 100 ? 8.5 : 10) + 'px Alexandria, sans-serif';
+  c.save(); c.translate(x, y); c.rotate(Math.PI / 4); c.fillStyle = q ? A.ring.quiet : A.ring.dot; c.fillRect(-k / 2, -k / 2, k, k); c.restore();
+  c.fillStyle = RC.text; c.font = '700 ' + (pct === 100 ? 8.5 : 10) + 'px Alexandria, sans-serif';
   c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(String(pct), cx, cx + 1);
   return cv.toDataURL('image/png');
 }
@@ -3508,7 +3510,7 @@ function renderOnboard(){
   const doneKeys = steps.filter(s=>s.done).map(s=>s.key);
   if(!seen || doneKeys.some(k=>!seen.includes(k))) setOnboard({seen: doneKeys});
   steps.forEach((s, i)=>{
-    const art = OB_ART[s.key];
+    const art = nasaqArt().steps[s.key];
     const li = document.createElement('li');
     const b = document.createElement('button'); b.type = 'button';
     const fresh = s.done && seen && !seen.includes(s.key);   /* أول عرض بلا سجل: لا احتفال بما سبق */
@@ -3516,7 +3518,7 @@ function renderOnboard(){
     b.style.setProperty('--ob-hue-d', art.text.dark);
     b.style.setProperty('--ob-hue-l', art.text.light);
     /* ستارة النهار بلون الملصق حين يكتمل أو يكون التالي، ورمادية محايدة لما لم يُبدأ */
-    b.style.setProperty('--ob-tintc', (s.done || i === nextIdx) ? obTint(art.art.light, .07) : '#F6F7FA');
+    b.style.setProperty('--ob-tintc', (s.done || i === nextIdx) ? obTint(art.art.light, .07) : nasaqArt('light').mood.idleTint);
     b.disabled = s.done;
     b.setAttribute('aria-label', s.t + ' — ' + s.sub + (s.done ? ' (تمّت)' : ''));
     b.innerHTML = obPosterSvg(s.key);   /* رسم ثابت من الكود، لا نصّ من المستخدم */
@@ -3556,13 +3558,7 @@ window.addEventListener('resize', ()=>{ const ol = document.querySelector('#onbo
 
 /* مشاهد الملصقات بمزاجين: «ليل مَدار» الكحلي للوضع الداكن، و«نهار» عاجي أزرق للفاتح.
    المشهد نفسه يتبدّل لونه وخلفيته، والـCSS يُظهر النسخة المطابقة للوضع الحالي. */
-const OB_MOODS = {
-  /* soft: مضاعف شدة التوهّجات المموّهة داخل المشهد. tint: درجات خلفية النهار من لون الخطوة نفسه */
-  dark:  {bg:['#0A0E2A','#14162A','#080914'], glow:.55, glowMid:.12, glowR:.6, soft:1, ring:'#FFFFFF', ringOp:.07, star:'#FFFFFF', starOp:1,
-          card:'#1D2248', line:'#EEF1F7', ground:'#0B0D22', onHue:'#0A0E2A', track:'#FFFFFF', txt:'#EEF1F7', txt2:'#C4C9DD', hollow:'#14162A'},
-  light: {tint:[.05,.11,.2], glow:.2, glowMid:.09, glowR:.85, soft:.45, ringOp:.12, starOp:.4,
-          card:'#FFFFFF', line:'#14162A', onHue:'#FFFFFF', track:'#14162A', txt:'#14162A', txt2:'#5E6485', hollow:'#FFFFFF'}
-};
+/* مزاج المشهد لكل وضع وطابع: NASAQ_ART في nasaq-art.js */
 /* يمزج اللون مع الأبيض العاجي بنسبة amt (0 = أبيض، 1 = اللون كاملًا) */
 function obTint(hex, amt){
   const n = parseInt(hex.slice(1), 16), base = [251, 252, 254];
@@ -3585,29 +3581,29 @@ const OB_SVG = (mood, base, scene, fit) => '<svg class="ob-art is-' + mood + '" 
 /* لكل خطوة: art = لون المشهد في كل مزاج، text = لون السطر الثاني من العنوان (تباين ≥ 4.5 على ستارته) */
 const OB_ART = {
   /* ورقة مهام مائلة، أول بند منجز، وزر «+» مضيء */
-  task: {art:{dark:'#00B7D4', light:'#0096B8'}, text:{dark:'#00B7D4', light:'#007A99'}, glowY:.3,
+  task: {glowY:.3,
     scene:(P, H, id)=>
     '<g transform="rotate(-8 120 112)"><rect x="60" y="50" width="120" height="132" rx="12" fill="'+P.card+'" stroke="'+H+'" stroke-opacity=".55" stroke-width="1.5"/>' +
     '<rect x="60" y="50" width="120" height="22" rx="12" fill="'+H+'" fill-opacity=".16"/>' +
-    '<rect x="77" y="88" width="15" height="15" rx="4" fill="#34D6A0"/><path d="m80.5 95.5 3 3 5-6" fill="none" stroke="#14162A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<rect x="77" y="88" width="15" height="15" rx="4" fill="'+P.check+'"/><path d="m80.5 95.5 3 3 5-6" fill="none" stroke="'+P.checkMark+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>' +
     '<rect x="100" y="92" width="62" height="7" rx="3.5" fill="'+P.line+'" opacity=".3"/>' +
     '<rect x="77" y="116" width="15" height="15" rx="4" fill="none" stroke="'+H+'" stroke-width="1.6"/><rect x="100" y="120" width="50" height="7" rx="3.5" fill="'+P.line+'" opacity=".55"/>' +
     '<rect x="77" y="144" width="15" height="15" rx="4" fill="none" stroke="'+H+'" stroke-width="1.6" opacity=".6"/><rect x="100" y="148" width="58" height="7" rx="3.5" fill="'+P.line+'" opacity=".25"/></g>' +
     '<circle cx="176" cy="172" r="26" fill="'+H+'" opacity="'+(.6*P.soft)+'" filter="url(#'+id+'-bl)"/><circle cx="176" cy="172" r="21" fill="'+H+'"/>' +
     '<path d="M176 162v20M166 172h20" stroke="'+P.onHue+'" stroke-width="4" stroke-linecap="round"/>'},
   /* هدف بحلقات، وسهم أصاب المركز */
-  pri: {art:{dark:'#FF6B6E', light:'#E0474B'}, text:{dark:'#FF8A8C', light:'#C42B2E'}, glowY:.32,
+  pri: {glowY:.32,
     scene:(P, H, id)=>
     '<circle cx="118" cy="120" r="66" fill="none" stroke="'+H+'" stroke-opacity=".28" stroke-width="2"/>' +
     '<circle cx="118" cy="120" r="48" fill="'+H+'" fill-opacity=".06" stroke="'+H+'" stroke-opacity=".5" stroke-width="2"/>' +
     '<circle cx="118" cy="120" r="30" fill="'+H+'" fill-opacity=".16" stroke="'+H+'" stroke-width="2"/>' +
-    '<circle cx="118" cy="120" r="16" fill="#FFB36B" opacity="'+(.8*P.soft)+'" filter="url(#'+id+'-bl)"/><circle cx="118" cy="120" r="11" fill="#FFC35A"/>' +
+    '<circle cx="118" cy="120" r="16" fill="'+P.target+'" opacity="'+(.8*P.soft)+'" filter="url(#'+id+'-bl)"/><circle cx="118" cy="120" r="11" fill="'+P.targetCore+'"/>' +
     '<path d="M206 36 125 113" stroke="'+P.line+'" stroke-width="3.2" stroke-linecap="round"/><path d="m121 117 13-3-4 13z" fill="'+P.line+'"/>' +
     '<path d="m206 36 14-3m-14 3-3 14m7-10 13-3m-13 3-3 13" stroke="'+H+'" stroke-width="2.4" stroke-linecap="round"/>'},
   /* شروق فوق الأفق، وطريق بثلاث محطات: أمس، ما ينتظرك، أولوياتك */
-  plan: {art:{dark:'#E8B24C', light:'#D6962E'}, text:{dark:'#E8B24C', light:'#88682E'}, glowY:.38, fit:'translate(0 -36)',   /* الأفق يرتفع بلا تصغير كي تبقى الأرض بعرض الملصق */
+  plan: {glowY:.38, fit:'translate(0 -36)',   /* الأفق يرتفع بلا تصغير كي تبقى الأرض بعرض الملصق */
     scene:(P, H, id)=>
-    '<defs><linearGradient id="'+id+'-sun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD98A"/><stop offset="1" stop-color="#E07A3C"/></linearGradient></defs>' +
+    '<defs><linearGradient id="'+id+'-sun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+P.sunTop+'"/><stop offset="1" stop-color="'+P.sunBottom+'"/></linearGradient></defs>' +
     '<g stroke="'+H+'" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"><path d="M120 76v-18M84 90l-11-13M156 90l11-13M62 120l-16-6M178 120l16-6"/></g>' +
     '<circle cx="120" cy="150" r="54" fill="'+H+'" opacity="'+(.5*P.soft)+'" filter="url(#'+id+'-bl)"/>' +
     '<path d="M72 150a48 48 0 0 1 96 0z" fill="url(#'+id+'-sun)"/>' +
@@ -3616,7 +3612,7 @@ const OB_ART = {
     '<path d="M104 300c10-40 34-60 14-92-8-13 6-24 2-58" fill="none" stroke="'+H+'" stroke-width="1.6" stroke-dasharray="3 7" stroke-linecap="round"/>' +
     '<circle cx="119" cy="208" r="6" fill="'+H+'"/><circle cx="121" cy="178" r="4.5" fill="'+H+'" opacity=".8"/><circle cx="120" cy="158" r="3.2" fill="'+H+'" opacity=".65"/>'},
   /* نبتة داخل حلقة الأسبوع: سبع نقاط، خمس منها ممتلئة */
-  habit: {art:{dark:'#34F5B5', light:'#0E9E74'}, text:{dark:'#34F5B5', light:'#087F5D'}, glowY:.34,
+  habit: {glowY:.34,
     scene:(P, H, id)=>
     '<circle cx="120" cy="118" r="58" fill="none" stroke="'+H+'" stroke-opacity=".2" stroke-width="1.5" stroke-dasharray="2 6"/>' +
     [0,1,2,3,4,5,6].map(i=>{ const a = (-90 + i * 360 / 7) * Math.PI / 180, x = (120 + 58 * Math.cos(a)).toFixed(1), y = (118 + 58 * Math.sin(a)).toFixed(1);
@@ -3627,10 +3623,10 @@ const OB_ART = {
     '<path d="M122 108c4-19 17-26 33-24-2 18-15 26-33 24z" fill="'+H+'"/>' +
     '<circle cx="138" cy="92" r="10" fill="'+H+'" opacity="'+(.45*P.soft)+'" filter="url(#'+id+'-bl)"/>'},
   /* حلقة المدار 330° حول «25» — مؤقّت جلسة التركيز */
-  focus: {art:{dark:'#B69CF5', light:'#7C55D0'}, text:{dark:'#C9B5FF', light:'#6A43B8'}, glowY:.32,
+  focus: {glowY:.32,
     /* o.banner: نسخة لوحة «التركيز» — بلا نص، والحلقة (ob-arc) يملؤها المؤقّت الحيّ */
     scene:(P, H, id, o)=>
-    '<defs><linearGradient id="'+id+'-ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1FC99A"/><stop offset=".5" stop-color="#00A5C2"/><stop offset="1" stop-color="'+H+'"/></linearGradient></defs>' +
+    '<defs><linearGradient id="'+id+'-ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+P.ring1+'"/><stop offset=".5" stop-color="'+P.ring2+'"/><stop offset="1" stop-color="'+H+'"/></linearGradient></defs>' +
     '<circle cx="120" cy="116" r="60" fill="none" stroke="'+P.track+'" stroke-opacity=".1" stroke-width="10"/>' +
     '<path class="ob-arc" pathLength="100" d="M135.5 58A60 60 0 1 1 104.5 58" fill="none" stroke="'+H+'" stroke-opacity="'+(.5*P.soft)+'" stroke-width="12" stroke-linecap="round" filter="url(#'+id+'-bl)"/>' +
     '<path class="ob-arc" pathLength="100" d="M135.5 58A60 60 0 1 1 104.5 58" fill="none" stroke="url(#'+id+'-ring)" stroke-width="8" stroke-linecap="round"/>' +
@@ -3639,7 +3635,7 @@ const OB_ART = {
     '<text x="120" y="130" text-anchor="middle" font-family="Alexandria, Readex Pro, sans-serif" font-weight="800" font-size="40" fill="'+P.txt+'">25</text>' +
     '<text x="120" y="150" text-anchor="middle" font-family="Readex Pro, sans-serif" font-size="11" fill="'+P.txt2+'">دقيقة</text>')},
   /* مصباح فكرة تحوم حوله خواطر صغيرة — للوحة «أفكار عابرة» */
-  idea: {art:{dark:'#FFC35A', light:'#D68A12'}, text:{dark:'#FFC35A', light:'#8A5A00'}, glowY:.32,
+  idea: {glowY:.32,
     scene:(P, H, id)=>
     '<circle cx="120" cy="96" r="44" fill="'+H+'" opacity="'+(.55*P.soft)+'" filter="url(#'+id+'-bl)"/>' +
     '<path d="M120 56a36 36 0 0 0-21 65c5 4 7 9 7 15h28c0-6 2-11 7-15a36 36 0 0 0-21-65z" fill="'+H+'"/>' +
@@ -3664,13 +3660,19 @@ const OB_BANNER_BASE = (id, hue, P)=>{
     '<g fill="'+star+'" opacity="'+P.starOp+'"><circle cx="40" cy="30" r="1.2" opacity=".6"/><circle cx="120" cy="92" r=".9" opacity=".5"/><circle cx="360" cy="24" r="1.1" opacity=".55"/><circle cx="430" cy="88" r=".8" opacity=".45"/><circle cx="-60" cy="70" r="1" opacity=".5"/><circle cx="560" cy="60" r="1" opacity=".5"/></g>';
 };
 const caSvgCache = {};
+/* الطابع تغيّر: تُعاد الرسوم بألوانه وأسلوبه */
+document.documentElement.addEventListener('nasaq-theme', ()=>{
+  Object.keys(caSvgCache).forEach(k=>delete caSvgCache[k]); try{ Object.keys(obSvgCache).forEach(k=>delete obSvgCache[k]); }catch(e){}
+  document.querySelectorAll('.card-art[data-art]').forEach(el=>{ el.innerHTML = obBannerSvg(el.dataset.art); });
+  try{ renderOnboard(); updateCardArts(); }catch(e){}
+});
 function obBannerSvg(key){
   if(caSvgCache[key]) return caSvgCache[key];
   const a = OB_ART[key];
   return caSvgCache[key] = ['dark', 'light'].map(m=>{
-    const id = 'ca' + key + '-' + m, H = a.art[m], P = OB_MOODS[m];
-    return '<svg class="ca-svg is-' + m + '" viewBox="0 0 480 120" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' +
-      OB_BANNER_BASE(id, H, P) + '<g transform="translate(174 -8) scale(.55)">' + a.scene(P, H, id, {banner:true}) + '</g></svg>';
+    const A = nasaqArt(m), id = 'ca' + key + '-' + m, H = A.steps[key].art[m], P = A.mood;
+    return nasaqArtStyle('<svg class="ca-svg is-' + m + '" viewBox="0 0 480 120" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' +
+      OB_BANNER_BASE(id, H, P) + '<g transform="translate(174 -8) scale(.55)">' + a.scene(P, H, id, {banner:true}) + '</g></svg>', A.style, P);
   }).join('');
 }
 document.querySelectorAll('.card-art[data-art]').forEach(el=>{ el.innerHTML = obBannerSvg(el.dataset.art); });
@@ -3750,8 +3752,8 @@ function obPosterSvg(key){
   if(obSvgCache[key]) return obSvgCache[key];
   const a = OB_ART[key];
   return obSvgCache[key] = ['dark', 'light'].map(m=>{
-    const id = 'ob' + key + '-' + m, H = a.art[m];
-    return OB_SVG(m, OB_BASE(id, H, a.glowY, OB_MOODS[m]), a.scene(OB_MOODS[m], H, id), a.fit);
+    const A = nasaqArt(m), id = 'ob' + key + '-' + m, H = A.steps[key].art[m], P = A.mood;
+    return nasaqArtStyle(OB_SVG(m, OB_BASE(id, H, a.glowY, P), a.scene(P, H, id), a.fit), A.style, P);
   }).join('');
 }
 try{ renderOnboard(); }catch(e){}   /* إن رُسم اللوح قبل تعريف الرسوم أعلاه */
@@ -4787,7 +4789,7 @@ function ripple(x, y, color){
   }
   document.body.appendChild(box); setTimeout(()=>box.remove(), 1150);
 }
-const RIPPLE_COLORS = {done:'var(--done)', sub:'var(--done)', start:'var(--focus)', end:'var(--focus)', notify:'var(--accent,var(--focus))', close:'#D6A84F'};
+const RIPPLE_COLORS = {done:'var(--done)', sub:'var(--done)', start:'var(--focus)', end:'var(--focus)', notify:'var(--accent,var(--focus))', get close(){ return nasaqArt().close; }};
 let lastPtr = {x:0, y:0, t:0};
 document.addEventListener('pointerdown', e=>{ lastPtr = {x:e.clientX, y:e.clientY, t:Date.now()}; }, true);
 function rippleFor(name){
@@ -5629,21 +5631,18 @@ function themeHex(name, fallback){
   const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   return /^#[0-9a-f]{6}$/i.test(v) ? v : fallback;
 }
-/* سماء كل فترة: لونان يُمزجان بلون الطابع فتبقى المشاهد من عائلته */
-const SKY = {
-  fajr:['#2B2F66', '#C98A6B'], morning:['#9FD3E8', '#F2C98A'], noon:['#7FC3E3', '#CFE7F2'],
-  afternoon:['#8FC0DA', '#E8B24C'], maghrib:['#E08A4C', '#6A43B8'], evening:['#3E2F7A', '#1D2150'], night:['#141736', '#0B0D22']
-};
+/* سماء كل فترة لكل طابع: NASAQ_ART[…].hero في nasaq-art.js */
 function heroSceneSVG(ctx){
   const period = ['fajr','morning','noon','afternoon','maghrib','evening','night'].includes(ctx) ? ctx : periodNow();
-  const accent = themeHex('--accent', themeHex('--focus', '#00B7D4'));
-  /* في «مَدار» الواجهة ليلية دائمًا: حبر التلال ثابت، وإلا شحبت التلال في الوضع الداكن (حبره فاتح) */
-  const ink = document.documentElement.dataset.art === 'glow' ? '#14162A' : themeHex('--brand', themeHex('--ink', '#14162A'));
+  const HA = nasaqArt().hero;   /* ألوان المشهد للطابع الحالي (nasaq-art.js) */
+  const accent = HA.accent || themeHex('--accent', themeHex('--focus', HA.fallbackAccent));
+  /* حبر التلال ثابت في «نَسَق 360» و«نَسَق»، وإلا شحبت التلال في الوضع الداكن (حبره فاتح) */
+  const ink = HA.ink || themeHex('--brand', themeHex('--ink', HA.fallbackInk));
   const dark = ['evening', 'night', 'fajr'].includes(period);
-  const sky = SKY[period].map(c=>mixHex(c, accent, .22));
+  const sky = HA.sky[period].map(c=>HA.mix ? mixHex(c, accent, HA.mix) : c);
   const hill = [mixHex(ink, sky[1], .55), mixHex(ink, sky[1], .35), mixHex(ink, sky[1], .18)];
-  const glow = dark ? '#FFF6D8' : '#FFE9A8';
-  const stars = dark ? Array.from({length:26}, (_, i)=>{ const x = (i * 137.5) % 1200, y = (i * 61.8) % 300; return '<circle cx="' + x.toFixed(0) + '" cy="' + y.toFixed(0) + '" r="' + (i % 3 ? 1.4 : 2.2) + '" fill="#fff" opacity="' + (i % 3 ? .45 : .75) + '"/>'; }).join('') : '';
+  const glow = dark ? HA.glowNight : HA.glowDay;
+  const stars = dark ? Array.from({length:26}, (_, i)=>{ const x = (i * 137.5) % 1200, y = (i * 61.8) % 300; return '<circle cx="' + x.toFixed(0) + '" cy="' + y.toFixed(0) + '" r="' + (i % 3 ? 1.4 : 2.2) + '" fill="' + HA.star + '" opacity="' + (i % 3 ? .45 : .75) + '"/>'; }).join('') : '';
   /* الشمس أو الهلال: موضعها يتبع الفترة */
   const sunY = {fajr:430, morning:250, noon:140, afternoon:230, maghrib:420, evening:470, night:170}[period];
   const crescent = ['night', 'evening'].includes(period) || ctx === 'ramadan' || ctx === 'eid';

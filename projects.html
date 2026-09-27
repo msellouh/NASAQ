@@ -15,6 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800;900&family=Readex+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
 <script src="nasaq-core.js?v=20260927e"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
+<script src="nasaq-art.js?v=20260927e"></script>
 <style>
 @layer tokens, base, layouts, components, theme, utilities;
 @layer base{
@@ -746,6 +747,8 @@ dialog[open]::backdrop{animation:m-fade-in var(--dur-3) var(--ease-out)}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
+/* ألوان تقرير Medics المعتمد — مواصفة المستند، لا تتبع الطابع (nasaq-art.js) */
+const RCOL = NASAQ_ART.report;
 'use strict';
 const $ = id => document.getElementById(id);
 /* esc() — تهريب النصوص قبل HTML — مشتركة في nasaq-core.js */
@@ -1236,12 +1239,12 @@ async function ganttCopy(p){
   }catch(e){ toast('تعذّر النسخ: ' + e.message, true); }
 }
 function wordGantt(t){
-  const C = {mon: ['#81D0D9', '#44546A'], wk: ['#006C75', '#FFFFFF'], lblHead: ['#00B2C1', '#FFFFFF'], ph: ['#00B2C1', '#FFFFFF'], it: ['#81D0D9', '#44546A'],
-    phfill: '#008F9B', dn1: '#FCE4D6', dn2: '#E2EFDA', dn3: '#BCF6E4', pl: '#D9D9D9'};
-  const base = 'border:0.5pt solid #006C75;font-family:\'Sakkal Majalla\';font-size:13pt;font-weight:bold;text-align:center;vertical-align:middle;padding:2pt 3pt;';
+  const C = {mon: [RCOL.pale, RCOL.grey], wk: [RCOL.teal, RCOL.white], lblHead: [RCOL.cyan, RCOL.white], ph: [RCOL.cyan, RCOL.white], it: [RCOL.pale, RCOL.grey],
+    phfill: RCOL.mid, dn1: RCOL.done1, dn2: RCOL.done2, dn3: RCOL.done3, pl: RCOL.planned};
+  const base = 'border:0.5pt solid ' + RCOL.teal + ';font-family:\'Sakkal Majalla\';font-size:13pt;font-weight:bold;text-align:center;vertical-align:middle;padding:2pt 3pt;';
   t.setAttribute('dir', 'rtl'); t.setAttribute('style', 'border-collapse:collapse;direction:rtl;');
   t.querySelectorAll('th,td').forEach(c => {
-    let bg = '#FFFFFF', fg = '#44546A';
+    let bg = RCOL.white, fg = RCOL.grey;
     if(c.classList.contains('g-mon')) [bg, fg] = C.mon;
     else if(c.classList.contains('g-wk')) [bg, fg] = C.wk;
     else if(c.classList.contains('g-lbl')) [bg, fg] = c.closest('thead') ? C.lblHead : c.closest('tr').classList.contains('g-ph') ? C.ph : C.it;
@@ -1332,7 +1335,7 @@ function reportHTML(p){
     sheet('toc', '<h1 class="toc-h">المحتويات</h1><ol>' + H.map((h, i) => '<li><a href="#s' + i + '">' + h + '</a></li>').join('') + '</ol>') +
     sheet('', h1(0) + sumT) +
     sheet('wide', h1(1) + '<p class="cap">الجدول الزمني حتى ' + d(asIso) + (M && M.preview ? ' — مقترح من قالب «' + esc(M.preview.label) + '» لعدم وجود خطة تنفيذ' : '') + '</p>' + gantt +
-      '<p class="legend"><i style="background:#E2EFDA"></i>منجز <i style="background:#FCE4D6"></i>منجز (المراحل الأولى) <i style="background:#BCF6E4"></i>التوثيق والتقارير <i style="background:#D9D9D9"></i>مخطط</p>') +
+      '<p class="legend"><i style="background:' + RCOL.done2 + '"></i>منجز <i style="background:' + RCOL.done1 + '"></i>منجز (المراحل الأولى) <i style="background:' + RCOL.done3 + '"></i>التوثيق والتقارير <i style="background:' + RCOL.planned + '"></i>مخطط</p>') +
     sheet('', h1(2) + remT + h1(3, ' class="follow"') + planned) +
     sheet('', h1(4) + budT) +
     sheet('', h1(5) + manual('أهداف المشروع كما في المقترح المعتمد — تُكتب يدويًا') + h1(6, ' class="follow"') + manual('التحديات التي واجهت التنفيذ في هذه الفترة وكيف عولجت')) +
@@ -1350,61 +1353,61 @@ const REPORT_CSS = `
 @page{size:A4;margin:0}
 @page land{size:A4 landscape;margin:0}
 *{box-sizing:border-box}
-body{margin:0;background:#E9ECEF;font-family:'Sakkal Majalla','Traditional Arabic','IBM Plex Sans Arabic',serif;color:#000;font-size:14pt}
-.bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 16px;background:#006C75;color:#fff;font:600 14px 'IBM Plex Sans Arabic',system-ui,sans-serif}
+body{margin:0;background:${RCOL.sheetBg};font-family:'Sakkal Majalla','Traditional Arabic','IBM Plex Sans Arabic',serif;color:#000;font-size:14pt}
+.bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 16px;background:${RCOL.teal};color:#fff;font:600 14px 'IBM Plex Sans Arabic',system-ui,sans-serif}
 .bar span{opacity:.8;margin-inline-end:auto}
-.bar button{font:inherit;border:0;border-radius:8px;padding:7px 14px;background:#fff;color:#006C75;cursor:pointer}
+.bar button{font:inherit;border:0;border-radius:8px;padding:7px 14px;background:#fff;color:${RCOL.teal};cursor:pointer}
 .sheet{position:relative;width:210mm;min-height:297mm;margin:18px auto;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.12);display:flex;flex-direction:column;overflow:hidden;
   background-image:radial-gradient(circle at 100% 0,transparent 0 118px,rgba(0,178,193,.07) 119px 121px,transparent 122px 160px,rgba(0,178,193,.06) 161px 163px,transparent 164px)}
 .sheet.wide{width:297mm;min-height:210mm;page:land}
 .in{flex:1;padding:45pt 72pt 20pt}
 .wide .in{padding:30pt 36pt 12pt}
-footer{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin:0 72pt 22pt;padding-top:8pt;border-top:1.5pt solid #006C75}
-footer .org{font-size:10pt;color:#44546A;white-space:nowrap}
-footer b{font-size:16pt;color:#006C75;text-align:center;max-width:120mm;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-footer .pg{justify-self:end;width:28px;height:28px;border-radius:50%;background:#FFC000;color:#fff;font:bold 13pt/28px 'Sakkal Majalla',serif;text-align:center;font-style:normal}
-h1{font-size:18pt;color:#006C75;text-decoration:underline;margin:0 0 12pt}
+footer{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin:0 72pt 22pt;padding-top:8pt;border-top:1.5pt solid ${RCOL.teal}}
+footer .org{font-size:10pt;color:${RCOL.grey};white-space:nowrap}
+footer b{font-size:16pt;color:${RCOL.teal};text-align:center;max-width:120mm;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+footer .pg{justify-self:end;width:28px;height:28px;border-radius:50%;background:${RCOL.page};color:#fff;font:bold 13pt/28px 'Sakkal Majalla',serif;text-align:center;font-style:normal}
+h1{font-size:18pt;color:${RCOL.teal};text-decoration:underline;margin:0 0 12pt}
 h1.follow{margin-top:24pt}
-.toc-h{text-align:center;color:#005057;font-size:16pt}
+.toc-h{text-align:center;color:${RCOL.tealDark};font-size:16pt}
 .toc ol{font-size:12pt;font-weight:bold;line-height:2.1;padding-inline-start:20pt}
 .toc a{color:#000;text-decoration:none}
-.cover{background:#006C75;background-image:radial-gradient(circle at 15% 85%,transparent 0 140px,rgba(255,255,255,.08) 141px 143px,transparent 144px 200px,rgba(255,255,255,.06) 201px 203px,transparent 204px),radial-gradient(circle at 95% 5%,transparent 0 90px,rgba(220,172,24,.25) 91px 93px,transparent 94px)}
+.cover{background:${RCOL.teal};background-image:radial-gradient(circle at 15% 85%,transparent 0 140px,rgba(255,255,255,.08) 141px 143px,transparent 144px 200px,rgba(255,255,255,.06) 201px 203px,transparent 204px),radial-gradient(circle at 95% 5%,transparent 0 90px,rgba(220,172,24,.25) 91px 93px,transparent 94px)}
 .cover .cv{margin:auto 26mm;color:#fff}
 .cover small{font-size:14pt;opacity:.85}
-.cover h2{font-size:40pt;color:#DCAC18;margin:14pt 0 6pt}
+.cover h2{font-size:40pt;color:${RCOL.gold};margin:14pt 0 6pt}
 .cover h3{font-size:22pt;margin:0 0 18pt;line-height:1.4}
-.cover p{font-size:15pt;color:#DCAC18;margin:4pt 0}
+.cover p{font-size:15pt;color:${RCOL.gold};margin:4pt 0}
 table{border-collapse:collapse;width:100%;font-weight:bold}
 .t-sum th,.t-sum td{border:.5pt solid #fff;padding:4pt 10pt;line-height:1.5;font-size:14pt}
 .t-sum th{width:34%;text-align:center}
-.t-sum tr.c th,.t-sum tr.c td{background:#00B2C1;color:#fff}
-.t-sum tr.w th,.t-sum tr.w td{background:#fff;color:#44546A;border-color:#00B2C1}
+.t-sum tr.c th,.t-sum tr.c td{background:${RCOL.cyan};color:#fff}
+.t-sum tr.w th,.t-sum tr.w td{background:#fff;color:${RCOL.grey};border-color:${RCOL.cyan}}
 .t-sum small{font-weight:normal;font-size:12pt}
-.t-rem th,.t-rem td,.t-bud th,.t-bud td{border:.5pt solid #008F9B;padding:4pt 8pt;vertical-align:middle}
-.t-rem tr:first-child th,.t-bud tr:first-child th{background:#006C75;color:#fff;font-size:14pt}
-.t-rem th{background:#006C75;color:#fff;width:28pt}
-.t-rem .act{background:#81D0D9;color:#44546A;font-size:13pt;text-align:center;width:28%}
+.t-rem th,.t-rem td,.t-bud th,.t-bud td{border:.5pt solid ${RCOL.mid};padding:4pt 8pt;vertical-align:middle}
+.t-rem tr:first-child th,.t-bud tr:first-child th{background:${RCOL.teal};color:#fff;font-size:14pt}
+.t-rem th{background:${RCOL.teal};color:#fff;width:28pt}
+.t-rem .act{background:${RCOL.pale};color:${RCOL.grey};font-size:13pt;text-align:center;width:28%}
 .t-rem .pc{text-align:center;width:16%}
 .t-rem .det ul{margin:0;padding-inline-start:14pt;font-size:12pt;font-weight:normal}
 .t-bud{width:80%;margin:auto}
-.t-bud th{background:#006C75;color:#fff;width:40pt}
-.t-bud td{color:#006C75;text-align:center}
-.t-bud tr.tot td,.t-bud tr.tot th{background:#006C75;color:#fff}
-.cap{font-size:13pt;color:#44546A;margin:0 0 8pt}
+.t-bud th{background:${RCOL.teal};color:#fff;width:40pt}
+.t-bud td{color:${RCOL.teal};text-align:center}
+.t-bud tr.tot td,.t-bud tr.tot th{background:${RCOL.teal};color:#fff}
+.cap{font-size:13pt;color:${RCOL.grey};margin:0 0 8pt}
 .wide table th,.wide table td{font-size:10pt!important;padding:0 2pt!important;height:15pt;line-height:1.1}
-.legend{font-size:12pt;color:#44546A}
-.legend i{display:inline-block;width:12px;height:12px;border:.5pt solid #008F9B;margin:0 10px 0 4px;vertical-align:-1px}
+.legend{font-size:12pt;color:${RCOL.grey}}
+.legend i{display:inline-block;width:12px;height:12px;border:.5pt solid ${RCOL.mid};margin:0 10px 0 4px;vertical-align:-1px}
 .plan{line-height:1.8}
-.plan span{font-weight:normal;color:#44546A;font-size:12pt}
-.hint{color:#8a94a0;font-size:13pt}
-.manual{min-height:70pt;border:1.5px dashed #00B2C1;border-radius:6px;padding:8pt 10pt;outline:0;line-height:1.6}
-.manual:empty::before{content:attr(data-ph);color:#8a94a0}
-td .manual{min-height:0;border-width:1px;padding:0 6pt;color:#44546A}
+.plan span{font-weight:normal;color:${RCOL.grey};font-size:12pt}
+.hint{color:${RCOL.hint};font-size:13pt}
+.manual{min-height:70pt;border:1.5px dashed ${RCOL.cyan};border-radius:6px;padding:8pt 10pt;outline:0;line-height:1.6}
+.manual:empty::before{content:attr(data-ph);color:${RCOL.hint}}
+td .manual{min-height:0;border-width:1px;padding:0 6pt;color:${RCOL.grey}}
 .photos{display:grid;grid-template-columns:1fr 1fr;gap:16pt}
 .photos figure{margin:0}
-.photos figure div{aspect-ratio:4/3;border:7pt solid #fff;box-shadow:0 3px 12px rgba(0,0,0,.25);background:#EEF3F4;display:grid;place-items:center;color:#8a94a0}
+.photos figure div{aspect-ratio:4/3;border:7pt solid #fff;box-shadow:0 3px 12px rgba(0,0,0,.25);background:${RCOL.photoBg};display:grid;place-items:center;color:${RCOL.hint}}
 .photos figcaption{text-align:center;font-size:12pt;margin-top:6pt;outline:0}
-.link a{color:#0563C1}
+.link a{color:${RCOL.link}}
 @media print{
   body{background:#fff}
   .bar{display:none}

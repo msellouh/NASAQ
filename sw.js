@@ -22,6 +22,7 @@ const SHELL = [
   './nasaq-core.js',
   './nasaq-pulse.js',
   './nasaq-brand.js',
+  './nasaq-art.js',
   './nasaq-theme.css',
   './nasaq-ui.css',
   './themes/classic.css',

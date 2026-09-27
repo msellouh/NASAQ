@@ -47,6 +47,7 @@ for f in glob.glob('*.html')+glob.glob('*.js'):
     if f in ('nasaq-art.js','nasaq-brand.js','sw.js'): continue
     s=open(f,encoding='utf-8').read()
     if f.endswith('.html'): s='\n'.join(re.findall(r'<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)</script>',s))
+    s='\n'.join(l for l in s.split('\n') if 'themeColor:' not in l)   # لون شريط الحالة معرَّف في NASAQ_THEMES عمدًا
     n=len(re.findall(r'#[0-9a-fA-F]{6}\b',s))
     if n: print(f'   {f}: {n}'); tot+=n
 print('TOTAL',tot)
