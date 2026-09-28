@@ -4,16 +4,16 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="author" content="Mohammed S. Ellouh">
 <meta name="copyright" content="© 2026 Mohammed S. Ellouh — جميع الحقوق محفوظة">
 <title>نَسَق — لوح يومك</title>
 <!-- تثبيت اللوح كتطبيق (الهاتف والحاسوب) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#F7F6F2">
-<script src="nasaq-core.js?v=20260928e"></script>
-<script src="nasaq-art.js?v=20260928e"></script>
-<script src="nasaq-icons.js?v=20260928e"></script>
+<script src="nasaq-core.js?v=20260928f"></script>
+<script src="nasaq-art.js?v=20260928f"></script>
+<script src="nasaq-icons.js?v=20260928f"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -106,7 +106,7 @@ body{
 }
 .sheet{
   max-width:1080px;margin:0 auto;background:var(--paper);
-  border:1px solid var(--rule);border-radius:var(--r);
+  border:1px solid var(--rule);border-radius:var(--r-lg);
   display:grid;grid-template-columns:264px 1fr;
   transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out);
 }
@@ -114,7 +114,7 @@ body{
   min-width:0;
   border-inline-start:1px solid var(--rule);
   background:linear-gradient(180deg,color-mix(in srgb, var(--board) 55%, var(--paper)),var(--paper) 220px);
-  padding:var(--sp-5) var(--sp-4);border-radius:0 var(--r) var(--r) 0;
+  padding:var(--sp-5) var(--sp-4);border-radius:var(--r-lg);border-top-left-radius:0;border-bottom-left-radius:0;
 }
 .main{min-width:0;padding:var(--sp-5) var(--sp-5)}
 
@@ -296,7 +296,7 @@ body{padding:0}
 .page-copy{margin-top:var(--sp-6);padding-top:var(--sp-4);border-top:1px solid var(--rule)}
 
 /* بطاقة الترحيب */
-.greet-card{position:relative;display:flex;align-items:stretch;min-height:150px;margin:0 auto var(--gap);border:1px solid var(--rule);border-radius:var(--r);background:var(--paper);overflow:hidden;box-shadow:var(--shadow-sm,0 1px 2px rgba(0,0,0,.04))}
+.greet-card{position:relative;display:flex;align-items:stretch;min-height:150px;margin:0 auto var(--gap);border:1px solid var(--rule);border-radius:var(--r-lg);background:var(--paper);overflow:hidden;box-shadow:var(--shadow-sm,0 1px 2px rgba(0,0,0,.04))}
 .greet-text{flex:1;min-width:0;padding:var(--sp-5) var(--sp-6);display:flex;flex-direction:column;justify-content:center;gap:var(--sp-1)}
 .greet-title{font-family:var(--font-head);font-size:var(--fs-2xl);font-weight:700;line-height:1.35;margin:0;color:var(--brand,var(--ink));text-wrap:balance}
 .greet-tagline{margin:2px 0 0;font-size:var(--fs-md);color:var(--ink-2);font-weight:600}
@@ -370,7 +370,7 @@ body{padding:0}
 .l2-main,.l2-side{display:flex;flex-direction:column;gap:var(--gap);min-width:0}
 .layer3{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--gap);align-items:start}
 .user-hidden{display:none !important}
-.card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:var(--pad);min-width:0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);padding:var(--pad);min-width:0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
 /* البطاقات تملأ ارتفاع صفّها بمحتوى مفيد بدل فراغ في الأسفل */
 .c-ideas,.c-sched,.c-focus,.c-pri{display:flex;flex-direction:column}
 /* الجدول الزمني يملأ ارتفاع صفّه (أساس 0 مع حدّ أدنى، فلا يفرض هو طول الصف) */
@@ -396,7 +396,7 @@ body{padding:0}
 .pr-t b{font-weight:600;font-size:var(--fs-base);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pr-t small{font-size:var(--fs-xs);color:var(--urgent)}
 .card-head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);flex-wrap:wrap;margin:0 0 var(--sp-3)}
-.card-head h2{display:flex;align-items:center;gap:var(--sp-2);font-family:var(--font-head);font-size:calc(var(--fs-md) * var(--head-scale,1));font-weight:700;margin:0;color:var(--ink)}
+.card-head h2{display:flex;align-items:center;gap:var(--sp-2);font-family:var(--font-head);font-size:var(--fs-card-head,var(--fs-md));font-weight:700;margin:0;color:var(--ink)}
 .card-head .ic{width:19px;height:19px;color:var(--focus);flex:none}
 .card-link{border:0;background:none;color:var(--focus);font:inherit;font-size:var(--fs-xs);cursor:pointer;padding:2px var(--sp-1)}
 .card-link:hover{text-decoration:underline}
@@ -593,7 +593,7 @@ ol.tasks li.task.flash{animation:task-flash 1.6s ease-out}
 /* ستارة سفلية تضمن تباين العنوان فوق أي مشهد — فاتحة نهارًا، داكنة ليلًا */
 .ob-poster::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--ob-scrim)}
 .ob-cap{position:absolute;inset-inline:10px;bottom:12px;display:flex;flex-direction:column;align-items:center;gap:var(--sp-1)}
-.ob-title{font-family:var(--font-display);font-weight:700;font-size:clamp(17px,1.45vw,21px);line-height:1.2;text-shadow:var(--ob-shade)}
+.ob-title{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lg);line-height:1.2;text-shadow:var(--ob-shade)}
 .ob-title em{display:block;font-style:normal;color:var(--ob-hue)}
 .ob-sub{font-size:var(--fs-xs);line-height:1.45;color:var(--ob-sub)}
 .ob-chip{margin-top:var(--sp-1);padding:3px var(--sp-3);border-radius:var(--r-md);background:var(--primary);color:var(--on-primary);font-size:var(--fs-xs);font-weight:700;white-space:nowrap}
@@ -814,7 +814,7 @@ body.focus-open{overflow:hidden}
 .tabbar-sync button{border:0;background:transparent;color:var(--focus);font:inherit;font-size:var(--fs-xs);cursor:pointer;padding:0;text-decoration:underline;white-space:nowrap}
 
 /* ---------- hero photo ---------- */
-.hero{max-width:1080px;margin:0 auto var(--sp-4);border-radius:var(--r);overflow:hidden;background:var(--stripe);border:1px solid var(--rule);position:relative;height:48px}
+.hero{max-width:1080px;margin:0 auto var(--sp-4);border-radius:var(--r-lg);overflow:hidden;background:var(--stripe);border:1px solid var(--rule);position:relative;height:48px}
 .hero.has-photo{height:240px}
 .hero img{width:100%;height:100%;object-fit:cover;display:block}
 .hero img[hidden]{display:none}
@@ -853,7 +853,7 @@ body.focus-open{overflow:hidden}
 
 /* ---------- modal ---------- */
 .modal-overlay{position:fixed;inset:0;background:var(--overlay);display:flex;align-items:center;justify-content:center;padding:var(--sp-4);z-index:90}
-.modal{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);max-width:420px;width:100%;padding:var(--sp-5);max-height:calc(100vh - 40px);overflow-y:auto}
+.modal{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--shadow);max-width:420px;width:100%;padding:var(--sp-5);max-height:calc(100vh - 40px);overflow-y:auto}
 .modal h3{font-family:var(--font-head);font-size:var(--fs-lg);margin:0 0 var(--sp-3);font-weight:700}
 .modal .body p{color:var(--ink-2);font-size:var(--fs-sm);line-height:1.65;margin:0 0 var(--sp-3)}
 .modal .body input[type=text],.modal .body input[type=url]{width:100%;border:1px solid var(--rule);border-radius:var(--r-md);background:var(--surface);font:inherit;font-size:var(--fs-base);padding:var(--sp-2) var(--sp-2);color:inherit;margin-bottom:var(--sp-1)}
@@ -866,7 +866,7 @@ body.focus-open{overflow:hidden}
 .section-label{font-family:var(--font-head);font-size:var(--fs-base);font-weight:700;color:var(--ink-2);margin:0 0 var(--sp-2)}
 
 /* ---------- pinned event ---------- */
-.pinned{display:flex;align-items:center;gap:var(--sp-2);background:var(--hold-bg);border:1px solid var(--rule);border-radius:var(--r);padding:var(--sp-2) var(--sp-3);margin-bottom:var(--sp-5)}
+.pinned{display:flex;align-items:center;gap:var(--sp-2);background:var(--hold-bg);border:1px solid var(--rule);border-radius:var(--r-lg);padding:var(--sp-2) var(--sp-3);margin-bottom:var(--sp-5)}
 .pinned .pin-ic{font-size:var(--fs-md);flex:none}
 .pinned input{flex:1;border:0;background:transparent;font:inherit;font-size:var(--fs-base);color:var(--hold-ink)}
 .pinned input::placeholder{color:var(--hold-ink);opacity:.6}
@@ -888,7 +888,7 @@ body.focus-open{overflow:hidden}
 /* ---------- timeline ---------- */
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-5);margin-top:var(--sp-5)}
 .two-col>div{min-width:0}
-.tl-wrap{max-height:280px;overflow-y:auto;border:1px solid var(--rule);border-radius:var(--r);padding:var(--sp-1);position:relative}
+.tl-wrap{max-height:280px;overflow-y:auto;border:1px solid var(--rule);border-radius:var(--r-lg);padding:var(--sp-1);position:relative}
 .tl-sec{position:sticky;top:-6px;z-index:2;margin:2px calc(-1 * var(--sp-1)) var(--sp-1);padding:var(--sp-1) var(--sp-3) var(--sp-1);font-size:var(--fs-xs);font-weight:600;letter-spacing:.2px;color:var(--muted);background:var(--paper);border-bottom:1px solid var(--rule)}
 .tl-sec:first-child{margin-top:calc(-1 * var(--sp-1))}
 .tl-row{display:grid;grid-template-columns:64px 1fr;gap:var(--sp-2);align-items:center;padding:var(--sp-1) var(--sp-1);border-inline-start:3px solid var(--rule);border-radius:var(--r-md);margin-bottom:3px;position:relative}
@@ -974,7 +974,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .exp-cat,.exp-acc,.exp-date{font-size:var(--fs-xs);color:var(--muted);white-space:nowrap}
 .exp-pending{color:var(--hold);font-size:var(--fs-xs)}
 
-.budget-overall{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:var(--sp-3);margin-bottom:var(--sp-3)}
+.budget-overall{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-lg);padding:var(--sp-3);margin-bottom:var(--sp-3)}
 .budget-overall .big{font-family:var(--font-head);font-size:var(--fs-xl)}
 .budget-overall .sub{font-size:var(--fs-xs);color:var(--muted);margin-top:2px}
 .budget-bar{height:8px;border-radius:var(--r-md);background:var(--stripe);overflow:hidden;margin-top:var(--sp-2)}
@@ -991,7 +991,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 /* ---------- settings ---------- */
 .settings-overlay{position:fixed;inset:0;background:var(--overlay);display:flex;align-items:flex-start;justify-content:center;padding:var(--sp-5) var(--sp-4);z-index:110;overflow-y:auto}
 .settings-overlay[hidden]{display:none}
-.settings-panel{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);width:100%;max-width:520px}
+.settings-panel{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--shadow);width:100%;max-width:520px}
 .settings-head{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-4) var(--sp-4);border-bottom:2px solid var(--ink)}
 .settings-head h2{font-family:var(--font-head);font-size:var(--fs-lg);margin:0}
 .settings-head button{border:0;background:transparent;color:var(--muted);font-size:var(--fs-xl);cursor:pointer;line-height:1;padding:0 var(--sp-1)}
@@ -1057,7 +1057,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 /* ---------- auth ---------- */
 .auth-overlay{position:fixed;inset:0;background:radial-gradient(ellipse 52% 46% at 50% 44%,color-mix(in srgb,var(--accent,var(--focus)) 14%,transparent),transparent 72%),repeating-radial-gradient(circle at 0 0,transparent 0 56px,var(--pattern) 56px 57px),repeating-radial-gradient(circle at 100% 100%,transparent 0 56px,var(--pattern) 56px 57px),var(--board);display:flex;align-items:center;justify-content:center;padding:var(--sp-4);z-index:120;overflow-y:auto}
 .auth-overlay[hidden]{display:none}
-.auth-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);width:100%;max-width:380px;padding:var(--sp-5)}
+.auth-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--shadow);width:100%;max-width:380px;padding:var(--sp-5)}
 .auth-brand{display:flex;align-items:center;gap:var(--sp-3);border-bottom:2px solid var(--ink);padding-bottom:var(--sp-3);margin-bottom:var(--sp-4)}
 .auth-brand h2{font-family:var(--font-head);font-size:var(--fs-xl);margin:0;font-weight:700}
 .auth-sub{color:var(--muted);font-size:var(--fs-xs);margin-top:2px}
@@ -1077,7 +1077,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .auth-msg.ok{color:var(--done)}
 
 /* ---------- spotify ---------- */
-.spotify-box{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:var(--sp-3);margin-top:var(--sp-2)}
+.spotify-box{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-lg);padding:var(--sp-3);margin-top:var(--sp-2)}
 .spotify-signedout p{margin:0 0 var(--sp-2);color:var(--ink-2);font-size:var(--fs-sm)}
 .spotify-signedout button,.spotify-signedin button{border:1px solid var(--rule);background:var(--ink);color:var(--paper);border-radius:var(--r-md);font:inherit;font-size:var(--fs-sm);padding:var(--sp-2) var(--sp-4);cursor:pointer}
 .spotify-signedout button:hover,.spotify-signedin button:hover{background:var(--ink-2)}
@@ -1092,7 +1092,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   .flow-cols{grid-template-columns:1fr}
   .meals{grid-template-columns:1fr}
   .sheet{grid-template-columns:1fr}
-  .rail{border-inline-start:0;border-bottom:1px solid var(--rule);border-radius:var(--r) var(--r) 0 0;order:-1}
+  .rail{border-inline-start:0;border-bottom:1px solid var(--rule);border-radius:var(--r-lg);border-bottom-left-radius:0;border-bottom-right-radius:0;order:-1}
   .add{grid-template-columns:1fr 1fr}
   .add input:first-child{grid-column:1 / -1}
   .add-details{grid-template-columns:1fr}
@@ -1109,7 +1109,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   .t-text{font-size:var(--fs-base)}
   .main,.rail{padding:var(--sp-4) var(--sp-4)}
   /* تبويبا العادات والمصروفات: المحتوى أولًا، والعمود الجانبي بعده */
-  .rail{order:1;border-bottom:0;border-top:1px solid var(--rule);border-radius:0 0 var(--r) var(--r)}
+  .rail{order:1;border-bottom:0;border-top:1px solid var(--rule);border-radius:var(--r-lg);border-top-left-radius:0;border-top-right-radius:0}
   /* مناطق لمس أكبر للأصابع */
   .check{width:22px;height:22px}
 }
@@ -1136,7 +1136,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
 /* ---------- الحلقة ساعة اليوم ----------
    ثابتة لا تدور: الفجوة أعلاها = ساعات الهدوء، والقوس = ساعات العمل. الامتلاء = إنجاز مهام اليوم،
-   والمعين = الساعة الآن (رمادي في الهدوء). الحياة من لمعة تسري على الممتلئ كل 7 ثوانٍ ثم تسكن.
+   والمعين = الساعة الآن (رمادي في الهدوء). الحياة من لمعة تسري على الممتلئ كل 7 ثوانٍ ثم تسكن.
    حيث لا بيانات (شاشة الدخول) تبقى الحلقة زينة ثابتة بلمعة على القوس كاملًا. */
 @property --p{syntax:'<angle>';inherits:true;initial-value:330deg}
 @property --g{syntax:'<angle>';inherits:false;initial-value:-30deg}
@@ -1480,16 +1480,16 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 }
 }
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260928e">
-<link rel="stylesheet" href="layouts/nav-side.css?v=20260928e">
-<link rel="stylesheet" href="layouts/nav-top.css?v=20260928e">
-<link rel="stylesheet" href="layouts/hero-page.css?v=20260928e">
-<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928e">
-<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928e">
-<link rel="stylesheet" href="nasaq-ui.css?v=20260928e">
-<link rel="stylesheet" href="themes/classic.css?v=20260928e">
-<link rel="stylesheet" href="themes/nasaq.css?v=20260928e">
-<link rel="stylesheet" href="themes/nasaq360.css?v=20260928e">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260928f">
+<link rel="stylesheet" href="layouts/nav-side.css?v=20260928f">
+<link rel="stylesheet" href="layouts/nav-top.css?v=20260928f">
+<link rel="stylesheet" href="layouts/hero-page.css?v=20260928f">
+<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928f">
+<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928f">
+<link rel="stylesheet" href="nasaq-ui.css?v=20260928f">
+<link rel="stylesheet" href="themes/classic.css?v=20260928f">
+<link rel="stylesheet" href="themes/nasaq.css?v=20260928f">
+<link rel="stylesheet" href="themes/nasaq360.css?v=20260928f">
 </head>
 <body>
 <a class="skip-link" href="#mainContent">تخطَّ إلى المحتوى</a>
@@ -1639,7 +1639,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <div class="set-sub">تنبيهات تيليجرام — تصلك والمنصة مغلقة</div>
         <div class="set-row"><span>الحالة</span><b id="setTgState">—</b></div>
         <div class="set-actions"><button type="button" id="setTgCheck">افحص</button><button type="button" id="setTgTest">أرسل تجربة</button></div>
-        <div class="set-hint">الإعداد مرة واحدة في Apps Script: أنشئ بوتًا من ‎@BotFather، وضع رمزه في خصائص السكربت باسم <code>TELEGRAM_BOT_TOKEN</code> (لا ترسله لأحد)، ثم اضغط Start في محادثة البوت وشغّل <code>SETUP_telegram</code> ثم <code>SETUP_telegram_trigger</code>. يُرسل البوت مواعيد التقويم قبل 10 دقائق وملخصًا صباحيًا.</div>
+        <div class="set-hint">الإعداد مرة واحدة في Apps Script: أنشئ بوتًا من ‎@BotFather، وضع رمزه في خصائص السكربت باسم <code>TELEGRAM_BOT_TOKEN</code> (لا ترسله لأحد)، ثم اضغط Start في محادثة البوت وشغّل <code>SETUP_telegram</code> ثم <code>SETUP_telegram_trigger</code>. يُرسل البوت مواعيد التقويم قبل 10 دقائق وملخصًا صباحيًا.</div>
 
         <div class="set-sub">ساعات الهدوء — لا أصوات تنبيه ولا إشعارات نظام (مواعيد التقويم مستثناة)، وتبقى كلها في سجل الإشعارات</div>
         <div class="set-row"><label for="setQuietFrom">من</label><input type="time" class="set-time" id="setQuietFrom"></div>
@@ -1647,7 +1647,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <div class="set-row"><label for="setWorkEnd">نهاية يوم العمل (تذكير «أغلق يومك»)</label><input type="time" class="set-time" id="setWorkEnd"></div>
 
         <div class="set-sub">أوقات الصلاة — مدينة غزة</div>
-        <div class="set-row"><label for="setPrayerOn">هدوء 20 دقيقة من دخول كل صلاة</label><input type="checkbox" class="set-toggle" id="setPrayerOn"></div>
+        <div class="set-row"><label for="setPrayerOn">هدوء 20 دقيقة من دخول كل صلاة</label><input type="checkbox" class="set-toggle" id="setPrayerOn"></div>
         <div class="prayer-times" id="setPrayerTimes"></div>
         <div class="set-hint">تُحسب على جهازك بطريقة الهيئة المصرية العامة للمساحة (الفجر 19٫5°، العشاء 17٫5°، العصر على المذهب الشافعي). قارنها بتقويم وزارة الأوقاف في غزة، وأخبرني إن اختلفت.</div>
       </section>
@@ -1757,7 +1757,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </div>
   <div class="greet-media">
     <div class="hero-scene" id="heroScene" aria-hidden="true" hidden></div>
-    <img id="heroImg" alt="" hidden>
+    <img id="heroImg" alt="" decoding="async" hidden>
     <button class="hero-empty" id="heroEmpty" type="button"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-image"/></svg> أضف صورة</button>
     <div class="hero-tools">
       <button class="hero-add" id="heroTagBtn" type="button" title="صورك ومتى تناسب كل واحدة" hidden>صورك</button>
@@ -1785,7 +1785,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="now-next" id="nowNext"></div>
     </div>
     <div class="now-side">
-      <button type="button" class="btn btn-secondary btn-lg" id="nowFocusBtn"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-timer"/></svg><span id="nowFocusLbl">ابدأ تركيز 25 دقيقة</span></button>
+      <button type="button" class="btn btn-secondary btn-lg" id="nowFocusBtn"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-timer"/></svg><span id="nowFocusLbl">ابدأ تركيز 25 دقيقة</span></button>
       <p class="now-count" id="nowCount"></p>
     </div>
   </section>
@@ -1797,7 +1797,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>أولويات اليوم</h2></div>
       <div class="pinned">
         <span class="pin-ic"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg></span>
-        <input id="pinnedEvent" placeholder="حدث اليوم المهم — اجتماع، موعد، مكالمة..." aria-label="حدث اليوم المهم">
+        <input id="pinnedEvent" placeholder="حدث اليوم المهم — اجتماع، موعد، مكالمة…" aria-label="حدث اليوم المهم">
       </div>
       <div class="pri" id="pri">
         <div class="pri-row"><div class="rank">1</div><input class="field" placeholder="ماذا تريد أن تنجز اليوم؟ — ما لو أُنجز وحده كان اليوم ناجحًا" aria-label="ماذا تريد أن تنجز اليوم؟"></div>
@@ -1917,7 +1917,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <button type="button" class="card-link" id="habitsMore">عرض الكل</button>
       </div>
       <div class="habits-mini" id="habitsMini"></div>
-      <div class="habit-week mini" id="habitWeekMini" aria-label="إنجاز الروتين في آخر 7 أيام"></div>
+      <div class="habit-week mini" id="habitWeekMini" aria-label="إنجاز الروتين في آخر 7 أيام"></div>
     </section>
 
     <!-- وقفة: نص موثّق بحسب وقتك وسياقك، مع عبرة تطبيقية -->
@@ -2093,7 +2093,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <section class="card">
     <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-heart"/></svg> لحظات الامتنان</h3></div>
     <div class="grat" id="gratWrap">
-      <input data-i="0" placeholder="1. أنا ممتن لـ..." aria-label="1. أنا ممتن لـ">
+      <input data-i="0" placeholder="1. أنا ممتن لـ…" aria-label="1. أنا ممتن لـ">
       <input data-i="1" placeholder="2." aria-label="2.">
       <input data-i="2" placeholder="3." aria-label="3.">
     </div>
@@ -2126,7 +2126,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="spotify-signedin" id="spotifySignedIn" hidden>
         <select id="spotifyPlaylist" aria-label="اختر قائمة تشغيل"></select>
         <div class="spotify-embed-wrap"><iframe id="spotifyEmbed" width="100%" height="152" frameborder="0" allow="encrypted-media" loading="lazy"></iframe></div>
-        <div class="spotify-hint">حساب مجاني: التشغيل هنا معاينة 30 ثانية فقط. <a id="spotifyOpenApp" href="#" target="_blank" rel="noopener">افتح القائمة كاملة في سبوتيفاي <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-external"/></svg></a></div>
+        <div class="spotify-hint">حساب مجاني: التشغيل هنا معاينة 30 ثانية فقط. <a id="spotifyOpenApp" href="#" target="_blank" rel="noopener">افتح القائمة كاملة في سبوتيفاي <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-external"/></svg></a></div>
         <button id="spotifyDisconnectBtn" type="button" class="linklike">قطع الربط</button>
       </div>
     </div>
@@ -2527,7 +2527,7 @@ function motionHide(el, done){
   setTimeout(end, 260);
 }
 let toastTimer;
-const TOAST_UNDO_MS = 5000;   /* مهلة التراجع: 5 ثوانٍ، وبعدها فقط يُحذف من نوشن */
+const TOAST_UNDO_MS = 5000;   /* مهلة التراجع: 5 ثوانٍ، وبعدها فقط يُحذف من نوشن */
 /* الإشعار المؤقت الواحد: أسفل المنتصف، aria-live، وزر إجراء اختياري (افتراضيًا «تراجع») */
 function showToast(msg, undoFn, o = {}){
   const box = $('toastBox');
@@ -3101,7 +3101,7 @@ function render(){
   try{ renderNow(); updateFoldCounts(); renderClosing(); }catch(e){}
 }
 
-/* ---------- ساعات العمل (سعة اليوم) — افتراضيًا 8 ساعات، محفوظة على الجهاز ---------- */
+/* ---------- ساعات العمل (سعة اليوم) — افتراضيًا 8 ساعات، محفوظة على الجهاز ---------- */
 const WORK_KEY = 'daily-board-workmins';
 function workMins(){ let v = 480; try{ v = Number(localStorage.getItem(WORK_KEY)) || 480; }catch(e){} return v; }
 function openCapacityModal(){
@@ -3439,7 +3439,7 @@ setInterval(()=>{
   const mn = el.querySelector('.o-min'), g = ringGeo || (ringGeo = ringGeometry(el));
   if(mn) mn.style.transform = 'rotate(' + (ringMinuteAngle() % 360).toFixed(2) + 'deg) translateY(' + (-g.rMin).toFixed(2) + 'px) scale(1)';
 }, 1000);
-/* فتح الحلقة من المعين أو طيّها إليه — تبقى 15 ثانية بعد اكتمال ظهورها ثم تنطوي */
+/* فتح الحلقة من المعين أو طيّها إليه — تبقى 15 ثانية بعد اكتمال ظهورها ثم تنطوي */
 function ringOpen(open){
   const el = $('heroRing'), hb = $('heroBanner');
   if(!el || !hb || !hb.classList.contains('ring-big')) return;
@@ -3459,9 +3459,9 @@ function ringClearInline(el){
 }
 /* مواقيت اليوم على الحلقة، بالترتيب: الفجر، الشروق، الظهر، العصر، المغرب، العشاء */
 const RING_PRAYERS = [['fajr', 'الفجر'], ['sunrise', 'الشروق'], ['dhuhr', 'الظهر'], ['asr', 'العصر'], ['maghrib', 'المغرب'], ['isha', 'العشاء']];
-/* زاوية على ميناء 12 ساعة (الثانية عشرة أعلى) — للحلقة الكبيرة ذات الميناء */
+/* زاوية على ميناء 12 ساعة (الثانية عشرة أعلى) — للحلقة الكبيرة ذات الميناء */
 const ringAnalog = m=>(m / 60 % 12) * 30;
-/* يضع علامات الصلاة: على الميناء (12 ساعة) في الحلقة الكبيرة، وعلى قوس اليوم في غيرها.
+/* يضع علامات الصلاة: على الميناء (12 ساعة) في الحلقة الكبيرة، وعلى قوس اليوم في غيرها.
    الأسماء المتقاربة (كالشروق والمغرب على الميناء) يُنقل أحدها خارج الحلقة كي لا تتزاحم. */
 function ringPlaceTicks(el, analog){
   const p = prayerTimes(), list = [];
@@ -3477,7 +3477,7 @@ function ringPlaceTicks(el, analog){
     o.t.classList.toggle('out', !!out);
     const e = o.t.querySelector('em'); if(e) e.style.transform = 'translateX(-50%) rotate(' + (-o.ang).toFixed(2) + 'deg)';
   });
-  /* دخول وقت الصلاة: يتوهّج اسمها 20 دقيقة، وينبض المعين الساكن أسرع إيذانًا به */
+  /* دخول وقت الصلاة: يتوهّج اسمها 20 دقيقة، وينبض المعين الساكن أسرع إيذانًا به */
   const now = prayerNow();
   el.querySelectorAll('.o-tick').forEach(t=>t.classList.toggle('now', t.dataset.k === now));
   el.classList.toggle('prayer-now', !!now);
@@ -3678,15 +3678,15 @@ function renderOnboard(){
   let planned = false; try{ planned = !!localStorage.getItem(PLAN_KEY); }catch(e){}
   /* كل خطوة ملصق: عنوان بسطرين (الثاني بلون الخطوة)، وسطر قصير، ومشهد مرسوم في OB_ART */
   const steps = [
-    {key:'task', done: tasks.length + archive.length > 0, t:'أضف أول مهمة', l1:'أضف', l2:'أول مهمة', sub:'اكتبها، والاختصارات تكفيك', time:'30 ثانية',
+    {key:'task', done: tasks.length + archive.length > 0, t:'أضف أول مهمة', l1:'أضف', l2:'أول مهمة', sub:'اكتبها، والاختصارات تكفيك', time:'30 ثانية',
       go: ()=>{ showTab('board'); $('tText').scrollIntoView({block:'center'}); $('tText').focus(); }},
-    {key:'pri', done: [...document.querySelectorAll('.pri .field')].some(f=>f.value.trim()), t:'حدّد أولوية اليوم', l1:'حدّد', l2:'أولوية اليوم', sub:'ما لو أُنجز وحده كفى', time:'30 ثانية',
+    {key:'pri', done: [...document.querySelectorAll('.pri .field')].some(f=>f.value.trim()), t:'حدّد أولوية اليوم', l1:'حدّد', l2:'أولوية اليوم', sub:'ما لو أُنجز وحده كفى', time:'30 ثانية',
       go: ()=>{ const f = document.querySelector('.pri .field'); f.scrollIntoView({block:'center'}); f.focus(); }},
-    {key:'plan', done: planned, t:'خطّط يومك', l1:'خطّط', l2:'يومك', sub:'أمس ← ما ينتظرك ← أولوياتك', time:'3 دقائق', go: ()=>openPlanDay()},
+    {key:'plan', done: planned, t:'خطّط يومك', l1:'خطّط', l2:'يومك', sub:'أمس ← ما ينتظرك ← أولوياتك', time:'3 دقائق', go: ()=>openPlanDay()},
     {key:'habit', done: routines > 0, t:'أضف عادة إلى روتينك', l1:'أضف عادة', l2:'إلى روتينك', sub:'تظهر لك كل صباح', time:'دقيقة',
       go: ()=>{ showTab('flow'); $('amInput').focus(); }},
-    {key:'focus', done: !!st.focus, t:'جرّب جلسة تركيز', l1:'جرّب', l2:'جلسة تركيز', sub:'25 دقيقة لشيء واحد', time:'25 دقيقة', go: ()=>openFocusMode()},
-    {key:'theme', done: !!st.theme, t:'اختر طابعك', l1:'اختر', l2:'طابعك', sub:'دفتر، أو هوية نَسَق، أو ليلي غامر', time:'10 ثوانٍ', go: ()=>openThemePicker()}
+    {key:'focus', done: !!st.focus, t:'جرّب جلسة تركيز', l1:'جرّب', l2:'جلسة تركيز', sub:'25 دقيقة لشيء واحد', time:'25 دقيقة', go: ()=>openFocusMode()},
+    {key:'theme', done: !!st.theme, t:'اختر طابعك', l1:'اختر', l2:'طابعك', sub:'دفتر، أو هوية نَسَق، أو ليلي غامر', time:'10 ثوانٍ', go: ()=>openThemePicker()}
   ];
   const n = steps.filter(s=>s.done).length;
   /* اكتملت الخطوات: تختفي القائمة — إلا إن أعدتها من الإعدادات (pinned) فتبقى متوهّجة كلها */
@@ -3850,8 +3850,8 @@ const OB_ART = {
     '<path class="ob-arc" pathLength="100" d="M135.5 58A60 60 0 1 1 104.5 58" fill="none" stroke="url(#'+id+'-ring)" stroke-width="8" stroke-linecap="round"/>' +
     (o && o.banner ? '<circle cx="120" cy="116" r="7" fill="'+H+'" opacity=".8"/><path d="M120 116V84M120 116l16 10" stroke="'+P.txt+'" stroke-width="4" stroke-linecap="round"/>' :
     '<circle cx="135.5" cy="58" r="6" fill="'+P.txt+'"/>' +
-    '<text x="120" y="130" text-anchor="middle" style="font-family:var(--font-display)" font-weight="700" font-size="40" fill="'+P.txt+'">25</text>' +
-    '<text x="120" y="150" text-anchor="middle" style="font-family:var(--font-body)" font-size="11" fill="'+P.txt2+'">دقيقة</text>')},
+    '<text x="120" y="130" text-anchor="middle" style="font-family:var(--font-display)" font-weight="700" font-size="32" fill="'+P.txt+'">25</text>' +
+    '<text x="120" y="150" text-anchor="middle" style="font-family:var(--font-body)" font-size="12" fill="'+P.txt2+'">دقيقة</text>')},
   /* ثلاث أوراق متراكبة: ورقة مسطّرة، وبطاقة بلون الخطوة، وليلية بحلقة — «اختر طابعك» */
   theme: {glowY:.34, scene:(P, H, id)=>
     '<g transform="rotate(-10 110 130)"><rect x="46" y="66" width="86" height="108" rx="10" fill="'+P.card+'" stroke="'+H+'" stroke-opacity=".55" stroke-width="1.5"/>' +
@@ -3951,7 +3951,7 @@ function renderShots(fresh){
   box.innerHTML = '';
   ideaShots.forEach((sh, i)=>{
     const w = document.createElement('figure'); w.className = 'shot' + (fresh && i === 0 ? ' fresh' : '');
-    const im = document.createElement('img'); im.src = safeUrl(sh.src, 'img'); im.alt = 'لقطة محفوظة'; im.loading = 'lazy';
+    const im = document.createElement('img'); im.src = safeUrl(sh.src, 'img'); im.alt = 'لقطة محفوظة'; im.loading = 'lazy'; im.decoding = 'async';
     im.onclick = ()=>openModal({title: 'لقطة — ' + fmtDate(new Date(sh.at), {day: 'numeric', month: 'long'}),
       bodyHTML: '<img src="' + esc(safeUrl(sh.src, 'img')) + '" alt="" style="width:100%;border-radius:8px;display:block">', actions: [{label: 'إغلاق', primary: true}]});
     const del = document.createElement('button'); del.type = 'button'; del.className = 'shot-del'; del.innerHTML = icon('x'); del.title = 'احذف اللقطة'; del.setAttribute('aria-label', 'احذف اللقطة'); del.setAttribute('aria-label', 'احذف اللقطة');
@@ -4383,7 +4383,7 @@ function renderDetailsRow(t){
   if(!t.done){
     const fb = document.createElement('button');
     fb.type = 'button'; fb.className = 'focus-go';
-    fb.innerHTML = icon('play') + ' ركّز عليها 25 دقيقة';
+    fb.innerHTML = icon('play') + ' ركّز عليها 25 دقيقة';
     fb.onclick = ()=>focusOnTask(t);
     sh.appendChild(fb);
   }
@@ -4420,7 +4420,7 @@ function renderDetailsRow(t){
   return li;
 }
 
-/* «بانتظار رد»: كل بند بعمره، وتنبيه لما تجاوز 3 أيام، وثلاثة أفعال: وصل الرد · ذكّرني · احذف */
+/* «بانتظار رد»: كل بند بعمره، وتنبيه لما تجاوز 3 أيام، وثلاثة أفعال: وصل الرد · ذكّرني · احذف */
 function renderWaits(){
   const ul = $('waitList'); ul.innerHTML = '';
   ensureWaitMeta();
@@ -4440,7 +4440,7 @@ function renderWaits(){
     btn('kill', 'x', 'احذف', ()=>waitResolve(i, 'delete'));
     li.append(body, acts); ul.appendChild(li);
   });
-  /* شارة بجانب العنوان: كم بندًا تجاوز 3 أيام بلا رد */
+  /* شارة بجانب العنوان: كم بندًا تجاوز 3 أيام بلا رد */
   const h = ul.previousElementSibling;
   if(h){
     let badge = h.querySelector('.wait-badge');
@@ -4808,14 +4808,14 @@ function pomoFinish(){
   if(t){
     t.actual = (Number(t.actual)||0) + Math.round(POMO_DEFAULT/60);
     t.dirty = true;
-    $('pomoHint').textContent = 'أُضيفت 25 دقيقة إلى: '+t.text;
+    $('pomoHint').textContent = 'أُضيفت 25 دقيقة إلى: '+t.text;
   }else{
     $('pomoHint').textContent = 'انتهت الجلسة.';
   }
   pomoRemaining = POMO_DEFAULT;
   if(pomoBellCancel) pomoBellCancel = null;   /* الجرس المجدول رنّ في موعده */
   else playSound('end');
-  notify('done', 'انتهت جلسة التركيز', t ? 'أُضيفت 25 دقيقة إلى: ' + t.text + ' — خذ استراحة 5 دقائق' : 'خذ استراحة 5 دقائق', {noSound:true, urgent:true, action:'focus'});
+  notify('done', 'انتهت جلسة التركيز', t ? 'أُضيفت 25 دقيقة إلى: ' + t.text + ' — خذ استراحة 5 دقائق' : 'خذ استراحة 5 دقائق', {noSound:true, urgent:true, action:'focus'});
   clearTimeout(pomoBreakTimer);
   pomoBreakTimer = setTimeout(()=>{ if(!pomoRunning) notify('remind', 'انتهت الاستراحة', 'جاهز لجلسة أخرى؟', {action:'focus'}); }, 5 * 60 * 1000);
   if(t) sync(); else updatePomoLive();
@@ -5241,12 +5241,12 @@ document.addEventListener('click', e=>{ if(!$('notifPanel').hidden && !e.target.
 document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && !$('notifPanel').hidden){ closeNotifPanel(); $('notifBtn').focus(); } });
 renderNotifs();
 
-/* ---------- المحرّك: يفحص كل 30 ثانية ما يستحق التنبيه ---------- */
+/* ---------- المحرّك: يفحص كل 30 ثانية ما يستحق التنبيه ---------- */
 function aliveTick(){
   const now = new Date(), n = nowMin(now);
   try{ document.documentElement.dataset.period = periodNow(now); }catch(e){}   /* ألوان وقت اليوم في «مَدار» */
   try{ renderRingClock(); }catch(e){}   /* المعين يتقدّم مع الوقت */
-  /* مواعيد تقويم Google: قبل 10 دقائق — تتجاوز الهدوء */
+  /* مواعيد تقويم Google: قبل 10 دقائق — تتجاوز الهدوء */
   try{
     gcalEvents.forEach(ev=>{
       if(ev.allDay || !ev.start) return;
@@ -5254,7 +5254,7 @@ function aliveTick(){
       if(left > 0 && left <= 10) notify('remind', 'بعد ' + minutesAr(left) + ': ' + ev.title, 'موعد في تقويم Google الساعة ' + fmtMinAr(s), {key:'gcal:' + ev.start + ':' + ev.title, urgent:true, action:'board'});
     });
   }catch(e){}
-  /* مهمة مربوطة بالساعة الحالية في «جدول اليوم»: خلال أول 15 دقيقة من الساعة */
+  /* مهمة مربوطة بالساعة الحالية في «جدول اليوم»: خلال أول 15 دقيقة من الساعة */
   try{
     const hk = String(now.getHours()).padStart(2, '0') + ':00', txt = String(timeline[hk] || '').trim();
     if(txt && now.getMinutes() < 15) notify('remind', 'حان وقت: ' + txt, 'من «جدول اليوم» — الساعة ' + fmtMinAr(now.getHours() * 60), {key:'tl:' + hk + ':' + txt, action:'board'});
@@ -5819,7 +5819,7 @@ function renderFlow(){
   renderDaySummary();
   renderHabitWeek();
 }
-/* سجل العادات: نسبة إنجاز الروتين لكل يوم (آخر 60 يومًا) — يُحفظ مع Daily Flow ويتزامن معه */
+/* سجل العادات: نسبة إنجاز الروتين لكل يوم (آخر 60 يومًا) — يُحفظ مع Daily Flow ويتزامن معه */
 function recordHabitDay(){
   const hs = (flow.amRoutine||[]).concat(flow.pmRoutine||[]);
   if(!hs.length) return;
@@ -6162,7 +6162,7 @@ function applyHeroVisual(ctx){
   $('heroTagBtn').hidden = !photoList.length;   /* «صورك» متاح ما دامت لديك صورة */
   if(usePhoto){
     const pool = tagged.length ? tagged : (anytime.length ? anytime : photoList);
-    /* الاختيار يتبدّل مع السياق (وقت/مناسبة/مهمة) ومع الوقت كل 10 دقائق،
+    /* الاختيار يتبدّل مع السياق (وقت/مناسبة/مهمة) ومع الوقت كل 10 دقائق،
        فلا تبقى الصورة نفسها حين يتغيّر سياق يومك. */
     let h = 0; for(let i = 0; i < tag.length; i++) h = (h * 31 + tag.charCodeAt(i)) >>> 0;
     const cur = pool[(h + Math.floor(Date.now() / (10 * 60 * 1000))) % pool.length];
@@ -6330,7 +6330,7 @@ function openPhotoTagsModal(){
       photoList.forEach(p=>{
         if(!p.dbId) return;
         const row = document.createElement('div'); row.className = 'pm-row';
-        const im = document.createElement('img'); im.src = safeUrl(p.url, 'img'); im.alt = '';
+        const im = document.createElement('img'); im.loading = 'lazy'; im.decoding = 'async'; im.src = safeUrl(p.url, 'img'); im.alt = '';
         const tags = document.createElement('div'); tags.className = 'tag-pick';
         const chosen = new Set(Array.isArray(p.tags) ? p.tags : []);
         Object.entries(PHOTO_TAGS).forEach(([k, label])=>{
@@ -6762,7 +6762,7 @@ function openSpotifySetupModal(){
 
 async function spotifyConnect(){
   if(!spotifyUsable){
-    openModal({title:'يحتاج خادمًا محليًا', bodyHTML:'<p>ربط سبوتيفاي لا يعمل عند فتح الملف مباشرة (file://). شغّل <code>serve-local.ps1</code> ثم افتح اللوح عبر الرابط الذي يعطيك إياه (http://localhost...)، وحاول مجددًا.</p>', actions:[{label:'حسنًا', primary:true}]});
+    openModal({title:'يحتاج خادمًا محليًا', bodyHTML:'<p>ربط سبوتيفاي لا يعمل عند فتح الملف مباشرة (file://). شغّل <code>serve-local.ps1</code> ثم افتح اللوح عبر الرابط الذي يعطيك إياه (http://localhost…)، وحاول مجددًا.</p>', actions:[{label:'حسنًا', primary:true}]});
     return;
   }
   const cid = getSpotifyClientId();

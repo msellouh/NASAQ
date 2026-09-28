@@ -4,7 +4,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="author" content="Mohammed S. Ellouh">
 <meta name="copyright" content="© 2026 Mohammed S. Ellouh — جميع الحقوق محفوظة">
 <title>نَسَق — المشاريع</title>
@@ -15,9 +15,9 @@
 <!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده؛ وخط الطابع الافتراضي «نَسَق» يُحمَّل مسبقًا -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
-<script src="nasaq-core.js?v=20260928e"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
-<script src="nasaq-art.js?v=20260928e"></script>
-<script src="nasaq-icons.js?v=20260928e"></script>
+<script src="nasaq-core.js?v=20260928f"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
+<script src="nasaq-art.js?v=20260928f"></script>
+<script src="nasaq-icons.js?v=20260928f"></script>
 <style>
 @layer tokens, base, layouts, components, theme, utilities;
 @layer base{
@@ -60,7 +60,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .orbit::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--orbit);
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));
           mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px))}
-/* حلقة مدار ثابتة (كما في اللوح حيث هي ساعة اليوم)، تحييها لمعة تسري على القوس كل 7 ثوانٍ */
+/* حلقة مدار ثابتة (كما في اللوح حيث هي ساعة اليوم)، تحييها لمعة تسري على القوس كل 7 ثوانٍ */
 @property --g{syntax:'<angle>';inherits:false;initial-value:-30deg}
 @keyframes orbitGlint{0%{--g:-30deg} 38%{--g:360deg} 100%{--g:360deg}}
 .orbit::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;mix-blend-mode:screen;
@@ -111,7 +111,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .seg button.on{background:var(--cta);color:var(--on-cta);font-weight:600}
 
 /* ---------- البطاقات ---------- */
-.card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:var(--sp-5) var(--sp-5);box-shadow:var(--shadow);min-width:0}
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);padding:var(--sp-5) var(--sp-5);box-shadow:var(--shadow);min-width:0}
 .card-h{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2) var(--sp-3);margin-bottom:var(--sp-4)}
 .card-h h2{font-size:var(--fs-md);color:var(--ink)}
 .card-h small{font-size:var(--fs-xs);color:var(--muted)}
@@ -135,7 +135,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 
 /* ---------- ملخص سريع ---------- */
 .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-3);margin-bottom:var(--sp-4)}
-.kpi{position:relative;overflow:hidden;background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:var(--sp-4) var(--sp-4) var(--sp-4);box-shadow:var(--shadow);min-width:0}
+.kpi{position:relative;overflow:hidden;background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);padding:var(--sp-4) var(--sp-4) var(--sp-4);box-shadow:var(--shadow);min-width:0}
 .kpi::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--grad-line)}
 .kpi span{display:block;font-size:var(--fs-xs);color:var(--muted)}
 .kpi b{display:block;font-family:var(--font-head);font-size:var(--fs-xl);font-weight:700;color:var(--ink);line-height:1.35;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -145,10 +145,12 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 
 /* ---------- القائمة والتفاصيل ---------- */
 .split{display:grid;grid-template-columns:360px minmax(0,1fr);gap:var(--sp-4);align-items:start}
+/* القوائم الطويلة (أكثر من 50 مشروعًا): لا تُرسم خارج الشاشة */
+.items > .item{content-visibility:auto;contain-intrinsic-size:auto 88px}
 /* داخل اللوح: الإطار بطول محتواه، فالقائمة بتمرير مستقل بارتفاع نافذة اللوح */
 html.embed .list{position:static;max-height:calc(var(--host-vh,100vh) - 140px)}
 html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
-.list{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);
+.list{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--shadow);
   position:sticky;top:calc(var(--tb-h) + 16px);max-height:calc(100vh - var(--tb-h) - 32px);display:flex;flex-direction:column;min-width:0}
 .list-head{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--rule);font-size:var(--fs-sm);color:var(--muted)}
 .list-head select{border:0;background:transparent;font-size:var(--fs-sm);color:var(--ink-2);padding:2px}
@@ -384,7 +386,7 @@ button.hb:hover .lb{color:var(--focus-ink);text-decoration:underline}
 .st-table .ok{color:var(--done);font-weight:600}
 
 /* ---------- النوافذ ---------- */
-dialog{border:0;padding:0;border-radius:var(--r);background:var(--paper);color:var(--ink);box-shadow:0 30px 80px rgba(8,9,20,.35);width:min(540px,calc(100% - 32px));max-height:calc(100vh - 48px)}
+dialog{border:0;padding:0;border-radius:var(--r-lg);background:var(--paper);color:var(--ink);box-shadow:0 30px 80px rgba(8,9,20,.35);width:min(540px,calc(100% - 32px));max-height:calc(100vh - 48px)}
 dialog::backdrop{background:var(--overlay);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 dialog form{display:grid;gap:var(--sp-3);padding:var(--sp-5) var(--sp-5)}
 dialog h2{font-size:var(--fs-lg)}
@@ -508,16 +510,16 @@ dialog[open]::backdrop{animation:m-fade-in calc(var(--dur-3) * var(--motion-scal
 }
 }
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260928e">
-<link rel="stylesheet" href="layouts/nav-side.css?v=20260928e">
-<link rel="stylesheet" href="layouts/nav-top.css?v=20260928e">
-<link rel="stylesheet" href="layouts/hero-page.css?v=20260928e">
-<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928e">
-<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928e">
-<link rel="stylesheet" href="nasaq-ui.css?v=20260928e">
-<link rel="stylesheet" href="themes/classic.css?v=20260928e">
-<link rel="stylesheet" href="themes/nasaq.css?v=20260928e">
-<link rel="stylesheet" href="themes/nasaq360.css?v=20260928e">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260928f">
+<link rel="stylesheet" href="layouts/nav-side.css?v=20260928f">
+<link rel="stylesheet" href="layouts/nav-top.css?v=20260928f">
+<link rel="stylesheet" href="layouts/hero-page.css?v=20260928f">
+<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928f">
+<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928f">
+<link rel="stylesheet" href="nasaq-ui.css?v=20260928f">
+<link rel="stylesheet" href="themes/classic.css?v=20260928f">
+<link rel="stylesheet" href="themes/nasaq.css?v=20260928f">
+<link rel="stylesheet" href="themes/nasaq360.css?v=20260928f">
 </head>
 <body>
 <header class="tb" id="tb">
@@ -1171,7 +1173,7 @@ function ganttModel(p){
   const e0 = new Date(Math.max(...items.map(x => toDate(x.end)), ...(p.end ? [toDate(p.end)] : [])));
   const nW = Math.max(1, Math.ceil((e0 - s0 + DAY) / (7 * DAY)));
   const weeks = [...Array(nW)].map((_, i) => { const a = new Date(s0.getTime() + i * 7 * DAY); return {a, b: new Date(a.getTime() + 6 * DAY)}; });
-  /* شهر المشروع = 4 أسابيع ثابتة (الشهر 1 = W1–W4) كما في جداول التقارير المعتمدة، لا الشهر الميلادي */
+  /* شهر المشروع = 4 أسابيع ثابتة (الشهر 1 = W1–W4) كما في جداول التقارير المعتمدة، لا الشهر الميلادي */
   const months = [], fd = x => fmtDate(x, {day: 'numeric', month: 'short'});
   for(let i = 0; i < weeks.length; i += 4){ const g = weeks.slice(i, i + 4); months.push({n: g.length, label: fd(g[0].a) + ' – ' + fd(g[g.length - 1].b)}); }
   const stages = [];
@@ -1420,11 +1422,11 @@ td .manual{min-height:0;border-width:1px;padding:0 6pt;color:${RCOL.grey}}
   .manual:empty::before{content:''}
 }`;
 /* حذف المشروع من مكان واحد: أرشفة صفحته واستحقاقاته وخطته في نوشن، ونقل مجلده في درايف إلى المهملات.
-   يشترط كتابة كوده، والجسر يتحقق منه مرة ثانية. الأرشفة والمهملات تُسترجعان نحو 30 يومًا. */
+   يشترط كتابة كوده، والجسر يتحقق منه مرة ثانية. الأرشفة والمهملات تُسترجعان نحو 30 يومًا. */
 function dangerCard(p){
   if(SOURCE !== 'live' || !p.code) return '';
   return '<article class="card danger-zone"><div class="card-h"><h2>حذف المشروع</h2><small>من نوشن ودرايف واللوح معًا</small></div>' +
-    '<p class="note">يُؤرشف المشروع واستحقاقاته وخطته في نوشن، وينتقل مجلده في درايف إلى المهملات، فيختفي من المنصة كلها. يمكن استرجاعه خلال نحو 30 يومًا من سلة نوشن ومهملات درايف.</p>' +
+    '<p class="note">يُؤرشف المشروع واستحقاقاته وخطته في نوشن، وينتقل مجلده في درايف إلى المهملات، فيختفي من المنصة كلها. يمكن استرجاعه خلال نحو 30 يومًا من سلة نوشن ومهملات درايف.</p>' +
     '<button type="button" class="btn-danger" data-act="delete">احذف ' + esc(p.code) + '</button></article>';
 }
 function deleteProject(p){
@@ -1683,7 +1685,7 @@ function moneyCard(p){
 /* ---------- المستندات والملفات ---------- */
 function filesOf(p){ return SOURCE === 'live' ? FILES[p.code] : (DATA.files || {})[p.code]; }
 /* فحص مجلد المشروع في درايف بطيء: نعرض آخر قائمة محفوظة في هذا المتصفح فورًا، ونحدّثها في الخلفية
-   (والجسر يحفظ النتيجة 10 دقائق، ويمسحها عند الرفع؛ زر «تحديث» يطلب فحصًا جديدًا). */
+   (والجسر يحفظ النتيجة 10 دقائق، ويمسحها عند الرفع؛ زر «تحديث» يطلب فحصًا جديدًا). */
 const FILES_KEY = 'daily-board-projfiles-' + ORG, FILES_STALE = new Set();
 function loadFilesCache(){
   try{ const c = JSON.parse(localStorage.getItem(FILES_KEY) || '{}'); Object.keys(c).forEach(k => { if(!FILES[k]){ FILES[k] = c[k]; FILES_STALE.add(k); } }); }catch(e){}
