@@ -2348,7 +2348,7 @@ document.addEventListener('keydown', e=>{
 /* اختصارات عامة (لا تعمل أثناء الكتابة ولا مع Ctrl/Alt/Cmd) */
 function openShortcuts(){
   const rows = [['N', 'مهمة جديدة'], ['/', 'بحث وأوامر سريعة'], ['1 – 5', 'التبويبات: اليوم، المهام، العادات، المشاريع، المصروفات'],
-    ['T', 'الطابع التالي'], ['Shift + T', 'الوضع التالي (فاتح، داكن، تلقائي)'], ['Ctrl + K', 'بحث وأوامر سريعة'], ['Esc', 'إغلاق النافذة أو اللوحة'], ['?', 'هذه القائمة']];
+    ['T', 'الطابع التالي'], ['Shift + T', 'الوضع التالي (فاتح، داكن، تلقائي)'], ['Ctrl + Z', 'تراجع عن آخر إنجاز أو حذف (ما دام الإشعار ظاهرًا)'], ['Ctrl + K', 'بحث وأوامر سريعة'], ['Esc', 'إغلاق النافذة أو اللوحة'], ['?', 'هذه القائمة']];
   openModal({title:'اختصارات لوحة المفاتيح', bodyHTML:'<dl class="kbd-list">' + rows.map(r=>'<dt><kbd>' + r[0] + '</kbd></dt><dd>' + r[1] + '</dd>').join('') + '</dl>', actions:[{label:'تم', primary:true}]});
 }
 document.addEventListener('keydown', e=>{
@@ -2356,11 +2356,20 @@ document.addEventListener('keydown', e=>{
   const el = document.activeElement;
   if(el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;
   if(!$('authOverlay').hidden || document.querySelector('.modal-overlay,.bsheet-back') || !$('settingsOverlay').hidden) return;
-  const k = e.key;
-  if(k === 'n' || k === 'N' || e.code === 'KeyN'){ e.preventDefault(); showTab('board'); const i = $('tText'); i.scrollIntoView({block:'center'}); i.focus(); }
-  else if(k === '/'){ e.preventDefault(); openPalette(); }
-  else if(/^[1-5]$/.test(k) && !e.shiftKey){ e.preventDefault(); showTab(['board', 'tasks', 'flow', 'projects', 'expenses'][+k - 1]); }
-  else if(k === '?'){ e.preventDefault(); openShortcuts(); }
+  /* بموضع المفتاح (e.code) لا بحرفه، فتعمل بلوحة المفاتيح العربية أيضًا («/» فيها «ظ»، والأرقام قد تكون هندية) */
+  const k = e.key, c = e.code || '', dg = /^Digit([1-5])$/.exec(c) || /^Numpad([1-5])$/.exec(c);
+  if(k === 'n' || k === 'N' || c === 'KeyN'){ e.preventDefault(); showTab('board'); const i = $('tText'); i.scrollIntoView({block:'center'}); i.focus(); }
+  else if(k === '?' || (c === 'Slash' && e.shiftKey)){ e.preventDefault(); openShortcuts(); }
+  else if(k === '/' || c === 'Slash' || c === 'NumpadDivide'){ e.preventDefault(); openPalette(); }
+  else if(dg && !e.shiftKey){ e.preventDefault(); showTab(['board', 'tasks', 'flow', 'projects', 'expenses'][+dg[1] - 1]); }
+});
+/* Ctrl+Z: «تراجع» الإشعار الظاهر من لوحة المفاتيح، بلا حاجة للوصول إلى زرّه */
+document.addEventListener('keydown', e=>{
+  if(!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || (e.key !== 'z' && e.key !== 'Z' && e.code !== 'KeyZ')) return;
+  const el = document.activeElement;
+  if(el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;
+  const b = document.querySelector('#toastBox .toast-card button'); if(!b) return;
+  e.preventDefault(); b.click();
 });
 /* خطوة «اختر طابعك»: البطاقات نفسها في نافذة */
 function openThemePicker(){
@@ -2540,7 +2549,7 @@ function showToast(msg, undoFn, o = {}){
   /* بلا دالة تراجع: رسالة عابرة تختفي بعد ثوانٍ */
   if(undoFn){
     const btn = document.createElement('button');
-    btn.type = 'button'; btn.textContent = o.action || 'تراجع';
+    btn.type = 'button'; btn.textContent = o.action || 'تراجع'; btn.title = (o.action || 'تراجع') + ' (Ctrl+Z)';
     btn.onclick = ()=>{ clearTimeout(toastTimer); box.innerHTML = ''; undoFn(); };
     card.append(btn);
   }
@@ -6911,7 +6920,12 @@ function openSettings(){
   $('settingsOverlay').hidden = false;
   setTimeout(()=>{ const b = $('setNav').querySelector('[aria-selected="true"]'); if(b) b.focus(); }, 30);
 }
-function closeSettings(){ const o = $('settingsOverlay'); if(o.hidden) return; motionHide(o, ()=>{ o.hidden = true; if(setBack && setBack.isConnected) try{ setBack.focus(); }catch(e){} }); }
+function closeSettings(){
+  const o = $('settingsOverlay'); if(o.hidden) return;
+  /* يعود التركيز إلى ما كان قبل الفتح إن بقي ظاهرًا، وإلا إلى زر الإعدادات */
+  const back = setBack && setBack.isConnected && setBack.offsetParent !== null ? setBack : $('settingsBtn');
+  motionHide(o, ()=>{ o.hidden = true; try{ back.focus(); }catch(e){} });
+}
 /* تبويبات الإعدادات العمودية: الحساب، والربط، والمظهر، والإشعارات، وترتيب صفحة اليوم، والبيانات، وإدارة المستخدمين للمالك */
 let setTab = 'account', setBack = null;
 const SET_TABS = [['account', 'الحساب', 'user'], ['bridge', 'الربط', 'link'], ['look', 'المظهر', 'palette'], ['alive', 'الإشعارات', 'bell'],
