@@ -11,9 +11,9 @@
 <!-- تثبيت اللوح كتطبيق (الهاتف والحاسوب) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#F7F6F2">
-<script src="nasaq-core.js?v=20260928a"></script>
-<script src="nasaq-art.js?v=20260928a"></script>
-<script src="nasaq-icons.js?v=20260928a"></script>
+<script src="nasaq-core.js?v=20260928b"></script>
+<script src="nasaq-art.js?v=20260928b"></script>
+<script src="nasaq-icons.js?v=20260928b"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -362,22 +362,14 @@ body{padding:0}
 .greet-media .hero-empty{position:static;inset:auto;border:1px dashed var(--rule);border-radius:var(--r-pill);background:transparent;padding:var(--sp-1) var(--sp-3);font:inherit;font-size:var(--fs-xs)}
 .greet-card.has-photo .hero-tools{display:flex}
 
-/* لوحة اليوم: أعمدة من البطاقات */
-/* شبكة بصفوف متوازنة: البطاقات في الصف الواحد بطول واحد، والمهام تمتد على عمودين
-   (فيبقى سطر المهمة سطرًا واحدًا). الأعمدة .col أغلفة منطقية فقط (display:contents). */
+/* لوحة اليوم بثلاث طبقات (المرحلة 7): «الآن» بعرض الصفحة، ثم المهام (7 أعمدة) مع الجدول والتقويم والتركيز (5 أعمدة)،
+   ثم الطبقة الثالثة مطويّة (العنوان والعدد). على الجوال: عمود واحد بترتيب الأهمية. */
 :root{--gap:16px;--pad:20px}
-.dash{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--gap);align-items:stretch;
-  grid-template-areas:
-    "pri    sched  cal"
-    "tasks  tasks  ideas"
-    "habits focus  waqfa"
-    "projects projects projects"
-    "review review review"
-    "archive archive archive"}
-.col{display:contents}
-.c-pri{grid-area:pri}.c-sched{grid-area:sched}.c-cal{grid-area:cal}.c-tasks{grid-area:tasks}
-.c-ideas{grid-area:ideas}.c-focus{grid-area:focus}.c-habits{grid-area:habits}.c-projects{grid-area:projects}
-.c-review{grid-area:review}.dash > .archive{grid-area:archive}.c-waqfa{grid-area:waqfa}
+.dash{display:flex;flex-direction:column;gap:var(--gap)}
+.layer2{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:var(--gap);align-items:start}
+.l2-main,.l2-side{display:flex;flex-direction:column;gap:var(--gap);min-width:0}
+.layer3{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--gap);align-items:start}
+.user-hidden{display:none !important}
 .card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:var(--pad);min-width:0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
 /* البطاقات تملأ ارتفاع صفّها بمحتوى مفيد بدل فراغ في الأسفل */
 .c-ideas,.c-sched,.c-focus,.c-pri{display:flex;flex-direction:column}
@@ -752,15 +744,6 @@ body.focus-open{overflow:hidden}
 
 /* شاشة متوسطة: عمودان — المهام يمينًا، والباقي مكدّس يسارًا */
 @media (max-width:1399px){
-  .dash{grid-template-columns:repeat(2,minmax(0,1fr));
-    grid-template-areas:
-      "pri      sched"
-      "tasks    tasks"
-      "cal      ideas"
-      "focus    habits"
-      "waqfa    projects"
-      "review   review"
-      "archive  archive"}
   .closing-band{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}
   .closing-band .close-day{grid-column:1 / -1;justify-content:center}
 }
@@ -788,10 +771,14 @@ body.focus-open{overflow:hidden}
   .greet-tagline{font-size:var(--fs-md)}
   .greet-card.has-photo{flex-direction:column-reverse}
   .greet-card.has-photo .greet-media{width:100%;max-width:none;height:260px}
-  .dash{display:flex;flex-direction:column;gap:var(--sp-3)}
-  .col{display:contents}
-  .c-pri{order:1}.c-tasks{order:2}.c-sched{order:3}.c-ideas{order:4}
-  .c-focus{order:5}.c-habits{order:6}.c-waqfa{order:7}.c-cal{order:8}.c-projects{order:9}.c-review{order:10}.archive{order:11}
+  .dash{gap:var(--sp-3)}
+  .layer2,.l2-main,.l2-side,.layer3{display:contents}
+  /* الجوال: الواجهة، ثم الآن، ثم مهام اليوم، ثم جدول اليوم، ثم الباقي مطويًا، ثم ختام اليوم */
+  .c-now{order:1}.c-tasks{order:2}.c-sched{order:3}.c-pri{order:4}.c-cal{order:5}.c-focus{order:6}
+  .c-ideas{order:7}.c-habits{order:8}.c-waqfa{order:9}.c-projects{order:10}.c-review{order:11}.archive{order:12}
+  .c-sched .tl-wrap{min-height:0;max-height:260px}
+  .c-cal .cal-month{display:none}
+  .c-cal .cal-month-btn{display:inline-flex}
   .card{padding:var(--sp-4)}
   /* الصفحات الأخرى: عمود واحد */
   .page-head{padding:var(--sp-4)}
@@ -1492,16 +1479,16 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 }
 }
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260928a">
-<link rel="stylesheet" href="layouts/nav-side.css?v=20260928a">
-<link rel="stylesheet" href="layouts/nav-top.css?v=20260928a">
-<link rel="stylesheet" href="layouts/hero-page.css?v=20260928a">
-<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928a">
-<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928a">
-<link rel="stylesheet" href="nasaq-ui.css?v=20260928a">
-<link rel="stylesheet" href="themes/classic.css?v=20260928a">
-<link rel="stylesheet" href="themes/nasaq.css?v=20260928a">
-<link rel="stylesheet" href="themes/nasaq360.css?v=20260928a">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260928b">
+<link rel="stylesheet" href="layouts/nav-side.css?v=20260928b">
+<link rel="stylesheet" href="layouts/nav-top.css?v=20260928b">
+<link rel="stylesheet" href="layouts/hero-page.css?v=20260928b">
+<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928b">
+<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928b">
+<link rel="stylesheet" href="nasaq-ui.css?v=20260928b">
+<link rel="stylesheet" href="themes/classic.css?v=20260928b">
+<link rel="stylesheet" href="themes/nasaq.css?v=20260928b">
+<link rel="stylesheet" href="themes/nasaq360.css?v=20260928b">
 </head>
 <body>
 
@@ -1615,6 +1602,13 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <div class="set-hint">اختصاران: <kbd>T</kbd> للتنقل بين الطوابع، و<kbd>Shift</kbd>+<kbd>T</kbd> لتبديل الوضع.</div>
         <div class="set-actions"><button id="setOnboardShow" type="button">أظهر «ابدأ مع نَسَق» من جديد</button></div>
         <div class="set-hint">قائمة خطوات البداية تختفي وحدها حين تكتمل خطواتها الخمس أو حين تخفيها. هذا الزر يعيدها إلى صفحة «اليوم».</div>
+      </section>
+
+      <section id="setLayout">
+        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-list-checks"/></svg> ترتيب صفحة اليوم</h3>
+        <div class="set-hint">أخفِ ما لا تحتاجه، ورتّب البطاقات بالسحب أو بالأسهم. يُحفظ على هذا الجهاز.</div>
+        <ol class="layout-list" id="layoutList" aria-label="بطاقات صفحة اليوم"></ol>
+        <div class="set-actions"><button type="button" id="layoutReset">أعد الترتيب الافتراضي</button></div>
       </section>
 
       <section id="setAlive">
@@ -1753,7 +1747,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <div class="greet-text">
     <h1 class="greet-title" id="heroGreet">صباح الخير</h1>
     <p class="greet-tagline">لكل شيء مكان، ولكل يوم نَسَق.</p>
-    <div class="greet-date"><bdi id="weekday">—</bdi>، <bdi id="date">—</bdi><span class="greet-sep" id="hijriSep" hidden> | </span><bdi class="greet-hijri" id="hijriDate" hidden></bdi></div>
+    <div class="greet-date"><bdi id="weekday">—</bdi> <bdi id="date">—</bdi><span class="greet-sep" id="hijriSep" hidden> | </span><bdi class="greet-hijri" id="hijriDate" hidden></bdi></div>
     <!-- لمحة اليوم: تظهر في واجهة «360» الكاملة فقط -->
     <div class="hero-glance"><div class="ring-clock" id="heroRing" role="img"></div><div class="brief-ring" id="briefRing" role="img"><b id="briefPct">0%</b></div><div class="hero-meta" id="heroMeta"></div></div>
     <button class="plan-day" id="planDayBtn" type="button"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg> خطّط يومك</button>
@@ -1764,7 +1758,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <button class="hero-empty" id="heroEmpty" type="button"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-image"/></svg> أضف صورة</button>
     <div class="hero-tools">
       <button class="hero-add" id="heroTagBtn" type="button" title="صورك ومتى تناسب كل واحدة" hidden>صورك</button>
-      <button class="hero-add" id="heroAddBtn" type="button" title="أضف صورة">+ صورة</button>
+      <button class="hero-add hero-add-ic" id="heroAddBtn" type="button" title="أضف صورة" aria-label="أضف صورة"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-image"/></svg></button>
       <button class="hero-del" id="heroDelBtn" type="button" title="احذف هذه الصورة" aria-label="احذف هذه الصورة" hidden><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button>
     </div>
   </div>
@@ -1780,9 +1774,22 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <!-- قائمة البداية: تظهر حتى تكتمل خطواتها أو تُخفى -->
 <section class="card onboard" id="onboard" hidden></section>
 <div class="dash">
+  <!-- الطبقة الأولى «الآن»: ماذا أفعل الآن؟ الأولوية الأولى، والمهمة التالية، وزر التركيز، والعدّاد -->
+  <section class="card c-now" id="nowCard" aria-labelledby="nowTitle">
+    <div class="now-main">
+      <h2 class="now-kicker" id="nowTitle"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-sparkles"/></svg>الآن</h2>
+      <div class="now-pri" id="nowPri"></div>
+      <div class="now-next" id="nowNext"></div>
+    </div>
+    <div class="now-side">
+      <button type="button" class="btn btn-secondary btn-lg" id="nowFocusBtn"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-timer"/></svg><span id="nowFocusLbl">ابدأ تركيز 25 دقيقة</span></button>
+      <p class="now-count" id="nowCount"></p>
+    </div>
+  </section>
 
-  <!-- العمود الأول (يمين): ما يجب أن يُنجز -->
-  <div class="col col-c">
+  <!-- الطبقة الثانية: المهام (7 أعمدة)، والجدول والتقويم والتركيز (5 أعمدة) -->
+  <div class="layer2">
+    <div class="l2-main">
     <section class="card c-pri">
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>أولويات اليوم</h2></div>
       <div class="pinned">
@@ -1837,19 +1844,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
       <ol class="tasks" id="list"></ol>
     </section>
-
-    <section class="card c-habits">
-      <div class="card-head">
-        <h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c0-9 5-15 15-16-1 10-7 15-16 15"/><path d="M5 21c3-6 7-9 11-11"/></svg>عاداتي اليوم</h2>
-        <button type="button" class="card-link" id="habitsMore">عرض الكل</button>
-      </div>
-      <div class="habits-mini" id="habitsMini"></div>
-      <div class="habit-week mini" id="habitWeekMini" aria-label="إنجاز الروتين في آخر 7 أيام"></div>
-    </section>
-  </div>
-
-  <!-- العمود الثاني: الوقت والأفكار والمشاريع -->
-  <div class="col col-b">
+    </div>
+    <div class="l2-side">
     <section class="card c-sched">
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>جدول اليوم</h2></div>
       <div class="tl-wrap" id="tlWrap"><div id="timelineList"></div></div>
@@ -1857,13 +1853,40 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="tl-foot" id="tlFoot"></div>
     </section>
 
-    <!-- وقفة: نص موثّق بحسب وقتك وسياقك، مع عبرة تطبيقية -->
-    <section class="card c-waqfa" id="waqfaCard" hidden>
-      <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V8"/><path d="M5 8a7 7 0 0 1 14 0"/><path d="M4 21h16"/><path d="M8 4.5 12 3l4 1.5"/></svg>وقفة</h2>
-        <span class="waqfa-tools"><button type="button" class="card-link" id="waqfaNext">وقفة أخرى</button><button type="button" class="card-link" id="waqfaReview" hidden>راجع الدفعة</button></span></div>
-      <div class="waqfa-body" id="waqfaBody"></div>
+    <section class="card c-cal">
+      <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>التقويم</h2></div>
+      <div class="week-strip" id="weekStrip" aria-label="الأيام السبعة القادمة"></div>
+      <button type="button" class="btn btn-ghost btn-sm cal-month-btn" id="calMonthBtn"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg> الشهر كاملًا</button>
+      <div class="cal-month" id="calMonth">
+      <div class="cal-head">
+        <button id="calPrev" type="button" aria-label="الشهر السابق"><svg class="ic ic-dir" aria-hidden="true" focusable="false"><use href="#i-dir-chevron"/></svg></button>
+        <span id="calLabel"></span>
+        <button id="calNext" type="button" aria-label="الشهر التالي"><svg class="ic" aria-hidden="true" focusable="false" style="transform:scaleX(-1)"><use href="#i-dir-chevron"/></svg></button>
+      </div>
+      <div class="cal-status" id="calStatus"></div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-day-list" id="calDayList"></div>
+      </div>
     </section>
 
+    <section class="card c-focus">
+      <div class="card-head"><h2 id="pomoTitle"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M10 2h4"/></svg>التركيز</h2>
+        <button type="button" class="card-link" id="focusModeBtn" title="وضع التركيز بملء الشاشة"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-maximize"/></svg> وضع التركيز</button></div>
+      <div class="pomodoro">
+        <div class="pomo-time" id="pomoTime">25:00</div>
+        <div class="pomo-controls">
+          <button class="go" id="pomoToggle" type="button">ابدأ</button>
+          <button id="pomoReset" type="button" title="تصفير" aria-label="تصفير المؤقت"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-rotate"/></svg></button>
+        </div>
+        <select id="pomoTask" aria-label="المهمة المرتبطة"><option value="">— بلا مهمة محددة —</option></select>
+        <div class="pomo-hint" id="pomoHint"></div>
+      </div>
+    </section>
+    </div>
+  </div>
+
+  <!-- الطبقة الثالثة: مطويّة افتراضيًا — العنوان والعدد فقط، وحالة الطيّ محفوظة لكل بطاقة -->
+  <div class="layer3">
     <section class="card c-ideas">
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>أفكار عابرة</h2></div>
       <textarea class="braindump" id="brainDump" placeholder="ما الذي يشغلك؟ اتركه هنا الآن، ورتّبه لاحقًا. والصق لقطة شاشة (Ctrl+V) لتحفظها فكرةً."></textarea>
@@ -1885,41 +1908,26 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </div>
     </section>
 
+    <section class="card c-habits">
+      <div class="card-head">
+        <h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c0-9 5-15 15-16-1 10-7 15-16 15"/><path d="M5 21c3-6 7-9 11-11"/></svg>عاداتي اليوم</h2>
+        <button type="button" class="card-link" id="habitsMore">عرض الكل</button>
+      </div>
+      <div class="habits-mini" id="habitsMini"></div>
+      <div class="habit-week mini" id="habitWeekMini" aria-label="إنجاز الروتين في آخر 7 أيام"></div>
+    </section>
+
+    <!-- وقفة: نص موثّق بحسب وقتك وسياقك، مع عبرة تطبيقية -->
+    <section class="card c-waqfa" id="waqfaCard" hidden>
+      <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V8"/><path d="M5 8a7 7 0 0 1 14 0"/><path d="M4 21h16"/><path d="M8 4.5 12 3l4 1.5"/></svg>وقفة</h2>
+        <span class="waqfa-tools"><button type="button" class="card-link" id="waqfaNext">وقفة أخرى</button><button type="button" class="card-link" id="waqfaReview" hidden>راجع الدفعة</button></span></div>
+      <div class="waqfa-body" id="waqfaBody"></div>
+    </section>
+
     <section class="card c-projects">
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2.5h6.5A2.5 2.5 0 0 1 21 10v7.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/></svg>نبض المشاريع</h2><a class="card-link" href="pulse.html" title="استحقاقات التقارير وما يحتاج انتباهك اليوم">نبض المشاريع ←</a></div>
       <div class="proj-mini" id="projectsMini"></div>
     </section>
-  </div>
-
-  <!-- العمود الثالث (يسار): التقويم والتركيز والختام -->
-  <div class="col col-a">
-    <section class="card c-cal">
-      <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>التقويم</h2></div>
-      <div class="week-strip" id="weekStrip" aria-label="الأيام السبعة القادمة"></div>
-      <div class="cal-head">
-        <button id="calPrev" type="button">‹</button>
-        <span id="calLabel"></span>
-        <button id="calNext" type="button">›</button>
-      </div>
-      <div class="cal-status" id="calStatus"></div>
-      <div class="cal-grid" id="calGrid"></div>
-      <div class="cal-day-list" id="calDayList"></div>
-    </section>
-
-    <section class="card c-focus">
-      <div class="card-head"><h2 id="pomoTitle"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M10 2h4"/></svg>التركيز</h2>
-        <button type="button" class="card-link" id="focusModeBtn" title="وضع التركيز بملء الشاشة"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-maximize"/></svg> وضع التركيز</button></div>
-      <div class="pomodoro">
-        <div class="pomo-time" id="pomoTime">25:00</div>
-        <div class="pomo-controls">
-          <button class="go" id="pomoToggle" type="button">ابدأ</button>
-          <button id="pomoReset" type="button" title="تصفير" aria-label="تصفير المؤقت"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-rotate"/></svg></button>
-        </div>
-        <select id="pomoTask" aria-label="المهمة المرتبطة"><option value="">— بلا مهمة محددة —</option></select>
-        <div class="pomo-hint" id="pomoHint"></div>
-      </div>
-    </section>
-
   </div>
 
 
@@ -1928,6 +1936,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <div class="closing-intro">
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>ختام اليوم</h2></div>
       <p class="closing-sub">راجع يومك في دقيقة، ثم أغلقه ليبدأ الغد على نَسَق.</p>
+      <p class="closing-strip-note">يكتمل الختام بعد الخامسة مساءً.</p>
+      <button type="button" class="btn btn-ghost btn-sm closing-open" id="closingOpen">أغلق اليوم</button>
       <div class="day-summary" id="daySummary"></div>
     </div>
     <div class="closing-qs">
@@ -2436,12 +2446,12 @@ function trapFocus(box){
   setTimeout(()=>{ if(!box.contains(document.activeElement)){ const f = items(); if(f.length) f[0].focus({preventScroll:true}); } }, 30);
 }
 /* الورقة السفلية: قائمة إجراءات، أو محتوى جاهز (content) */
-function openSheet({title, items, content}){
+function openSheet({title, items, content, onClose}){
   const back = document.createElement('div'); back.className = 'bsheet-back';
   const sh = document.createElement('div'); sh.className = 'bsheet'; sh.setAttribute('role', 'dialog'); sh.setAttribute('aria-modal', 'true');
   const h3 = document.createElement('h3'); h3.id = 'bsh-' + Date.now(); h3.textContent = title || ''; sh.setAttribute('aria-labelledby', h3.id);
   sh.append(h3); back.append(sh);
-  const close = ()=>{ document.removeEventListener('keydown', esc); motionHide(sh, ()=>back.remove()); };
+  const close = ()=>{ document.removeEventListener('keydown', esc); motionHide(sh, ()=>{ back.remove(); if(onClose) onClose(); }); };
   const esc = e=>{ if(e.key === 'Escape') close(); };
   (items || []).forEach(it=>{
     if(it.sep){ const s = document.createElement('div'); s.className = 'bsheet-sep'; sh.append(s); return; }
@@ -3056,6 +3066,7 @@ function render(){
   try{ renderWaqfa(); }catch(e){}
   try{ updatePomoLive(); }catch(e){}   /* قد يُرسم اللوح قبل تهيئة المؤقّت */
   try{ updateCardArts(); }catch(e){}
+  try{ renderNow(); updateFoldCounts(); renderClosing(); }catch(e){}
 }
 
 /* ---------- ساعات العمل (سعة اليوم) — افتراضيًا 8 ساعات، محفوظة على الجهاز ---------- */
@@ -3649,6 +3660,10 @@ function renderOnboard(){
   /* اكتملت الخطوات: تختفي القائمة — إلا إن أعدتها من الإعدادات (pinned) فتبقى متوهّجة كلها */
   if(n === steps.length && !st.pinned){ setOnboard({hidden:true}); box.hidden = true; showToast('أكملت خطوات البداية كلها — يومك الآن على نَسَق.'); return; }
   box.hidden = false; box.innerHTML = '';
+  if(!st.first) setOnboard({first: Date.now()});
+  /* شريط رفيع بعد خطوتين أو سبعة أيام، وعلى الجوال من البداية (القائمة الكاملة بـ«عرض كل الخطوات») */
+  const compact = !st.expanded && (n >= 2 || (st.first && Date.now() - st.first > 7 * 864e5) || matchMedia('(max-width:999px)').matches);
+  box.classList.toggle('is-compact', compact);
   const head = document.createElement('div'); head.className = 'card-head';
   const h = document.createElement('h2'); h.textContent = 'ابدأ مع نَسَق';
   const cnt = document.createElement('span'); cnt.className = 'ob-count'; cnt.textContent = AR(n) + ' من ' + AR(steps.length);
@@ -3658,6 +3673,20 @@ function renderOnboard(){
   head.append(h, x);
   const bar = document.createElement('div'); bar.className = 'ob-bar'; const f = document.createElement('i');
   f.style.width = (n / steps.length * 100) + '%'; bar.appendChild(f);
+  if(compact){
+    const row = document.createElement('div'); row.className = 'ob-compact';
+    const nxt = steps.find(s=>!s.done);
+    if(nxt){
+      const lab = document.createElement('span'); lab.textContent = 'الخطوة التالية:';
+      const go = document.createElement('button'); go.type = 'button'; go.className = 'btn btn-secondary btn-sm'; go.textContent = nxt.t; go.onclick = nxt.go;
+      row.append(lab, go);
+    }
+    const all = document.createElement('button'); all.type = 'button'; all.className = 'card-link'; all.textContent = 'عرض كل الخطوات';
+    all.onclick = ()=>{ setOnboard({expanded:true}); renderOnboard(); };
+    row.append(all);
+    box.append(head, bar, row);
+    return;
+  }
   /* معرض بطاقات على طريقة «مَدار»: ملصقات متجاورة، تُمرَّر أفقيًا حين يضيق المكان */
   const gal = document.createElement('div'); gal.className = 'ob-gallery';
   const ol = document.createElement('ol'); ol.className = 'ob-steps';
@@ -4218,7 +4247,10 @@ function renderProjects(){
   const A = NasaqPulse.analyse(data), G = A.groups;
   const off = A.health.filter(h=>h.behind || (h.endIn != null && h.endIn < 0)).length;
   const kp = document.createElement('div'); kp.className = 'pulse-kpis';
-  [['متأخرة', G.late.length, 'bad'], ['هذا الأسبوع', G.week.length, 'warn'], ['خارج المسار', off, 'bad']].forEach(([k, v, cls])=>{
+  const pn = (v, a, b2, c, d)=>pluralNoun(v, a, b2, c, d);
+  const fc = $('foldCount-projects'); if(fc) fc.textContent = G.late.length ? AR(G.late.length) : '';
+  [[pn(G.late.length, 'تقرير متأخر', 'تقريران متأخران', 'تقارير متأخرة', 'تقريرًا متأخرًا'), G.late.length, 'bad'], [pn(G.week.length, 'يستحق هذا الأسبوع', 'يستحقان هذا الأسبوع', 'تستحق هذا الأسبوع', 'يستحق هذا الأسبوع'), G.week.length, 'warn'],
+   [pn(off, 'مشروع خارج المسار', 'مشروعان خارج المسار', 'مشاريع خارج المسار', 'مشروعًا خارج المسار'), off, 'bad']].forEach(([k, v, cls])=>{
     const d = document.createElement('div'); d.className = 'pulse-kpi' + (v ? ' ' + cls : ' ok');
     d.innerHTML = '<b></b><span></span>'; d.querySelector('b').textContent = v; d.querySelector('span').textContent = k; kp.appendChild(d);
   });
@@ -4741,6 +4773,7 @@ function pomoFinish(){
   flushDeferredNotifs();   /* ما تأجّل أثناء التركيز يصل الآن */
 }
 function pomoTick(){
+  try{ renderNowFocus(); updateFoldCounts(); }catch(e){}
   pomoRemaining = Math.max(0, Math.ceil((pomoEndAt - Date.now()) / 1000));
   if(pomoRemaining <= 0) pomoFinish(); else updatePomoLive();
 }
@@ -5438,6 +5471,172 @@ $('newDay').onclick = ()=>{
     ]
   });
 };
+
+/* ---------- صفحة «اليوم» (المرحلة 7) ---------- */
+/* العدد مع المعدود: 1 مهمة، 2 مهمتان، 3–10 مهام، 11+ مهمة */
+function pluralNoun(n, one, two, few, many){ return n === 1 ? one : n === 2 ? two : (n >= 3 && n <= 10) ? few : many; }
+function plural(n, one, two, few, many){ return n === 1 || n === 2 ? pluralNoun(n, one, two, few, many) : AR(n) + ' ' + pluralNoun(n, one, two, few, many); }
+const reducedMotion = ()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* المهمة التالية المقترحة: أول متأخرة أو مستحقة اليوم (الأقدم ثم الأهم)، وإلا الجارية */
+function nextTask(){
+  const today = iso(new Date());
+  const imp = t=>t.imp === 'أ' ? 0 : t.imp === 'ب' ? 1 : 2;
+  const due = tasks.filter(t=>!t.done && t.due && t.due <= today).sort((a, b)=>a.due.localeCompare(b.due) || imp(a) - imp(b));
+  return due[0] || tasks.find(t=>!t.done && t.state === 1) || null;
+}
+function renderNowFocus(){
+  const l = $('nowFocusLbl'); if(!l) return;
+  l.textContent = pomoRunning ? 'التركيز جارٍ — ' + fmtClock(pomoRemaining) : 'ابدأ تركيز ' + AR(Math.round(POMO_DEFAULT / 60)) + ' دقيقة';
+}
+function renderNow(){
+  if(!$('nowCard')) return;
+  const f1 = document.querySelector('.pri .field'), p1 = f1 ? f1.value.trim() : '';
+  const pri = $('nowPri'); pri.innerHTML = '';
+  if(p1) pri.textContent = p1;
+  else {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'now-set'; b.textContent = 'ما أهم شيء اليوم؟ حدّده';
+    b.onclick = ()=>{ unfold('pri'); f1.scrollIntoView({block:'center', behavior: reducedMotion() ? 'auto' : 'smooth'}); f1.focus({preventScroll:true}); };
+    pri.append(b);
+  }
+  const nt = nextTask(), nx = $('nowNext'); nx.innerHTML = '';
+  if(nt){
+    const lab = document.createElement('span'); lab.className = 'now-lbl'; lab.textContent = 'المهمة التالية';
+    const t = document.createElement('button'); t.type = 'button'; t.className = 'now-task'; t.textContent = nt.text; t.onclick = ()=>revealTask(nt);
+    nx.append(lab, t);
+    const bd = taskBadge(nt);
+    if(bd){ const s = document.createElement('span'); s.className = 'badge b-' + bd[0]; s.innerHTML = icon(bd[1]) + '<span></span>'; s.lastChild.textContent = bd[2]; nx.append(s); }
+  } else nx.textContent = tasks.some(t=>!t.done) ? 'لا مهام متأخرة ولا مستحقة اليوم — اختر من مهامك.' : 'لا مهام مفتوحة — أضف ما يشغلك.';
+  renderNowFocus();
+  const done = tasks.filter(t=>t.done).length, over = tasks.filter(t=>taskMatches(t, 'overdue')).length;
+  const c = $('nowCount'); c.innerHTML = '';
+  c.append(document.createTextNode(AR(done) + ' من ' + AR(tasks.length) + ' منجزة'));
+  if(over){
+    c.append(document.createTextNode(' | '));
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'now-over';
+    b.textContent = plural(over, 'مهمة متأخرة', 'مهمتان متأخرتان', 'مهام متأخرة', 'مهمة متأخرة');
+    b.title = 'اعرض المتأخرة فقط';
+    b.onclick = ()=>{ taskFilter = 'overdue'; render(); document.querySelector('.c-tasks').scrollIntoView({block:'start', behavior: reducedMotion() ? 'auto' : 'smooth'}); };
+    c.append(b);
+  }
+}
+$('nowFocusBtn').onclick = ()=>{
+  if(pomoRunning){ openFocusMode(); return; }
+  const nt = nextTask();
+  if(nt){ renderPomoOptions(); const sel = $('pomoTask'); if([...sel.options].some(o=>o.value === String(nt.id))) sel.value = String(nt.id); }
+  pomoStart(); renderNowFocus();
+};
+$('pri').addEventListener('input', ()=>{ renderNow(); updateFoldCounts(); });
+
+/* الطيّ: الطبقة الثالثة مطويّة افتراضيًا، والأولويات والتركيز مطويّان على الجوال؛ والحالة محفوظة لكل بطاقة */
+const FOLD_KEY = 'daily-board-fold';
+const FOLD_CARDS = {pri:'.c-pri', focus:'.c-focus', ideas:'.c-ideas', habits:'.c-habits', waqfa:'.c-waqfa', projects:'.c-projects'};
+const FOLD_CLOSED = ['ideas', 'habits', 'waqfa', 'projects'], FOLD_CLOSED_MOBILE = ['pri', 'focus'];
+function foldState(){ try{ return JSON.parse(localStorage.getItem(FOLD_KEY) || '{}') || {}; }catch(e){ return {}; } }
+function isOpen(key){
+  const s = foldState(); if(key in s) return !!s[key];
+  if(FOLD_CLOSED.includes(key)) return false;
+  return !(FOLD_CLOSED_MOBILE.includes(key) && matchMedia('(max-width:999px)').matches);
+}
+function applyFold(key){
+  const card = document.querySelector('#tabBoard ' + FOLD_CARDS[key]); if(!card) return;
+  const open = isOpen(key);
+  card.classList.toggle('is-folded', !open);
+  const b = card.querySelector('.fold-btn'); if(b) b.setAttribute('aria-expanded', String(open));
+  const body = card.querySelector(':scope > .fold-body'); if(body) body.hidden = !open;
+}
+function setFold(key, open){ const s = foldState(); s[key] = open; try{ localStorage.setItem(FOLD_KEY, JSON.stringify(s)); }catch(e){} applyFold(key); }
+function unfold(key){ if(!isOpen(key)) setFold(key, true); }
+function initFold(){
+  Object.entries(FOLD_CARDS).forEach(([key, sel])=>{
+    const card = document.querySelector('#tabBoard ' + sel); if(!card || card.dataset.fold) return;
+    const head = card.querySelector(':scope > .card-head'), h2 = head && head.querySelector('h2'); if(!h2) return;
+    card.dataset.fold = key;
+    const body = document.createElement('div'); body.className = 'fold-body'; body.id = 'fold-' + key;
+    let n = head.nextSibling; while(n){ const nx = n.nextSibling; body.appendChild(n); n = nx; }
+    card.appendChild(body);
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fold-btn'; btn.setAttribute('aria-controls', body.id);
+    while(h2.firstChild) btn.appendChild(h2.firstChild);
+    const cnt = document.createElement('span'); cnt.className = 'card-count'; cnt.id = 'foldCount-' + key;
+    btn.append(cnt); btn.insertAdjacentHTML('beforeend', icon('chevron-down', 'fold-chev'));
+    h2.appendChild(btn);
+    btn.onclick = ()=>setFold(key, !isOpen(key));
+    applyFold(key);
+  });
+}
+function updateFoldCounts(){
+  const set = (k, v)=>{ const el = $('foldCount-' + k); if(el) el.textContent = v; };
+  const lines = (($('brainDump') || {}).value || '').split('\n').filter(l=>l.trim()).length;
+  const n = lines + waits.length + laters.length; set('ideas', n ? AR(n) : '');
+  try{ const hs = (flow.amRoutine || []).concat(flow.pmRoutine || []); set('habits', hs.length ? AR(hs.filter(x=>x.done).length) + '/' + AR(hs.length) : ''); }catch(e){}
+  const p = [...document.querySelectorAll('.pri .field')].filter(f=>f.value.trim()).length; set('pri', p ? AR(p) + '/3' : '');
+  set('focus', pomoRunning ? fmtClock(pomoRemaining) : '');
+}
+initFold();
+$('brainDump').addEventListener('input', updateFoldCounts);
+
+/* التقويم على الجوال: شريط الأسبوع، والشهر في ورقة سفلية */
+$('calMonthBtn').onclick = ()=>{
+  const m = $('calMonth'), ph = document.createComment('cal-month');
+  m.before(ph);
+  openSheet({title:'التقويم', content:m, onClose:()=>ph.replaceWith(m)});
+};
+
+/* ختام اليوم: كامل بعد الخامسة مساءً أو بعد إغلاق اليوم، أو عند الضغط على «أغلق اليوم»؛ وقبل ذلك شريط رفيع */
+let closingOpen = false;
+function renderClosing(){
+  const band = document.querySelector('.closing-band'); if(!band) return;
+  const stamp = $('dayStamp');
+  band.classList.toggle('is-strip', !(closingOpen || new Date().getHours() >= 17 || (stamp && !stamp.hidden)));
+}
+$('closingOpen').onclick = ()=>{ closingOpen = true; renderClosing(); $('r1').focus(); };
+setInterval(renderClosing, 60000);
+
+/* ترتيب صفحة اليوم: إخفاء البطاقات وترتيبها (سحب، أو أزرار ↑↓ بديلة) — على هذا الجهاز */
+const LAYOUT_KEY = 'daily-board-layout';
+const LAYOUT_CARDS = [['now', '.c-now', 'الآن'], ['pri', '.c-pri', 'أولويات اليوم'], ['tasks', '.c-tasks', 'مهام اليوم'], ['sched', '.c-sched', 'جدول اليوم'],
+  ['cal', '.c-cal', 'التقويم'], ['focus', '.c-focus', 'التركيز'], ['ideas', '.c-ideas', 'أفكار عابرة'], ['habits', '.c-habits', 'عاداتي اليوم'],
+  ['waqfa', '.c-waqfa', 'وقفة'], ['projects', '.c-projects', 'نبض المشاريع'], ['review', '.c-review', 'ختام اليوم']];
+function layoutState(){ try{ return Object.assign({order:[], hidden:[]}, JSON.parse(localStorage.getItem(LAYOUT_KEY) || '{}')); }catch(e){ return {order:[], hidden:[]}; } }
+function saveLayout(s){ try{ localStorage.setItem(LAYOUT_KEY, JSON.stringify(s)); }catch(e){} applyLayout(); renderLayoutList(); }
+function layoutOrder(){ const s = layoutState(), keys = LAYOUT_CARDS.map(c=>c[0]); return s.order.filter(k=>keys.includes(k)).concat(keys.filter(k=>!s.order.includes(k))); }
+function applyLayout(){
+  const s = layoutState(), order = s.order.length ? layoutOrder() : null;
+  LAYOUT_CARDS.forEach(([k, sel])=>{
+    const el = document.querySelector('#tabBoard ' + sel); if(!el) return;
+    if(order) el.style.order = String(order.indexOf(k) + 1); else el.style.removeProperty('order');
+    el.classList.toggle('user-hidden', s.hidden.includes(k));
+  });
+  /* على الحاسوب: كل طبقة تأخذ ترتيب أول بطاقة فيها */
+  const grp = (sel, keys)=>{ const g = document.querySelector('#tabBoard ' + sel); if(!g) return;
+    if(order) g.style.order = String(Math.min(...keys.map(k=>order.indexOf(k) + 1))); else g.style.removeProperty('order'); };
+  grp('.layer2', ['pri', 'tasks', 'sched', 'cal', 'focus']); grp('.layer3', ['ideas', 'habits', 'waqfa', 'projects']);
+  const arc = $('archive'); if(arc) arc.style.order = order ? '99' : '';
+}
+function renderLayoutList(){
+  const ol = $('layoutList'); if(!ol) return;
+  const s = layoutState(), order = layoutOrder(); ol.innerHTML = '';
+  order.forEach((k, i)=>{
+    const c = LAYOUT_CARDS.find(x=>x[0] === k), off = s.hidden.includes(k);
+    const li = document.createElement('li'); li.draggable = true; li.dataset.k = k; li.className = off ? 'is-off' : '';
+    li.innerHTML = '<span class="ll-grip" aria-hidden="true">' + icon('grip') + '</span><span class="ll-name"></span>';
+    li.querySelector('.ll-name').textContent = c[2];
+    const btn = (ic, label, fn, dis)=>{ const b = document.createElement('button'); b.type = 'button'; b.innerHTML = icon(ic); b.setAttribute('aria-label', label + ': ' + c[2]); b.title = label; b.disabled = !!dis; b.onclick = fn; return b; };
+    const eye = btn(off ? 'eye-off' : 'eye', off ? 'أظهر' : 'أخفِ', ()=>{ const st = layoutState(); st.hidden = off ? st.hidden.filter(x=>x !== k) : st.hidden.concat(k); saveLayout(st); });
+    eye.setAttribute('aria-pressed', String(!off));
+    const move = d=>()=>{ const st = layoutState(), o = layoutOrder(), j = i + d; [o[i], o[j]] = [o[j], o[i]]; st.order = o; saveLayout(st);
+      setTimeout(()=>{ const b = ol.querySelectorAll('li')[j]; if(b) b.querySelector(d < 0 ? '[title="أعلى"]' : '[title="أسفل"]')?.focus(); }, 0); };
+    li.append(eye, btn('arrow-up', 'أعلى', move(-1), i === 0), btn('arrow-down', 'أسفل', move(1), i === order.length - 1));
+    li.addEventListener('dragstart', e=>{ li.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', k); });
+    li.addEventListener('dragend', ()=>li.classList.remove('dragging'));
+    li.addEventListener('dragover', e=>{ e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+    li.addEventListener('drop', e=>{ e.preventDefault(); const from = e.dataTransfer.getData('text/plain'); if(!from || from === k) return;
+      const st = layoutState(), o = layoutOrder().filter(x=>x !== from); o.splice(o.indexOf(k), 0, from); st.order = o; saveLayout(st); });
+    ol.append(li);
+  });
+}
+$('layoutReset').onclick = ()=>{ try{ localStorage.removeItem(LAYOUT_KEY); }catch(e){} applyLayout(); renderLayoutList(); showToast('عاد ترتيب صفحة اليوم إلى الافتراضي.'); };
+applyLayout(); renderLayoutList();
+try{ renderNow(); updateFoldCounts(); renderClosing(); }catch(e){}
 
 /* ختم «أُنجز» (كلاسيكي): يبقى على بطاقة الختام بقية اليوم الذي أُغلق فيه */
 const STAMP_KEY = 'daily-board-stamp';

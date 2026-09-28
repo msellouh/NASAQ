@@ -21,5 +21,6 @@
 @media (max-width:760px){
   :root[data-hero="brief"] .greet-card{flex-direction:column;max-height:none}
   :root[data-hero="brief"] .greet-media{width:auto;height:120px;margin:0 var(--sp-3) var(--sp-3)}
+  :root[data-hero="brief"] .greet-card:not(.has-photo) .greet-media{height:64px}   /* بلا صورة: شريط زخرفي قصير */
 }
 }
