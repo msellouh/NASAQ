@@ -41,6 +41,25 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 
 /* ---------- الأزرار ---------- */
 /* الأزرار (.btn وأنواعها) مشتركة في nasaq-ui.css */
+/* المانحون: قائمة للتعديل (الاسم والدولة) */
+#donorsDlg{width:min(760px,calc(100vw - 24px))}
+.donors-box{display:grid;gap:var(--sp-3);padding:var(--sp-5)}
+.donors-box h2{margin:0;font-family:var(--font-head);font-size:var(--fs-lg)}
+.donors-box .sub{margin:0;font-size:var(--fs-sm);color:var(--muted)}
+.donors-tools{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2) var(--sp-3)}
+.donors-tools input{flex:1;min-width:200px;min-height:40px;border:1px solid var(--rule);border-radius:var(--r-md);background:var(--surface);font:inherit;padding:0 var(--sp-3);color:inherit}
+.donors-list{display:grid;gap:var(--sp-1);max-height:min(60vh,var(--host-vh,100vh));overflow:auto;overscroll-behavior:contain}
+.drow{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) auto auto;gap:var(--sp-2);align-items:center;padding:var(--sp-1) 0;border-bottom:1px solid var(--rule)}
+.drow input{min-height:40px;border:1px solid var(--rule);border-radius:var(--r-md);background:var(--surface);font:inherit;font-size:var(--fs-sm);padding:0 var(--sp-2);color:inherit;min-width:0}
+.drow input[name=country]:placeholder-shown{border-style:dashed}
+.drow .dcount{font-size:var(--fs-xs);color:var(--muted);white-space:nowrap}
+@media (max-width:640px){ .drow{grid-template-columns:1fr 1fr} .drow .dcount{grid-column:1} }
+/* اعتماد التسويق في «مشروع جديد» */
+.appr{display:grid;gap:var(--sp-2);padding:var(--sp-3);border:1px dashed var(--rule);border-radius:var(--r-md)}
+.appr h3{margin:0;font-size:var(--fs-md)}
+.appr-row{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2) var(--sp-3)}
+.appr-name{font-size:var(--fs-sm);color:var(--muted);min-width:0;overflow-wrap:anywhere}
+.appr .note{margin:0}
 .icon-btn{width:38px;height:38px;border-radius:var(--r-md);border:0;background:transparent;color:var(--ink);display:inline-grid;place-items:center;transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .icon-btn:hover{background:var(--stripe)}
 .icon-btn svg{width:19px;height:19px}
@@ -550,6 +569,7 @@ dialog[open]::backdrop{animation:m-fade-in calc(var(--dur-3) * var(--motion-scal
   <div class="page-head">
     <div><h1 id="pageTitle">المشاريع</h1><p id="pageSub">جارٍ التحميل…</p></div>
     <button class="btn" type="button" id="namesBtn" title="مجموعات الأسماء المتشابهة لتعتمد لها اسمًا موحّدًا">مراجعة الأسماء</button>
+    <button class="btn" type="button" id="donorsBtn" title="أسماء المانحين ودولهم — تُعتمد في قاعدة «المانحون» وتُستعمل في الإحصائيات">المانحون</button>
     <button class="btn cta" type="button" id="newProjBtn">＋ مشروع جديد</button>
   </div>
 
@@ -562,6 +582,7 @@ dialog[open]::backdrop{animation:m-fade-in calc(var(--dur-3) * var(--motion-scal
     <label><span class="sr">الحالة</span><select id="fStatus"></select></label>
     <label><span class="sr">الجهة الممولة</span><select id="fDonor"></select></label>
     <label><span class="sr">نوع المشروع</span><select id="fType"></select></label>
+    <label><span class="sr">المشروع الموحّد</span><select id="fStd"></select></label>
     <label><span class="sr">المنسق</span><select id="fCoord"></select></label>
   </div>
 
@@ -645,6 +666,16 @@ dialog[open]::backdrop{animation:m-fade-in calc(var(--dur-3) * var(--motion-scal
       <label class="fld">بيان المستفيدين<input name="benefText" maxlength="300"></label>
     </div>
     <label class="fld">نبذة<textarea name="brief" maxlength="1900"></textarea></label>
+    <section class="appr" aria-labelledby="apprTitle">
+      <h3 id="apprTitle">اعتماد التسويق</h3>
+      <div class="appr-row">
+        <button class="btn soft" type="button" id="apprPick"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg> أرفق ملف اعتماد التسويق</button>
+        <input type="file" id="apprFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp,.heic" hidden>
+        <span class="appr-name" id="apprName">لم يُرفق ملف</span>
+        <button class="btn ghost sm" type="button" id="apprClear" hidden>إزالة</button>
+      </div>
+      <p class="note">عند الإنشاء يُنشأ مجلد المشروع على درايف بالقالب الكامل، ويوضع هذا الملف في «01- إعتماد التسويق» داخله، وتُعلَّم خانته مكتملة.</p>
+    </section>
     <p class="note" id="projTitlePrev" style="margin:0"></p>
     <p class="note" style="margin:0">مبلغ التنفيذ حسب الاعتماد والفعلي يُحسبان بالمعادلة، ويمكن تعديلهما لاحقًا من «تعديل المبالغ».</p>
     <div class="dlg-acts">
@@ -654,6 +685,20 @@ dialog[open]::backdrop{animation:m-fade-in calc(var(--dur-3) * var(--motion-scal
   </form>
   <datalist id="dlDonor"></datalist><datalist id="dlType"></datalist><datalist id="dlCoord"></datalist>
   <datalist id="dlMarketer"></datalist><datalist id="dlCountry"></datalist><datalist id="dlPlace"></datalist>
+</dialog>
+<!-- المانحون: الاسم المعتمد ودولة كل مانح (قاعدة «المانحون» في نوشن) -->
+<dialog id="donorsDlg" aria-labelledby="donorsDlgTitle">
+  <div class="donors-box">
+    <h2 id="donorsDlgTitle">المانحون</h2>
+    <p class="sub">عدّل اسم المانح فيتغيّر في كل مشاريعه، وحدّد دولته. يُعتمد كل ذلك في قاعدة «المانحون» على نوشن، ويُستعمل في الإحصائيات حسب دولة المانح.</p>
+    <div class="donors-tools">
+      <input id="donorsQ" type="search" placeholder="ابحث عن مانح…" aria-label="ابحث عن مانح" autocomplete="off">
+      <span class="note" id="donorsCount"></span>
+    </div>
+    <datalist id="dlDonorCountry"></datalist>
+    <div class="donors-list" id="donorsList"></div>
+    <div class="dlg-acts"><button class="btn ghost" type="button" data-close>إغلاق</button></div>
+  </div>
 </dialog>
 <dialog id="moneyDlg" aria-labelledby="moneyDlgTitle">
   <form id="moneyForm" method="dialog">
@@ -850,7 +895,7 @@ let SOURCE = '';
 const FILES = {};                 /* قوائم الملفات المقروءة من الجسر، حسب الكود */
 const filesLoading = new Set();
 const EXPANDED = new Set();       /* خانات مستندات فُتحت كل ملفاتها */
-const S = { q:'', year:'2026', status:'', donor:'', type:'', coord:'', sort:'smart', sel:null, view:'list', tsort:'approved', tdir:-1 };
+const S = { q:'', year:'2026', status:'', donor:'', type:'', std:'', coord:'', sort:'smart', sel:null, view:'list', tsort:'approved', tdir:-1 };
 
 /* ================= الاتصال بالجسر (نفس قناة نَسَق) ================= */
 const DEFAULT_BRIDGE = 'https://script.google.com/macros/s/AKfycbwwrcb-T-vBdPd2u94XfiFspyDwBKXec-NNeUzZiJMCupbUp91dFwZM2Wfj-F3dncw/exec';
@@ -988,6 +1033,62 @@ document.addEventListener('change', async e => {
     if(open){ const dd = document.querySelector('.dc-edit'); if(dd) dd.open = true; }
   }catch(err){ toast(err.message || 'تعذّر الحفظ', true); }
 });
+/* ---------- المانحون: قائمة للتعديل (الاسم والدولة) تُحفظ في قاعدة «المانحون» ---------- */
+const DONOR_COUNTRIES_BASE = ['تركيا', 'إندونيسيا', 'ماليزيا', 'فلسطين', 'قطر', 'الكويت', 'السعودية', 'الإمارات', 'أيرلندا', 'بريطانيا', 'جنوب أفريقيا', 'ألمانيا', 'الولايات المتحدة', 'مصر', 'الجزائر', 'فرنسا', 'المالديف'];
+function donorsModel(){
+  const n = {}; DATA.projects.forEach(p => { if(p.donor) n[p.donor] = (n[p.donor] || 0) + 1; });
+  const byName = {}; (DATA.donors || []).forEach(d => { byName[d.name] = d; });
+  const names = [...new Set(Object.keys(n).concat(Object.keys(byName)))];
+  return names.map(name => ({name, id: (byName[name] || {}).id || '', count: n[name] || 0,
+    country: (byName[name] || {}).country || (DATA.donorCountries || {})[name] || ''}))
+    .sort((a, b) => (a.country ? 1 : 0) - (b.country ? 1 : 0) || b.count - a.count || a.name.localeCompare(b.name, 'ar'));
+}
+function renderDonors(){
+  const q = ($('donorsQ').value || '').trim().toLowerCase(), all = donorsModel();
+  const rows = all.filter(d => !q || d.name.toLowerCase().includes(q) || (d.country || '').includes(q));
+  const known = [...new Set(DONOR_COUNTRIES_BASE.concat(all.map(d => d.country).filter(Boolean)))];
+  $('dlDonorCountry').innerHTML = known.map(c => '<option value="' + esc(c) + '">').join('');
+  const missing = all.filter(d => !d.country).length;
+  $('donorsCount').textContent = cnt(all.length, W_DONOR) + (missing ? ' | ' + AR(missing) + ' بلا دولة' : ' | كلها مصنّفة');
+  const live = SOURCE === 'live';
+  $('donorsList').innerHTML = rows.map(d => '<form class="drow" data-id="' + esc(d.id) + '" data-old="' + esc(d.name) + '">' +
+      '<input name="name" value="' + esc(d.name) + '" maxlength="100" aria-label="اسم المانح" dir="auto" required' + (live ? '' : ' disabled') + '>' +
+      '<input name="country" list="dlDonorCountry" value="' + esc(d.country) + '" maxlength="60" placeholder="الدولة" aria-label="دولة ' + esc(d.name) + '"' + (live ? '' : ' disabled') + '>' +
+      '<span class="dcount">' + (d.count ? cnt(d.count, W_PROJ) : 'بلا مشاريع') + '</span>' +
+      '<button class="btn soft sm" type="submit"' + (live ? '' : ' disabled') + '>حفظ</button></form>').join('') ||
+    '<div class="empty">لا يوجد مانح يطابق البحث.</div>';
+}
+const W_DONOR = ['مانح واحد', 'مانحان', 'مانحين', 'مانحًا', 'مانح'];
+$('donorsBtn').addEventListener('click', () => {
+  $('donorsQ').value = ''; renderDonors(); $('donorsDlg').showModal();
+  if(SOURCE !== 'live') toast('التعديل يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true);
+});
+$('donorsQ').addEventListener('input', renderDonors);
+$('donorsList').addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.target.closest('form.drow'); if(!f) return;
+  const oldName = f.dataset.old, name = f.elements.name.value.trim(), country = f.elements.country.value.trim();
+  if(!name){ toast('اسم المانح مطلوب', true); return; }
+  const n = DATA.projects.filter(p => p.donor === oldName).length;
+  if(name !== oldName){
+    const merge = DATA.projects.some(p => p.donor === name) || (DATA.donors || []).some(d => d.name === name);
+    if(!confirm((merge ? 'يوجد مانح باسم «' + name + '». سيُدمج فيه «' + oldName + '»' : 'سيتغيّر اسم المانح «' + oldName + '» إلى «' + name + '»') +
+      (n ? ' في ' + cnt(n, W_PROJ) + ' على نوشن' : '') + '. متابعة؟')) return;
+  }
+  const btn = f.querySelector('button'); btn.disabled = true; btn.setAttribute('aria-busy', 'true');
+  try{
+    const r = await post({action: 'donor_save', org: ORG, id: f.dataset.id || '', oldName, name, country});
+    DATA.donors = r.donors || DATA.donors; DATA.donorCountries = r.donorCountries || DATA.donorCountries;
+    if(name !== oldName) DATA.projects.forEach(p => { if(p.donor === oldName) p.donor = name; });
+    if(S.donor === oldName) S.donor = name;
+    const O = DATA.options = DATA.options || {};
+    if(!(O.donors || []).includes(name)) (O.donors = O.donors || []).push(name);
+    applyDonorCountries();
+    try{ localStorage.removeItem('daily-board-projects-cache-' + ORG); }catch(err){}
+    toast(name !== oldName ? 'حُفظ «' + name + '»' + (r.renamed ? ' وتغيّر في ' + cnt(r.renamed, W_PROJ) : '') : 'حُفظت دولة «' + name + '»: ' + (country || 'غير مصنّف'));
+    buildFilters(); render(); renderDonors();
+  }catch(err){ toast(err.message || 'تعذّر الحفظ', true); btn.disabled = false; btn.removeAttribute('aria-busy'); }
+});
 /* خطة نسخة التطوير تُحفظ في هذا المتصفح فقط — لتجربة الإدخال قبل نشر الجسر */
 const LOCAL_PLAN_KEY = 'daily-board-projects-plan-dev-' + ORG;
 const LOCAL_PEOPLE_KEY = 'daily-board-projects-people-dev-' + ORG;
@@ -997,7 +1098,7 @@ function localPeopleRead(){ try{ return JSON.parse(localStorage.getItem(LOCAL_PE
 function localPeopleWrite(){ try{ localStorage.setItem(LOCAL_PEOPLE_KEY, JSON.stringify(DATA.people)); }catch(e){} }
 const uniqNames = list => [...new Set(list.map(n => String(n || '').trim()).filter(Boolean))];
 function use(d, src, note){
-  DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [], options: d.options || {}, donorCountries: d.donorCountries || {} };
+  DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [], options: d.options || {}, donorCountries: d.donorCountries || {}, donors: d.donors || [] };
   applyDonorCountries();
   if(src === 'live') loadFilesCache();
   SOURCE = src;
@@ -1063,14 +1164,15 @@ function buildFilters(){
   fillSelect($('fStatus'), 'كل الحالات', uniq('status'), S.status);
   fillSelect($('fDonor'), 'كل الجهات الممولة', uniq('donor'), S.donor);
   fillSelect($('fType'), 'كل الأنواع', uniq('type'), S.type);
+  fillSelect($('fStd'), 'كل المشاريع الموحّدة', uniq('stdName').sort((a, b) => String(a).localeCompare(String(b), 'ar')), S.std);
   fillSelect($('fCoord'), 'كل المنسقين', uniq('coordinator'), S.coord);
 }
 function filtered(){
   const q = S.q.trim().toLowerCase();
   const rows = DATA.projects.filter(p =>
     (!S.year || p.year === S.year) && (!S.status || p.status === S.status) &&
-    (!S.donor || p.donor === S.donor) && (!S.type || p.type === S.type) && (!S.coord || p.coordinator === S.coord) &&
-    (!q || [p.name, p.code, p.donor, p.place, p.entities, p.contractor].some(v => v && String(v).toLowerCase().includes(q))));
+    (!S.donor || p.donor === S.donor) && (!S.type || p.type === S.type) && (!S.std || p.stdName === S.std) && (!S.coord || p.coordinator === S.coord) &&
+    (!q || [p.name, p.code, p.donor, p.place, p.entities, p.contractor, p.stdName].some(v => v && String(v).toLowerCase().includes(q))));
   const endKey = p => p.end || '9999';
   const alarms = p => lateDels(p).length + isLate(p) + planOf(p).filter(itemLate).length;
   const cmp = {
@@ -2098,6 +2200,7 @@ $('newProjBtn').addEventListener('click', () => {
   $('projDlgSub').textContent = ORG_INFO.full;
   budReset();
   projPreview();
+  apprShow();
   $('projDlg').showModal();
 });
 /* المدة ← تاريخ النهاية: البداية + المدة بالأيام أو الأسابيع أو الأشهر (النهاية آخر يوم في المدة).
@@ -2139,9 +2242,11 @@ $('projForm').addEventListener('submit', async e => {
   const pr = Object.assign({}, v, {code, approved: B.A, admin: B.ADM, exec: B.E, otherOps: B.IND, net: B.INV,
     printing: sumKind('printing'), transport: sumKind('transport'), budget, benef: n(v.benef),
     phase: v.status === 'مخطط له' ? 'الاعتماد' : ''});
-  const btn = f.querySelector('[type=submit]'); btn.disabled = true;
+  const btn = f.querySelector('[type=submit]'); btn.disabled = true; btn.setAttribute('aria-busy', 'true');
   try{
-    const d = await post({action:'project_create', org: ORG, project: pr});
+    const af = $('apprFile').files[0];
+    const approvalFile = af ? {name: af.name, mime: af.type || '', data: await b64(af)} : null;
+    const d = await post({action:'project_create', org: ORG, project: pr, approvalFile});
     DATA.projects.unshift(d.project);
     const O = DATA.options = DATA.options || {};
     if(nt.std && !(O.names || []).includes(nt.std)) (O.names = O.names || []).push(nt.std);
@@ -2152,11 +2257,27 @@ $('projForm').addEventListener('submit', async e => {
     S.sel = d.project.id; S.view = 'list';
     history.replaceState(null, '', '#' + encodeURIComponent(d.project.code || d.project.id));
     buildFilters(); render();
-    toast(d.folderError ? 'أُنشئ المشروع في نوشن، وتعذّر إنشاء مجلده في درايف: ' + d.folderError : 'أُنشئ المشروع ' + (d.project.code || '') + ' في نوشن ومجلده في درايف', !!d.folderError);
+    toast(d.folderError ? 'أُنشئ المشروع في نوشن، وتعذّر إنشاء مجلده في درايف: ' + d.folderError
+      : d.fileError ? 'أُنشئ المشروع ' + (d.project.code || '') + ' ومجلده، وتعذّر رفع اعتماد التسويق: ' + d.fileError
+      : 'أُنشئ المشروع ' + (d.project.code || '') + ' في نوشن ومجلده في درايف' + (d.file ? '، ورُفع اعتماد التسويق إلى «01- إعتماد التسويق»' : ''),
+      !!(d.folderError || d.fileError));
   }catch(err){ toast(err.message || 'تعذّر الإنشاء', true); }
-  finally{ btn.disabled = false; }
+  finally{ btn.disabled = false; btn.removeAttribute('aria-busy'); }
 });
 
+/* اعتماد التسويق: يُرفع مع إنشاء المشروع إلى «01- إعتماد التسويق» في مجلده الجديد على درايف */
+function apprShow(){
+  const f = $('apprFile').files[0];
+  $('apprName').textContent = f ? f.name + ' (' + AR(Math.max(1, Math.round(f.size / 1024))) + ' ك.ب)' : 'لم يُرفق ملف';
+  $('apprClear').hidden = !f;
+}
+$('apprPick').addEventListener('click', () => $('apprFile').click());
+$('apprFile').addEventListener('change', () => {
+  const f = $('apprFile').files[0];
+  if(f && f.size > UP_MAX){ toast('حجم الملف أكبر من 25 ميجابايت', true); $('apprFile').value = ''; }
+  apprShow();
+});
+$('apprClear').addEventListener('click', () => { $('apprFile').value = ''; apprShow(); $('apprPick').focus(); });
 /* ---------- حاسبة الموازنة (مشروع جديد) ----------
    الكلي = الإدارية + التنفيذ الكلي، والتنفيذ الكلي = الفاتورة + المصاريف غير المباشرة.
    الإدارية 10% من الكلي ما لم تُعدَّل يدويًا، والفاتورة تتبع الباقي ما لم تُعدَّل يدويًا.
@@ -2489,7 +2610,7 @@ $('stats').addEventListener('click', e => {
 });
 $('yearSeg').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; S.year = b.dataset.y; buildFilters(); render(); });
 let qT; $('q').addEventListener('input', e => { clearTimeout(qT); qT = setTimeout(() => { S.q = e.target.value; render(); }, 120); });
-[['fStatus','status'],['fDonor','donor'],['fType','type'],['fCoord','coord'],['sort','sort']].forEach(([id, k]) =>
+[['fStatus','status'],['fDonor','donor'],['fType','type'],['fStd','std'],['fCoord','coord'],['sort','sort']].forEach(([id, k]) =>
   $(id).addEventListener('change', e => { S[k] = e.target.value; render(); }));
 $('reloadBtn').addEventListener('click', load);
 window.addEventListener('hashchange', () => { readHash(); render(); });
