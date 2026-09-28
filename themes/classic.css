@@ -111,6 +111,8 @@
 /* 8) الفواصل: خط رفيع بلون السطور في وسطه ◆ بالقلم الأحمر */
 :root[data-palette="classic"] .card-head{padding-bottom:calc(var(--sp-2) + 5px);
   background:var(--paper-diamond) no-repeat 50% 100% / 9px 9px,linear-gradient(var(--art-rule),var(--art-rule)) no-repeat 0 calc(100% - 4px) / 100% 1px}
+/* الجوال: بطاقة التقويم بلا هامش أحمر، لتتسع أيام الأسبوع السبعة لمساحة ضغط 44px */
+@media (max-width:999px){ :root[data-palette="classic"] .card.c-cal:not(.c-ideas){padding-inline-start:var(--sp-4);background-image:none} }
 /* الختم: أحمر دائري بخط الرقعة (البنية في nasaq-ui.css — .day-stamp) */
 :root[data-palette="classic"] .day-stamp{color:var(--danger);border-color:var(--danger);font-family:var(--font-hand)}
 }

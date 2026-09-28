@@ -3,12 +3,15 @@
 /* فحص تصميم نَسَق — الصقه في Console أي صفحة من المنصة، أو شغّله عبر Playwright.
    يعيد أرقامًا تُقارن بأهداف نظام التصميم. لا يغيّر شيئًا في الصفحة. */
 (() => {
-  const vis = e => e.offsetParent !== null && getComputedStyle(e).visibility !== 'hidden';
-  const lum = c => { const m = c.match(/[\d.]+/g); if (!m) return null;
-    const [r, g, b] = m.slice(0, 3).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); });
+  /* ظاهر فعلًا: محتوى <details> المغلق (سوى summary) مخفي وإن كان له حجم في كروم */
+  const vis = e => e.offsetParent !== null && getComputedStyle(e).visibility !== 'hidden' && !(e.closest('details:not([open])') && !e.closest('summary'));
+  /* أي صيغة لون (rgb أو color(srgb …) أو oklab — ومنها ناتج color-mix) تُقرأ عبر لوحة رسم بكسل واحد */
+  const cv = document.createElement('canvas'); cv.width = cv.height = 1; const cx = cv.getContext('2d', {willReadFrequently: true});
+  const rgba = c => { cx.clearRect(0, 0, 1, 1); cx.fillStyle = 'rgba(0,0,0,0)'; cx.fillStyle = c; cx.fillRect(0, 0, 1, 1); const d = cx.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2], d[3] / 255]; };
+  const lum = c => { const [r, g, b] = rgba(c).slice(0, 3).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); });
     return .2126 * r + .7152 * g + .0722 * b; };
-  const bgOf = e => { while (e) { const c = getComputedStyle(e).backgroundColor, m = c.match(/[\d.]+/g);
-    if (m && (m.length < 4 || +m[3] > .5)) return c; e = e.parentElement; } return 'rgb(255,255,255)'; };
+  const bgOf = e => { while (e) { const c = getComputedStyle(e).backgroundColor;
+    if (rgba(c)[3] > .5) return c; e = e.parentElement; } return 'rgb(255,255,255)'; };
   const texts = [...document.querySelectorAll('body *')].filter(e => vis(e) &&
     [...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim().length > 1));
   const count = (arr) => arr.reduce((o, k) => (o[k] = (o[k] || 0) + 1, o), {});

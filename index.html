@@ -11,9 +11,9 @@
 <!-- تثبيت اللوح كتطبيق (الهاتف والحاسوب) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#F7F6F2">
-<script src="nasaq-core.js?v=20260928d"></script>
-<script src="nasaq-art.js?v=20260928d"></script>
-<script src="nasaq-icons.js?v=20260928d"></script>
+<script src="nasaq-core.js?v=20260928e"></script>
+<script src="nasaq-art.js?v=20260928e"></script>
+<script src="nasaq-icons.js?v=20260928e"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -133,7 +133,7 @@ h1{font-family:var(--font-head);font-size:var(--fs-display);font-weight:700;marg
 
 .field{border:0;border-bottom:1px solid var(--rule);background:transparent;font:inherit;color:inherit;padding:var(--sp-2) var(--sp-1);width:100%}
 .field::placeholder{color:var(--text-3)}
-.field:focus{outline:none;border-bottom-color:var(--focus);box-shadow:0 1px 0 var(--focus)}
+.field:focus{outline:2px solid transparent;border-bottom-color:var(--focus);box-shadow:0 1px 0 var(--focus)}
 .pri-row .field{font-size:var(--fs-md)}
 
 .head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);border-bottom:1px solid var(--ink);padding-bottom:var(--sp-1);margin:0 0 var(--sp-3)}
@@ -224,7 +224,7 @@ li.details textarea{resize:vertical;min-height:34px}
 .plan-tag.stale{background:var(--hold-bg);color:var(--hold-ink)}
 .mini-row{display:flex;gap:var(--sp-1);margin-top:var(--sp-2);min-width:0}
 .mini-add{flex:1;min-width:0;border:1px dashed var(--rule);border-radius:var(--r-md);background:transparent;font:inherit;font-size:var(--fs-sm);padding:var(--sp-2) var(--sp-2);color:inherit}
-.mini-add:focus{outline:none;border-style:solid;border-color:var(--focus)}
+.mini-add:focus{outline:2px solid transparent;border-style:solid;border-color:var(--focus)}
 .mini-row button{border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:var(--r-md);font:inherit;font-size:var(--fs-base);width:32px;flex:none;cursor:pointer}
 .mini-row button:hover{border-color:var(--ink-2)}
 
@@ -598,7 +598,7 @@ ol.tasks li.task.flash{animation:task-flash 1.6s ease-out}
 .ob-sub{font-size:var(--fs-xs);line-height:1.45;color:var(--ob-sub)}
 .ob-chip{margin-top:var(--sp-1);padding:3px var(--sp-3);border-radius:var(--r-md);background:var(--primary);color:var(--on-primary);font-size:var(--fs-xs);font-weight:700;white-space:nowrap}
 .ob-poster.next .ob-chip{background:var(--ob-hue);color:var(--ob-on-hue)}
-.ob-poster:hover:not(:disabled),.ob-poster:focus-visible{transform:translateY(-4px);box-shadow:0 0 0 3px var(--ob-hue),0 18px 34px rgba(8,9,20,.25);outline:none}
+.ob-poster:hover:not(:disabled),.ob-poster:focus-visible{transform:translateY(-4px);box-shadow:0 0 0 3px var(--ob-hue),0 18px 34px rgba(8,9,20,.25);outline:2px solid transparent}
 .ob-poster:hover:not(:disabled) .ob-art{transform:scale(1.06)}
 /* المنطق التحفيزي: ما لم يُنجز باهت بلا لون، وما أُنجز يتوهّج بلونه.
    المرور على ملصق باهت يعيد إليه لونه — لمحة عمّا ينتظرك حين تُكمله. */
@@ -663,7 +663,8 @@ body.focus-open{overflow:hidden}
 .palette-overlay{position:fixed;inset:0;z-index:290;max-width:none;margin:0;background:var(--overlay);display:flex;align-items:flex-start;justify-content:center;padding:12vh var(--sp-4) var(--sp-4)}
 .palette-overlay[hidden]{display:none}
 .palette{width:min(620px,100%);background:var(--paper);color:var(--ink);border:1px solid var(--rule);border-radius:var(--r-xl);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;max-height:70vh}
-.palette input{border:0;border-bottom:1px solid var(--rule);background:transparent;color:inherit;font:inherit;font-size:var(--fs-md);padding:var(--sp-4) var(--sp-4);outline:none}
+.palette input{border:0;border-bottom:1px solid var(--rule);background:transparent;color:inherit;font:inherit;font-size:var(--fs-md);padding:var(--sp-4) var(--sp-4);outline:2px solid transparent}
+.palette input:focus-visible{box-shadow:inset 0 -2px 0 var(--focus-ring)}
 .pal-list{list-style:none;margin:0;padding:var(--sp-1);overflow-y:auto}
 .pal-item{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3);border-radius:var(--r-lg);cursor:pointer;font-size:var(--fs-base)}
 .pal-item[aria-selected="true"]{background:var(--focus-bg);color:var(--focus-ink)}
@@ -872,7 +873,7 @@ body.focus-open{overflow:hidden}
 
 /* ---------- brain dump ---------- */
 .braindump{width:100%;min-height:74px;border:1px solid var(--rule);border-radius:var(--r-md);background:var(--surface);font:inherit;font-size:var(--fs-sm);padding:var(--sp-2) var(--sp-2);color:inherit;resize:vertical;margin-top:var(--sp-1)}
-.braindump:focus{outline:none;border-color:var(--focus)}
+.braindump:focus{outline:2px solid transparent;border-color:var(--focus)}
 
 /* ---------- pomodoro ---------- */
 .pomodoro{margin-top:var(--sp-1)}
@@ -1479,18 +1480,19 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 }
 }
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260928d">
-<link rel="stylesheet" href="layouts/nav-side.css?v=20260928d">
-<link rel="stylesheet" href="layouts/nav-top.css?v=20260928d">
-<link rel="stylesheet" href="layouts/hero-page.css?v=20260928d">
-<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928d">
-<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928d">
-<link rel="stylesheet" href="nasaq-ui.css?v=20260928d">
-<link rel="stylesheet" href="themes/classic.css?v=20260928d">
-<link rel="stylesheet" href="themes/nasaq.css?v=20260928d">
-<link rel="stylesheet" href="themes/nasaq360.css?v=20260928d">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260928e">
+<link rel="stylesheet" href="layouts/nav-side.css?v=20260928e">
+<link rel="stylesheet" href="layouts/nav-top.css?v=20260928e">
+<link rel="stylesheet" href="layouts/hero-page.css?v=20260928e">
+<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928e">
+<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928e">
+<link rel="stylesheet" href="nasaq-ui.css?v=20260928e">
+<link rel="stylesheet" href="themes/classic.css?v=20260928e">
+<link rel="stylesheet" href="themes/nasaq.css?v=20260928e">
+<link rel="stylesheet" href="themes/nasaq360.css?v=20260928e">
 </head>
 <body>
+<a class="skip-link" href="#mainContent">تخطَّ إلى المحتوى</a>
 
 <div class="auth-overlay" id="authOverlay" hidden>
   <div class="auth-card">
@@ -1505,8 +1507,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </div>
 
     <div class="auth-form" id="authLogin">
-      <input id="loginUser" placeholder="اسم المستخدم" autocomplete="username">
-      <input id="loginPass" type="password" placeholder="كلمة السر" autocomplete="current-password">
+      <input id="loginUser" placeholder="اسم المستخدم" autocomplete="username" aria-label="اسم المستخدم">
+      <input id="loginPass" type="password" placeholder="كلمة السر" autocomplete="current-password" aria-label="كلمة السر">
       <label class="auth-remember"><input type="checkbox" id="rememberMe"><span>ابقَ مسجّل الدخول على هذا الجهاز</span></label>
       <button class="auth-primary" id="loginBtn" type="button">دخول</button>
       <div class="auth-links">
@@ -1518,26 +1520,26 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 
     <div class="auth-form" id="authBridge" hidden>
       <p style="color:var(--muted);font-size:12.5px;margin:0 0 4px">الصق رابط تطبيق الويب الصحيح من Apps Script (Deploy ← Manage deployments). اتركه فارغًا واحفظ للعمل محليًا بلا حساب.</p>
-      <input type="url" id="authBridgeUrl" placeholder="https://script.google.com/macros/s/…">
+      <input type="url" id="authBridgeUrl" placeholder="https://script.google.com/macros/s/…" aria-label="https://script.google.com/macros/s/">
       <button class="auth-primary" id="authBridgeSave" type="button">حفظ</button>
       <div class="auth-links"><button class="linklike" id="backToLogin3" type="button">رجوع لتسجيل الدخول</button></div>
     </div>
 
     <div class="auth-form" id="authRegister" hidden>
-      <input id="regUser" placeholder="اسم المستخدم (إنجليزي، 3 أحرف فأكثر)" autocomplete="username">
-      <input id="regEmail" type="email" placeholder="بريد الاسترداد" autocomplete="email">
-      <input id="regPass" type="password" placeholder="كلمة السر (8 أحرف فأكثر)" autocomplete="new-password">
-      <input id="regCode" placeholder="رمز الدعوة">
+      <input id="regUser" placeholder="اسم المستخدم (إنجليزي، 3 أحرف فأكثر)" autocomplete="username" aria-label="اسم المستخدم (إنجليزي، 3 أحرف فأكثر)">
+      <input id="regEmail" type="email" placeholder="بريد الاسترداد" autocomplete="email" aria-label="بريد الاسترداد">
+      <input id="regPass" type="password" placeholder="كلمة السر (8 أحرف فأكثر)" autocomplete="new-password" aria-label="كلمة السر (8 أحرف فأكثر)">
+      <input id="regCode" placeholder="رمز الدعوة" aria-label="رمز الدعوة">
       <button class="auth-primary" id="registerBtn" type="button">إنشاء الحساب</button>
       <div class="auth-links"><button class="linklike" id="backToLogin1" type="button">لديّ حساب بالفعل</button></div>
     </div>
 
     <div class="auth-form" id="authReset" hidden>
-      <input id="resUser" placeholder="اسم المستخدم" autocomplete="username">
+      <input id="resUser" placeholder="اسم المستخدم" autocomplete="username" aria-label="اسم المستخدم">
       <button class="auth-primary" id="resSendBtn" type="button">أرسل رمز الاسترداد إلى بريدي</button>
       <div class="auth-divider">ثم أدخل الرمز الذي وصلك</div>
-      <input id="resCode" placeholder="الرمز (6 أرقام)" inputmode="numeric">
-      <input id="resPass" type="password" placeholder="كلمة السر الجديدة" autocomplete="new-password">
+      <input id="resCode" placeholder="الرمز (6 أرقام)" inputmode="numeric" aria-label="الرمز (6 أرقام)">
+      <input id="resPass" type="password" placeholder="كلمة السر الجديدة" autocomplete="new-password" aria-label="كلمة السر الجديدة">
       <button class="auth-primary" id="resConfirmBtn" type="button">تعيين كلمة السر</button>
       <div class="auth-links"><button class="linklike" id="backToLogin2" type="button">رجوع لتسجيل الدخول</button></div>
     </div>
@@ -1572,8 +1574,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <div class="set-row"><span>المستخدم</span><b id="setUser">—</b></div>
         <div class="set-row"><span>الصلاحية</span><b id="setRole">—</b></div>
         <div class="set-sub">تغيير كلمة السر</div>
-        <input type="password" id="setOldPass" placeholder="كلمة السر الحالية" autocomplete="current-password">
-        <input type="password" id="setNewPass" placeholder="كلمة السر الجديدة (8 فأكثر)" autocomplete="new-password">
+        <input type="password" id="setOldPass" placeholder="كلمة السر الحالية" autocomplete="current-password" aria-label="كلمة السر الحالية">
+        <input type="password" id="setNewPass" placeholder="كلمة السر الجديدة (8 فأكثر)" autocomplete="new-password" aria-label="كلمة السر الجديدة (8 فأكثر)">
         <div class="set-actions">
           <button id="setChangePassBtn" type="button">حفظ كلمة السر</button>
           <button id="setLogoutBtn" type="button" class="danger">تسجيل الخروج</button>
@@ -1584,7 +1586,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <section>
         <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-link"/></svg> الربط بنوشن</h3>
         <div class="set-row"><span>الحالة</span><b id="setBridgeState">—</b></div>
-        <input type="url" id="setBridgeUrl" placeholder="https://script.google.com/macros/s/…">
+        <input type="url" dir="ltr" id="setBridgeUrl" placeholder="https://script.google.com/macros/s/…" aria-label="https://script.google.com/macros/s/">
         <div class="set-actions"><button id="setBridgeSave" type="button">حفظ الرابط واختباره</button></div>
         <div class="set-hint">رابط تطبيق Apps Script. تغييره يبدّل مصدر بياناتك بالكامل.</div>
         <div class="set-msg" id="setBridgeMsg"></div>
@@ -1740,7 +1742,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </div>
 </aside>
 
-<div class="content">
+<div class="content" id="mainContent" role="main" tabindex="-1">
 <!-- بطاقة الترحيب: التحية والشعار اللفظي والتاريخ، وصورتك إن وُجدت -->
 <section class="greet-card" id="heroBanner">
   <!-- «صفحة الرزنامة» (كلاسيكي): تُملأ من renderDates -->
@@ -1795,12 +1797,12 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>أولويات اليوم</h2></div>
       <div class="pinned">
         <span class="pin-ic"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg></span>
-        <input id="pinnedEvent" placeholder="حدث اليوم المهم — اجتماع، موعد، مكالمة...">
+        <input id="pinnedEvent" placeholder="حدث اليوم المهم — اجتماع، موعد، مكالمة..." aria-label="حدث اليوم المهم">
       </div>
       <div class="pri" id="pri">
-        <div class="pri-row"><div class="rank">1</div><input class="field" placeholder="ماذا تريد أن تنجز اليوم؟ — ما لو أُنجز وحده كان اليوم ناجحًا"></div>
-        <div class="pri-row"><div class="rank">2</div><input class="field" placeholder="الأولوية الثانية"></div>
-        <div class="pri-row"><div class="rank">3</div><input class="field" placeholder="الأولوية الثالثة"></div>
+        <div class="pri-row"><div class="rank">1</div><input class="field" placeholder="ماذا تريد أن تنجز اليوم؟ — ما لو أُنجز وحده كان اليوم ناجحًا" aria-label="ماذا تريد أن تنجز اليوم؟"></div>
+        <div class="pri-row"><div class="rank">2</div><input class="field" placeholder="الأولوية الثانية" aria-label="الأولوية الثانية"></div>
+        <div class="pri-row"><div class="rank">3</div><input class="field" placeholder="الأولوية الثالثة" aria-label="الأولوية الثالثة"></div>
       </div>
     </section>
 
@@ -1823,8 +1825,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </div>
 
       <div class="add">
-        <input id="tText" placeholder="أضف إلى يومك — أو اختصار: #مشروع @مانح !أ 30 &#x2066;2026-09-10&#x2069;">
-        <input id="tProj" placeholder="المشروع أو الجهة" list="projList">
+        <input id="tText" placeholder="أضف إلى يومك — أو اختصار: #مشروع @مانح !أ 30 &#x2066;2026-09-10&#x2069;" aria-label="أضف إلى يومك">
+        <input id="tProj" placeholder="المشروع أو الجهة" list="projList" aria-label="المشروع أو الجهة">
         <datalist id="projList"></datalist>
         <select id="tImp" aria-label="الأهمية">
           <option value="أ">أ</option>
@@ -1832,14 +1834,14 @@ li.exp-row:nth-child(even){background:var(--stripe)}
           <option value="ج">ج</option>
         </select>
         <input id="tMins" type="number" inputmode="numeric" min="0" step="5" placeholder="دقائق" aria-label="المدة بالدقائق">
-        <button id="addDetailsBtn" type="button" title="تفاصيل إضافية" aria-expanded="false">⋯</button>
-        <button id="addBtn" title="أضف المهمة">+</button>
+        <button id="addDetailsBtn" type="button" title="تفاصيل إضافية" aria-label="تفاصيل إضافية" aria-expanded="false"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-more"/></svg></button>
+        <button id="addBtn" type="button" title="أضف المهمة" aria-label="أضف المهمة"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg></button>
       </div>
       <div class="add-details" id="addDetails" hidden>
-        <input id="addDue" type="date" title="تاريخ الاستحقاق">
-        <input id="addDonor" placeholder="المانح" list="donorList">
+        <input id="addDue" type="date" title="تاريخ الاستحقاق" aria-label="تاريخ الاستحقاق">
+        <input id="addDonor" placeholder="المانح" list="donorList" aria-label="المانح">
         <datalist id="donorList"></datalist>
-        <textarea id="addNotes" placeholder="ملاحظات (اختياري)" rows="1"></textarea>
+        <textarea id="addNotes" placeholder="ملاحظات (اختياري)" rows="1" aria-label="ملاحظات (اختياري)"></textarea>
       </div>
       <div class="hint">اختصار سريع: <code>#المشروع</code>، <code>@المانح</code>، <code>!أ</code>/<code>!ب</code>/<code>!ج</code> للأهمية، رقم للدقائق، <code>YYYY-MM-DD</code> للاستحقاق، اضغط الحالة لتبديلها، والنص لتعديله.</div>
 
@@ -1890,22 +1892,22 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <div class="layer3">
     <section class="card c-ideas">
       <div class="card-head"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>أفكار عابرة</h2></div>
-      <textarea class="braindump" id="brainDump" placeholder="ما الذي يشغلك؟ اتركه هنا الآن، ورتّبه لاحقًا. والصق لقطة شاشة (Ctrl+V) لتحفظها فكرةً."></textarea>
+      <textarea class="braindump" id="brainDump" placeholder="ما الذي يشغلك؟ اتركه هنا الآن، ورتّبه لاحقًا. والصق لقطة شاشة (Ctrl+V) لتحفظها فكرةً." aria-label="ما الذي يشغلك؟ اتركه هنا الآن، ورتّبه لاحقًا. والصق لقطة شاشة (Ctrl+V) لتحفظها فكرةً."></textarea>
       <div class="shots" id="ideaShots" aria-label="لقطات محفوظة"></div>
       <button type="button" class="card-link idea-to-task" id="ideaToTask"><svg class="ic ic-dir" aria-hidden="true" focusable="false"><use href="#i-dir-return"/></svg> حوّل السطر الحالي إلى مهمة</button>
 
       <h3 class="sub">بانتظار رد</h3>
       <ul class="mini" id="waitList"></ul>
       <div class="mini-row">
-        <input class="mini-add" id="waitInput" placeholder="من؟ وعلى أي شيء؟">
-        <button id="waitAddBtn" type="button" title="أضف">+</button>
+        <input class="mini-add" id="waitInput" placeholder="من؟ وعلى أي شيء؟" aria-label="من؟ وعلى أي شيء؟">
+        <button id="waitAddBtn" type="button" title="أضف إلى «بانتظار رد»" aria-label="أضف إلى «بانتظار رد»"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg></button>
       </div>
 
       <h3 class="sub">مؤجّلة للغد</h3>
       <ul class="mini" id="laterList"></ul>
       <div class="mini-row">
-        <input class="mini-add" id="laterInput" placeholder="ما الذي لن يُنجز اليوم؟">
-        <button id="laterAddBtn" type="button" title="أضف">+</button>
+        <input class="mini-add" id="laterInput" placeholder="ما الذي لن يُنجز اليوم؟" aria-label="ما الذي لن يُنجز اليوم؟">
+        <button id="laterAddBtn" type="button" title="أضف إلى «مؤجّلة للغد»" aria-label="أضف إلى «مؤجّلة للغد»"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg></button>
       </div>
     </section>
 
@@ -1962,7 +1964,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     </summary>
 
     <div class="arc-tools">
-      <input type="search" id="arcSearch" placeholder="ابحث في المهام المنجزة — بالاسم أو المشروع">
+      <input type="search" id="arcSearch" placeholder="ابحث في المهام المنجزة — بالاسم أو المشروع" aria-label="ابحث في المهام المنجزة">
       <button id="expBtn">صدّر إلى إكسل</button>
       <button id="bakBtn">نسخة احتياطية</button>
       <button id="resBtn">استعادة</button>
@@ -1975,10 +1977,10 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <div class="pull">
       <h4>استدعاء من نوشن</h4>
       <div class="row">
-        <input id="pq" placeholder="نص في اسم المهمة (اختياري)">
-        <input id="pfrom" type="date" title="من تاريخ">
-        <input id="pto" type="date" title="إلى تاريخ">
-        <select id="pfield">
+        <input id="pq" placeholder="نص في اسم المهمة (اختياري)" aria-label="نص في اسم المهمة (اختياري)">
+        <input id="pfrom" type="date" title="من تاريخ" aria-label="من تاريخ">
+        <input id="pto" type="date" title="إلى تاريخ" aria-label="إلى تاريخ">
+        <select id="pfield" aria-label="البحث حسب تاريخ">
           <option value="done">تاريخ الإنجاز</option>
           <option value="due">تاريخ الاستحقاق</option>
         </select>
@@ -2009,7 +2011,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <!-- لوحة الأوامر: Ctrl+K -->
 <div class="palette-overlay" id="paletteOverlay" hidden>
   <div class="palette" role="dialog" aria-modal="true" aria-label="لوحة الأوامر">
-    <input type="text" id="palInput" placeholder="ابحث عن مهمة، أو اكتب أمرًا… (أضف: نص المهمة)" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="palList">
+    <input type="text" id="palInput" placeholder="ابحث عن مهمة، أو اكتب أمرًا… (أضف: نص المهمة)" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="palList" aria-label="ابحث عن مهمة، أو اكتب أمرًا (أضف: نص المهمة)">
     <ul class="pal-list" id="palList" role="listbox"></ul>
     <div class="pal-foot"><kbd>↑</kbd><kbd>↓</kbd> تنقّل، <kbd>Enter</kbd> تنفيذ، <kbd>Esc</kbd> إغلاق</div>
   </div>
@@ -2068,8 +2070,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-sunrise"/></svg> روتين الصباح</h3></div>
     <ul class="mini" id="amList"></ul>
     <div class="mini-row">
-      <input class="mini-add" id="amInput" placeholder="أضف عادة صباحية">
-      <button id="amAddBtn" type="button" title="أضف">+</button>
+      <input class="mini-add" id="amInput" placeholder="أضف عادة صباحية" aria-label="أضف عادة صباحية">
+      <button id="amAddBtn" type="button" title="أضف عادة صباحية" aria-label="أضف عادة صباحية"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg></button>
     </div>
   </section>
 
@@ -2077,8 +2079,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
     <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-moon"/></svg> الروتين المسائي</h3></div>
     <ul class="mini" id="pmList"></ul>
     <div class="mini-row">
-      <input class="mini-add" id="pmInput" placeholder="أضف عادة مسائية">
-      <button id="pmAddBtn" type="button" title="أضف">+</button>
+      <input class="mini-add" id="pmInput" placeholder="أضف عادة مسائية" aria-label="أضف عادة مسائية">
+      <button id="pmAddBtn" type="button" title="أضف عادة مسائية" aria-label="أضف عادة مسائية"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg></button>
     </div>
   </section>
 
@@ -2091,24 +2093,24 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <section class="card">
     <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-heart"/></svg> لحظات الامتنان</h3></div>
     <div class="grat" id="gratWrap">
-      <input data-i="0" placeholder="1. أنا ممتن لـ...">
-      <input data-i="1" placeholder="2.">
-      <input data-i="2" placeholder="3.">
+      <input data-i="0" placeholder="1. أنا ممتن لـ..." aria-label="1. أنا ممتن لـ">
+      <input data-i="1" placeholder="2." aria-label="2.">
+      <input data-i="2" placeholder="3." aria-label="3.">
     </div>
   </section>
 
   <section class="card">
     <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-utensils"/></svg> الوجبات والماء</h3></div>
     <div class="meals">
-      <input id="mealBreak" placeholder="الإفطار">
-      <input id="mealLunch" placeholder="الغداء">
-      <input id="mealDinner" placeholder="العشاء">
+      <input id="mealBreak" placeholder="الإفطار" aria-label="الإفطار">
+      <input id="mealLunch" placeholder="الغداء" aria-label="الغداء">
+      <input id="mealDinner" placeholder="العشاء" aria-label="العشاء">
     </div>
     <div class="water">
       <span><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-droplet"/></svg> ترطيب:</span>
-      <button id="waterMinus" type="button">-</button>
+      <button id="waterMinus" type="button" aria-label="كوب أقل">−</button>
       <b id="waterCount">0</b>
-      <button id="waterPlus" type="button">+</button>
+      <button id="waterPlus" type="button" aria-label="كوب إضافي">+</button>
       <span>أكواب</span>
     </div>
   </section>
@@ -2158,9 +2160,9 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <button id="expAddBtn" type="button" class="btn btn-primary">سجّل المصروف</button>
     </div>
     <div class="exp-add-details" id="expAddDetails" hidden>
-      <input id="expDate" type="date" title="التاريخ">
-      <input id="expVendor" placeholder="الجهة / التاجر">
-      <textarea id="expNote" placeholder="بيان إضافي" rows="1"></textarea>
+      <input id="expDate" type="date" title="التاريخ" aria-label="التاريخ">
+      <input id="expVendor" placeholder="الجهة / التاجر" aria-label="الجهة / التاجر">
+      <textarea id="expNote" placeholder="بيان إضافي" rows="1" aria-label="بيان إضافي"></textarea>
     </div>
     <div class="hint">اكتب رقمًا أو عملية حسابية بسيطة في خانة المبلغ — مثل <code>15+7.5</code> — وستُحسب تلقائيًا.</div>
 
@@ -2342,6 +2344,23 @@ document.addEventListener('keydown', e=>{
   e.preventDefault();
   if(e.shiftKey){ const ms = ['light', 'dark', 'auto'], cur = NasaqTheme.mode(); pickMode(ms[(ms.indexOf(cur) + 1) % 3]); showToast('الوضع: ' + {light:'فاتح', dark:'داكن', auto:'تلقائي'}[NasaqTheme.mode()]); }
   else { const nx = THEME_ORDER[(THEME_ORDER.indexOf(palette) + 1) % THEME_ORDER.length]; pickTheme(nx); showToast('الطابع: ' + NASAQ_THEMES[nx].name); }
+});
+/* اختصارات عامة (لا تعمل أثناء الكتابة ولا مع Ctrl/Alt/Cmd) */
+function openShortcuts(){
+  const rows = [['N', 'مهمة جديدة'], ['/', 'بحث وأوامر سريعة'], ['1 – 5', 'التبويبات: اليوم، المهام، العادات، المشاريع، المصروفات'],
+    ['T', 'الطابع التالي'], ['Shift + T', 'الوضع التالي (فاتح، داكن، تلقائي)'], ['Ctrl + K', 'بحث وأوامر سريعة'], ['Esc', 'إغلاق النافذة أو اللوحة'], ['?', 'هذه القائمة']];
+  openModal({title:'اختصارات لوحة المفاتيح', bodyHTML:'<dl class="kbd-list">' + rows.map(r=>'<dt><kbd>' + r[0] + '</kbd></dt><dd>' + r[1] + '</dd>').join('') + '</dl>', actions:[{label:'تم', primary:true}]});
+}
+document.addEventListener('keydown', e=>{
+  if(e.ctrlKey || e.metaKey || e.altKey || e.defaultPrevented) return;
+  const el = document.activeElement;
+  if(el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;
+  if(!$('authOverlay').hidden || document.querySelector('.modal-overlay,.bsheet-back') || !$('settingsOverlay').hidden) return;
+  const k = e.key;
+  if(k === 'n' || k === 'N' || e.code === 'KeyN'){ e.preventDefault(); showTab('board'); const i = $('tText'); i.scrollIntoView({block:'center'}); i.focus(); }
+  else if(k === '/'){ e.preventDefault(); openPalette(); }
+  else if(/^[1-5]$/.test(k) && !e.shiftKey){ e.preventDefault(); showTab(['board', 'tasks', 'flow', 'projects', 'expenses'][+k - 1]); }
+  else if(k === '?'){ e.preventDefault(); openShortcuts(); }
 });
 /* خطوة «اختر طابعك»: البطاقات نفسها في نافذة */
 function openThemePicker(){
@@ -4062,6 +4081,13 @@ $('tpAdd').onclick = ()=>{ showTab('board'); const i = $('tText'); i.scrollIntoV
 
 /* سطر مهمة واحد — تستخدمه صفحة «اليوم» وصفحة «المهام» معًا، فلا يتكرر الكود */
 let justDoneId = null;
+/* زر الإنجاز: مساحة ضغط 24px بالفأرة و44px باللمس، والدائرة/المربع المرسوم (.check) داخله بمقاسه */
+function checkBtn(done, label){
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'check-hit';
+  b.setAttribute('role', 'checkbox'); b.setAttribute('aria-checked', String(done)); b.setAttribute('aria-label', label);
+  const v = document.createElement('span'); v.className = 'check'; v.setAttribute('aria-hidden', 'true'); v.setAttribute('aria-checked', String(done));
+  b.append(v); return b;
+}
 /* ---------- صف المهمة (المرحلة 6) ----------
    شارة واحدة لأهم حالة: متأخرة ← بانتظار رد ← قيد التنفيذ ← مستحقة اليوم؛ والمنجزة «تمت». */
 const TASK_STATES = ['لم تبدأ', 'قيد التنفيذ', 'بانتظار رد'];
@@ -4081,7 +4107,7 @@ function completeTask(t, li){
   t.done = true; t.state = 0; t.doneAt = new Date().toISOString(); t.dirty = true;
   playSound(tasks.every(x=>x.done) ? 'all' : 'done');   /* آخر مهمة: «اكتمل يومك» */
   justDoneId = t.id;   /* حركة الإنجاز للمهمة التي أُنجزت الآن فقط */
-  if(li){ li.classList.add('done', 'just-done'); const c = li.querySelector('.check'); if(c) c.setAttribute('aria-checked', 'true'); }
+  if(li){ li.classList.add('done', 'just-done'); li.querySelectorAll('.check-hit,.check').forEach(c=>c.setAttribute('aria-checked', 'true')); }
   save(); queuePush();
   clearTimeout(completeTask.timer);
   completeTask.timer = setTimeout(render, li && li.isConnected ? 600 : 0);
@@ -4137,10 +4163,7 @@ function appendTaskRow(list, t, priValues){
   const pc = projColor(t.proj);
   if(pc){ li.classList.add('has-proj'); li.style.setProperty('--pc', pc); }
 
-  const chk = document.createElement('button');
-  chk.type = 'button'; chk.className = 'check'; chk.setAttribute('role', 'checkbox');
-  chk.setAttribute('aria-checked', String(!!t.done));
-  chk.setAttribute('aria-label', (t.done ? 'إلغاء إنجاز: ' : 'أنجز: ') + t.text);
+  const chk = checkBtn(!!t.done, (t.done ? 'إلغاء إنجاز: ' : 'أنجز: ') + t.text);
   chk.onclick = ()=>{ if(t.done) uncompleteTask(t); else completeTask(t, li); };
 
   const body = document.createElement('div'); body.className = 't-body';
@@ -5077,14 +5100,14 @@ function rippleFor(name){
 function playSound(name){ try{ window.NasaqSound && window.NasaqSound.play(name); }catch(e){} try{ rippleFor(name); }catch(e){} }
 /* إنجاز مهمة من قائمتها: نبضة خضراء حين تصير «منجزة» (بلا صوت، فالمربع له إحساسه) */
 document.addEventListener('click', e=>{
-  const chk = e.target.closest('.check'); if(!chk) return;
+  const chk = e.target.closest('.check-hit,.check'); if(!chk) return;
   const x = lastPtr.x, y = lastPtr.y;
   setTimeout(()=>{ const li = chk.closest('li'); if(li && li.classList.contains('done')) ripple(x, y, 'var(--done)'); }, 0);
 }, true);
 /* نقرة على الأزرار — عدا ما له صوته الخاص */
 document.addEventListener('pointerdown', e=>{
   const b = e.target.closest('button,[role="checkbox"],a.sidenav-brand');
-  if(!b || b.disabled || b.closest('.check,.sub-check,.day-done,#pomoToggle,#fmToggle,.focus-go,.key,[data-nosound]')) return;
+  if(!b || b.disabled || b.closest('.check-hit,.check,.sub-check,.day-done,#pomoToggle,#fmToggle,.focus-go,.key,[data-nosound]')) return;
   playSound('tick');
 }, true);
 
@@ -5772,10 +5795,7 @@ function renderChecklist(ulId, arr, toggle, del){
   }
   arr.forEach((item,i)=>{
     const li=document.createElement('li');
-    const chk=document.createElement('button');
-    chk.className='check'; chk.setAttribute('role','checkbox');
-    chk.setAttribute('aria-checked', String(!!item.done));
-    chk.setAttribute('aria-label','تعليم كمنجزة');
+    const chk=checkBtn(!!item.done, (item.done ? 'إلغاء إنجاز: ' : 'أنجز: ') + item.text);
     chk.onclick=()=>toggle(i);
     const span=document.createElement('span'); span.textContent=item.text;
     li.className = item.done ? 'flow-done' : '';
