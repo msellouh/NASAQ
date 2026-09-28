@@ -7,7 +7,7 @@
 :root[data-nav="top"] .app{display:block}
 :root[data-nav="top"] .sidenav{position:fixed;top:0;inset-inline:0;height:var(--tb-h);z-index:60;flex-direction:row;align-items:center;gap:clamp(14px,2.4vw,36px);padding:0 clamp(20px,4.5vw,64px);overflow:visible}
 :root[data-nav="top"] .sidenav::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none}
-:root[data-nav="top"] .sidenav.tb-hidden{top:calc(-1 * var(--tb-h) - 4px)}
+:root[data-nav="top"] .sidenav.tb-hidden{translate:0 calc(-1 * var(--tb-h) - 4px)}
 :root[data-nav="top"] .sidenav-brand{padding:0;flex:none}
 :root[data-nav="top"] .sidenav .brand-latin{display:none}
 :root[data-nav="top"] .sidenav .tabbar{flex-direction:row;gap:var(--sp-1)}

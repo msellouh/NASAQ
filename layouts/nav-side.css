@@ -7,7 +7,6 @@
 .rail-toggle{display:none}
 @media (min-width:1000px){
   :root[data-nav="side"] .rail-toggle{display:inline-flex}
-  :root[data-nav="side"] .app{transition:grid-template-columns calc(var(--dur-3) * var(--motion-scale,1)) var(--ease-std)}
   :root[data-nav="side"][data-rail="collapsed"] .app{grid-template-columns:72px minmax(0,1fr)}
   :root[data-nav="side"][data-rail="collapsed"] .sidenav{padding-inline:var(--sp-2);align-items:center}
   :root[data-nav="side"][data-rail="collapsed"] :is(.sidenav-brand-text,.tab > span,.side-today,.tabbar-sync > :not(.dot)){display:none}

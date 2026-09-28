@@ -21,7 +21,7 @@ svg.ic{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px
   .exp-add input,.exp-add select,.exp-add-details input,.exp-add-details textarea,
   .settings-body input,.auth-form input,.mini-add){
   background-color:var(--field-bg); border:1px solid var(--field-line); border-radius:var(--r-lg);
-  transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+  transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out), border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out), box-shadow calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out);
 }
 :root[data-field="box"] :is(.add input,.add select,.add-details input,.add-details textarea,
   li.details input,li.details textarea,.arc-tools input[type=search],.pull input,.pull select,
@@ -44,7 +44,7 @@ svg.ic{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px
 :root[data-field="box"] .field{
   /* حقل ظاهر وهو فارغ: تعبئة + حدّ بتباين ≥ 3:1 (WCAG 1.4.11) — كان شفافًا حتى المرور */
   border:1px solid var(--field-line); border-radius:var(--r-lg); padding:var(--sp-2) var(--sp-3); background:var(--field-bg);
-  transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+  transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out), border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out), box-shadow calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out);
 }
 :root[data-field="box"] .field:hover{border-color:var(--field-hover)}
 :root[data-field="box"] .field:focus{outline:none;background:var(--surface);border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
@@ -52,7 +52,7 @@ svg.ic{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px
   .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button){
   background:var(--cta); color:var(--on-cta); border:1px solid transparent; border-radius:var(--r-lg);
   font-family:var(--btn-font,inherit); font-weight:600; box-shadow:var(--btn-shadow,var(--elev-1));
-  transition:background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+  transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out), color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out), transform calc(var(--dur-1) * var(--motion-scale,1)) var(--ease-out), box-shadow calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out);
 }
 :root[data-field="box"] :is(.add button,.pull button.go,.tools .primary,.modal .row button.primary,
   .pomo-controls button.go,.exp-add button,.auth-primary,.spotify-signedout button,.spotify-signedin button):hover{
@@ -64,7 +64,7 @@ svg.ic{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px
   .modal .row button:not(.primary),.pomo-controls button:not(.go),.cal-head button,.energy button,
   .water button,.set-actions button:not(.danger)){
   background:var(--btn-soft); color:var(--ink); border:1px solid transparent; border-radius:var(--r-lg);
-  transition:background-color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out);
+  transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out), transform calc(var(--dur-1) * var(--motion-scale,1)) var(--ease-out);
 }
 :root[data-field="box"] :is(.mini-row button,.arc-tools button,.tools button:not(.primary),
   .modal .row button:not(.primary),.pomo-controls button:not(.go),.cal-head button,.energy button,
@@ -83,7 +83,7 @@ svg.ic{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px
 }
 :root[data-field="box"] .state{border-color:transparent;background:var(--field-bg)}
 :root[data-field="box"] .pswitch{background:var(--field-bg);border-color:transparent}
-:root[data-field="box"] .check{border-radius:50%;border-color:var(--field-hover);transition:background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out)}
+:root[data-field="box"] .check{border-radius:50%;border-color:var(--field-hover);transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out), border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 :root[data-field="box"] .check:hover{border-color:var(--done);background:color-mix(in srgb, var(--done) 10%, var(--surface))}
 :root[data-field="box"] .check[aria-checked="true"]::after{inset:3px 5.5px 5px 5.5px}
 :root[data-field="box"] .rank{border-radius:50%;width:34px;height:34px;align-self:center;font-size:var(--fs-md);background:var(--cta);color:var(--on-cta)}
@@ -202,7 +202,7 @@ footer.nasaq-copy{padding:var(--sp-4) var(--sp-4) var(--sp-5);opacity:.85}
 .theme-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-3);margin:var(--sp-2) 0 var(--sp-3)}
 .theme-card{display:flex;flex-direction:column;align-items:stretch;gap:var(--sp-1);padding:var(--sp-3);text-align:start;cursor:pointer;font:inherit;
   background:var(--bg);color:var(--text-1);border:var(--border-w,1px) solid var(--border);border-radius:var(--r-lg);box-shadow:var(--elev-1);font-family:var(--font-body);
-  transition:border-color var(--dur-2) var(--ease-std),box-shadow var(--dur-2) var(--ease-std)}
+  transition:border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-std),box-shadow calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-std)}
 .theme-card:hover{border-color:var(--border-strong)}
 .theme-card:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
 .theme-card[aria-checked="true"]{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary),var(--elev-2)}
@@ -221,7 +221,7 @@ kbd{font:inherit;font-size:var(--fs-xs);padding:0 var(--sp-1);border:1px solid v
   border-width:1px;border-style:solid;border-color:transparent;background:var(--btn-soft,var(--surface-2));color:var(--text-1);
   font:inherit;font-family:var(--btn-font,inherit);font-size:var(--fs-sm);font-weight:600;line-height:1.2;white-space:nowrap;text-decoration:none;cursor:pointer;touch-action:manipulation;
   transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),
-    color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),transform var(--dur-1) var(--ease-out)}
+    color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),transform calc(var(--dur-1) * var(--motion-scale,1)) var(--ease-out)}
 .btn:active:not(:disabled){transform:scale(.98)}
 .btn:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
 .btn:disabled,.btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
@@ -284,7 +284,7 @@ kbd{font:inherit;font-size:var(--fs-xs);padding:0 var(--sp-1);border:1px solid v
    ظاهر دائمًا: دائرة الإنجاز، والعنوان (سطران)، وسطر ثانوي (المشروع والمانح)، وشارة واحدة لأهم حالة.
    الحاسوب: الدبوس والتفاصيل والحالة والحذف تظهر عند المرور أو التركيز. اللمس: «⋯» يفتح ورقة سفلية، والسحب لليسار يُنجز. */
 ol.tasks li.task{display:flex;align-items:center;gap:var(--sp-3);min-height:var(--row-h,48px);padding:var(--sp-2) var(--sp-2);position:relative;touch-action:pan-y;
-  transition:transform calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),background-color var(--dur-2) var(--ease-out)}
+  transition:transform calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 ol.tasks li.task > .check{flex:none;position:relative}
 ol.tasks li.task > .check::before{content:"";position:absolute;inset:-7px}
 .t-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
@@ -507,6 +507,13 @@ button.tabbar-sync:focus-visible{outline:2px solid var(--focus-ring);outline-off
 .info-tip{display:inline-grid;place-items:center;width:24px;height:24px;padding:0;border:0;border-radius:50%;background:none;color:var(--text-3);cursor:help;vertical-align:middle}
 .info-tip:hover{color:var(--text-1)}
 .info-tip:focus-visible{outline:2px solid var(--focus-ring);outline-offset:1px}
+/* ---------- الحركة (المرحلة 9) ----------
+   ثلاث لحظات مميزة فقط: إنجاز مهمة (حسب الطابع)، وإغلاق اليوم، والانتقال بين التبويبات؛ والباقي 110–180ms.
+   transform وopacity فقط، والمدد مضروبة في --motion-scale للطابع. */
+.tabpanel.tab-in{animation:tab-in calc(var(--dur-3) * var(--motion-scale,1)) var(--ease-out) both}
+@keyframes tab-in{from{opacity:0;translate:0 var(--tab-shift,8px)}}
+.closing-band.day-closed{animation:day-close calc(var(--dur-4) * 1.5 * var(--motion-scale,1)) var(--ease-out) both}
+@keyframes day-close{0%{opacity:.6;scale:.985}100%{opacity:1;scale:1}}
 /* ---------- شخصية الطابع عبر المتغيرات (المرحلة 6) ----------
    لاحقة العلامة («360») ووزن الشعار الفرعي والأرقام من متغيرات الطابع؛ غيابها = لا شيء أو القيمة الأساسية. */
 :is(.brand-name,.auth-brand h2)::after{content:var(--brand-suffix,none);font-family:var(--font-display);font-weight:700;font-size:.5em;background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent;direction:ltr;margin-inline-start:.3em;vertical-align:.8em}
@@ -537,7 +544,7 @@ button.tabbar-sync:focus-visible{outline:2px solid var(--focus-ring);outline-off
 :root[data-hero="immersive"][data-tab="board"] .greet-title{color:var(--hero-white);font-size:clamp(24px,3.4vw,50px);font-weight:700;line-height:1.4;text-wrap:balance;text-shadow:0 4px 30px rgba(0,0,0,.45)}
 :root[data-hero="immersive"][data-tab="board"] .greet-tagline{color:var(--hero-sub);font-size:clamp(16px,1.5vw,21px);text-shadow:0 2px 14px rgba(0,0,0,.5)}
 :root[data-hero="immersive"][data-tab="board"] .greet-date{color:var(--hero-ink-2)}
-:root[data-hero="immersive"][data-tab="board"] .plan-day{border-radius:var(--r-md);font-size:var(--fs-md);font-weight:700;background:var(--primary);color:var(--on-primary);transition:background-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out)}
+:root[data-hero="immersive"][data-tab="board"] .plan-day{border-radius:var(--r-md);font-size:var(--fs-md);font-weight:700;background:var(--primary);color:var(--on-primary);transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 :root[data-hero="immersive"][data-tab="board"] .plan-day:hover{background:var(--hero-white);color:var(--hero-on-white)}
 :root[data-hero="immersive"][data-tab="board"] .plan-day.done{background:color-mix(in srgb,var(--hero-night) 35%,transparent);color:var(--hero-white);border:1px solid rgba(255,255,255,.55);backdrop-filter:blur(6px)}
 :root[data-hero="immersive"][data-tab="board"] .plan-day.done:hover{background:var(--hero-white);color:var(--hero-on-white)}
@@ -558,8 +565,8 @@ button.tabbar-sync:focus-visible{outline:2px solid var(--focus-ring);outline-off
   :root[data-hero="immersive"] .rv{opacity:1;transition:none;translate:none}
 }
 /* ---------- الشريط العلوي (data-nav="top"): شفاف فوق الواجهة الليلية، وزجاجي بعد التمرير (tb-solid) ---------- */
-:root[data-nav="top"] .sidenav{background:transparent;border:0;color:var(--hero-white);transition:top var(--dur-3) cubic-bezier(.4,0,.2,1)}
-:root[data-nav="top"] .sidenav::before{background:linear-gradient(to bottom,color-mix(in srgb,var(--hero-night) 72%,transparent),color-mix(in srgb,var(--hero-night) 25%,transparent) 70%,transparent);transition:background-color var(--dur-3) var(--ease-out),opacity var(--dur-3) var(--ease-out)}
+:root[data-nav="top"] .sidenav{background:transparent;border:0;color:var(--hero-white);transition:translate calc(var(--dur-3) * var(--motion-scale,1)) cubic-bezier(.4,0,.2,1)}
+:root[data-nav="top"] .sidenav::before{background:linear-gradient(to bottom,color-mix(in srgb,var(--hero-night) 72%,transparent),color-mix(in srgb,var(--hero-night) 25%,transparent) 70%,transparent);transition:background-color calc(var(--dur-3) * var(--motion-scale,1)) var(--ease-out),opacity calc(var(--dur-3) * var(--motion-scale,1)) var(--ease-out)}
 :root[data-nav="top"] .sidenav.tb-over::before{background:color-mix(in srgb,var(--hero-night) 55%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
 :root[data-nav="top"] .sidenav.tb-solid::before{background:color-mix(in srgb,var(--surface-1) 90%,transparent);-webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%);box-shadow:0 1px 0 var(--border)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){ :root[data-nav="top"] .sidenav.tb-solid::before{background:var(--surface-1)} }
@@ -576,7 +583,7 @@ button.tabbar-sync:focus-visible{outline:2px solid var(--focus-ring);outline-off
 :root[data-nav="top"] .sidenav .tabbar-sync{border-radius:var(--r-md);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:var(--hero-sub)}
 :root[data-nav="top"] .sidenav .icon-btn{border-radius:var(--r-md);background:transparent;border-color:transparent;color:var(--hero-white)}
 :root[data-nav="top"] .sidenav .icon-btn:hover{background:rgba(255,255,255,.12)}
-:root[data-nav="top"] .top-add{border:0;border-radius:var(--r-md);background:var(--primary);color:var(--on-primary);font:inherit;font-family:var(--font-head);font-size:var(--fs-base);font-weight:700;cursor:pointer;transition:background-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out)}
+:root[data-nav="top"] .top-add{border:0;border-radius:var(--r-md);background:var(--primary);color:var(--on-primary);font:inherit;font-family:var(--font-head);font-size:var(--fs-base);font-weight:700;cursor:pointer;transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 :root[data-nav="top"] .top-add:hover{background:var(--hero-white);color:var(--hero-on-white)}
 :root[data-nav="top"] .sidenav :is(.tab,.icon-btn,.top-add):focus-visible{outline:2px solid var(--hero-focus);outline-offset:2px}
 :root[data-nav="top"] .sidenav.tb-solid{color:var(--ink)}
@@ -604,6 +611,10 @@ button.tabbar-sync:focus-visible{outline:2px solid var(--focus-ring);outline-off
 }
 /* تبديل الطابع: تلاشٍ 200ms على لون الخلفية والنص فقط */
 @layer utilities{
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;animation-delay:0s !important;
+      transition-duration:.01ms !important;transition-delay:0s !important;scroll-behavior:auto !important}
+  }
   .theme-switching,.theme-switching *{transition-property:background-color,color !important;transition-duration:200ms !important;transition-timing-function:var(--ease-std) !important}
   @media (prefers-reduced-motion:reduce){ .theme-switching,.theme-switching *{transition:none !important} }
 }

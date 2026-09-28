@@ -15,9 +15,9 @@
 <!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده؛ وخط الطابع الافتراضي «نَسَق» يُحمَّل مسبقًا -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
-<script src="nasaq-core.js?v=20260928c"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
-<script src="nasaq-art.js?v=20260928c"></script>
-<script src="nasaq-icons.js?v=20260928c"></script>
+<script src="nasaq-core.js?v=20260928d"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
+<script src="nasaq-art.js?v=20260928d"></script>
+<script src="nasaq-icons.js?v=20260928d"></script>
 <style>
 @layer tokens, base, layouts, components, theme, utilities;
 @layer base{
@@ -41,7 +41,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 
 /* ---------- الأزرار ---------- */
 /* الأزرار (.btn وأنواعها) مشتركة في nasaq-ui.css */
-.icon-btn{width:38px;height:38px;border-radius:var(--r-md);border:0;background:transparent;color:var(--ink);display:inline-grid;place-items:center;transition:background-color var(--dur-2) var(--ease-out)}
+.icon-btn{width:38px;height:38px;border-radius:var(--r-md);border:0;background:transparent;color:var(--ink);display:inline-grid;place-items:center;transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .icon-btn:hover{background:var(--stripe)}
 .icon-btn svg{width:19px;height:19px}
 .icon-btn.sm{width:30px;height:30px}
@@ -51,7 +51,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 
 /* ---------- شريط «مَدار» العلوي ---------- */
 .tb{position:sticky;top:0;z-index:40;height:var(--tb-h);display:flex;align-items:center;gap:clamp(12px,2.4vw,36px);padding:0 var(--gut);
-  transition:transform var(--dur-3) cubic-bezier(.4,0,.2,1)}
+  transition:transform calc(var(--dur-3) * var(--motion-scale,1)) cubic-bezier(.4,0,.2,1)}
 .tb::before{content:"";position:absolute;inset:0;z-index:-1;background:color-mix(in srgb,var(--paper) 82%,transparent);
   -webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:0 1px 0 var(--rule)}
 .tb.hide{transform:translateY(calc(-100% - 4px))}
@@ -74,7 +74,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 
 .brand-name{font-family:var(--font-head);font-weight:700;font-size:var(--fs-xl);color:var(--ink);line-height:1}
 .orgs{display:inline-flex;gap:2px;background:var(--field-bg);border:1px solid var(--rule);border-radius:var(--r-md);padding:3px;flex:none}
-.orgs a{padding:var(--sp-1) var(--sp-3);border-radius:var(--r-md);font-family:var(--font-head);font-size:var(--fs-sm);font-weight:600;text-decoration:none;color:var(--ink-2);transition:background-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out)}
+.orgs a{padding:var(--sp-1) var(--sp-3);border-radius:var(--r-md);font-family:var(--font-head);font-size:var(--fs-sm);font-weight:600;text-decoration:none;color:var(--ink-2);transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .orgs a:hover{color:var(--ink)}
 .orgs a.on{background:var(--cta);color:var(--on-cta)}
 .tb-nav{display:flex;gap:var(--sp-1)}
@@ -97,7 +97,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 /* الفلاتر */
 .filters{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center;margin-bottom:var(--sp-5)}
 .search{flex:1 1 280px;min-width:200px;position:relative}
-.search input,.filters select,.fld input,.fld select,.fld textarea{width:100%;border-radius:var(--r-md);background:var(--field-bg);border:1px solid var(--field-line);transition:border-color var(--dur-2) var(--ease-out),box-shadow var(--dur-2) var(--ease-out),background-color var(--dur-2) var(--ease-out)}
+.search input,.filters select,.fld input,.fld select,.fld textarea{width:100%;border-radius:var(--r-md);background:var(--field-bg);border:1px solid var(--field-line);transition:border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),box-shadow calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .search input{padding:var(--sp-2) var(--sp-6) var(--sp-2) var(--sp-3)}
 .search svg{position:absolute;right:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--muted)}
 .filters select{width:auto;max-width:230px;padding:var(--sp-2) var(--sp-6) var(--sp-2) var(--sp-3);appearance:none;-webkit-appearance:none;
@@ -153,7 +153,7 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .list-head{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--rule);font-size:var(--fs-sm);color:var(--muted)}
 .list-head select{border:0;background:transparent;font-size:var(--fs-sm);color:var(--ink-2);padding:2px}
 .items{overflow:auto;padding:var(--sp-2);flex:1}
-.item{display:block;width:100%;text-align:right;border:1px solid transparent;background:transparent;border-radius:var(--r-lg);padding:var(--sp-3) var(--sp-3);margin-bottom:2px;transition:background-color var(--dur-2) var(--ease-out)}
+.item{display:block;width:100%;text-align:right;border:1px solid transparent;background:transparent;border-radius:var(--r-lg);padding:var(--sp-3) var(--sp-3);margin-bottom:2px;transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .item:hover{background:var(--stripe)}
 .item.on{background:var(--focus-bg);border-color:color-mix(in srgb,var(--focus) 30%,transparent)}
 .item .row1{display:flex;align-items:center;gap:var(--sp-1);flex-wrap:wrap}
@@ -193,7 +193,7 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .prog b{font-family:var(--font-head);font-size:var(--fs-base);font-variant-numeric:tabular-nums}
 .steps{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);position:relative;margin:var(--sp-1) 0 var(--sp-1)}
 .steps::before{content:"";position:absolute;top:14px;inset-inline:6%;height:2px;background:var(--rule)}
-.steps .fill{position:absolute;top:14px;inset-inline-start:6%;height:2px;background:var(--grad-line);transition:width var(--dur-4) var(--ease-out)}
+.steps .fill{position:absolute;top:14px;inset-inline-start:6%;height:2px;background:var(--grad-line)}
 .step{position:relative;text-align:center;font-size:var(--fs-xs);color:var(--muted);padding:0 3px;line-height:1.45}
 .step .dot{width:30px;height:30px;margin:0 auto var(--sp-2);border-radius:50%;background:var(--paper);border:2px solid var(--rule);
   display:grid;place-items:center;font-family:var(--font-head);font-size:var(--fs-xs);font-weight:700;color:var(--muted);position:relative;z-index:1}
@@ -213,7 +213,7 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .pis{list-style:none;margin:var(--sp-2) 0 0;padding:0}
 .pi{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-1);border-radius:var(--r-md)}
 .pi:hover{background:var(--stripe)}
-.chk{width:22px;height:22px;border-radius:var(--r-md);border:2px solid var(--field-line);background:var(--paper);padding:0;display:grid;place-items:center;transition:background-color var(--dur-2) var(--ease-out),border-color var(--dur-2) var(--ease-out)}
+.chk{width:22px;height:22px;border-radius:var(--r-md);border:2px solid var(--field-line);background:var(--paper);padding:0;display:grid;place-items:center;transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .chk:hover{border-color:var(--focus)}
 .chk svg{width:13px;height:13px;opacity:0}
 .pi.is-done .chk{background:var(--done);border-color:var(--done)}
@@ -302,7 +302,7 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .slot-h a{margin-inline-start:auto;font-size:var(--fs-xs)}
 .files{display:flex;flex-wrap:wrap;gap:var(--sp-1);margin-top:var(--sp-1)}
 .file{display:inline-flex;align-items:center;gap:var(--sp-2);max-width:100%;min-height:32px;padding:var(--sp-1) var(--sp-2) var(--sp-1) var(--sp-1);border-radius:var(--r-md);border:1px solid var(--rule);background:var(--stripe);
-  font-size:var(--fs-xs);color:var(--ink);text-decoration:none;transition:border-color var(--dur-2) var(--ease-out),background-color var(--dur-2) var(--ease-out)}
+  font-size:var(--fs-xs);color:var(--ink);text-decoration:none;transition:border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .file:hover{border-color:var(--focus);background:var(--focus-bg)}
 .file b{flex:none;font-family:var(--font-head);font-size:var(--fs-xs);font-weight:700;letter-spacing:.2px;padding:2px var(--sp-1);border-radius:var(--r-sm);color:#fff;background:var(--muted);direction:ltr}
 .file span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px}
@@ -378,7 +378,7 @@ button.hb:hover .lb{color:var(--focus-ink);text-decoration:underline}
 .st-table td.nm{white-space:normal;min-width:230px;max-width:360px}
 .st-table td.nm a{color:var(--focus-ink);text-decoration:none;font-weight:600}
 .st-table td.nm a:hover{text-decoration:underline}
-.st-table tbody tr{cursor:pointer;transition:background-color var(--dur-1) var(--ease-out)}
+.st-table tbody tr{cursor:pointer;transition:background-color calc(var(--dur-1) * var(--motion-scale,1)) var(--ease-out)}
 .st-table tbody tr:hover{background:var(--stripe)}
 .st-table .hi{color:var(--urgent);font-weight:600}
 .st-table .ok{color:var(--done);font-weight:600}
@@ -463,7 +463,7 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 .dlg-acts{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-1)}
 .dlg-acts .push{margin-inline-start:auto}
 .toast{position:fixed;bottom:22px;left:50%;translate:-50% 20px;opacity:0;z-index:80;background:var(--ink);color:var(--paper);padding:var(--sp-2) var(--sp-4);border-radius:var(--r-md);font-size:var(--fs-sm);
-  box-shadow:var(--shadow);transition:opacity var(--dur-2) var(--ease-out),translate var(--dur-2) var(--ease-out);pointer-events:none;max-width:calc(100% - 32px)}
+  box-shadow:var(--shadow);transition:opacity calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),translate calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out);pointer-events:none;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;translate:-50% 0}
 .toast.bad{background:var(--urgent);color:#fff}
 
@@ -499,8 +499,8 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 /* ---------- الحركة (منهج «مَدار») ---------- */
 @keyframes m-pop-in{from{opacity:0;transform:translateY(10px) scale(.965)}}
 @keyframes m-fade-in{from{opacity:0}}
-dialog[open]{animation:m-pop-in var(--dur-3) var(--ease-out)}
-dialog[open]::backdrop{animation:m-fade-in var(--dur-3) var(--ease-out)}
+dialog[open]{animation:m-pop-in calc(var(--dur-3) * var(--motion-scale,1)) var(--ease-out)}
+dialog[open]::backdrop{animation:m-fade-in calc(var(--dur-3) * var(--motion-scale,1)) var(--ease-out)}
 :where(button,.btn,[role="button"]):not(:disabled):active{scale:.97}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
@@ -508,16 +508,16 @@ dialog[open]::backdrop{animation:m-fade-in var(--dur-3) var(--ease-out)}
 }
 }
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260928c">
-<link rel="stylesheet" href="layouts/nav-side.css?v=20260928c">
-<link rel="stylesheet" href="layouts/nav-top.css?v=20260928c">
-<link rel="stylesheet" href="layouts/hero-page.css?v=20260928c">
-<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928c">
-<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928c">
-<link rel="stylesheet" href="nasaq-ui.css?v=20260928c">
-<link rel="stylesheet" href="themes/classic.css?v=20260928c">
-<link rel="stylesheet" href="themes/nasaq.css?v=20260928c">
-<link rel="stylesheet" href="themes/nasaq360.css?v=20260928c">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260928d">
+<link rel="stylesheet" href="layouts/nav-side.css?v=20260928d">
+<link rel="stylesheet" href="layouts/nav-top.css?v=20260928d">
+<link rel="stylesheet" href="layouts/hero-page.css?v=20260928d">
+<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928d">
+<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928d">
+<link rel="stylesheet" href="nasaq-ui.css?v=20260928d">
+<link rel="stylesheet" href="themes/classic.css?v=20260928d">
+<link rel="stylesheet" href="themes/nasaq.css?v=20260928d">
+<link rel="stylesheet" href="themes/nasaq360.css?v=20260928d">
 </head>
 <body>
 <header class="tb" id="tb">

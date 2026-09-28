@@ -13,8 +13,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده؛ وخط الطابع الافتراضي «نَسَق» يُحمَّل مسبقًا -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
-<script src="nasaq-core.js?v=20260928c"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
-<script src="nasaq-icons.js?v=20260928c"></script>
+<script src="nasaq-core.js?v=20260928d"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
+<script src="nasaq-icons.js?v=20260928d"></script>
 <style>
 @layer tokens, base, layouts, components, theme, utilities;
 @layer base{
@@ -40,7 +40,7 @@ h1,h2,h3{font-family:var(--font-head);margin:0;font-weight:700;letter-spacing:0}
 .brand b{font:800 var(--fs-lg)/1 var(--font-head)}
 .tb nav{display:flex;gap:var(--sp-1);margin-inline-start:auto}
 .tb nav a,.tb nav button{border:1px solid var(--rule);background:var(--paper);color:var(--ink);text-decoration:none;border-radius:var(--r-pill);padding:var(--sp-1) var(--sp-3);font-size:var(--fs-sm);
-  transition:background-color var(--dur-2) var(--ease-out),border-color var(--dur-2) var(--ease-out)}
+  transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .tb nav .on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .src{font-size:var(--fs-xs);color:var(--muted);display:inline-flex;align-items:center;gap:var(--sp-1)}
 .src i{width:7px;height:7px;border-radius:50%;background:var(--muted)}
@@ -57,7 +57,7 @@ h1,h2,h3{font-family:var(--font-head);margin:0;font-weight:700;letter-spacing:0}
 .kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--sp-3)}
 @media (max-width:880px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .kpi{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:var(--sp-3) var(--sp-4);display:grid;gap:2px;text-align:start;box-shadow:var(--shadow);
-  transition:border-color var(--dur-2) var(--ease-out),translate var(--dur-2) var(--ease-out)}
+  transition:border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),translate calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 button.kpi:hover{border-color:var(--ink-2);translate:0 -2px}
 .kpi span{font-size:var(--fs-xs);color:var(--muted)}
 .kpi b{font:800 var(--fs-2xl)/1.1 var(--font-head)}
@@ -73,7 +73,7 @@ button.kpi:hover{border-color:var(--ink-2);translate:0 -2px}
 .focus{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-3)}
 @media (max-width:880px){.focus{grid-template-columns:1fr}}
 .fcard{position:relative;background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:var(--sp-4) var(--sp-4);text-align:start;display:grid;gap:var(--sp-2);box-shadow:var(--shadow);overflow:hidden;
-  transition:border-color var(--dur-2) var(--ease-out),translate var(--dur-2) var(--ease-out)}
+  transition:border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),translate calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .fcard::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px;background:var(--urgent)}
 .fcard.warn::before{background:var(--hold)}
 .fcard:hover{border-color:var(--ink-2);translate:0 -2px}
@@ -89,7 +89,7 @@ button.kpi:hover{border-color:var(--ink-2);translate:0 -2px}
 .dgroup > h3 i{width:8px;height:8px;border-radius:50%;background:var(--muted)}
 .dgroup.late > h3 i{background:var(--urgent)} .dgroup.week > h3 i{background:var(--hold)} .dgroup.month > h3 i{background:var(--focus)}
 .drow{width:100%;display:grid;grid-template-columns:auto 1fr auto auto;gap:var(--sp-3);align-items:center;padding:var(--sp-2) var(--sp-4);border:0;background:transparent;text-align:start;
-  transition:background-color var(--dur-2) var(--ease-out)}
+  transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .drow:hover{background:var(--stripe)}
 .kind{font-size:var(--fs-xs);font-weight:600;padding:3px var(--sp-2);border-radius:var(--r-md);background:var(--focus-bg);color:var(--focus-ink);white-space:nowrap}
 .kind.final{background:var(--hold-bg);color:var(--hold-ink)}
@@ -106,7 +106,7 @@ button.kpi:hover{border-color:var(--ink-2);translate:0 -2px}
 /* المشاريع الجارية */
 .plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--sp-3)}
 .pcard{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);padding:var(--sp-4) var(--sp-4);display:grid;gap:var(--sp-2);text-align:start;box-shadow:var(--shadow);
-  transition:border-color var(--dur-2) var(--ease-out),translate var(--dur-2) var(--ease-out)}
+  transition:border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),translate calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .pcard:hover{border-color:var(--ink-2)}
 .pmain{display:grid;gap:var(--sp-2);border:0;background:transparent;padding:0;text-align:start;width:100%}
 .pcard .top{display:flex;justify-content:space-between;gap:var(--sp-2);align-items:flex-start}
@@ -129,7 +129,7 @@ button.kpi:hover{border-color:var(--ink-2);translate:0 -2px}
 .dmain{display:grid;grid-template-columns:auto 1fr auto auto;gap:var(--sp-3);align-items:center;padding:var(--sp-2) var(--sp-4) var(--sp-1);border:0;background:transparent;text-align:start;width:100%}
 .dact{display:flex;flex-wrap:wrap;gap:var(--sp-1);padding:0 var(--sp-4) var(--sp-2);justify-content:flex-end}
 .dact button,.dact select,.pact button,.tb .act{font-size:var(--fs-xs);border:1px solid var(--rule);background:var(--paper);color:var(--ink-2);border-radius:var(--r-pill);padding:var(--sp-1) var(--sp-3);
-  transition:background-color var(--dur-2) var(--ease-out),border-color var(--dur-2) var(--ease-out),color var(--dur-2) var(--ease-out)}
+  transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .dact button:hover,.dact select:hover,.pact button:hover{border-color:var(--ink-2);color:var(--ink)}
 .dact button[disabled],.dact select[disabled],.pact button[disabled]{opacity:.45;cursor:not-allowed}
 .dact .done{border-color:color-mix(in srgb,var(--done) 45%,transparent);color:var(--done)}
@@ -138,7 +138,7 @@ button.kpi:hover{border-color:var(--ink-2);translate:0 -2px}
 @media (max-width:640px){ .dmain{grid-template-columns:1fr auto;row-gap:var(--sp-1)} .dmain .kind{grid-column:1/-1;justify-self:start} .dmain .st{display:none} }
 dialog{border:0;padding:0;border-radius:var(--r);background:var(--paper);color:var(--ink);box-shadow:0 30px 80px rgba(8,9,20,.35);width:min(520px,calc(100% - 32px))}
 dialog::backdrop{background:var(--overlay)}
-dialog[open]{animation:dlgIn var(--dur-3) var(--ease-out)}
+dialog[open]{animation:dlgIn calc(var(--dur-3) * var(--motion-scale,1)) var(--ease-out)}
 @keyframes dlgIn{from{opacity:0;transform:translateY(10px) scale(.965)}}
 .dlg{display:grid;gap:var(--sp-3);padding:var(--sp-5) var(--sp-5)}
 .dlg h2{font-size:var(--fs-md)}
@@ -151,7 +151,7 @@ dialog[open]{animation:dlgIn var(--dur-3) var(--ease-out)}
 .dlg .row .primary{background:var(--cta);color:var(--on-cta);border-color:var(--cta)}
 .dlg .row .danger{background:var(--urgent);color:#fff;border-color:var(--urgent)}
 .toast{position:fixed;bottom:22px;left:50%;translate:-50% 16px;opacity:0;z-index:50;background:var(--ink);color:var(--paper);padding:var(--sp-2) var(--sp-4);border-radius:var(--r-md);font-size:var(--fs-sm);
-  transition:opacity var(--dur-3) var(--ease-out),translate var(--dur-3) var(--ease-out);pointer-events:none;max-width:90vw}
+  transition:opacity calc(var(--dur-3) * var(--motion-scale,1)) var(--ease-out),translate calc(var(--dur-3) * var(--motion-scale,1)) var(--ease-out);pointer-events:none;max-width:90vw}
 .toast.on{opacity:1;translate:-50% 0}
 .toast.bad{background:var(--urgent);color:#fff}
 .empty{background:var(--paper);border:1px dashed var(--rule);border-radius:var(--r);padding:var(--sp-5);text-align:center;color:var(--muted)}
@@ -159,7 +159,7 @@ dialog[open]{animation:dlgIn var(--dur-3) var(--ease-out)}
 
 /* ---------- الحركة (منهج «مَدار»): «شروق» متتابع للأقسام والبطاقات، وامتلاء الأشرطة بعده ---------- */
 @keyframes rise{from{opacity:0;transform:translateY(12px)}}
-.reveal{animation:rise var(--dur-4) var(--ease-out) both;animation-delay:calc(var(--i,0) * 45ms)}
+.reveal{animation:rise calc(var(--dur-4) * var(--motion-scale,1)) var(--ease-out) both;animation-delay:calc(var(--i,0) * 45ms)}
 .bar i::after{transition:transform 900ms var(--ease-out);transition-delay:calc(200ms + var(--i,0) * 45ms)}
 :where(button,a):not(:disabled):active{scale:.98}
 @media (prefers-reduced-motion:reduce){
@@ -168,16 +168,16 @@ dialog[open]{animation:dlgIn var(--dur-3) var(--ease-out)}
 }
 }
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260928c">
-<link rel="stylesheet" href="layouts/nav-side.css?v=20260928c">
-<link rel="stylesheet" href="layouts/nav-top.css?v=20260928c">
-<link rel="stylesheet" href="layouts/hero-page.css?v=20260928c">
-<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928c">
-<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928c">
-<link rel="stylesheet" href="nasaq-ui.css?v=20260928c">
-<link rel="stylesheet" href="themes/classic.css?v=20260928c">
-<link rel="stylesheet" href="themes/nasaq.css?v=20260928c">
-<link rel="stylesheet" href="themes/nasaq360.css?v=20260928c">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260928d">
+<link rel="stylesheet" href="layouts/nav-side.css?v=20260928d">
+<link rel="stylesheet" href="layouts/nav-top.css?v=20260928d">
+<link rel="stylesheet" href="layouts/hero-page.css?v=20260928d">
+<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928d">
+<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928d">
+<link rel="stylesheet" href="nasaq-ui.css?v=20260928d">
+<link rel="stylesheet" href="themes/classic.css?v=20260928d">
+<link rel="stylesheet" href="themes/nasaq.css?v=20260928d">
+<link rel="stylesheet" href="themes/nasaq360.css?v=20260928d">
 </head>
 <body>
 <header class="tb">
