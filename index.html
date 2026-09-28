@@ -11,9 +11,9 @@
 <!-- تثبيت اللوح كتطبيق (الهاتف والحاسوب) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#F7F6F2">
-<script src="nasaq-core.js?v=20260928b"></script>
-<script src="nasaq-art.js?v=20260928b"></script>
-<script src="nasaq-icons.js?v=20260928b"></script>
+<script src="nasaq-core.js?v=20260928c"></script>
+<script src="nasaq-art.js?v=20260928c"></script>
+<script src="nasaq-icons.js?v=20260928c"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1479,16 +1479,16 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 }
 }
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260928b">
-<link rel="stylesheet" href="layouts/nav-side.css?v=20260928b">
-<link rel="stylesheet" href="layouts/nav-top.css?v=20260928b">
-<link rel="stylesheet" href="layouts/hero-page.css?v=20260928b">
-<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928b">
-<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928b">
-<link rel="stylesheet" href="nasaq-ui.css?v=20260928b">
-<link rel="stylesheet" href="themes/classic.css?v=20260928b">
-<link rel="stylesheet" href="themes/nasaq.css?v=20260928b">
-<link rel="stylesheet" href="themes/nasaq360.css?v=20260928b">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260928c">
+<link rel="stylesheet" href="layouts/nav-side.css?v=20260928c">
+<link rel="stylesheet" href="layouts/nav-top.css?v=20260928c">
+<link rel="stylesheet" href="layouts/hero-page.css?v=20260928c">
+<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928c">
+<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928c">
+<link rel="stylesheet" href="nasaq-ui.css?v=20260928c">
+<link rel="stylesheet" href="themes/classic.css?v=20260928c">
+<link rel="stylesheet" href="themes/nasaq.css?v=20260928c">
+<link rel="stylesheet" href="themes/nasaq360.css?v=20260928c">
 </head>
 <body>
 
@@ -1565,6 +1565,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <h2><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg> الإعدادات</h2>
       <button id="settingsClose" type="button" title="إغلاق" aria-label="إغلاق الإعدادات"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button>
     </div>
+    <nav class="set-nav" id="setNav" role="tablist" aria-orientation="vertical" aria-label="أقسام الإعدادات"></nav>
     <div class="settings-body">
       <section>
         <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-user"/></svg> الحساب</h3>
@@ -2018,12 +2019,13 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <div class="tabpanel" id="tabTasks" hidden>
 <section class="card page-head">
   <div class="page-head-text">
-    <h2 class="page-title">المهام</h2>
+    <h1 class="page-title">المهام</h1>
     <p class="page-sub">كل ما عليك، مرتّبًا حسب موعده وأهميته.</p>
   </div>
   <div class="page-tools">
     <input type="search" id="tpSearch" placeholder="ابحث بالاسم أو المشروع أو المانح…" aria-label="ابحث في المهام">
     <select id="tpProj" aria-label="تصفية حسب المشروع"><option value="">كل المشاريع</option></select>
+    <button type="button" class="chip tp-chip" id="tpNotion" aria-pressed="false">من نوشن هذا الشهر</button>
     <button type="button" class="btn btn-primary" id="tpAdd">＋ مهمة جديدة</button>
   </div>
 </section>
@@ -2046,10 +2048,20 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <div class="tabpanel" id="tabFlow" hidden>
 <section class="card page-head">
   <div class="page-head-text">
-    <h2 class="page-title">العادات</h2>
+    <h1 class="page-title">العادات</h1>
     <p class="page-sub">روتينك وطاقتك وامتنانك — مساحتك الشخصية، خارج قائمة المهام.</p>
   </div>
-  <div class="page-date"><bdi id="flowWeekday">—</bdi>، <bdi id="flowDate">—</bdi></div>
+  <div class="page-tools flow-energy">
+    <span class="energy-lbl" id="energyLbl"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-4"/></svg> طاقتك اليوم</span>
+    <div class="energy" id="energyPicker" role="group" aria-labelledby="energyLbl">
+      <button data-v="1" type="button" title="منخفض جدًا" aria-label="الطاقة: منخفض جدًا"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-1"/></svg></button>
+      <button data-v="2" type="button" title="منخفض" aria-label="الطاقة: منخفض"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-2"/></svg></button>
+      <button data-v="3" type="button" title="متوسط" aria-label="الطاقة: متوسط"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-3"/></svg></button>
+      <button data-v="4" type="button" title="جيد" aria-label="الطاقة: جيد"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-4"/></svg></button>
+      <button data-v="5" type="button" title="ممتاز" aria-label="الطاقة: ممتاز"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-5"/></svg></button>
+    </div>
+    <div class="page-date"><bdi id="flowWeekday">—</bdi> <bdi id="flowDate">—</bdi></div>
+  </div>
 </section>
 <div class="page-grid">
   <section class="card">
@@ -2073,18 +2085,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <section class="card">
     <div class="card-head"><h3>أسبوعك مع العادات</h3><span class="streak" id="habitStreak"></span></div>
     <div class="habit-week" id="habitWeek"></div>
-    <p class="card-note">يمتلئ كل يوم بقدر ما أنجزت من روتينك، والسلسلة تحسب الأيام المتتالية التي أكملته فيها.</p>
-  </section>
-
-  <section class="card">
-    <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-4"/></svg> مستوى الطاقة اليوم</h3></div>
-    <div class="energy" id="energyPicker">
-      <button data-v="1" type="button" title="منخفض جدًا" aria-label="الطاقة: منخفض جدًا"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-1"/></svg></button>
-      <button data-v="2" type="button" title="منخفض" aria-label="الطاقة: منخفض"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-2"/></svg></button>
-      <button data-v="3" type="button" title="متوسط" aria-label="الطاقة: متوسط"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-3"/></svg></button>
-      <button data-v="4" type="button" title="جيد" aria-label="الطاقة: جيد"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-4"/></svg></button>
-      <button data-v="5" type="button" title="ممتاز" aria-label="الطاقة: ممتاز"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-battery-5"/></svg></button>
-    </div>
+    <p class="card-note">يمتلئ كل يوم بقدر ما أنجزت من روتينك، والخط المتقطع متوسط أسبوعك، والسلسلة تحسب الأيام المتتالية التي أكملته فيها.</p>
   </section>
 
   <section class="card">
@@ -2140,7 +2141,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <div class="tabpanel" id="tabExpenses" hidden>
 <section class="card page-head">
   <div class="page-head-text">
-    <h2 class="page-title">المصروفات</h2>
+    <h1 class="page-title">المصروفات</h1>
     <p class="page-sub">سجّل مصروفك، وتابع ما تبقّى من ميزانية الشهر.</p>
   </div>
 </section>
@@ -2148,12 +2149,13 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <section class="card exp-main">
     <div class="card-head"><h3>سجّل مصروفًا</h3></div>
     <div class="exp-add">
-      <input id="expAmount" type="text" inputmode="decimal" placeholder="المبلغ بالشيكل — أو مثل &#x2066;15+7.5&#x2069;">
+      <div class="exp-amt-wrap"><input id="expAmount" type="text" inputmode="decimal" placeholder="المبلغ — أو مثل &#x2066;15+7.5&#x2069;" aria-label="المبلغ بالشيكل"><span class="exp-cur" aria-hidden="true">₪</span></div>
+      <div class="exp-cats" id="expCats" role="radiogroup" aria-label="التصنيفات الأكثر استخدامًا"></div>
       <select id="expCategory" aria-label="التصنيف"><option value="">التصنيف</option></select>
       <select id="expAccount" aria-label="من حساب"><option value="">من حساب</option></select>
-      <input id="expText" placeholder="العملية — مثال: قهوة">
-      <button id="expAddDetailsBtn" type="button" title="تفاصيل إضافية" aria-expanded="false">⋯</button>
-      <button id="expAddBtn" title="أضف المصروف">+</button>
+      <input id="expText" placeholder="العملية — مثال: قهوة" aria-label="العملية">
+      <button id="expAddDetailsBtn" type="button" title="تفاصيل إضافية" aria-label="تفاصيل إضافية" aria-expanded="false"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-more"/></svg></button>
+      <button id="expAddBtn" type="button" class="btn btn-primary">سجّل المصروف</button>
     </div>
     <div class="exp-add-details" id="expAddDetails" hidden>
       <input id="expDate" type="date" title="التاريخ">
@@ -2399,6 +2401,15 @@ $('tabBoardBtn').onclick = ()=>showTab('board');
 $('tabTasksBtn').onclick = ()=>showTab('tasks');
 $('tabFlowBtn').onclick = ()=>showTab('flow');
 $('tabProjectsBtn').onclick = ()=>showTab('projects');
+/* إطار المشاريع يأخذ ارتفاع محتواه (postMessage) فيبقى للصفحة شريط تمرير واحد؛ ونرسل له ارتفاع النافذة لقائمته */
+addEventListener('message', e=>{
+  const f = $('projectsFrame');
+  if(e.origin !== location.origin || !f || e.source !== f.contentWindow || !e.data || e.data.type !== 'nasaq-frame-h') return;
+  f.style.height = Math.max(420, Math.ceil(e.data.h)) + 'px';
+});
+function sendHostVh(){ const f = $('projectsFrame'); try{ if(f && f.contentWindow) f.contentWindow.postMessage({type:'nasaq-host-vh', h: innerHeight}, location.origin); }catch(e){} }
+$('projectsFrame').addEventListener('load', sendHostVh);
+addEventListener('resize', sendHostVh);
 $('tabExpensesBtn').onclick = ()=>showTab('expenses');
 /* الإطار يُحمَّل عند أول فتح للتبويب فقط */
 function loadProjectsTab(){
@@ -3971,7 +3982,8 @@ function renderTasksPage(){
   projs.forEach(p=>{ const o = document.createElement('option'); o.value = p; o.textContent = p; sel.appendChild(o); });
   sel.value = projs.includes(cur) ? cur : '';
   const pj = sel.value;
-  const match = t => (!pj || (t.proj||'').trim() === pj) &&
+  const fromN = $('tpNotion').getAttribute('aria-pressed') === 'true', month = iso(new Date()).slice(0, 7);
+  const match = t => (!pj || (t.proj||'').trim() === pj) && (!fromN || (t.fromNotion && String(t.createdAt || '').slice(0, 7) === month)) &&
     (!q || [t.text, t.proj, t.donor, t.notes].some(v=>(v||'').toLowerCase().includes(q)));
   const impRank = {'أ':0, 'ب':1, 'ج':2};
   const priValues = [...document.querySelectorAll('.pri .field')].map(f=>f.value.trim());
@@ -3998,15 +4010,16 @@ function renderTasksPage(){
   if(!shownAny){
     const e = document.createElement('section'); e.className = 'card tp-empty';
     e.innerHTML = EMPTY_ICON + '<p></p>';
-    e.querySelector('p').textContent = (q || pj) ? 'لا شيء يطابق بحثك.' : 'يومك هادئ حتى الآن. خطوة واحدة تكفي للبدء.';
+    e.querySelector('p').textContent = (q || pj || fromN) ? 'لا شيء يطابق بحثك.' : 'يومك هادئ حتى الآن. خطوة واحدة تكفي للبدء.';
     wrap.appendChild(e);
   }
   /* نظرة سريعة */
   const open = tasks.filter(t=>!t.done);
+  const nOver = tasks.filter(t=>taskMatches(t,'overdue')).length, nDone = tasks.filter(t=>t.done).length;
   const stats = [
-    [AR(open.length), 'مفتوحة'],
-    [AR(tasks.filter(t=>taskMatches(t,'overdue')).length), 'متأخرة'],
-    [AR(tasks.filter(t=>t.done).length), 'منجزة'],
+    [AR(open.length), pluralNoun(open.length, 'مهمة مفتوحة', 'مهمتان مفتوحتان', 'مهام مفتوحة', 'مهمة مفتوحة')],
+    [AR(nOver), pluralNoun(nOver, 'مهمة متأخرة', 'مهمتان متأخرتان', 'مهام متأخرة', 'مهمة متأخرة')],
+    [AR(nDone), pluralNoun(nDone, 'مهمة منجزة', 'مهمتان منجزتان', 'مهام منجزة', 'مهمة منجزة')],
     [(m => m ? fmtMins(m) : '—')(open.reduce((s,t)=>s+(Number(t.mins)||0),0)), 'وقت متبقٍّ']
   ];
   const st = $('tpStats'); st.innerHTML = '';
@@ -4022,7 +4035,7 @@ function renderTasksPage(){
   rows.forEach(([p,n])=>{
     const b = document.createElement('button'); b.type = 'button';
     b.className = 'tp-proj' + (pj === p ? ' active' : '');
-    const nm = document.createElement('span'); nm.textContent = p;
+    const nm = document.createElement('span'); nm.textContent = projLabel(p); nm.title = p;
     if(projColor(p) && p !== 'بلا مشروع'){ nm.classList.add('dot-pc'); nm.style.setProperty('--pc', projColor(p)); }
     const ct = document.createElement('b'); ct.textContent = AR(n);
     b.append(nm, ct);
@@ -4031,6 +4044,17 @@ function renderTasksPage(){
   });
 }
 $('tpSearch').addEventListener('input', renderTasksPage);
+$('tpNotion').onclick = ()=>{ const b = $('tpNotion'); b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')); renderTasksPage(); };
+/* «حسب المشروع»: الكود مع اسم مختصر من ذاكرة صفحة المشاريع إن وُجد */
+function projLabel(p){
+  const code = (String(p).match(/\b[A-Z]{1,3}\d{2,4}\b/) || [])[0];
+  if(!code) return p;
+  let name = '';
+  try{ const c = JSON.parse(localStorage.getItem('daily-board-projects-cache-medics') || 'null'); const pr = c && (c.projects || []).find(x=>x.code === code); if(pr) name = pr.stdName || pr.name || ''; }catch(e){}
+  if(!name) return p;
+  const short = name.split(/\s+/).slice(0, 3).join(' ') + (name.split(/\s+/).length > 3 ? '…' : '');
+  return code + ' · ' + short;
+}
 $('tpProj').addEventListener('change', renderTasksPage);
 $('tpAdd').onclick = ()=>{ showTab('board'); const i = $('tText'); i.scrollIntoView({block:'center'}); i.focus(); };
 
@@ -4658,7 +4682,7 @@ function showDueForDay(key){
     back.onclick = ()=>{
       tasks.push({id:Date.now()+Math.random(), notionId:r.pageId, text:r.text, proj:r.project||'', donor:r.donor||'',
         imp:'ب', due:r.due||'', mins:r.est||'', actual:r.actual||'', notes:r.notes||'', done:false, state:0,
-        createdAt:new Date().toISOString(), dirty:true});
+        createdAt:new Date().toISOString(), fromNotion:true, dirty:true});
       sync();
     };
     line.appendChild(back);
@@ -5799,6 +5823,7 @@ function renderHabitWeek(){
 function drawHabitWeek(box){
   const hist = flow.history || {};
   box.innerHTML = '';
+  const rec = [];
   for(let i = 6; i >= 0; i--){
     const d = new Date(); d.setDate(d.getDate() - i);
     const r = hist[iso(d)];
@@ -5810,8 +5835,14 @@ function drawHabitWeek(box){
     const fill = document.createElement('i'); fill.style.height = pct + '%'; bar.appendChild(fill);
     const lbl = document.createElement('span');
     lbl.textContent = fmtDate(d, {weekday:'short'});
-    cell.append(bar, lbl); box.appendChild(cell);
+    const pl = document.createElement('b'); pl.className = 'hw-pct'; pl.textContent = r && r[1] ? AR(pct) + '%' : '—';
+    if(r && r[1]) rec.push(pct);
+    cell.append(pl, bar, lbl); box.appendChild(cell);
   }
+  /* الخط الأساسي: متوسط الأيام المسجّلة في الأسبوع */
+  const avg = rec.length ? Math.round(rec.reduce((s, x)=>s + x, 0) / rec.length) : 0;
+  box.style.setProperty('--hw-avg', avg + '%'); box.classList.toggle('has-avg', rec.length > 1);
+  box.title = rec.length ? 'متوسط أسبوعك ' + AR(avg) + '%' : '';
 }
 function saveFlow(){ recordHabitDay(); try{ localStorage.setItem(FKEY, JSON.stringify(flow)); }catch(e){} touchState(); }
 function syncFlow(){ renderFlow(); saveFlow(); try{ updateCardArts(); }catch(e){} }
@@ -6525,7 +6556,25 @@ function addExpense(){
 $('expAddBtn').onclick = addExpense;
 ['expAmount','expText'].forEach(id=>$(id).addEventListener('keydown', e=>{ if(e.key==='Enter') addExpense(); }));
 
+/* أكثر 6 تصنيفات استخدامًا كرقائق؛ والقائمة المنسدلة للباقي */
+function renderExpCats(){
+  const box = $('expCats'); if(!box) return;
+  const cnt = {}; expenses.forEach(x=>{ if(x.category) cnt[x.category] = (cnt[x.category] || 0) + 1; });
+  const all = [...new Set(Object.keys(cnt).sort((a, b)=>cnt[b] - cnt[a]).concat(expCategories || []))].slice(0, 6);
+  const cur = $('expCategory').value;
+  box.innerHTML = ''; box.hidden = !all.length;
+  all.forEach(c=>{
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', String(c === cur)); b.textContent = c;
+    b.onclick = ()=>{ const sel = $('expCategory');
+      if(![...sel.options].some(o=>o.value === c)){ const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); }
+      sel.value = sel.value === c ? '' : c; renderExpCats(); };
+    box.append(b);
+  });
+}
+$('expCategory').addEventListener('change', renderExpCats);
 function renderExpenses(){
+  try{ renderExpCats(); }catch(e){}
   const list = $('expList'); list.innerHTML = '';
   const month = monthKey(new Date());
   const monthExpenses = expenses.filter(x=>x.date && x.date.slice(0,7)===month);
@@ -6559,7 +6608,7 @@ function renderExpenses(){
         if(!undone && notionOK() && removed.notionId){
           post({action:'expense_delete', pageId: removed.notionId}).catch(()=>{});
         }
-      }, 600300);
+      }, TOAST_UNDO_MS + 300);   /* الحذف من نوشن بعد انتهاء مهلة التراجع فقط */
     };
     li.append(txt, cat, acc, amt, kill);
     list.appendChild(li);
@@ -6597,6 +6646,7 @@ function loadExpenseOptions(){
     $('expCategory').innerHTML = '<option value="">التصنيف</option>' + expCategories.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
     $('expAccount').innerHTML = '<option value="">من حساب</option>' + expAccounts.map(a=>'<option value="'+esc(a.id)+'">'+esc(a.name)+'</option>').join('');
     expOptionsLoaded = true;
+    renderExpCats();
   }).catch(()=>{});
 }
 
@@ -6610,8 +6660,7 @@ function renderBudgetDashboard(d){
   const remaining = d.totalPlanned - d.totalActual;
   overall.innerHTML =
     '<div class="big">'+fmtMoney(d.totalActual)+'</div>'+
-    '<div class="sub">من '+(d.totalPlanned>0?fmtMoney(d.totalPlanned):'بلا حدّ مخطط')+
-      (d.totalPlanned>0 ? (' | المتبقي '+fmtMoney(remaining)) : '')+'</div>'+
+    '<div class="sub">'+(d.totalPlanned>0 ? ('المتبقي '+fmtMoney(remaining)+' من '+fmtMoney(d.totalPlanned)) : 'بلا حدّ مخطط')+'</div>'+
     (d.totalPlanned>0 ? renderBudgetBar(pct) : '');
 
   const list = $('budgetList');
@@ -6620,7 +6669,7 @@ function renderBudgetDashboard(d){
     const p = it.planned>0 ? Math.round(it.actual/it.planned*100) : null;
     return '<div class="budget-item">'+
       '<div class="row"><b>'+esc(it.category)+'</b><span>'+fmtMoney(it.actual)+(it.planned>0?' / '+fmtMoney(it.planned):'')+'</span></div>'+
-      (p!=null ? renderBudgetBar(p) + '<div class="pct">'+AR(p)+'% من الحد المخطط</div>' : '')+
+      (p!=null ? renderBudgetBar(p) + '<div class="pct">المتبقي '+fmtMoney(it.planned-it.actual)+' من '+fmtMoney(it.planned)+' | '+AR(p)+'%</div>' : '')+
     '</div>';
   }).join('');
 }
@@ -6831,9 +6880,62 @@ function openSettings(){
   const showAdmin = !!(auth && auth.isOwner);
   $('setAdminSection').hidden = !showAdmin;
   if(showAdmin) loadAdminUsers();
+  buildSetNav();
+  $('setNav').querySelector('[data-k="admin"]').hidden = !showAdmin;
+  if(setTab === 'admin' && !showAdmin) setTab = 'account';
+  showSetTab(setTab, false);
+  setBack = document.activeElement;
   $('settingsOverlay').hidden = false;
+  setTimeout(()=>{ const b = $('setNav').querySelector('[aria-selected="true"]'); if(b) b.focus(); }, 30);
 }
-function closeSettings(){ const o = $('settingsOverlay'); if(o.hidden) return; motionHide(o, ()=>{ o.hidden = true; }); }
+function closeSettings(){ const o = $('settingsOverlay'); if(o.hidden) return; motionHide(o, ()=>{ o.hidden = true; if(setBack && setBack.isConnected) try{ setBack.focus(); }catch(e){} }); }
+/* تبويبات الإعدادات العمودية: الحساب، والربط، والمظهر، والإشعارات، وترتيب صفحة اليوم، والبيانات، وإدارة المستخدمين للمالك */
+let setTab = 'account', setBack = null;
+const SET_TABS = [['account', 'الحساب', 'user'], ['bridge', 'الربط', 'link'], ['look', 'المظهر', 'palette'], ['alive', 'الإشعارات', 'bell'],
+  ['layout', 'ترتيب صفحة اليوم', 'list-checks'], ['data', 'البيانات', 'save'], ['admin', 'إدارة المستخدمين', 'crown']];
+function buildSetNav(){
+  const nav = $('setNav'); if(nav.childElementCount) return;
+  document.querySelectorAll('.settings-body > section').forEach(s=>{
+    const t = (s.querySelector('h3') || {}).textContent || '';
+    s.dataset.set = s.id === 'setAdminSection' ? 'admin' : s.id === 'setLayout' ? 'layout' : (s.id === 'setAlive' || /سبوتيفاي/.test(t)) ? 'alive'
+      : /الحساب/.test(t) ? 'account' : /الربط/.test(t) ? 'bridge' : /المظهر/.test(t) ? 'look' : 'data';
+    s.setAttribute('role', 'tabpanel'); s.id = s.id || 'setSec-' + s.dataset.set + '-' + Math.random().toString(36).slice(2, 6);
+  });
+  SET_TABS.forEach(([k, label, ic])=>{
+    const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.dataset.k = k; b.id = 'setTab-' + k;
+    b.innerHTML = icon(ic) + '<span></span>'; b.lastChild.textContent = label;
+    b.onclick = ()=>showSetTab(k, true);
+    nav.append(b);
+  });
+  nav.addEventListener('keydown', e=>{
+    if(!['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+    const bs = [...nav.querySelectorAll('[role=tab]:not([hidden])')], i = bs.indexOf(document.activeElement); if(i < 0) return;
+    e.preventDefault();
+    const n = e.key === 'Home' ? 0 : e.key === 'End' ? bs.length - 1 : (i + ((e.key === 'ArrowDown' || e.key === 'ArrowLeft') ? 1 : -1) + bs.length) % bs.length;
+    bs[n].focus(); showSetTab(bs[n].dataset.k, false);
+  });
+  /* حبس التركيز داخل اللوحة */
+  $('settingsOverlay').addEventListener('keydown', e=>{
+    if(e.key === 'Escape'){ closeSettings(); return; }
+    if(e.key !== 'Tab') return;
+    const f = [...document.querySelector('.settings-panel').querySelectorAll('button:not([disabled]),input:not([disabled]),select,textarea,a[href],[tabindex]:not([tabindex="-1"])')].filter(x=>x.offsetParent !== null);
+    if(!f.length) return;
+    if(e.shiftKey && document.activeElement === f[0]){ e.preventDefault(); f[f.length - 1].focus(); }
+    else if(!e.shiftKey && document.activeElement === f[f.length - 1]){ e.preventDefault(); f[0].focus(); }
+  });
+}
+function showSetTab(k, focusPanel){
+  setTab = k;
+  $('setNav').querySelectorAll('[role=tab]').forEach(b=>{ const on = b.dataset.k === k; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
+  let first = null;
+  document.querySelectorAll('.settings-body > section').forEach(s=>{
+    const on = s.dataset.set === k && !(s.id === 'setAdminSection' && !(auth && auth.isOwner));
+    s.classList.toggle('set-off', !on); s.setAttribute('aria-labelledby', 'setTab-' + s.dataset.set);
+    if(on && !first) first = s;
+  });
+  const body = document.querySelector('.settings-body'); if(body) body.scrollTop = 0;
+  if(focusPanel && first){ const f = first.querySelector('input,button,select'); if(f) f.focus({preventScroll:true}); }
+}
 $('settingsBtn').onclick = openSettings;
 $('settingsClose').onclick = closeSettings;
 $('settingsOverlay').addEventListener('click', e=>{ if(e.target === $('settingsOverlay')) closeSettings(); });

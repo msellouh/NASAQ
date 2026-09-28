@@ -15,9 +15,9 @@
 <!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده؛ وخط الطابع الافتراضي «نَسَق» يُحمَّل مسبقًا -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
-<script src="nasaq-core.js?v=20260928b"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
-<script src="nasaq-art.js?v=20260928b"></script>
-<script src="nasaq-icons.js?v=20260928b"></script>
+<script src="nasaq-core.js?v=20260928c"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
+<script src="nasaq-art.js?v=20260928c"></script>
+<script src="nasaq-icons.js?v=20260928c"></script>
 <style>
 @layer tokens, base, layouts, components, theme, utilities;
 @layer base{
@@ -144,7 +144,10 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .meter i{display:block;height:100%;border-radius:var(--r-pill);background:var(--grad-line)}
 
 /* ---------- القائمة والتفاصيل ---------- */
-.split{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:var(--sp-4);align-items:start}
+.split{display:grid;grid-template-columns:360px minmax(0,1fr);gap:var(--sp-4);align-items:start}
+/* داخل اللوح: الإطار بطول محتواه، فالقائمة بتمرير مستقل بارتفاع نافذة اللوح */
+html.embed .list{position:static;max-height:calc(var(--host-vh,100vh) - 140px)}
+html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .list{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);
   position:sticky;top:calc(var(--tb-h) + 16px);max-height:calc(100vh - var(--tb-h) - 32px);display:flex;flex-direction:column;min-width:0}
 .list-head{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--rule);font-size:var(--fs-sm);color:var(--muted)}
@@ -471,6 +474,7 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
   .split{grid-template-columns:1fr}
   .list{position:static;max-height:none}
   .items{max-height:48vh}
+  html.embed .items{max-height:calc(var(--host-vh,100vh) * .48)}
   .steps{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));row-gap:var(--sp-3)}
   .steps::before,.steps .fill{display:none}
   .counters{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -504,16 +508,16 @@ dialog[open]::backdrop{animation:m-fade-in var(--dur-3) var(--ease-out)}
 }
 }
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260928b">
-<link rel="stylesheet" href="layouts/nav-side.css?v=20260928b">
-<link rel="stylesheet" href="layouts/nav-top.css?v=20260928b">
-<link rel="stylesheet" href="layouts/hero-page.css?v=20260928b">
-<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928b">
-<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928b">
-<link rel="stylesheet" href="nasaq-ui.css?v=20260928b">
-<link rel="stylesheet" href="themes/classic.css?v=20260928b">
-<link rel="stylesheet" href="themes/nasaq.css?v=20260928b">
-<link rel="stylesheet" href="themes/nasaq360.css?v=20260928b">
+<link rel="stylesheet" href="nasaq-theme.css?v=20260928c">
+<link rel="stylesheet" href="layouts/nav-side.css?v=20260928c">
+<link rel="stylesheet" href="layouts/nav-top.css?v=20260928c">
+<link rel="stylesheet" href="layouts/hero-page.css?v=20260928c">
+<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928c">
+<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928c">
+<link rel="stylesheet" href="nasaq-ui.css?v=20260928c">
+<link rel="stylesheet" href="themes/classic.css?v=20260928c">
+<link rel="stylesheet" href="themes/nasaq.css?v=20260928c">
+<link rel="stylesheet" href="themes/nasaq360.css?v=20260928c">
 </head>
 <body>
 <header class="tb" id="tb">
@@ -778,6 +782,17 @@ const ORG = new URLSearchParams(location.search).get('org') === 'humera' ? 'hume
 const EMBED = new URLSearchParams(location.search).get('embed') === '1';
 if(EMBED){
   document.documentElement.classList.add('embed');
+  /* داخل تبويب اللوح: نعلن ارتفاع المحتوى ليأخذه الإطار (شريط تمرير واحد للصفحة)، ونقرأ ارتفاع نافذة اللوح للقائمة */
+  if(window.parent !== window){
+    let lastH = 0;
+    const sendH = () => { const hh = Math.ceil(document.documentElement.scrollHeight); if(Math.abs(hh - lastH) < 2) return; lastH = hh;
+      try{ parent.postMessage({type:'nasaq-frame-h', h: hh}, location.origin); }catch(e){} };
+    addEventListener('load', sendH);
+    document.addEventListener('DOMContentLoaded', () => { try{ const ro = new ResizeObserver(sendH); ro.observe(document.body); ro.observe(document.documentElement); }catch(e){} sendH(); });
+    setInterval(sendH, 700);   /* احتياط: بعض التغييرات لا تغيّر حجم body نفسه */
+    addEventListener('message', e => { if(e.origin === location.origin && e.data && e.data.type === 'nasaq-host-vh')
+      document.documentElement.style.setProperty('--host-vh', e.data.h + 'px'); });
+  }
 }
 const ORG_INFO = ORGS[ORG];
 document.documentElement.dataset.org = ORG;
@@ -1115,7 +1130,7 @@ function renderList(rows){
   if(!rows.length){ box.innerHTML = '<div class="empty">لا توجد مشاريع تطابق هذه الفلاتر.</div>'; return; }
   box.innerHTML = rows.map(p => {
     const ld = lateDels(p).length, lp = planOf(p).filter(itemLate).length;
-    const flag = isLate(p) ? '<span class="flag late">تجاوز الموعد</span>' : (ld + lp) ? '<span class="flag due">' + cnt(ld + lp, W_ITEM) + ' متأخر</span>' : '';
+    const flag = isLate(p) ? '<span class="badge b-danger">' + icon('alert') + 'تجاوز الموعد</span>' : (ld + lp) ? '<span class="badge b-warning">' + icon('clock') + cnt(ld + lp, W_ITEM) + ' متأخر</span>' : '';
     const pr = progressOf(p);
     return '<button type="button" class="item' + (p.id === S.sel ? ' on' : '') + '" data-id="' + esc(p.id) + '" aria-current="' + (p.id === S.sel) + '">' +
       '<div class="row1">' + codeChip(p) + statusPill(p.status) + flag + '</div>' +
@@ -1642,9 +1657,16 @@ function moneyCard(p){
     .concat(p.indirectTypes || []).filter(Boolean);
   if(p.inBudget) opsParts.push(p.inBudget === 'نعم' ? 'ضمن ميزانية المانح' : 'خارج ميزانية المانح');
   const cDiff = C != null && F ? F - C : null;
+  /* سطر المقارنة الواحد: «مستلم 2.39M من 3.80M | منفَّذ 4.78M (96.4% من المعتمد)» — الرقم الكامل في title، والشرح في ⓘ */
+  const mS = n => { n = Number(n) || 0; const a = Math.abs(n); return a >= 1e6 ? AR(Math.round(n / 1e4) / 100) + 'M' : a >= 1e3 ? AR(Math.round(n / 100) / 10) + 'K' : AR(Math.round(n)); };
+  const nb = n => '<bdi title="' + esc(money(n)) + '">' + mS(n) + '</bdi>';
+  const R0 = p.received != null && p.received !== '' ? num(p.received) : null;
+  const mline = A ? '<p class="money-line">' + (R0 != null ? 'مستلم ' + nb(R0) + ' من ' + nb(A) : 'المعتمد ' + nb(A)) +
+      (F ? ' | منفَّذ ' + nb(F) + ' (' + pct(F / A) + ' من المعتمد)' : '') +
+      ' <button type="button" class="info-tip" aria-label="شرح الأرقام" title="المستلم: ما وصل من المانح حتى الآن.&#10;المعتمد: المبلغ الكلي حسب الاعتماد.&#10;المنفَّذ: مبلغ التنفيذ الفعلي (حسب الاعتماد − التشغيلية)، ونسبته من المعتمد.">' + icon('info') + '</button></p>' : '';
   return '<article class="card" id="moneyCard"><div class="card-h"><h2>المالية</h2><span class="end">' + payPill + (p.payStatus ? '<span class="pill">' + esc(p.payStatus) + '</span>' : '') +
       '<button class="btn soft sm" type="button" data-act="money-edit">تعديل المبالغ</button></span></div>' +
-    '<div class="money">' +
+    mline + '<div class="money">' +
       m('المبلغ الكلي', money(p.approved), 'حسب الاعتماد') +
       m('النسبة الإدارية', money(hasVal(p.admin) ? ADM : null), base && hasVal(p.admin) ? pct(ADM / base) + ' من المبلغ الكلي' : '') +
       m('مبلغ التنفيذ حسب الاعتماد', money(E || null), 'الكلي − الإدارية' + (A && E ? ' | ' + pct(E / A) : '')) +
