@@ -34,4 +34,6 @@
   :root[data-nav="top"] .sidenav .tab .ic{display:block}
   :root[data-nav="top"] .content{padding-top:calc(var(--tb-h) + var(--sp-3))}
 }
+/* زر primary واحد في الشاشة: «مهمة جديدة» في الشريط العلوي يغني عن نظيره في رأس تبويب المهام */
+@media (min-width:1000px){ :root[data-nav="top"] #tpAdd{display:none} }
 }
