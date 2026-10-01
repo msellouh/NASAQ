@@ -558,6 +558,7 @@ a.card-link{display:inline-flex;align-items:center}
 :where(.modal-overlay,.modal .body,.settings-overlay,.settings-body,.bsheet,.palette-overlay,.notif-panel,.np-list,.set-nav){overscroll-behavior:contain}
 .tl-wrap{overscroll-behavior:auto}   /* جدول اليوم لا يحبس تمرير الصفحة */
 #arcBody > *{content-visibility:auto;contain-intrinsic-size:auto 240px}
+html.frame-modal{overflow:hidden}   /* نافذة مفتوحة داخل إطار المشاريع: الصفحة لا تتحرك من تحتها */
 .tabbar{padding-bottom:max(var(--sp-1),env(safe-area-inset-bottom))}
 @media print{
   :is(.c-now,.skip-link,.sync-pop,.bsheet-back,.t-acts,.t-more,.fold-chev,.closing-open,.closing-strip-note,.cal-month-btn,.card-count,.tp-chip,.exp-cats,.set-nav){display:none !important}

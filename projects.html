@@ -15,9 +15,9 @@
 <!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده؛ وخط الطابع الافتراضي «نَسَق» يُحمَّل مسبقًا -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
-<script src="nasaq-core.js?v=20260928f"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
-<script src="nasaq-art.js?v=20260928f"></script>
-<script src="nasaq-icons.js?v=20260928f"></script>
+<script src="nasaq-core.js?v=20261001a"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
+<script src="nasaq-art.js?v=20261001a"></script>
+<script src="nasaq-icons.js?v=20261001a"></script>
 <style>
 @layer tokens, base, layouts, components, theme, utilities;
 @layer base{
@@ -529,16 +529,16 @@ dialog[open]::backdrop{animation:m-fade-in calc(var(--dur-3) * var(--motion-scal
 }
 }
 </style>
-<link rel="stylesheet" href="nasaq-theme.css?v=20260928f">
-<link rel="stylesheet" href="layouts/nav-side.css?v=20260928f">
-<link rel="stylesheet" href="layouts/nav-top.css?v=20260928f">
-<link rel="stylesheet" href="layouts/hero-page.css?v=20260928f">
-<link rel="stylesheet" href="layouts/hero-brief.css?v=20260928f">
-<link rel="stylesheet" href="layouts/hero-immersive.css?v=20260928f">
-<link rel="stylesheet" href="nasaq-ui.css?v=20260928f">
-<link rel="stylesheet" href="themes/classic.css?v=20260928f">
-<link rel="stylesheet" href="themes/nasaq.css?v=20260928f">
-<link rel="stylesheet" href="themes/nasaq360.css?v=20260928f">
+<link rel="stylesheet" href="nasaq-theme.css?v=20261001a">
+<link rel="stylesheet" href="layouts/nav-side.css?v=20261001a">
+<link rel="stylesheet" href="layouts/nav-top.css?v=20261001a">
+<link rel="stylesheet" href="layouts/hero-page.css?v=20261001a">
+<link rel="stylesheet" href="layouts/hero-brief.css?v=20261001a">
+<link rel="stylesheet" href="layouts/hero-immersive.css?v=20261001a">
+<link rel="stylesheet" href="nasaq-ui.css?v=20261001a">
+<link rel="stylesheet" href="themes/classic.css?v=20261001a">
+<link rel="stylesheet" href="themes/nasaq.css?v=20261001a">
+<link rel="stylesheet" href="themes/nasaq360.css?v=20261001a">
 </head>
 <body>
 <header class="tb" id="tb">
@@ -855,6 +855,31 @@ if(EMBED){
     setInterval(sendH, 700);   /* احتياط: بعض التغييرات لا تغيّر حجم body نفسه */
     addEventListener('message', e => { if(e.origin === location.origin && e.data && e.data.type === 'nasaq-host-vh')
       document.documentElement.style.setProperty('--host-vh', e.data.h + 'px'); });
+    /* الإطار بطول محتواه، فمنتصفه وأسفله خارج الشاشة غالبًا: النوافذ والإشعار تُوضع في الجزء الظاهر منه،
+       وتمرير اللوح يُثبَّت ما دامت النافذة مفتوحة فلا تبتعد عنها */
+    window.hostView = () => {
+      try{
+        const r = window.frameElement.getBoundingClientRect(), ph = parent.innerHeight;
+        const top = Math.max(0, -r.top), h = Math.min(ph, r.bottom) - Math.max(0, r.top);
+        if(h > 0) return {top, h};
+      }catch(e){}
+      return {top: scrollY, h: innerHeight};
+    };
+    const showModal0 = HTMLDialogElement.prototype.showModal;
+    HTMLDialogElement.prototype.showModal = function(){
+      showModal0.call(this);
+      const v = hostView();
+      Object.assign(this.style, {top: (v.top + 12) + 'px', bottom: 'auto', marginTop: '0', marginBottom: '0',
+        maxHeight: Math.max(260, v.h - 24) + 'px', overflow: 'auto', overscrollBehavior: 'contain'});
+      try{ parent.document.documentElement.classList.add('frame-modal'); }catch(e){}
+      /* مراقبة صفة open لا حدث close: تعمل مع أي طريقة إغلاق */
+      const dlg = this, mo = new MutationObserver(() => {
+        if(dlg.open) return;
+        mo.disconnect();
+        if(!document.querySelector('dialog[open]')) try{ parent.document.documentElement.classList.remove('frame-modal'); }catch(e){}
+      });
+      mo.observe(dlg, {attributes: true, attributeFilter: ['open']});
+    };
   }
 }
 const ORG_INFO = ORGS[ORG];
@@ -2094,6 +2119,8 @@ const planPayload = it => ({ id: isTmp(it.id) ? null : it.id, project: it.projec
 let toastT;
 function toast(msg, bad){
   const t = $('toast'); t.textContent = msg; t.className = 'toast on' + (bad ? ' bad' : '');
+  /* داخل اللوح: أسفل الجزء الظاهر من الإطار لا أسفل الإطار كله */
+  if(window.hostView){ const v = hostView(); t.style.top = (v.top + v.h - 72) + 'px'; t.style.bottom = 'auto'; }
   clearTimeout(toastT); toastT = setTimeout(() => { t.className = 'toast' + (bad ? ' bad' : ''); }, bad ? 5200 : 2600);
 }
 function rerender(){ if(S.view === 'list'){ renderList(filtered()); renderDetail(); } }
