@@ -676,6 +676,22 @@ dialog[open]::backdrop{animation:m-fade-in calc(var(--dur-3) * var(--motion-scal
       </div>
       <p class="note">عند الإنشاء يُنشأ مجلد المشروع على درايف بالقالب الكامل، ويوضع هذا الملف في «01- إعتماد التسويق» داخله، وتُعلَّم خانته مكتملة.</p>
     </section>
+    <section class="appr" aria-labelledby="mediaTitle">
+      <h3 id="mediaTitle">المواد الإعلامية</h3>
+      <div class="appr-row">
+        <button class="btn soft" type="button" data-media-pick="donor"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-image"/></svg> أرفق إعلاميات المانح</button>
+        <input type="file" data-media-file="donor" multiple accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.zip,.rar" hidden>
+        <span class="appr-name" data-media-name="donor">لا ملفات</span>
+        <button class="btn ghost sm" type="button" data-media-clear="donor" hidden>إزالة</button>
+      </div>
+      <div class="appr-row">
+        <button class="btn soft" type="button" data-media-pick="org"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-image"/></svg> أرفق إعلاميات <span class="org-own"></span></button>
+        <input type="file" data-media-file="org" multiple accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.zip,.rar" hidden>
+        <span class="appr-name" data-media-name="org">لا ملفات</span>
+        <button class="btn ghost sm" type="button" data-media-clear="org" hidden>إزالة</button>
+      </div>
+      <p class="note" id="mediaNote"></p>
+    </section>
     <p class="note" id="projTitlePrev" style="margin:0"></p>
     <p class="note" style="margin:0">مبلغ التنفيذ حسب الاعتماد والفعلي يُحسبان بالمعادلة، ويمكن تعديلهما لاحقًا من «تعديل المبالغ».</p>
     <div class="dlg-acts">
@@ -2200,7 +2216,7 @@ $('newProjBtn').addEventListener('click', () => {
   $('projDlgSub').textContent = ORG_INFO.full;
   budReset();
   projPreview();
-  apprShow();
+  apprShow(); mediaShow('donor'); mediaShow('org');
   $('projDlg').showModal();
 });
 /* المدة ← تاريخ النهاية: البداية + المدة بالأيام أو الأسابيع أو الأشهر (النهاية آخر يوم في المدة).
@@ -2246,6 +2262,7 @@ $('projForm').addEventListener('submit', async e => {
   try{
     const af = $('apprFile').files[0];
     const approvalFile = af ? {name: af.name, mime: af.type || '', data: await b64(af)} : null;
+    const media = [...mediaInp('donor').files].map(f => ['donor', f]).concat([...mediaInp('org').files].map(f => ['org', f]));
     const d = await post({action:'project_create', org: ORG, project: pr, approvalFile});
     DATA.projects.unshift(d.project);
     const O = DATA.options = DATA.options || {};
@@ -2261,6 +2278,8 @@ $('projForm').addEventListener('submit', async e => {
       : d.fileError ? 'أُنشئ المشروع ' + (d.project.code || '') + ' ومجلده، وتعذّر رفع اعتماد التسويق: ' + d.fileError
       : 'أُنشئ المشروع ' + (d.project.code || '') + ' في نوشن ومجلده في درايف' + (d.file ? '، ورُفع اعتماد التسويق إلى «01- إعتماد التسويق»' : ''),
       !!(d.folderError || d.fileError));
+    if(media.length && !d.folderError) uploadProjectMedia(d.project, media);
+    else if(media.length) toast('لم تُرفع الإعلاميات لأن مجلد المشروع لم يُنشأ', true);
   }catch(err){ toast(err.message || 'تعذّر الإنشاء', true); }
   finally{ btn.disabled = false; btn.removeAttribute('aria-busy'); }
 });
@@ -2278,6 +2297,43 @@ $('apprFile').addEventListener('change', () => {
   apprShow();
 });
 $('apprClear').addEventListener('click', () => { $('apprFile').value = ''; apprShow(); $('apprPick').focus(); });
+/* إعلاميات المانح وإعلاميات المؤسسة: تُرفع بعد إنشاء المشروع إلى مجلدَي «03- المواد الإعلامية» */
+const MEDIA_OWN = ORG === 'humera' ? 'هيوميرا' : 'مديكس';
+document.querySelectorAll('#projDlg .org-own').forEach(s => { s.textContent = MEDIA_OWN; });
+$('mediaNote').textContent = 'تُرفع بعد إنشاء المشروع إلى «03- المواد الإعلامية»: إعلاميات المانح في «01- المواد الإعلامية للمانح»، وإعلاميات ' + MEDIA_OWN +
+  ' في «02- المواد الإعلامية ' + (ORG === 'humera' ? 'لهيوميرا' : 'لميدكس') + '». الحد 25 ميجابايت للملف.';
+const mediaInp = v => document.querySelector('#projDlg [data-media-file="' + v + '"]');
+function mediaShow(v){
+  const fs = [...mediaInp(v).files], nm = document.querySelector('#projDlg [data-media-name="' + v + '"]');
+  nm.textContent = fs.length ? (fs.length === 1 ? fs[0].name : AR(fs.length) + ' ملفات: ' + fs.slice(0, 3).map(f => f.name).join('، ') + (fs.length > 3 ? '…' : '')) : 'لا ملفات';
+  document.querySelector('#projDlg [data-media-clear="' + v + '"]').hidden = !fs.length;
+}
+['donor', 'org'].forEach(v => {
+  document.querySelector('#projDlg [data-media-pick="' + v + '"]').addEventListener('click', () => mediaInp(v).click());
+  mediaInp(v).addEventListener('change', () => {
+    const big = [...mediaInp(v).files].filter(f => f.size > UP_MAX);
+    if(big.length){ toast('أكبر من 25 ميجابايت: ' + big.map(f => f.name).join('، ') + ' — اختر الملفات من جديد بدونها', true); mediaInp(v).value = ''; }
+    mediaShow(v);
+  });
+  document.querySelector('#projDlg [data-media-clear="' + v + '"]').addEventListener('click', () => { mediaInp(v).value = ''; mediaShow(v); });
+});
+/* رفع الإعلاميات بعد الإنشاء — ملفًا ملفًا عبر file_upload، والنافذة مغلقة */
+async function uploadProjectMedia(p, list){
+  if(!list.length) return;
+  if(!p.code){ toast('أُنشئ المشروع بلا كود، فلم تُرفع الإعلاميات — ارفعها من بطاقة المستندات بعد إضافة الكود', true); return; }
+  let ok = 0; const fail = [];
+  for(const [v, f] of list){
+    toast('جارٍ رفع الإعلاميات ' + AR(ok + fail.length + 1) + ' من ' + AR(list.length) + '…');
+    try{
+      const d = await post({action:'file_upload', org: ORG, code: p.code, slot: 'المواد الإعلامية', variant: v, pageId: p.id,
+        file: {name: f.name, mime: f.type || '', project: p.name || '', data: await b64(f)}});
+      if(d.files){ FILES[p.code] = d.files; Object.assign(p, {docsDone: d.files.done, docsChecked: d.files.checked, folder: d.files.folder, drive: d.files.url}); }
+      ok++;
+    }catch(err){ fail.push(f.name + ': ' + (err.message || 'تعذّر')); }
+  }
+  render();
+  toast(fail.length ? 'رُفع ' + AR(ok) + ' من ' + AR(list.length) + ' ملفات إعلامية، وتعذّر: ' + fail.join(' | ') : 'رُفعت الإعلاميات كلها (' + AR(ok) + ') إلى مجلد المشروع', !!fail.length);
+}
 /* ---------- حاسبة الموازنة (مشروع جديد) ----------
    الكلي = الإدارية + التنفيذ الكلي، والتنفيذ الكلي = الفاتورة + المصاريف غير المباشرة.
    الإدارية 10% من الكلي ما لم تُعدَّل يدويًا، والفاتورة تتبع الباقي ما لم تُعدَّل يدويًا.
