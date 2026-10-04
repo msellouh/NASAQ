@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#F7F6F2">
 <script src="nasaq-core.js?v=20261001a"></script>
 <script src="nasaq-art.js?v=20261001a"></script>
-<script src="nasaq-icons.js?v=20261001a"></script>
+<script src="nasaq-icons.js?v=20261002a"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1486,7 +1486,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <link rel="stylesheet" href="layouts/hero-page.css?v=20261001a">
 <link rel="stylesheet" href="layouts/hero-brief.css?v=20261001a">
 <link rel="stylesheet" href="layouts/hero-immersive.css?v=20261001a">
-<link rel="stylesheet" href="nasaq-ui.css?v=20261001a">
+<link rel="stylesheet" href="nasaq-ui.css?v=20261002b">
 <link rel="stylesheet" href="themes/classic.css?v=20261001a">
 <link rel="stylesheet" href="themes/nasaq.css?v=20261001a">
 <link rel="stylesheet" href="themes/nasaq360.css?v=20261001a">
@@ -1562,38 +1562,33 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 </div>
 
 <div class="settings-overlay" id="settingsOverlay" hidden>
-  <div class="settings-panel">
-    <div class="settings-head">
-      <h2><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg> الإعدادات</h2>
-      <button id="settingsClose" type="button" title="إغلاق" aria-label="إغلاق الإعدادات"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button>
-    </div>
-    <nav class="set-nav" id="setNav" role="tablist" aria-orientation="vertical" aria-label="أقسام الإعدادات"></nav>
-    <div class="settings-body">
-      <section>
-        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-user"/></svg> الحساب</h3>
+  <div class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+    <aside class="set-side">
+      <div class="set-me"><span class="set-avatar" id="setAvatar" aria-hidden="true">ن</span><span class="set-me-t"><b id="setMeName">—</b><small id="setMeSub">—</small></span></div>
+      <label class="set-search"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-search"/></svg><input type="search" id="setSearch" placeholder="ابحث في الإعدادات…" aria-label="ابحث في الإعدادات" autocomplete="off"></label>
+      <nav class="set-nav" id="setNav" role="tablist" aria-orientation="vertical" aria-label="أقسام الإعدادات"></nav>
+    </aside>
+    <div class="set-main">
+      <div class="settings-head">
+        <h2 id="setTitle">الإعدادات</h2>
+        <button id="settingsClose" type="button" title="إغلاق" aria-label="إغلاق الإعدادات"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="settings-body" id="settingsBody">
+      <section data-set="account" data-title="الملف والأمان">
+        <div class="set-sub">الحساب</div>
         <div class="set-row"><span>المستخدم</span><b id="setUser">—</b></div>
         <div class="set-row"><span>الصلاحية</span><b id="setRole">—</b></div>
-        <div class="set-sub">تغيير كلمة السر</div>
-        <input type="password" id="setOldPass" placeholder="كلمة السر الحالية" autocomplete="current-password" aria-label="كلمة السر الحالية">
+        <div class="set-sub">كلمة السر</div>
+        <div class="set-pass"><input type="password" id="setOldPass" placeholder="كلمة السر الحالية" autocomplete="current-password" aria-label="كلمة السر الحالية">
         <input type="password" id="setNewPass" placeholder="كلمة السر الجديدة (8 فأكثر)" autocomplete="new-password" aria-label="كلمة السر الجديدة (8 فأكثر)">
-        <div class="set-actions">
-          <button id="setChangePassBtn" type="button">حفظ كلمة السر</button>
-          <button id="setLogoutBtn" type="button" class="danger">تسجيل الخروج</button>
+          <button id="setChangePassBtn" type="button" class="btn btn-secondary">حفظ كلمة السر</button>
         </div>
         <div class="set-msg" id="setAccountMsg"></div>
+        <div class="set-sub">الجلسة</div>
+        <div class="set-row"><span>الخروج من هذا الجهاز<small class="set-desc">تبقى بياناتك محفوظة في حسابك.</small></span><button id="setLogoutBtn" type="button" class="btn btn-danger btn-sm">تسجيل الخروج</button></div>
       </section>
 
-      <section>
-        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-link"/></svg> الربط بنوشن</h3>
-        <div class="set-row"><span>الحالة</span><b id="setBridgeState">—</b></div>
-        <input type="url" dir="ltr" id="setBridgeUrl" placeholder="https://script.google.com/macros/s/…" aria-label="https://script.google.com/macros/s/">
-        <div class="set-actions"><button id="setBridgeSave" type="button">حفظ الرابط واختباره</button></div>
-        <div class="set-hint">رابط تطبيق Apps Script. تغييره يبدّل مصدر بياناتك بالكامل.</div>
-        <div class="set-msg" id="setBridgeMsg"></div>
-      </section>
-
-      <section>
-        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-palette"/></svg> المظهر</h3>
+      <section data-set="look" data-title="المظهر">
         <div class="theme-cards" id="themeCards" role="radiogroup" aria-label="الطابع"></div>
         <div class="set-row"><span id="modeLabel">الوضع</span>
           <span class="pswitch" id="setMode" role="radiogroup" aria-labelledby="modeLabel">
@@ -1605,22 +1600,6 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         <div class="set-hint">اختصاران: <kbd>T</kbd> للتنقل بين الطوابع، و<kbd>Shift</kbd>+<kbd>T</kbd> لتبديل الوضع.</div>
         <div class="set-actions"><button id="setOnboardShow" type="button">أظهر «ابدأ مع نَسَق» من جديد</button></div>
         <div class="set-hint">قائمة خطوات البداية تختفي وحدها حين تكتمل خطواتها الخمس أو حين تخفيها. هذا الزر يعيدها إلى صفحة «اليوم».</div>
-      </section>
-
-      <section id="setLayout">
-        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-list-checks"/></svg> ترتيب صفحة اليوم</h3>
-        <div class="set-hint">أخفِ ما لا تحتاجه، ورتّب البطاقات بالسحب أو بالأسهم. يُحفظ على هذا الجهاز.</div>
-        <ol class="layout-list" id="layoutList" aria-label="بطاقات صفحة اليوم"></ol>
-        <div class="set-actions"><button type="button" id="layoutReset">أعد الترتيب الافتراضي</button></div>
-      </section>
-
-      <section id="setAlive">
-        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-bell"/></svg> الأصوات والإشعارات</h3>
-        <div class="set-row"><label for="setSoundOn">الأصوات</label><input type="checkbox" class="set-toggle" id="setSoundOn"></div>
-        <div class="set-row"><label for="setClickOn">صوت النقر على الأزرار</label><input type="checkbox" class="set-toggle" id="setClickOn"></div>
-        <div class="set-row"><label for="setVolume">مستوى الصوت</label><input type="range" class="set-range" id="setVolume" min="0" max="100" step="5"></div>
-        <div class="set-actions"><button type="button" id="setSoundTest">اسمع صوت الإنجاز</button></div>
-
         <div class="set-sub">صورة الواجهة</div>
         <div class="set-row"><span>المصدر</span>
           <span class="pswitch" id="setHeroImages">
@@ -1630,30 +1609,46 @@ li.exp-row:nth-child(even){background:var(--stripe)}
           </span>
         </div>
         <div class="set-hint">«مشاهد نَسَق» مناظر تُرسم في المتصفح بألوان الطابع الحالي وتتبع وقت اليوم وسياقك. و«مزيج» يقدّم صورك الموسومة، ويرسم مشهدًا حين لا توجد صورة تناسب السياق. وسم صورك من زر «وسوم» فوق الواجهة.</div>
+      </section>
 
-        <div class="set-sub">إشعارات النظام</div>
-        <div class="set-row"><span>الحالة</span><b id="setNotifState">—</b></div>
-        <div class="set-actions"><button type="button" id="setNotifAsk">اسمح بالإشعارات</button><button type="button" id="setNotifTest">جرّب إشعارًا</button></div>
-        <div class="set-hint">تظهر خارج المتصفح حين يكون نَسَق في الخلفية. على iPhone تعمل بعد إضافة نَسَق إلى الشاشة الرئيسية.</div>
-
-        <div class="set-sub">تنبيهات تيليجرام — تصلك والمنصة مغلقة</div>
-        <div class="set-row"><span>الحالة</span><b id="setTgState">—</b></div>
-        <div class="set-actions"><button type="button" id="setTgCheck">افحص</button><button type="button" id="setTgTest">أرسل تجربة</button></div>
-        <div class="set-hint">الإعداد مرة واحدة في Apps Script: أنشئ بوتًا من ‎@BotFather، وضع رمزه في خصائص السكربت باسم <code>TELEGRAM_BOT_TOKEN</code> (لا ترسله لأحد)، ثم اضغط Start في محادثة البوت وشغّل <code>SETUP_telegram</code> ثم <code>SETUP_telegram_trigger</code>. يُرسل البوت مواعيد التقويم قبل 10 دقائق وملخصًا صباحيًا.</div>
-
-        <div class="set-sub">ساعات الهدوء — لا أصوات تنبيه ولا إشعارات نظام (مواعيد التقويم مستثناة)، وتبقى كلها في سجل الإشعارات</div>
-        <div class="set-row"><label for="setQuietFrom">من</label><input type="time" class="set-time" id="setQuietFrom"></div>
-        <div class="set-row"><label for="setQuietTo">إلى</label><input type="time" class="set-time" id="setQuietTo"></div>
+      <section data-set="day" data-title="يومي" id="setLayout">
+        <div class="set-sub">ترتيب صفحة اليوم</div>
+        <div class="set-hint">أخفِ ما لا تحتاجه، ورتّب البطاقات بالسحب أو بالأسهم. يُحفظ على هذا الجهاز.</div>
+        <ol class="layout-list" id="layoutList" aria-label="بطاقات صفحة اليوم"></ol>
+        <div class="set-actions"><button type="button" id="layoutReset">أعد الترتيب الافتراضي</button></div>
+        <div class="set-sub">ساعات العمل</div>
+        <div class="set-row"><span>طول يوم العمل<small class="set-desc">تنبيه «خطتك أطول من يومك» يقارن به الوقت المقدّر للمهام.</small></span><button type="button" class="btn btn-secondary btn-sm" id="setWorkHours">—</button></div>
         <div class="set-row"><label for="setWorkEnd">نهاية يوم العمل (تذكير «أغلق يومك»)</label><input type="time" class="set-time" id="setWorkEnd"></div>
-
         <div class="set-sub">أوقات الصلاة — مدينة غزة</div>
         <div class="set-row"><label for="setPrayerOn">هدوء 20 دقيقة من دخول كل صلاة</label><input type="checkbox" class="set-toggle" id="setPrayerOn"></div>
         <div class="prayer-times" id="setPrayerTimes"></div>
         <div class="set-hint">تُحسب على جهازك بطريقة الهيئة المصرية العامة للمساحة (الفجر 19٫5°، العشاء 17٫5°، العصر على المذهب الشافعي). قارنها بتقويم وزارة الأوقاف في غزة، وأخبرني إن اختلفت.</div>
       </section>
 
-      <section>
-        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-music"/></svg> سبوتيفاي</h3>
+      <section data-set="alive" data-title="الإشعارات والأصوات" id="setAlive">
+        <div class="set-sub">الأصوات</div>
+        <div class="set-row"><label for="setSoundOn">الأصوات</label><input type="checkbox" class="set-toggle" id="setSoundOn"></div>
+        <div class="set-row"><label for="setClickOn">صوت النقر على الأزرار</label><input type="checkbox" class="set-toggle" id="setClickOn"></div>
+        <div class="set-row"><label for="setVolume">مستوى الصوت</label><input type="range" class="set-range" id="setVolume" min="0" max="100" step="5"></div>
+        <div class="set-actions"><button type="button" id="setSoundTest">اسمع صوت الإنجاز</button></div>
+        <div class="set-sub">إشعارات النظام</div>
+        <div class="set-row"><span>الحالة</span><b id="setNotifState">—</b></div>
+        <div class="set-actions"><button type="button" id="setNotifAsk">اسمح بالإشعارات</button><button type="button" id="setNotifTest">جرّب إشعارًا</button></div>
+        <div class="set-hint">تظهر خارج المتصفح حين يكون نَسَق في الخلفية. على iPhone تعمل بعد إضافة نَسَق إلى الشاشة الرئيسية.</div>
+        <div class="set-sub">تنبيهات تيليجرام — تصلك والمنصة مغلقة</div>
+        <div class="set-row"><span>الحالة</span><b id="setTgState">—</b></div>
+        <div class="set-actions"><button type="button" id="setTgCheck">افحص</button><button type="button" id="setTgTest">أرسل تجربة</button></div>
+        <div class="set-hint">الإعداد مرة واحدة في Apps Script: أنشئ بوتًا من ‎@BotFather، وضع رمزه في خصائص السكربت باسم <code>TELEGRAM_BOT_TOKEN</code> (لا ترسله لأحد)، ثم اضغط Start في محادثة البوت وشغّل <code>SETUP_telegram</code> ثم <code>SETUP_telegram_trigger</code>. يُرسل البوت مواعيد التقويم قبل 10 دقائق وملخصًا صباحيًا.</div>
+        <div class="set-sub">ساعات الهدوء — لا أصوات تنبيه ولا إشعارات نظام (مواعيد التقويم مستثناة)، وتبقى كلها في سجل الإشعارات</div>
+        <div class="set-row"><label for="setQuietFrom">من</label><input type="time" class="set-time" id="setQuietFrom"></div>
+        <div class="set-row"><label for="setQuietTo">إلى</label><input type="time" class="set-time" id="setQuietTo"></div>
+      </section>
+
+      <section data-set="integrations" data-title="التكاملات">
+        <div class="set-sub">نوشن</div>
+        <div class="set-row"><span>الحالة</span><b id="setBridgeState">—</b></div>
+        <div class="set-hint">الاتصال بنوشن ودرايف يمرّ عبر الجسر بحسابك، وصلاحياتك تحدد ما يصلك منه.</div>
+        <div class="set-sub">سبوتيفاي</div>
         <div class="set-row"><span>الحالة</span><b id="setSpotifyState">غير مربوط</b></div>
         <div class="set-actions">
           <button id="setSpotifySetup" type="button">إعداد Client ID</button>
@@ -1661,15 +1656,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         </div>
       </section>
 
-      <section id="setAdminSection" hidden>
-        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-crown"/></svg> إدارة المستخدمين</h3>
-        <div class="set-row"><span>التسجيل</span><b id="setSignupState">—</b></div>
-        <div id="setUsersList" class="admin-users"></div>
-        <div class="set-hint">حذف مستخدم يمسح حسابه وكل بياناته المخزَّنة نهائيًا — لا يمكن التراجع.</div>
-      </section>
-
-      <section>
-        <h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-save"/></svg> البيانات</h3>
+      <section data-set="data" data-title="البيانات">
         <div class="set-actions">
           <button id="setBackup" type="button">نسخة احتياطية</button>
           <button id="setRestore" type="button">استعادة</button>
@@ -1677,10 +1664,27 @@ li.exp-row:nth-child(even){background:var(--stripe)}
         </div>
         <div class="set-hint">النسخة الاحتياطية تشمل اللوح وDaily Flow والمصروفات.</div>
       </section>
-      <section class="set-legal">
+
+      <section data-set="accounts" data-title="الحسابات والصلاحيات" id="setAdminSection" hidden data-owner="1">
+        <div class="set-row"><span>التسجيل</span><b id="setSignupState">—</b></div>
+        <div id="setUsersList" class="admin-users"></div>
+        <div class="set-hint">حذف مستخدم يمسح حسابه وكل بياناته المخزَّنة نهائيًا — لا يمكن التراجع.</div>
+      </section>
+
+      <section data-set="advanced" data-title="متقدم" data-owner="1">
+        <div class="set-sub">رابط الجسر</div>
+        <input type="url" dir="ltr" id="setBridgeUrl" placeholder="https://script.google.com/macros/s/…" aria-label="https://script.google.com/macros/s/">
+        <div class="set-actions"><button id="setBridgeSave" type="button">حفظ الرابط واختباره</button></div>
+        <div class="set-hint">رابط تطبيق Apps Script. تغييره يبدّل مصدر بياناتك بالكامل.</div>
+        <div class="set-msg" id="setBridgeMsg"></div>
+      </section>
+
+      <section data-set="about" data-title="حول نَسَق" class="set-legal">
         <div class="nasaq-copy">© 2026 نَسَق · Mohammed S. Ellouh — جميع الحقوق محفوظة</div>
         <div class="set-hint">منصة ملكية خاصة. حسابك إذن شخصي بالاستخدام فقط، ولا يجوز نسخ المنصة أو تصميمها أو فكرتها أو تقليدها أو مشاركتها مع الغير دون إذن كتابي من المالك.</div>
       </section>
+
+      </div>
     </div>
   </div>
 </div>
@@ -5183,7 +5187,7 @@ const NOTIF_ACTIONS = {
   tasks: ()=>{ showTab('board'); document.querySelector('.c-tasks')?.scrollIntoView({block:'start'}); },
   close: ()=>{ showTab('board'); document.querySelector('.c-review')?.scrollIntoView({block:'center'}); },
   focus: ()=>openFocusMode(),
-  settings: ()=>{ openSettings(); setTimeout(()=>$('setAlive')?.scrollIntoView({block:'start'}), 60); }
+  settings: ()=>openSettings('alive')
 };
 function focusBusy(){ try{ return pomoRunning; }catch(e){ return false; } }
 /* kind: remind | warn | done | info — o: key (مرة في اليوم)، urgent (يتجاوز الهدوء والتركيز)، noSound، noToast، action */
@@ -6901,7 +6905,7 @@ function loadAdminUsers(){
   if(!auth || !auth.isOwner) return;
   post({action:'admin_list_users'}).then(renderAdminUsers).catch(()=>{});
 }
-function openSettings(){
+function openSettings(k){
   $('setUser').textContent = auth ? auth.user : 'غير مسجّل';
   $('setRole').textContent = !auth ? 'وضع محلي' : (auth.isOwner ? 'صاحب اللوح — نوشن متاح' : 'مستخدم — بياناته خاصة به');
   $('setBridgeUrl').value = bridge || '';
@@ -6912,10 +6916,13 @@ function openSettings(){
   const showAdmin = !!(auth && auth.isOwner);
   $('setAdminSection').hidden = !showAdmin;
   if(showAdmin) loadAdminUsers();
-  buildSetNav();
-  $('setNav').querySelector('[data-k="admin"]').hidden = !showAdmin;
-  if(setTab === 'admin' && !showAdmin) setTab = 'account';
-  showSetTab(setTab, false);
+  $('setAvatar').textContent = auth ? [...auth.user.trim()][0] || 'ن' : 'ن';
+  $('setMeName').textContent = auth ? auth.user : 'وضع محلي';
+  $('setMeSub').textContent = !auth ? 'غير مسجّل الدخول' : auth.isOwner ? 'المالك' : 'عضو';
+  $('setWorkHours').textContent = setHoursLabel();
+  buildSetNav(); syncSetNav();
+  $('setSearch').value = ''; setSearchRun('');
+  showSetTab(typeof k === 'string' ? k : setTab, false);
   setBack = document.activeElement;
   $('settingsOverlay').hidden = false;
   setTimeout(()=>{ const b = $('setNav').querySelector('[aria-selected="true"]'); if(b) b.focus(); }, 30);
@@ -6926,23 +6933,35 @@ function closeSettings(){
   const back = setBack && setBack.isConnected && setBack.offsetParent !== null ? setBack : $('settingsBtn');
   motionHide(o, ()=>{ o.hidden = true; try{ back.focus(); }catch(e){} });
 }
-/* تبويبات الإعدادات العمودية: الحساب، والربط، والمظهر، والإشعارات، وترتيب صفحة اليوم، والبيانات، وإدارة المستخدمين للمالك */
+/* الإعدادات بأسلوب نوشن: قائمة جانبية مجمّعة (حسابي · مساحة العمل · حول)، وبحث يصفّي الإعدادات نفسها */
 let setTab = 'account', setBack = null;
-const SET_TABS = [['account', 'الحساب', 'user'], ['bridge', 'الربط', 'link'], ['look', 'المظهر', 'palette'], ['alive', 'الإشعارات', 'bell'],
-  ['layout', 'ترتيب صفحة اليوم', 'list-checks'], ['data', 'البيانات', 'save'], ['admin', 'إدارة المستخدمين', 'crown']];
+const SET_GROUPS = [
+  ['حسابي', [['account', 'user'], ['look', 'palette'], ['day', 'today'], ['alive', 'bell'], ['integrations', 'plug'], ['data', 'database']]],
+  ['مساحة العمل', [['accounts', 'users'], ['advanced', 'settings']]],
+  ['', [['about', 'info']]]
+];
+const setSec = k => document.querySelector('.settings-body > section[data-set="' + k + '"]');
+/* «الحسابات» للمالك وحده، و«متقدم» للمالك أو قبل تسجيل الدخول (لإدخال رابط الجسر) */
+function setAllowed(s){
+  if(!s) return false;
+  if(s.dataset.set === 'accounts') return !!(auth && auth.isOwner);
+  return !s.dataset.owner || !auth || !!auth.isOwner;
+}
+function setHoursLabel(){ const h = Math.round(workMins() / 30) / 2; return Number.isInteger(h) ? plural(h, 'ساعة واحدة', 'ساعتان', 'ساعات', 'ساعة') : AR(h) + ' ساعة'; }
 function buildSetNav(){
   const nav = $('setNav'); if(nav.childElementCount) return;
-  document.querySelectorAll('.settings-body > section').forEach(s=>{
-    const t = (s.querySelector('h3') || {}).textContent || '';
-    s.dataset.set = s.id === 'setAdminSection' ? 'admin' : s.id === 'setLayout' ? 'layout' : (s.id === 'setAlive' || /سبوتيفاي/.test(t)) ? 'alive'
-      : /الحساب/.test(t) ? 'account' : /الربط/.test(t) ? 'bridge' : /المظهر/.test(t) ? 'look' : 'data';
-    s.setAttribute('role', 'tabpanel'); s.id = s.id || 'setSec-' + s.dataset.set + '-' + Math.random().toString(36).slice(2, 6);
-  });
-  SET_TABS.forEach(([k, label, ic])=>{
-    const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.dataset.k = k; b.id = 'setTab-' + k;
-    b.innerHTML = icon(ic) + '<span></span>'; b.lastChild.textContent = label;
-    b.onclick = ()=>showSetTab(k, true);
-    nav.append(b);
+  SET_GROUPS.forEach(([g, items])=>{
+    if(g){ const h = document.createElement('div'); h.className = 'set-group-h'; h.setAttribute('aria-hidden', 'true'); h.textContent = g; nav.append(h); }
+    else nav.append(Object.assign(document.createElement('div'), {className: 'set-group-sep'}));
+    items.forEach(([k, ic])=>{
+      const s = setSec(k); if(!s) return;
+      s.setAttribute('role', 'tabpanel'); s.id = s.id || 'setSec-' + k; s.setAttribute('aria-labelledby', 'setTab-' + k);
+      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.dataset.k = k; b.id = 'setTab-' + k;
+      b.setAttribute('aria-controls', s.id);
+      b.innerHTML = icon(ic) + '<span></span>'; b.lastChild.textContent = s.dataset.title;
+      b.onclick = ()=>{ if($('setSearch').value){ $('setSearch').value = ''; setSearchRun(''); } showSetTab(k, true); };
+      nav.append(b);
+    });
   });
   nav.addEventListener('keydown', e=>{
     if(!['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
@@ -6951,6 +6970,13 @@ function buildSetNav(){
     const n = e.key === 'Home' ? 0 : e.key === 'End' ? bs.length - 1 : (i + ((e.key === 'ArrowDown' || e.key === 'ArrowLeft') ? 1 : -1) + bs.length) % bs.length;
     bs[n].focus(); showSetTab(bs[n].dataset.k, false);
   });
+  const q = $('setSearch');
+  q.addEventListener('input', ()=>setSearchRun(q.value));
+  q.addEventListener('keydown', e=>{
+    if(e.key === 'Escape' && q.value){ e.stopPropagation(); q.value = ''; setSearchRun(''); }
+    else if(e.key === 'Enter'){ e.preventDefault(); const f = $('settingsBody').querySelector('section.set-hit :is(input,button,select):not([hidden])'); if(f) f.focus(); }
+  });
+  $('setWorkHours').onclick = ()=>{ closeSettings(); openCapacityModal(); };
   /* حبس التركيز داخل اللوحة */
   $('settingsOverlay').addEventListener('keydown', e=>{
     if(e.key === 'Escape'){ closeSettings(); return; }
@@ -6961,17 +6987,60 @@ function buildSetNav(){
     else if(!e.shiftKey && document.activeElement === f[f.length - 1]){ e.preventDefault(); f[0].focus(); }
   });
 }
+/* يُخفي تبويبات الأقسام غير المسموحة، وعنوان المجموعة إن خلت */
+function syncSetNav(){
+  const nav = $('setNav');
+  nav.querySelectorAll('[role=tab]').forEach(b=>{ b.hidden = !setAllowed(setSec(b.dataset.k)); });
+  nav.querySelectorAll('.set-group-h').forEach(h=>{
+    let n = h.nextElementSibling, any = false;
+    while(n && n.getAttribute('role') === 'tab'){ if(!n.hidden) any = true; n = n.nextElementSibling; }
+    h.hidden = !any;
+  });
+}
 function showSetTab(k, focusPanel){
+  if(!setAllowed(setSec(k))) k = 'account';
   setTab = k;
   $('setNav').querySelectorAll('[role=tab]').forEach(b=>{ const on = b.dataset.k === k; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
-  let first = null;
-  document.querySelectorAll('.settings-body > section').forEach(s=>{
-    const on = s.dataset.set === k && !(s.id === 'setAdminSection' && !(auth && auth.isOwner));
-    s.classList.toggle('set-off', !on); s.setAttribute('aria-labelledby', 'setTab-' + s.dataset.set);
-    if(on && !first) first = s;
+  document.querySelectorAll('.settings-body > section').forEach(s=>s.classList.toggle('set-off', s.dataset.set !== k));
+  $('setTitle').textContent = setSec(k).dataset.title;
+  $('settingsBody').scrollTop = 0;
+  if(focusPanel){ const f = setSec(k).querySelector('input,button,select'); if(f) f.focus({preventScroll:true}); }
+}
+/* البحث: يطابق بعد توحيد الهمزات والتاء المربوطة والألف المقصورة وحذف التشكيل؛
+   وحدة النتيجة مجموعة تبدأ بعنوان فرعي (set-sub)، وعنوان القسم يطابق القسم كله */
+const setNorm = s => String(s || '').toLowerCase().replace(/[\u064B-\u0652\u0640]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
+function setSearchRun(raw){
+  const q = setNorm(raw).trim(), body = $('settingsBody');
+  body.classList.toggle('set-searching', !!q);
+  body.querySelectorAll('.set-miss').forEach(x=>x.classList.remove('set-miss'));
+  if(!q){
+    body.querySelectorAll('section.set-hit').forEach(s=>s.classList.remove('set-hit'));
+    $('setNav').querySelectorAll('.set-dim').forEach(b=>b.classList.remove('set-dim'));
+    const em = $('setNoHits'); if(em) em.remove();
+    showSetTab(setTab, false);
+    return;
+  }
+  let hits = 0;
+  body.querySelectorAll(':scope > section').forEach(s=>{
+    const ok = setAllowed(s), title = setNorm(s.dataset.title);
+    const groups = []; let cur = {els: [], text: ''};
+    [...s.children].forEach(el=>{
+      if(el.classList.contains('set-sub')){ groups.push(cur); cur = {els: [], text: ''}; }
+      cur.els.push(el);
+      cur.text += ' ' + setNorm(el.textContent + ' ' + [...el.querySelectorAll('[placeholder],[aria-label]')].map(x=>(x.placeholder || '') + ' ' + (x.getAttribute('aria-label') || '')).join(' '));
+    });
+    groups.push(cur);
+    let any = false;
+    groups.forEach(g=>{ const m = ok && g.els.length && (title.includes(q) || g.text.includes(q)); if(m) any = true; g.els.forEach(el=>el.classList.toggle('set-miss', !m)); });
+    s.classList.toggle('set-hit', any); s.classList.toggle('set-off', !any);
+    const b = $('setTab-' + s.dataset.set); if(b) b.classList.toggle('set-dim', !any);
+    if(any) hits++;
   });
-  const body = document.querySelector('.settings-body'); if(body) body.scrollTop = 0;
-  if(focusPanel && first){ const f = first.querySelector('input,button,select'); if(f) f.focus({preventScroll:true}); }
+  $('setTitle').textContent = 'نتائج البحث';
+  let em = $('setNoHits');
+  if(!hits){ if(!em){ em = document.createElement('p'); em.id = 'setNoHits'; em.className = 'set-empty'; body.prepend(em); } em.textContent = 'لا إعداد يطابق «' + raw.trim() + '».'; }
+  else if(em) em.remove();
+  body.scrollTop = 0;
 }
 $('settingsBtn').onclick = openSettings;
 $('settingsClose').onclick = closeSettings;
