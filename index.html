@@ -1486,7 +1486,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <link rel="stylesheet" href="layouts/hero-page.css?v=20261001a">
 <link rel="stylesheet" href="layouts/hero-brief.css?v=20261001a">
 <link rel="stylesheet" href="layouts/hero-immersive.css?v=20261001a">
-<link rel="stylesheet" href="nasaq-ui.css?v=20261002b">
+<link rel="stylesheet" href="nasaq-ui.css?v=20261004b">
 <link rel="stylesheet" href="themes/classic.css?v=20261001a">
 <link rel="stylesheet" href="themes/nasaq.css?v=20261001a">
 <link rel="stylesheet" href="themes/nasaq360.css?v=20261001a">
@@ -1666,9 +1666,20 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       </section>
 
       <section data-set="accounts" data-title="الحسابات والصلاحيات" id="setAdminSection" hidden data-owner="1">
-        <div class="set-row"><span>التسجيل</span><b id="setSignupState">—</b></div>
-        <div id="setUsersList" class="admin-users"></div>
-        <div class="set-hint">حذف مستخدم يمسح حسابه وكل بياناته المخزَّنة نهائيًا — لا يمكن التراجع.</div>
+        <div class="acc-view" id="accListView">
+          <div class="set-sub acc-head"><span>الحسابات <span class="acc-count" id="accCount"></span></span><button type="button" class="btn btn-primary btn-sm" id="accNewBtn">حساب جديد</button></div>
+          <div id="setUsersList" class="acc-list" aria-live="polite"></div>
+          <div class="set-row"><span>التسجيل الذاتي<small class="set-desc">برمز دعوة (SIGNUP_CODE في خصائص الجسر). الأضبط إغلاقه وإنشاء الحسابات من هنا بصلاحياتها.</small></span><b id="setSignupState">—</b></div>
+          <div class="set-sub">سجل النشاط</div>
+          <div class="act-filters">
+            <select id="actUser" aria-label="الحساب"><option value="">كل الحسابات</option></select>
+            <select id="actKind" aria-label="نوع الإجراء"></select>
+            <button type="button" class="btn btn-secondary btn-sm" id="actRefresh">حدّث</button>
+          </div>
+          <div id="actList" class="act-list" aria-live="polite"></div>
+          <div class="set-actions"><button type="button" class="btn btn-ghost btn-sm" id="actMore" hidden>المزيد</button><a class="card-link" id="actSheet" target="_blank" rel="noopener" hidden>افتح السجل في جداول جوجل</a></div>
+        </div>
+        <div class="acc-view" id="accDetail" hidden></div>
       </section>
 
       <section data-set="advanced" data-title="متقدم" data-owner="1">
@@ -2405,6 +2416,12 @@ applyRail();
 /* ---------- tabs ---------- */
 const TABKEY = 'daily-board-tab';
 const TAB_NAMES = ['board','tasks','flow','projects','expenses'];
+/* التبويبات المسموحة للحساب (perms.tabs من الجسر)؛ المالك والوضع المحلي: كلها */
+const PERM_TAB = {board: 'today', tasks: 'tasks', flow: 'flow', projects: 'projects', expenses: 'expenses'};
+function tabAllowed(n){
+  const p = auth && !auth.isOwner && auth.perms;
+  return !p || !p.tabs || p.tabs[PERM_TAB[n]] !== false;
+}
 /* رابط لكل صفحة (#today، #tasks…) — يعمل زر الرجوع، ويمكن فتح صفحة مباشرة بالرابط */
 const TAB_HASH = {board:'today', tasks:'tasks', flow:'habits', projects:'projects', expenses:'expenses'};
 function tabFromHash(){
@@ -2413,6 +2430,7 @@ function tabFromHash(){
 }
 function showTab(name){
   if(TAB_NAMES.indexOf(name)<0) name = 'board';
+  if(!tabAllowed(name)) name = TAB_NAMES.find(tabAllowed) || 'board';
   TAB_NAMES.forEach(n=>{
     $('tab'+n[0].toUpperCase()+n.slice(1)).hidden = (n!==name);
     const b = $('tab'+n[0].toUpperCase()+n.slice(1)+'Btn');
@@ -6869,41 +6887,316 @@ function setSetMsg(id, msg, cls){
   el.textContent = msg || '';
   el.className = 'set-msg' + (cls ? (' '+cls) : '');
 }
-function renderAdminUsers(d){
-  $('setSignupState').textContent = d.signupOpen ? 'مفتوح (بالرمز)' : 'مغلق';
-  const box = $('setUsersList');
-  box.innerHTML = '';
-  d.users.forEach(u=>{
-    const row = document.createElement('div');
-    row.className = 'admin-user-row';
-    const who = document.createElement('div'); who.className = 'who';
-    const name = document.createElement('b'); name.textContent = u.username;
-    const meta = document.createElement('span');
-    meta.textContent = (u.email||'—') + (u.createdAt ? ' | ' + fmtDate(new Date(u.createdAt), {day:'numeric', month:'numeric', year:'numeric'}) : '');
-    who.append(name, meta);
-    row.appendChild(who);
-    if(u.isOwner){
-      const tag = document.createElement('span'); tag.className='tag'; tag.textContent='المالك';
-      row.appendChild(tag);
-    }else{
-      const del = document.createElement('button'); del.type='button'; del.textContent='حذف الحساب';
-      del.onclick = ()=>{
-        openModal({title:'حذف حساب "'+u.username+'"؟', bodyHTML:'<p>سيُحذف الحساب وكل بياناته المخزَّنة نهائيًا. لا يمكن التراجع.</p>',
-          actions:[{label:'إلغاء'},{label:'احذف', primary:true, onClick:({close})=>{
-            close();
-            post({action:'admin_delete_user', username:u.username})
-              .then(()=>loadAdminUsers())
-              .catch(e=>openModal({title:'تعذّر الحذف', bodyHTML:'<p>'+esc(e.message)+'</p>', actions:[{label:'حسنًا', primary:true}]}));
-          }}]});
-      };
-      row.appendChild(del);
-    }
-    box.appendChild(row);
-  });
-}
+/* ---------- الحسابات والصلاحيات (للمالك) ----------
+   تخصيص كامل لكل حساب بلا أدوار: التبويبات الظاهرة، والمؤسستان (لا شيء / عرض / تعديل)، والنطاق (مشاريع منسقه أو الكل)،
+   والمبالغ، وبطاقات الإحصائيات، وخانات مستندات درايف وأنواع الملفات، والمصروفات. الجسر يطبّقها على كل طلب؛ الواجهة تعكسها فقط. */
+const ADM = {users: [], slots: [], coordinators: [], cur: null, draft: null, dirty: false, act: {offset: 0}};
+const PERM_TAB_LABELS = [['today', 'اليوم'], ['tasks', 'المهام'], ['flow', 'العادات'], ['projects', 'المشاريع'], ['expenses', 'المصروفات']];
+const PERM_STAT_LABELS = [['kpi', 'المؤشرات العامة (العدد والمبالغ والمستفيدون)'], ['donor', 'حسب الجهة الممولة'], ['country', 'حسب دولة المانح'],
+  ['type', 'حسب نوع المشروع'], ['coord', 'حسب المنسق'], ['collect', 'التحصيل من المانحين'], ['month', 'الاعتمادات حسب الشهر']];
+const PERM_TYPE_LABELS = [['pdf', 'PDF'], ['word', 'وورد'], ['excel', 'إكسل'], ['image', 'صور'], ['video', 'فيديو'], ['other', 'أخرى']];
+const SLOT_GROUPS = [['الاعتمادات', ['اعتماد التسويق', 'اعتماد التنفيذ']], ['المالية', ['الفاتورة', 'طلب الصرف', 'إشعار التحويل', 'سند القبض']],
+  ['الاتفاقيات والجهات', ['البروتوكولات والاتفاقيات', 'ملفات الشركات والمؤسسات']], ['التقارير', ['تقرير مرحلي', 'تقرير ختامي']],
+  ['التنفيذ', ['طلبات الاحتياج ومحاضر الاستلام', 'صور التنفيذ', 'المواد الإعلامية', 'كشف المستفيدين']], ['أخرى', ['مستندات المشروع', 'ملف المشروع']]];
+const ACT_LABELS = {auth_login: 'تسجيل الدخول', auth_register: 'إنشاء حساب ذاتيًا', auth_reset_request: 'طلب رمز استرداد', auth_reset_confirm: 'استرداد كلمة السر',
+  auth_change_password: 'تغيير كلمة السر', admin_create_user: 'إنشاء حساب', admin_update_user: 'تعديل حساب', admin_reset_password: 'كلمة سر مؤقتة',
+  admin_revoke: 'إنهاء الجلسات', admin_set_perms: 'تعديل الصلاحيات', admin_delete_user: 'حذف حساب', boot: 'فتح المنصة', upsert: 'حفظ مهمة',
+  set_status: 'تغيير حالة مهمة', delete: 'حذف مهمة', deliverable_save: 'تعديل استحقاق', project_status: 'تغيير حالة مشروع', project_dates: 'تعديل تواريخ مشروع',
+  donor_save: 'تعديل مانح', donor_country_set: 'دولة مانح', project_delete: 'حذف مشروع', std_name_set: 'اعتماد اسم موحّد', projects_list: 'عرض المشاريع',
+  people_add: 'إضافة مسؤول', people_rename: 'تعديل اسم مسؤول', people_remove: 'حذف مسؤول', plan_save: 'تعديل بند خطة', plan_bulk: 'إنشاء خطة',
+  plan_delete: 'حذف بند خطة', project_files: 'عرض ملفات مشروع', file_upload: 'رفع ملف', file_get: 'فتح ملف', project_create: 'إنشاء مشروع',
+  project_money: 'تعديل المبالغ', projects_config: 'ربط أرشيف درايف', expense_add: 'تسجيل مصروف', expense_delete: 'حذف مصروف'};
+const ACT_KINDS = [['', 'كل الإجراءات'], ['auth_', 'الدخول والأمان'], ['admin_', 'إدارة الحسابات'], ['project', 'المشاريع'], ['file_', 'الملفات'], ['plan_', 'خطة التنفيذ'], ['expense_', 'المصروفات']];
+const actKindOf = a => /^auth_|^boot$/.test(a) ? 'auth' : /^admin_/.test(a) ? 'admin' : /^file_|^project_files$/.test(a) ? 'file' : /delete/.test(a) ? 'del' : 'edit';
+const admErr = e => openModal({title: 'تعذّر الإجراء', bodyHTML: '<p>' + esc(e.message) + '</p>', actions: [{label: 'حسنًا', primary: true}]});
+const userInitial = u => [...String(u.name || u.username || '؟').trim()][0] || '؟';
 function loadAdminUsers(){
   if(!auth || !auth.isOwner) return;
-  post({action:'admin_list_users'}).then(renderAdminUsers).catch(()=>{});
+  const box = $('setUsersList');
+  if(!ADM.users.length) cardState(box, 'loading', {msg: 'جارٍ تحميل الحسابات…'});
+  post({action: 'admin_list_users'}).then(d=>{
+    ADM.users = d.users || []; ADM.slots = d.slots || []; ADM.coordinators = d.coordinators || [];
+    $('setSignupState').textContent = d.signupOpen ? 'مفتوح (بالرمز)' : 'مغلق';
+    renderAccList(); actFill();
+    if(ADM.cur){ const u = ADM.users.find(x=>x.username === ADM.cur); if(u && !ADM.dirty) renderAccDetail(u); }
+    loadActivity(true);
+  }).catch(e=>cardState(box, 'error', {msg: 'تعذّر تحميل الحسابات: ' + e.message, action: 'أعد المحاولة', onAction: loadAdminUsers}));
+}
+function renderAccList(){
+  const box = $('setUsersList'); box.innerHTML = '';
+  $('accCount').textContent = AR(ADM.users.length);
+  ADM.users.forEach(u=>{
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'acc-row';
+    const badges = [u.isOwner ? ['المالك', 'own'] : null, u.disabled ? ['موقوف', 'off'] : null, u.mustChange ? ['كلمة سر مؤقتة', 'tmp'] : null].filter(Boolean);
+    b.innerHTML = '<span class="set-avatar"></span><span class="acc-t"><b></b><small></small></span><span class="acc-badges">' +
+      badges.map(([l, c])=>'<span class="acc-badge ' + c + '">' + l + '</span>').join('') + '</span><span class="acc-last"></span>' + icon('dir-chevron');
+    b.querySelector('.set-avatar').textContent = userInitial(u);
+    b.querySelector('b').textContent = u.name || u.username;
+    b.querySelector('small').textContent = u.username + (u.email ? ' · ' + u.email : '');
+    b.querySelector('.acc-last').textContent = u.lastLogin ? 'آخر دخول ' + relAgo(u.lastLogin) : 'لم يدخل بعد';
+    b.onclick = ()=>openAccDetail(u.username);
+    box.append(b);
+  });
+}
+function actFill(){
+  const su = $('actUser'), cur = su.value;
+  su.innerHTML = '<option value="">كل الحسابات</option>' + ADM.users.map(u=>'<option value="' + esc(u.username) + '">' + esc(u.name ? u.name + ' (' + u.username + ')' : u.username) + '</option>').join('');
+  su.value = cur;
+  const sk = $('actKind'); if(!sk.options.length) sk.innerHTML = ACT_KINDS.map(([v, l])=>'<option value="' + v + '">' + l + '</option>').join('');
+}
+/* سجل النشاط: يوم بعنوان، وفي كل صف الوقت والحساب والإجراء وتفاصيله ونتيجته */
+function actRender(box, rows, append, showUser){
+  if(!append) box.innerHTML = '';
+  if(!rows.length && !append){ cardState(box, 'empty', {msg: 'لا نشاط مسجّل بعد لهذا الاختيار.'}); return; }
+  let lastDay = box.dataset.lastDay || '';
+  rows.forEach(r=>{
+    const d = new Date(r.at), day = iso(d);
+    if(day !== lastDay){
+      const h = document.createElement('div'); h.className = 'act-day';
+      h.textContent = day === iso(new Date()) ? 'اليوم' : fmtDate(d, {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'});
+      box.append(h); lastDay = day;
+    }
+    const row = document.createElement('div'); row.className = 'act-row k-' + actKindOf(r.action) + (/^رُفض/.test(r.result || '') ? ' is-denied' : '');
+    row.innerHTML = '<time></time><i aria-hidden="true"></i><span class="act-t"><b></b><small></small></span>';
+    row.querySelector('time').textContent = fmtTime(d);
+    const u = ADM.users.find(x=>x.username === r.user);
+    row.querySelector('b').textContent = (showUser ? (u && u.name || r.user) + ' — ' : '') + (ACT_LABELS[r.action] || r.action);
+    row.querySelector('small').textContent = [r.org, r.detail, /^رُفض/.test(r.result || '') ? r.result : ''].filter(Boolean).join(' · ');
+    box.append(row);
+  });
+  box.dataset.lastDay = lastDay;
+}
+function loadActivity(reset){
+  const box = $('actList');
+  if(reset){ ADM.act.offset = 0; box.dataset.lastDay = ''; cardState(box, 'loading', {msg: 'جارٍ تحميل السجل…'}); }
+  post({action: 'admin_activity', username: $('actUser').value, kind: $('actKind').value, offset: ADM.act.offset, limit: 60}).then(d=>{
+    if(reset) box.innerHTML = '';
+    actRender(box, d.rows || [], !reset, !$('actUser').value);
+    ADM.act.offset += (d.rows || []).length;
+    $('actMore').hidden = !d.more;
+    if(d.sheet){ $('actSheet').href = d.sheet; $('actSheet').hidden = false; }
+  }).catch(e=>{
+    cardState(box, 'error', {msg: /SpreadsheetApp|permission|صلاحية/i.test(e.message)
+      ? 'سجل النشاط غير مفعّل بعد: شغّل الدالة SETUP_activity_log مرة من محرر Apps Script ووافق على صلاحية جداول البيانات.'
+      : 'تعذّر تحميل السجل: ' + e.message});
+  });
+}
+$('actRefresh').onclick = ()=>loadActivity(true);
+$('actUser').onchange = ()=>loadActivity(true);
+$('actKind').onchange = ()=>loadActivity(true);
+$('actMore').onclick = ()=>loadActivity(false);
+
+/* نسخة عميقة من الصلاحيات للتعديل، بقيم افتراضية لما ينقص */
+function permDraft(p){
+  const d = JSON.parse(JSON.stringify(p || {}));
+  d.tabs = Object.assign({today: true, tasks: true, flow: true, projects: false, expenses: false}, d.tabs);
+  d.orgs = Object.assign({medics: 'none', humera: 'none'}, d.orgs);
+  d.stats = d.stats || {}; d.files = d.files || {}; d.files.slots = d.files.slots || {}; d.files.types = d.files.types || ['pdf', 'word', 'image'];
+  d.coords = d.coords || []; d.extra = d.extra || [];
+  d.scope = d.scope || 'own'; d.money = d.money || 'hide'; d.plan = d.plan || 'view'; d.deliv = d.deliv || 'view'; d.expenses = d.expenses || 'none';
+  return d;
+}
+function openAccDetail(username){
+  const u = ADM.users.find(x=>x.username === username); if(!u) return;
+  ADM.cur = username; ADM.dirty = false;
+  renderAccDetail(u);
+  $('accListView').hidden = true; $('accDetail').hidden = false;
+  $('setTitle').textContent = u.name || u.username;
+  $('settingsBody').scrollTop = 0;
+  const f = $('accDetail').querySelector('.acc-back'); if(f) f.focus({preventScroll: true});
+}
+function closeAccDetail(force){
+  if(ADM.dirty && !force){
+    openModal({title: 'تغييرات لم تُحفظ', bodyHTML: '<p>عدّلت صلاحيات هذا الحساب ولم تحفظها.</p>', actions: [
+      {label: 'تابع التعديل'}, {label: 'تجاهل التغييرات', onClick: ({close})=>{ close(); closeAccDetail(true); }},
+      {label: 'احفظ', primary: true, onClick: ({close})=>{ close(); savePerms().then(()=>closeAccDetail(true)).catch(admErr); }}]});
+    return;
+  }
+  ADM.cur = null; ADM.dirty = false;
+  $('accDetail').hidden = true; $('accDetail').innerHTML = ''; $('accListView').hidden = false;
+  $('setTitle').textContent = setSec('accounts').dataset.title;
+}
+const radio = (name, val, opts) => '<span class="pswitch" role="radiogroup">' + opts.map(([v, l])=>'<button type="button" role="radio" data-pk="' + name + '" data-pv="' + v + '" aria-checked="' + (v === val) + '"' + (v === val ? ' class="active"' : '') + '>' + l + '</button>').join('') + '</span>';
+const toggle = (name, on, label, desc) => '<label class="set-row"><span>' + label + (desc ? '<small class="set-desc">' + desc + '</small>' : '') + '</span><input type="checkbox" class="set-toggle" data-pk="' + name + '"' + (on ? ' checked' : '') + '></label>';
+function renderAccDetail(u){
+  const box = $('accDetail'), owner = u.isOwner, p = ADM.draft = permDraft(u.perms);
+  const LV = [['none', 'لا شيء'], ['view', 'عرض'], ['edit', 'تعديل']];
+  let h = '<button type="button" class="btn btn-ghost btn-sm acc-back">' + icon('dir-return') + ' كل الحسابات</button>' +
+    '<div class="acc-hero"><span class="set-avatar"></span><span class="acc-t"><b></b><small></small></span></div>' +
+    '<div class="set-sub">الملف</div>' +
+    '<div class="set-row"><label for="accName">الاسم الظاهر</label><input id="accName" class="acc-in" maxlength="60" autocomplete="off"></div>' +
+    '<div class="set-row"><label for="accEmail">البريد<small class="set-desc">لاسترداد كلمة السر ولإرسال بيانات الدخول.</small></label><input id="accEmail" class="acc-in" type="email" dir="ltr" autocomplete="off"></div>' +
+    '<div class="set-row"><span>أُنشئ</span><b class="acc-created"></b></div>' +
+    '<div class="set-actions"><button type="button" class="btn btn-secondary btn-sm" id="accProfileSave">احفظ الملف</button></div>' +
+    '<div class="set-sub">الأمان</div>' +
+    (owner ? '' : '<label class="set-row"><span>الحساب مفعّل<small class="set-desc">الإيقاف يمنع الدخول وينهي جلساته فورًا، وتبقى بياناته.</small></span><input type="checkbox" class="set-toggle" id="accActive"' + (u.disabled ? '' : ' checked') + '></label>') +
+    '<div class="set-row"><span>كلمة سر مؤقتة جديدة<small class="set-desc">لمن نسي كلمته: تُنهي جلساته، ويُطلب منه تغييرها عند الدخول.</small></span><button type="button" class="btn btn-secondary btn-sm" id="accReset">أنشئ كلمة مؤقتة</button></div>' +
+    '<div class="set-row"><span>إنهاء كل الجلسات<small class="set-desc">يخرج من كل الأجهزة ويلزمه الدخول من جديد.</small></span><button type="button" class="btn btn-secondary btn-sm" id="accRevoke">أنهِ الجلسات</button></div>';
+  if(owner){
+    h += '<div class="set-hint">المالك له كل الصلاحيات دائمًا، ولا تُخصَّص.</div>';
+  }else{
+    h += '<div class="set-sub">التبويبات الظاهرة</div>' + PERM_TAB_LABELS.map(([k, l])=>toggle('tabs.' + k, p.tabs[k], l)).join('') +
+      '<div class="set-sub">المشاريع</div>' +
+      '<div class="set-row"><span>مشاريع مديكس</span>' + radio('orgs.medics', p.orgs.medics, LV) + '</div>' +
+      '<div class="set-row"><span>مشاريع هيوميرا</span>' + radio('orgs.humera', p.orgs.humera, LV) + '</div>' +
+      '<div class="set-row"><span>النطاق<small class="set-desc">«مشاريعه»: ما منسقه أحد الأسماء أدناه، مع أكواد إضافية تسمح بها.</small></span>' + radio('scope', p.scope, [['own', 'مشاريعه'], ['all', 'كل المشاريع']]) + '</div>' +
+      '<div class="acc-coords" data-scope-own><div class="acc-lbl">هو المنسق باسم</div><div class="acc-chips">' +
+        (ADM.coordinators.length ? ADM.coordinators.map(c=>'<label class="acc-chip"><input type="checkbox" data-coord="' + esc(c) + '"' + (p.coords.includes(c) ? ' checked' : '') + '><span>' + esc(c) + '</span></label>').join('') : '<span class="set-hint">لا منسقين في القاعدة بعد.</span>') +
+      '</div></div>' +
+      '<div class="set-row" data-scope-own><label for="accExtra">مشاريع إضافية<small class="set-desc">أكواد مفصولة بفواصل، مثل G074، H012 — مساحة أكبر من مشاريعه.</small></label><input id="accExtra" class="acc-in" dir="ltr" autocomplete="off"></div>' +
+      '<div class="set-row"><span>المبالغ<small class="set-desc">«إخفاء» يحذفها من البيانات التي تصله، لا من الشاشة فقط.</small></span>' + radio('money', p.money, [['hide', 'إخفاء'], ['view', 'عرض'], ['edit', 'تعديل']]) + '</div>' +
+      toggle('create', p.create, 'إنشاء مشاريع جديدة', 'يتطلب «تعديل» على المؤسسة.') +
+      toggle('plan', p.plan === 'edit', 'تعديل خطة التنفيذ') +
+      toggle('deliv', p.deliv === 'edit', 'تعديل الاستحقاقات والتقارير') +
+      '<div class="set-sub">الإحصائيات</div>' + PERM_STAT_LABELS.map(([k, l])=>toggle('stats.' + k, p.stats[k], l)).join('') +
+      '<div class="set-sub">ملفات المشاريع في درايف</div>' +
+      '<div class="set-hint">يفتح الملفات عبر المنصة دون رابط درايف. «رفع» يسمح بالعرض والرفع إلى الخانة.</div>' +
+      '<div class="acc-lbl">أنواع الملفات المسموحة</div><div class="acc-chips">' + PERM_TYPE_LABELS.map(([k, l])=>'<label class="acc-chip"><input type="checkbox" data-ftype="' + k + '"' + (p.files.types.includes(k) ? ' checked' : '') + '><span>' + l + '</span></label>').join('') + '</div>' +
+      '<div class="acc-slots">' + SLOT_GROUPS.map(([g, list])=>'<div class="acc-slot-g"><div class="acc-lbl">' + g + '</div>' +
+        list.filter(s=>!ADM.slots.length || ADM.slots.includes(s)).map(s=>'<div class="set-row"><span>' + esc(s) + '</span>' + radio('slot:' + s, p.files.slots[s] || 'none', [['none', 'لا'], ['view', 'عرض'], ['upload', 'رفع']]) + '</div>').join('') + '</div>').join('') + '</div>' +
+      '<div class="set-sub">المصروفات</div>' +
+      '<div class="set-row"><span>سجل المصروفات<small class="set-desc">مصروفاتك أنت في نوشن — امنحها بحذر.</small></span>' + radio('expenses', p.expenses, LV) + '</div>' +
+      '<div class="acc-savebar" hidden><span>تغييرات لم تُحفظ</span><button type="button" class="btn btn-ghost btn-sm" id="accDiscard">تراجع</button><button type="button" class="btn btn-primary btn-sm" id="accSave">احفظ الصلاحيات</button></div>';
+  }
+  h += '<div class="set-sub">سجل نشاطه</div><div class="act-list" id="accAct"></div>' +
+    (owner ? '' : '<div class="set-sub danger">منطقة الحذف</div><div class="set-row"><span>حذف الحساب<small class="set-desc">يمسح الحساب وكل بياناته المخزَّنة نهائيًا — لا يمكن التراجع. الإيقاف بديل آمن.</small></span><button type="button" class="btn btn-danger btn-sm" id="accDelete">احذف الحساب</button></div>');
+  box.innerHTML = h;
+  box.querySelector('.acc-hero .set-avatar').textContent = userInitial(u);
+  box.querySelector('.acc-hero b').textContent = u.name || u.username;
+  box.querySelector('.acc-hero small').textContent = u.username + (u.lastLogin ? ' · آخر دخول ' + relAgo(u.lastLogin) : ' · لم يدخل بعد');
+  box.querySelector('.acc-created').textContent = u.createdAt ? fmtDate(new Date(u.createdAt), {day: 'numeric', month: 'long', year: 'numeric'}) : '—';
+  $('accName').value = u.name || ''; $('accEmail').value = u.email || '';
+  if(!owner) $('accExtra').value = p.extra.join('، ');
+  box.querySelector('.acc-back').onclick = ()=>closeAccDetail();
+  $('accProfileSave').onclick = ()=>post({action: 'admin_update_user', username: u.username, name: $('accName').value.trim(), email: $('accEmail').value.trim()})
+    .then(d=>{ accPatch(d.user); showToast('حُفظ ملف الحساب'); }).catch(admErr);
+  $('accReset').onclick = ()=>accResetPw(u);
+  $('accRevoke').onclick = ()=>openModal({title: 'إنهاء جلسات ' + (u.name || u.username) + '؟', bodyHTML: '<p>سيخرج من كل الأجهزة فورًا.</p>', actions: [{label: 'إلغاء'},
+    {label: 'أنهِ الجلسات', primary: true, onClick: ({close})=>{ close(); post({action: 'admin_revoke', username: u.username}).then(d=>{ if(d.token) saveAuth(Object.assign({}, auth, {token: d.token})); showToast('أُنهيت الجلسات'); }).catch(admErr); }}]});
+  if(!owner){
+    $('accActive').onchange = e=>post({action: 'admin_update_user', username: u.username, disabled: !e.target.checked})
+      .then(d=>{ accPatch(d.user); showToast(d.user.disabled ? 'أُوقف الحساب وأُنهيت جلساته' : 'فُعّل الحساب'); }).catch(err=>{ e.target.checked = !e.target.checked; admErr(err); });
+    $('accDelete').onclick = ()=>openModal({title: 'حذف حساب «' + (u.name || u.username) + '»؟', bodyHTML: '<p>سيُحذف الحساب وكل بياناته المخزَّنة نهائيًا. لا يمكن التراجع.</p><p class="set-hint">للتأكيد اكتب اسم المستخدم: <b dir="ltr">' + esc(u.username) + '</b></p><input id="accDelConfirm" dir="ltr" autocomplete="off">',
+      actions: [{label: 'إلغاء'}, {label: 'احذف نهائيًا', primary: true, onClick: ({close, bodyEl})=>{
+        if(bodyEl.querySelector('#accDelConfirm').value.trim().toLowerCase() !== u.username){ bodyEl.querySelector('#accDelConfirm').focus(); return; }
+        close(); post({action: 'admin_delete_user', username: u.username}).then(()=>{ closeAccDetail(true); showToast('حُذف الحساب'); loadAdminUsers(); }).catch(admErr);
+      }}]});
+    box.addEventListener('click', e=>{
+      const b = e.target.closest('[role=radio][data-pk]'); if(!b) return;
+      b.parentNode.querySelectorAll('[role=radio]').forEach(x=>{ x.setAttribute('aria-checked', String(x === b)); x.classList.toggle('active', x === b); });
+      permSet(b.dataset.pk, b.dataset.pv);
+    });
+    box.addEventListener('change', e=>{
+      const el = e.target;
+      if(el.dataset.pk){ const k = el.dataset.pk; permSet(k, k === 'plan' || k === 'deliv' ? (el.checked ? 'edit' : 'view') : el.checked); }
+      else if(el.dataset.coord !== undefined){ p.coords = [...box.querySelectorAll('[data-coord]:checked')].map(x=>x.dataset.coord); permDirty(); }
+      else if(el.dataset.ftype){ p.files.types = [...box.querySelectorAll('[data-ftype]:checked')].map(x=>x.dataset.ftype); permDirty(); }
+    });
+    $('accExtra').addEventListener('input', ()=>{ p.extra = $('accExtra').value.split(/[,،\s]+/).map(x=>x.trim().toUpperCase()).filter(Boolean); permDirty(); });
+    $('accSave').onclick = ()=>savePerms().then(()=>showToast('حُفظت صلاحيات ' + (u.name || u.username))).catch(admErr);
+    $('accDiscard').onclick = ()=>{ ADM.dirty = false; renderAccDetail(ADM.users.find(x=>x.username === u.username)); };
+    permScopeView();
+  }
+  post({action: 'admin_activity', username: u.username, limit: 40}).then(d=>actRender($('accAct'), d.rows || [], false, false))
+    .catch(e=>cardState($('accAct'), 'error', {msg: 'تعذّر تحميل السجل: ' + e.message}));
+}
+function permSet(k, v){
+  const p = ADM.draft;
+  if(k.startsWith('slot:')){ const s = k.slice(5); if(v === 'none') delete p.files.slots[s]; else p.files.slots[s] = v; }
+  else if(k.includes('.')){ const [a, b] = k.split('.'); p[a][b] = v; }
+  else p[k] = v;
+  if(k === 'scope') permScopeView();
+  permDirty();
+}
+function permScopeView(){ $('accDetail').querySelectorAll('[data-scope-own]').forEach(el=>{ el.hidden = ADM.draft.scope !== 'own'; }); }
+function permDirty(){ ADM.dirty = true; const b = $('accDetail').querySelector('.acc-savebar'); if(b) b.hidden = false; }
+function savePerms(){
+  const u = ADM.cur;
+  return post({action: 'admin_set_perms', username: u, perms: ADM.draft}).then(d=>{
+    const rec = ADM.users.find(x=>x.username === u); if(rec) rec.perms = d.perms;
+    ADM.dirty = false; ADM.draft = permDraft(d.perms);
+    const b = $('accDetail').querySelector('.acc-savebar'); if(b) b.hidden = true;
+  });
+}
+function accPatch(nu){
+  const i = ADM.users.findIndex(x=>x.username === nu.username); if(i < 0) return;
+  ADM.users[i] = nu; renderAccList(); actFill();
+  if(ADM.cur === nu.username){
+    const box = $('accDetail');
+    box.querySelector('.acc-hero b').textContent = nu.name || nu.username;
+    $('setTitle').textContent = nu.name || nu.username;
+  }
+}
+/* كلمة السر المؤقتة تظهر مرة واحدة هنا، ويمكن إرسالها إلى البريد */
+function showTempPw(title, user, pw, mailed){
+  openModal({title, bodyHTML: '<p>اسم المستخدم: <b dir="ltr">' + esc(user) + '</b></p><div class="acc-temp"><code dir="ltr"></code><button type="button" class="btn btn-secondary btn-sm">انسخ</button></div>' +
+    '<p class="set-hint">' + (mailed ? 'أُرسلت أيضًا إلى بريده. ' : '') + 'تظهر هذه الكلمة الآن فقط، ويُطلب منه تغييرها عند أول دخول.</p>',
+    onRender: b=>{ b.querySelector('code').textContent = pw; b.querySelector('.acc-temp button').onclick = e=>{ navigator.clipboard.writeText(user + '\n' + pw).then(()=>{ e.target.textContent = 'نُسخ'; }).catch(()=>{}); }; },
+    actions: [{label: 'تم', primary: true}]});
+}
+function accResetPw(u){
+  openModal({title: 'كلمة سر مؤقتة لـ' + (u.name || u.username),
+    bodyHTML: '<p>تُنشأ كلمة عشوائية، وتُنهى جلساته الحالية.</p><label class="acc-check"><input type="checkbox" id="accResetMail"' + (u.email ? ' checked' : ' disabled') + '> أرسلها إلى بريده' + (u.email ? ' (' + esc(u.email) + ')' : ' — لا بريد له') + '</label>',
+    actions: [{label: 'إلغاء'}, {label: 'أنشئ', primary: true, onClick: ({close, bodyEl})=>{
+      const mail = bodyEl.querySelector('#accResetMail').checked; close();
+      post({action: 'admin_reset_password', username: u.username, sendEmail: mail}).then(d=>{
+        showTempPw('كلمة السر المؤقتة', u.username, d.tempPassword, d.mailed);
+        const rec = ADM.users.find(x=>x.username === u.username); if(rec && !rec.isOwner){ rec.mustChange = true; renderAccList(); }
+      }).catch(admErr);
+    }}]});
+}
+$('accNewBtn').onclick = ()=>{
+  const tpl = ADM.users.filter(u=>!u.isOwner);
+  openModal({title: 'حساب جديد',
+    bodyHTML: '<div class="acc-form">' +
+      '<label>الاسم الظاهر<input id="nuName" maxlength="60" autocomplete="off" placeholder="مثل: أحمد سالم"></label>' +
+      '<label>اسم المستخدم<input id="nuUser" dir="ltr" autocomplete="off" placeholder="ahmad" maxlength="24"><small>3–24 حرفًا إنجليزيًا صغيرًا أو رقمًا أو - _</small></label>' +
+      '<label>البريد (اختياري)<input id="nuEmail" type="email" dir="ltr" autocomplete="off"></label>' +
+      '<label>كلمة السر المؤقتة<input id="nuPass" dir="ltr" autocomplete="new-password" placeholder="اتركها فارغة لتُولَّد"><small>8 أحرف فأكثر، ويُطلب تغييرها عند أول دخول.</small></label>' +
+      '<label>الصلاحيات الابتدائية<select id="nuTpl"><option value="">الأساسية: اليوم والمهام والعادات فقط</option>' + tpl.map(u=>'<option value="' + esc(u.username) + '">نسخة من صلاحيات ' + esc(u.name || u.username) + '</option>').join('') + '</select></label>' +
+      '<label class="acc-check"><input type="checkbox" id="nuMail"> أرسل بيانات الدخول إلى بريده</label>' +
+      '<p class="set-msg" id="nuMsg"></p></div>',
+    onRender: b=>{ const n = b.querySelector('#nuUser'); n.addEventListener('input', ()=>{ n.value = n.value.toLowerCase().replace(/[^a-z0-9_-]/g, ''); }); b.querySelector('#nuName').focus(); },
+    actions: [{label: 'إلغاء'}, {label: 'أنشئ الحساب', primary: true, onClick: ({close, bodyEl})=>{
+      const v = id=>bodyEl.querySelector(id).value.trim(), msg = bodyEl.querySelector('#nuMsg');
+      const from = ADM.users.find(u=>u.username === v('#nuTpl'));
+      msg.className = 'set-msg'; msg.textContent = 'جارٍ الإنشاء…';
+      post({action: 'admin_create_user', name: v('#nuName'), username: v('#nuUser'), email: v('#nuEmail'), password: bodyEl.querySelector('#nuPass').value,
+            sendEmail: bodyEl.querySelector('#nuMail').checked, perms: from ? from.perms : null}).then(d=>{
+        close(); ADM.users.push(d.user); renderAccList(); actFill();
+        showTempPw('أُنشئ حساب ' + (d.user.name || d.user.username), d.user.username, d.tempPassword, d.mailed);
+        openAccDetail(d.user.username);
+      }).catch(e=>{ msg.className = 'set-msg err'; msg.textContent = e.message; });
+    }}]});
+};
+
+/* ---------- كلمة السر المؤقتة: تغييرها قبل أي شيء ---------- */
+let tempPwHint = '';
+function forcePwChange(then){
+  openModal({title: 'اختر كلمة سر جديدة',
+    bodyHTML: '<p>دخلت بكلمة سر مؤقتة. اختر كلمتك الخاصة للمتابعة.</p><div class="acc-form">' +
+      '<label>كلمة السر المؤقتة<input type="password" id="fpOld" autocomplete="current-password"></label>' +
+      '<label>كلمة السر الجديدة<input type="password" id="fpNew" autocomplete="new-password"><small>8 أحرف فأكثر.</small></label>' +
+      '<label>أعد كتابتها<input type="password" id="fpNew2" autocomplete="new-password"></label><p class="set-msg" id="fpMsg"></p></div>',
+    onRender: b=>{ const o = b.querySelector('#fpOld'); o.value = tempPwHint; (tempPwHint ? b.querySelector('#fpNew') : o).focus(); },
+    actions: [{label: 'تسجيل الخروج', onClick: ({close})=>{ close(); tempPwHint = ''; saveAuth(null); showAuth('login'); }},
+      {label: 'احفظ وتابع', primary: true, onClick: ({close, bodyEl})=>{
+        const v = id=>bodyEl.querySelector(id).value, msg = bodyEl.querySelector('#fpMsg');
+        if(v('#fpNew').length < 8){ msg.className = 'set-msg err'; msg.textContent = 'كلمة السر 8 أحرف على الأقل'; return; }
+        if(v('#fpNew') !== v('#fpNew2')){ msg.className = 'set-msg err'; msg.textContent = 'الكلمتان غير متطابقتين'; return; }
+        msg.className = 'set-msg'; msg.textContent = 'جارٍ الحفظ…';
+        post({action: 'auth_change_password', oldPassword: v('#fpOld'), password: v('#fpNew')}).then(d=>{
+          tempPwHint = ''; saveAuth(Object.assign({}, auth, {token: d.token, mustChange: false})); close(); if(then) then();
+        }).catch(e=>{ msg.className = 'set-msg err'; msg.textContent = e.message; });
+      }}]});
+}
+
+/* ---------- التبويبات المسموحة للحساب (الجسر يمنع البيانات؛ هذا يخفي ما لا يخصّه) ---------- */
+function applyPerms(){
+  TAB_NAMES.forEach(n=>{ const b = $('tab' + n[0].toUpperCase() + n.slice(1) + 'Btn'); if(b) b.hidden = !tabAllowed(n); });
+  document.querySelectorAll('.card.c-projects').forEach(c=>{ c.hidden = !tabAllowed('projects'); });
+  const cur = document.documentElement.dataset.tab;
+  if(cur && !tabAllowed(cur)) showTab(cur);
 }
 function openSettings(k){
   $('setUser').textContent = auth ? auth.user : 'غير مسجّل';
@@ -6915,6 +7208,7 @@ function openSettings(k){
   try{ renderAliveSettings(); }catch(e){}
   const showAdmin = !!(auth && auth.isOwner);
   $('setAdminSection').hidden = !showAdmin;
+  if(ADM.cur && !ADM.dirty) closeAccDetail(true);
   if(showAdmin) loadAdminUsers();
   $('setAvatar').textContent = auth ? [...auth.user.trim()][0] || 'ن' : 'ن';
   $('setMeName').textContent = auth ? auth.user : 'وضع محلي';
@@ -7109,7 +7403,8 @@ function bootConnected(){
     })
     .then(d=>{
       resetLocalForUser(d.user);   /* حارس: لا يفعل شيئًا ما دام المستخدم نفسه */
-      saveAuth({token:auth.token, user:d.user, isOwner:d.isOwner});
+      saveAuth({token:auth.token, user:d.user, isOwner:d.isOwner, name:d.name || '', perms:d.perms || null});
+      applyPerms();
       setDot('ok', d.notion ? ('متصل بـ '+(d.title||'ToDos'))
                             : ('مسجّل: '+d.user + (d.notionError ? '، نوشن: '+d.notionError : '')));
       markSynced();
@@ -7119,7 +7414,10 @@ function bootConnected(){
       pullState(d.legacy ? undefined : d);
       if(notionOK()){ pushDirty(); refreshCalendarFromNotion(); loadGcal(); }
     })
-    .catch(e=>setDot('err','تعذّر الاتصال: '+e.message));
+    .catch(e=>{
+      if(/كلمة السر المؤقتة/.test(e.message)){ setDot('', 'غيّر كلمة السر المؤقتة للمتابعة'); forcePwChange(bootConnected); return; }
+      setDot('err','تعذّر الاتصال: '+e.message);
+    });
 }
 /* عند تبديل المستخدم على نفس الجهاز: امسح ذاكرة الجهاز المحلية أولًا،
    فما فيها يخصّ المستخدم السابق ولا يجوز أن يُرفع إلى حساب الجديد. */
@@ -7129,6 +7427,8 @@ function resetLocalForUser(newUser){
   if(last && last !== newUser){
     try{
       [KEY, FKEY, EKEY, SKEY].forEach(k=>localStorage.removeItem(k));
+      /* نسخ المشاريع وملفاتها تخصّ صلاحيات الحساب السابق */
+      Object.keys(localStorage).filter(k=>/^daily-board-(projects-cache|projfiles)-/.test(k)).forEach(k=>localStorage.removeItem(k));
     }catch(e){}
     clearCalCache();   /* مهام نوشن المحفوظة تخصّ المستخدم السابق */
     try{ localStorage.removeItem(GCAL_KEY); }catch(e){}
@@ -7150,9 +7450,10 @@ function resetLocalForUser(newUser){
 
 function afterAuth(d){
   resetLocalForUser(d.user);
-  saveAuth({token:d.token, user:d.user, isOwner:d.isOwner}, $('rememberMe').checked);
+  saveAuth({token:d.token, user:d.user, isOwner:d.isOwner, name:d.name || '', perms:d.perms || null}, $('rememberMe').checked);
   hideAuth();
-  bootConnected();
+  applyPerms();
+  if(d.mustChange) forcePwChange(bootConnected); else bootConnected();
 }
 
 /* ---------- ابقَ مسجّل الدخول على هذا الجهاز ----------
@@ -7180,7 +7481,7 @@ $('loginBtn').onclick = ()=>{
   if(!u || !p){ setAuthMsg('أدخل اسم المستخدم وكلمة السر','err'); return; }
   setAuthMsg('جارٍ الدخول…');
   post({action:'auth_login', username:u, password:p, remember:$('rememberMe').checked})
-    .then(d=>{ saveRemembered(u); $('loginPass').value = ''; return afterAuth(d); })
+    .then(d=>{ saveRemembered(u); if(d.mustChange) tempPwHint = p; $('loginPass').value = ''; return afterAuth(d); })
     .catch(e=>setAuthMsg(e.message,'err'));
 };
 $('registerBtn').onclick = ()=>{
@@ -7227,6 +7528,7 @@ $('authBridgeSave').onclick = ()=>{
 };
 
 /* ---------- الإقلاع ---------- */
+applyPerms();
 if(bridge){
   if(auth && auth.token){
     /* الجلسة المحفوظة: اللوح يظهر فورًا ببيانات الجهاز، وطلب الإقلاع نفسه يتحقق من الجلسة

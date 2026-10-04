@@ -528,6 +528,14 @@ dialog[open]::backdrop{animation:m-fade-in calc(var(--dur-3) * var(--motion-scal
   :where(button,.btn,[role="button"]):active{scale:none}
 }
 }
+/* الصلاحيات: أدوات التعديل تختفي لمن لا يملكها (الجسر يرفضها أصلًا) */
+html:not(.is-owner) :is(#driveBtn,.danger-zone){display:none}
+html:not(.can-create) #newProjBtn,html:not(.can-config) :is(#namesBtn,#donorsBtn,#peopleAddBtn){display:none}
+html:not(.can-plan) #planCard :is([data-act="tpl"],[data-act="add"],[data-act="add-stage"],[data-act="edit"]){display:none}
+html:not(.can-plan) #planCard [data-act="toggle"]{pointer-events:none}
+html:not(.can-edit) [data-act="gantt-dur"],html:not(.can-money-edit) [data-act="money-edit"]{display:none}
+html:not(.can-money) :is(#moneyCard,.money-line){display:none}
+button.file{font:inherit;cursor:pointer;text-align:start}
 </style>
 <link rel="stylesheet" href="nasaq-theme.css?v=20261001a">
 <link rel="stylesheet" href="layouts/nav-side.css?v=20261001a">
@@ -968,7 +976,7 @@ function post(body){
 async function load(){
   $('items').innerHTML = '<div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div>';
   let bridgeErr = '';
-  if(bridge && auth && auth.isOwner){
+  if(bridge && auth && auth.token){
     /* آخر نسخة من نوشن تُعرض فورًا من هذا المتصفح، ثم تُستبدل بالجديدة حين يردّ الجسر */
     const CK = 'daily-board-projects-cache-' + ORG;
     let shown = false;
@@ -992,7 +1000,7 @@ async function load(){
     $('items').innerHTML = '';
     $('pageSub').textContent = '';
     $('detail').innerHTML = '<div class="card"><div class="err">تعذّر تحميل المشاريع. '
-      + (bridgeErr ? 'الجسر: ' + esc(bridgeErr) + '. ' : (auth && auth.isOwner ? '' : 'سجّل الدخول في نَسَق بحساب صاحب اللوح أولًا. '))
+      + (bridgeErr ? 'الجسر: ' + esc(bridgeErr) + '. ' : (auth && auth.token ? '' : 'سجّل الدخول في نَسَق أولًا. '))
       + 'إن كان هذا أول تشغيل، فانشر نسخة الجسر الجديدة من Apps Script.</div></div>';
   }
 }
@@ -1138,7 +1146,52 @@ function localPlanWrite(){ try{ localStorage.setItem(LOCAL_PLAN_KEY, JSON.string
 function localPeopleRead(){ try{ return JSON.parse(localStorage.getItem(LOCAL_PEOPLE_KEY) || 'null'); }catch(e){ return null; } }
 function localPeopleWrite(){ try{ localStorage.setItem(LOCAL_PEOPLE_KEY, JSON.stringify(DATA.people)); }catch(e){} }
 const uniqNames = list => [...new Set(list.map(n => String(n || '').trim()).filter(Boolean))];
+/* صلاحيات الحساب كما يردّها الجسر مع القائمة (access)؛ المالك والنسخة المحلية: كل شيء */
+let ACC = {owner: true};
+const can = {
+  edit: () => ACC.owner || ACC.level === 'edit',
+  create: () => ACC.owner || (ACC.level === 'edit' && !!ACC.create),
+  plan: () => ACC.owner || (ACC.level === 'edit' && ACC.plan === 'edit'),
+  money: () => ACC.owner || ACC.money !== 'hide',
+  moneyEdit: () => ACC.owner || (ACC.level === 'edit' && ACC.money === 'edit'),
+  config: () => ACC.owner || (ACC.level === 'edit' && ACC.scope === 'all'),
+  stat: k => ACC.owner || !!(ACC.stats && ACC.stats[k]),
+  slot: s => ACC.owner ? 'upload' : (ACC.slots && ACC.slots[s]) || 'none'
+};
+function applyAcc(){
+  const h = document.documentElement.classList;
+  [['is-owner', ACC.owner], ['can-edit', can.edit()], ['can-create', can.create()], ['can-plan', can.plan()], ['can-money', can.money()],
+   ['can-money-edit', can.moneyEdit()], ['can-config', can.config()]].forEach(([c, on]) => h.toggle(c, !!on));
+  const anyStat = ['kpi', 'donor', 'country', 'type', 'coord', 'collect', 'month'].some(can.stat);
+  const sv = document.querySelector('[data-view="stats"]'); if(sv) sv.hidden = !anyStat;
+}
+/* الإحصائيات: تُزال البطاقات غير المسموحة، ومؤشرات المبالغ إن كانت مخفية */
+const STAT_KEYS = {'تركيبة المبلغ الكلي': 'kpi', 'حسب الجهة الممولة': 'donor', 'حسب دولة المانح': 'country', 'حسب نوع المشروع': 'type', 'حسب المنسق': 'coord', 'التحصيل من المانحين': 'collect', 'الاعتمادات حسب الشهر': 'month'};
+const MONEY_KPIS = ['المبلغ الكلي', 'التنفيذ حسب الاعتماد', 'مبلغ التنفيذ الفعلي', 'النسبة الإدارية', 'المصاريف التشغيلية', 'المستلم من المانحين', 'المتبقي تحصيله'];
+function gateStats(){
+  if(ACC.owner) return;
+  const box = $('stats');
+  box.querySelectorAll('article.card').forEach(a => { const k = STAT_KEYS[((a.querySelector('h2') || {}).textContent || '').trim()]; if(k && (!can.stat(k) || ((k === 'collect' || k === 'kpi') && !can.money()))) a.remove(); });
+  const c = box.querySelector('.counters');
+  if(c && !can.stat('kpi')) c.remove();
+  else if(c && !can.money()) c.querySelectorAll('.kpi').forEach(k => { if(MONEY_KPIS.includes(((k.querySelector('span') || {}).textContent || '').trim())) k.remove(); });
+}
+/* فتح ملف لغير المالك: عبر الجسر (يتحقق من الخانة والنوع)، دون رابط درايف */
+async function openViaBridge(p, id){
+  toast('جارٍ فتح الملف…');
+  try{
+    const d = await post({action: 'file_get', org: ORG, code: p.code, id});
+    const bin = atob(d.data), arr = new Uint8Array(bin.length);
+    for(let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([arr], {type: d.mime || 'application/octet-stream'}));
+    const w = window.open(url, '_blank', 'noopener');
+    if(!w){ const a = document.createElement('a'); a.href = url; a.download = d.name || 'ملف'; a.click(); }
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    toast('فُتح «' + (d.name || 'الملف') + '»');
+  }catch(err){ toast(err.message || 'تعذّر فتح الملف', true); }
+}
 function use(d, src, note){
+  ACC = (src === 'live' && d.access) || {owner: true}; applyAcc();
   DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [], options: d.options || {}, donorCountries: d.donorCountries || {}, donors: d.donors || [] };
   applyDonorCountries();
   if(src === 'live') loadFilesCache();
@@ -1860,6 +1913,8 @@ function fileKind(name){
 function fileChip(f){
   const [cls, lbl] = fileKind(f.name);
   const base = String(f.name).replace(/\.[^.]+$/, '');
+  if(!f.url && f.id) return '<button type="button" class="file ' + cls + '" data-act="fget" data-id="' + esc(f.id) + '" title="' +
+    esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' | ' + dayLbl(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></button>';
   return '<a class="file ' + cls + '" href="' + esc(safeUrl(f.url)) + '" target="_blank" rel="noopener" title="' +
     esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' | ' + dayLbl(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></a>';
 }
@@ -1906,13 +1961,13 @@ function docsCard(p){
   const slots = new Map(((f && f.slots) || []).map(s => [s.slot, s]));
   const at = docsPhase(p), phaseKnown = PHASES.indexOf(p.phase) >= 0;
   let nDone = 0, nMissing = 0;
-  const groups = DOC_GROUPS.map(([g, items]) => '<div class="dgroup"><h4>' + g + '</h4>' + items.map(([d, from]) => {
+  const groups = DOC_GROUPS.map(([g, all]) => [g, all.filter(([d]) => can.slot(d) !== 'none')]).filter(([, items]) => items.length).map(([g, items]) => '<div class="dgroup"><h4>' + g + '</h4>' + items.map(([d, from]) => {
     const ok = done.has(d), later = !ok && from > at;
     if(ok) nDone++; else if(!later) nMissing++;
     const sl = slots.get(d), list = sl ? sl.files : [];
     const key = p.code + '|' + d, open = EXPANDED.has(key), shown = open ? list : list.slice(0, 4);
     const busy = uploading.has(key);
-    const upBtn = canUpload ? '<button class="up" type="button" data-act="up" data-slot="' + esc(d) + '"' + (busy ? ' disabled' : '') + '>' +
+    const upBtn = canUpload && can.slot(d) === 'upload' ? '<button class="up" type="button" data-act="up" data-slot="' + esc(d) + '"' + (busy ? ' disabled' : '') + '>' +
       (busy ? '<span class="spin"></span>جارٍ الرفع…' : '＋ أضف ملفًا') + '</button>' : '';
     return '<div class="slot ' + (ok ? 'ok' : later ? 'later' : 'miss') + '"><span class="ic">' + ICON_CHECK + '</span><div>' +
       '<div class="slot-h">' + d + '<em>' + (ok ? 'مرفق' + (list.length ? ' | ' + cnt(list.length, W_FILE) : '') : later ? 'لاحقًا' : 'ناقص') + '</em>' +
@@ -2074,6 +2129,7 @@ function renderStats(rows){
     '<div class="sgrid">' + card('تركيبة المبلغ الكلي', donut, 'على المشاريع المسجّل لها اعتماد') + monthCard +
       donorCard + countryCard + collCard + typeCard + coordCard + missCard + phaseCard + '</div>';
   $('stats').querySelectorAll(':scope > *, .sgrid > *').forEach((c, i) => { c.classList.add('rise'); c.style.animationDelay = Math.min(i, 10) * 40 + 'ms'; });
+  gateStats();
 }
 
 /* جدول المشاريع — يُرتَّب بالنقر على العنوان، والنقر على الصف يفتح المشروع */
@@ -2646,6 +2702,9 @@ $('detail').addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if(!b) return;
   const p = DATA.projects.find(x => x.id === S.sel); if(!p) return;
   const act = b.dataset.act;
+  if(['toggle', 'edit', 'add', 'add-stage', 'tpl'].includes(act) && !can.plan()) return;
+  if((act === 'gantt-dur' && !can.edit()) || (act === 'money-edit' && !can.moneyEdit()) || (act === 'delete' && !ACC.owner)) return;
+  if(act === 'fget'){ openViaBridge(p, b.dataset.id); return; }
   if(act === 'toggle') toggleItem(b.dataset.id);
   else if(act === 'edit') openPlanDlg(p, DATA.plan.find(x => x.id === b.dataset.id));
   else if(act === 'add') openPlanDlg(p, null, b.dataset.stage);
