@@ -486,6 +486,19 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 /* أزرار الحفظ والإلغاء ثابتة أسفل النافذة: النموذج الطويل يُمرَّر تحتها ولا تختفي خارج الشاشة */
 dialog .dlg-acts{position:sticky;bottom:calc(-1 * var(--sp-5));z-index:2;margin:var(--sp-1) calc(-1 * var(--sp-5)) calc(-1 * var(--sp-5));
   padding:var(--sp-3) var(--sp-5) var(--sp-5);background:var(--paper);border-top:1px solid var(--rule)}
+/* القوائم الذكية: حقل مربوط بقائمة يُظهر سهمًا وقائمة بكل الخيارات (انظر cbUpgrade) */
+.fld :is(input.cb,input[list]),input.cb,input[list]{padding-left:var(--sp-6);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA1BE' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:left 12px center}
+.cb-pop{position:absolute;z-index:60;max-height:240px;overflow-y:auto;overscroll-behavior:contain;margin:0;padding:var(--sp-1);list-style:none;
+  background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-md);box-shadow:var(--shadow)}
+.cb-pop li{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3);border-radius:var(--r-sm);font-size:var(--fs-sm);color:var(--ink);cursor:pointer}
+.cb-pop li.on{background:var(--stripe)}
+.cb-pop li[aria-selected="true"]{font-weight:600;color:var(--focus)}
+.cb-pop li.add{color:var(--focus)}
+.cb-pop li.add:not(:first-child){border-top:1px solid var(--rule);margin-top:var(--sp-1)}
+.cb-pop li.cb-empty{color:var(--muted);cursor:default}
+.cb-pop mark{background:none;color:inherit;font-weight:700}
 .toast{position:fixed;bottom:22px;left:50%;translate:-50% 20px;opacity:0;z-index:80;background:var(--ink);color:var(--paper);padding:var(--sp-2) var(--sp-4);border-radius:var(--r-md);font-size:var(--fs-sm);
   box-shadow:var(--shadow);transition:opacity calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),translate calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out);pointer-events:none;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;translate:-50% 0}
@@ -2783,6 +2796,97 @@ addEventListener('scroll', () => {
   else if(y < lastY - 6) tb.classList.remove('hide');
   lastY = y;
 }, {passive: true});
+
+/* ---------- القوائم الذكية ---------- */
+/* كل حقل مربوط بقائمة (list=) يصير قائمة منسدلة موحّدة بدل اقتراحات المتصفح: تعرض كل الخيارات عند الفتح،
+   وتُصفّي بالكتابة متجاهلةً الهمزات والتاء المربوطة والألف المقصورة والتشكيل، والقيمة الجديدة تُضاف صراحةً.
+   وعند الخروج تُوحَّد القيمة على صيغتها المعتمدة في القائمة، فلا تتعدد صيغ الاسم الواحد في نوشن. */
+const cbNorm = v => String(v || '').toLowerCase().replace(/[\u064B-\u0652\u0640]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/\s+/g, ' ').trim();
+const CB = { inp: null, pop: null, items: [], i: -1, all: true };
+function cbOpts(inp){
+  const dl = document.getElementById(inp.dataset.cbList), seen = new Set(), out = [];
+  if(dl) [...dl.options].forEach(o => { const v = o.value.trim(), k = cbNorm(v); if(v && !seen.has(k)){ seen.add(k); out.push(v); } });
+  return out;
+}
+function cbUpgrade(inp){
+  if(inp.dataset.cbList) return;
+  inp.dataset.cbList = inp.getAttribute('list'); inp.removeAttribute('list');
+  inp.classList.add('cb'); inp.autocomplete = 'off';
+  inp.setAttribute('role', 'combobox'); inp.setAttribute('aria-autocomplete', 'list'); inp.setAttribute('aria-expanded', 'false'); inp.setAttribute('aria-controls', 'cbPop');
+}
+function cbPlace(){
+  if(!CB.inp) return;
+  const r = CB.inp.getBoundingClientRect(), host = CB.pop.parentElement;
+  let top = r.bottom + 4, left = r.left;
+  if(host.tagName === 'DIALOG'){ const h = host.getBoundingClientRect(); top += host.scrollTop - h.top - host.clientTop; left += host.scrollLeft - h.left - host.clientLeft; }
+  else { top += scrollY; left += scrollX; }
+  Object.assign(CB.pop.style, { top: top + 'px', left: left + 'px', width: r.width + 'px' });
+}
+function cbRender(){
+  const inp = CB.inp, raw = inp.value.trim(), q = CB.all ? '' : cbNorm(raw), opts = cbOpts(inp);
+  const list = q ? opts.filter(o => cbNorm(o).includes(q)).sort((a, b) => cbNorm(b).startsWith(q) - cbNorm(a).startsWith(q)) : opts;
+  CB.items = list.slice(0, 100).map(v => ({ v }));
+  if(raw && !opts.some(o => cbNorm(o) === cbNorm(raw))) CB.items.push({ v: raw, add: true });
+  CB.i = CB.items.findIndex(x => !x.add && cbNorm(x.v) === cbNorm(raw));
+  const mark = v => { if(!q) return esc(v); const k = cbNorm(v).indexOf(q); return k < 0 || cbNorm(v).length !== v.toLowerCase().length ? esc(v) : esc(v.slice(0, k)) + '<mark>' + esc(v.slice(k, k + q.length)) + '</mark>' + esc(v.slice(k + q.length)); };
+  CB.pop.innerHTML = CB.items.length ? CB.items.map((x, k) => '<li role="option" id="cbo-' + k + '" data-k="' + k + '"' + (x.add ? ' class="add"' : '') +
+      ' aria-selected="' + (!x.add && cbNorm(x.v) === cbNorm(raw)) + '"><span>' + (x.add ? '＋ إضافة «' + esc(x.v) + '» قيمة جديدة' : mark(x.v)) + '</span></li>').join('')
+    : '<li class="cb-empty" aria-disabled="true">لا خيارات بعد، اكتب قيمة جديدة</li>';
+  cbMove(CB.i);
+}
+function cbMove(k){
+  CB.i = k;
+  CB.pop.querySelectorAll('li[data-k]').forEach(li => li.classList.toggle('on', +li.dataset.k === k));
+  const li = CB.pop.querySelector('li.on');
+  if(li){ CB.inp.setAttribute('aria-activedescendant', li.id); li.scrollIntoView({ block: 'nearest' }); } else CB.inp.removeAttribute('aria-activedescendant');
+}
+function cbOpen(inp){
+  if(CB.inp === inp) return;
+  cbClose();
+  if(!CB.pop){ CB.pop = document.createElement('ul'); CB.pop.id = 'cbPop'; CB.pop.className = 'cb-pop'; CB.pop.setAttribute('role', 'listbox');
+    CB.pop.addEventListener('pointerdown', e => { e.preventDefault(); const li = e.target.closest('li[data-k]'); if(li) cbPick(+li.dataset.k); }); }
+  (inp.closest('dialog[open]') || document.body).appendChild(CB.pop);
+  CB.inp = inp; CB.all = true; CB.pop.hidden = false;
+  inp.setAttribute('aria-expanded', 'true');
+  cbRender(); cbPlace();
+}
+function cbClose(){
+  if(!CB.inp) return;
+  CB.inp.setAttribute('aria-expanded', 'false'); CB.inp.removeAttribute('aria-activedescendant');
+  CB.pop.hidden = true; CB.inp = null;
+}
+function cbSet(inp, v){
+  if(inp.value === v) return;
+  inp.value = v;
+  inp.dispatchEvent(new Event('input', { bubbles: true })); inp.dispatchEvent(new Event('change', { bubbles: true }));
+}
+function cbPick(k){
+  const x = CB.items[k], inp = CB.inp; if(!x || !inp) return;
+  cbClose(); cbSet(inp, x.v);
+}
+document.addEventListener('focusin', e => { const t = e.target; if(t.matches && t.matches('input[list],input.cb') && !t.disabled){ cbUpgrade(t); cbOpen(t); } });
+document.addEventListener('focusout', e => {
+  const t = e.target; if(t !== CB.inp) return;
+  cbClose();
+  const hit = cbOpts(t).find(o => cbNorm(o) === cbNorm(t.value));
+  if(hit) cbSet(t, hit); else if(t.value !== t.value.trim()) cbSet(t, t.value.trim());
+});
+document.addEventListener('click', e => { const t = e.target; if(t.classList && t.classList.contains('cb') && !CB.inp && document.activeElement === t) cbOpen(t); });
+document.addEventListener('input', e => { if(e.target === CB.inp && e.isTrusted){ CB.all = false; cbRender(); } });
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if(!(t.classList && t.classList.contains('cb'))) return;
+  if(!CB.inp && (e.key === 'ArrowDown' || e.key === 'ArrowUp')){ e.preventDefault(); cbOpen(t); return; }
+  if(CB.inp !== t) return;
+  const n = CB.items.length;
+  if(e.key === 'ArrowDown'){ e.preventDefault(); if(n) cbMove((CB.i + 1) % n); }
+  else if(e.key === 'ArrowUp'){ e.preventDefault(); if(n) cbMove((CB.i - 1 + n) % n); }
+  else if(e.key === 'Enter'){ e.preventDefault(); if(CB.i >= 0) cbPick(CB.i); else cbClose(); }
+  else if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); cbClose(); }
+  else if(e.key === 'Tab') cbClose();
+}, true);
+addEventListener('scroll', e => { if(CB.inp && e.target !== CB.pop) cbPlace(); }, true);
+addEventListener('resize', () => { if(CB.inp) cbPlace(); });
 
 load();
 </script>
