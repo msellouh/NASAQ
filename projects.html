@@ -540,6 +540,12 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 .dc-row input{padding:var(--sp-1) var(--sp-2)}
 .fld{display:grid;gap:var(--sp-1);font-size:var(--fs-sm);color:var(--ink-2)}
 .fld input,.fld select,.fld textarea{padding:var(--sp-2) var(--sp-3)}
+/* سفاري iOS يعطي حقل التاريخ عرضًا أدنى ذاتيًا فيتجاوز عموده: يُلغى ليأخذ عرض الخانة، ويُحاذى نصه للبداية */
+.fld :is(input,select,textarea){min-width:0;max-width:100%;width:100%;box-sizing:border-box}
+.fld input[type="date"]{-webkit-appearance:none;appearance:none;min-width:0;display:block;min-height:40px}
+input[type="date"]{min-width:0}
+input[type="date"]::-webkit-date-and-time-value{text-align:start}
+input[type="date"]::-webkit-calendar-picker-indicator{margin:0}
 .fld textarea{min-height:70px;resize:vertical}
 .owner-row{display:flex;gap:var(--sp-2);align-items:center}
 .owner-edit{flex:none;border:1px solid var(--field-line);background:var(--field-bg);color:var(--ink-2)}
