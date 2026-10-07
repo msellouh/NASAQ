@@ -91,7 +91,8 @@
     /* تقرير Medics المعتمد (تقرير Al-Cela) — مواصفة المستند المصدَّر، لا تتبع الطابع */
     report: {teal:'#006C75', tealDark:'#005057', cyan:'#00B2C1', mid:'#008F9B', pale:'#81D0D9', grey:'#44546A', white:'#FFFFFF', black:'#000000',
              link:'#0563C1', gold:'#DCAC18', page:'#FFC000', sheetBg:'#E9ECEF', hint:'#8A94A0', photoBg:'#EEF3F4',
-             done1:'#FCE4D6', done2:'#E2EFDA', done3:'#BCF6E4', planned:'#D9D9D9'}
+             done1:'#FCE4D6', done2:'#E2EFDA', done3:'#BCF6E4', planned:'#D9D9D9',
+             late:'#EE8C8C', out:'#F2F2F2', soft:'#E6F6F7', msOk:'#548235', msPrep:'#BF8F00', msLate:'#C00000', msTodo:'#7F7F7F'}
   };
 
   var root = document.documentElement;
