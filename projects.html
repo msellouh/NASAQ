@@ -216,15 +216,24 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .plan-counts{margin:calc(-1 * var(--sp-2)) 0 var(--sp-4)}
 .plan-counts .late-n{color:var(--urgent);font-weight:600}
 .ss{margin:var(--sp-2) 0 var(--sp-1)}
-.ss-lanes{position:relative;margin-top:var(--sp-5)}
-.ss-seg{position:absolute;height:28px;display:flex;align-items:center;padding:0 var(--sp-2);border:1px solid var(--rule);border-radius:var(--r-md);background:var(--stripe);
+.ss-lanes{position:relative;margin-top:var(--sp-5);height:calc(var(--lanes,1) * 32px - 4px)}
+.ss-seg{position:absolute;top:calc(var(--ln,0) * 32px);height:28px;display:flex;align-items:center;padding:0 var(--sp-2);border:1px solid var(--rule);border-radius:var(--r-md);background:var(--stripe);
   color:var(--ink-2);font:inherit;font-size:var(--fs-xs);font-weight:600;overflow:hidden;cursor:pointer;text-align:start;
   transition:transform calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .ss{container-type:inline-size}
 .ss-seg span{position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.ss-n{display:none;flex:none;font-variant-numeric:tabular-nums}
-/* على الشاشة الضيقة: الشرائح القصيرة برقم المرحلة، والاسم في التلميح */
-@container (max-width:520px){ .ss-seg:not(.wide) .ss-n{display:inline} .ss-seg:not(.wide) .ss-t{display:none} }
+.ss-cap{display:none;margin:var(--sp-2) 0 0;font-size:var(--fs-sm);color:var(--ink-2)}
+.ss-cap .late-n{color:var(--urgent);font-weight:600}
+/* على الشاشة الضيقة: خط زمني رفيع بلا أزرار (الألوان تدل على حال كل مرحلة)، وسطر الحال تحته */
+@container (max-width:520px){
+  .ss-lanes{height:calc(var(--lanes,1) * 14px - 4px);margin-top:var(--sp-5)}
+  .ss-seg{top:calc(var(--ln,0) * 14px);height:10px;padding:0;border-radius:var(--r-pill);pointer-events:none;box-shadow:none}
+  .ss-seg.now{box-shadow:none;border-width:1.5px}
+  .ss-seg span,.ss-seg.late::after{display:none}
+  .ss-seg i{height:100%;border-radius:inherit}
+  .ss-today{top:-16px;bottom:-4px}
+  .ss-cap{display:block}
+}
 .ss-seg i{position:absolute;inset-block-end:0;inset-inline-start:0;height:3px;background:var(--cta)}
 .ss-seg:hover{border-color:var(--focus);transform:translateY(-1px)}
 .ss-seg.done{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
@@ -1846,14 +1855,20 @@ function stageStrip(p, st){
     if(b > 100){ a = Math.max(0, a - (b - 100)); b = 100; }
     let ln = lanes.findIndex(end => end <= a + .5); if(ln < 0){ ln = lanes.length; lanes.push(0); } lanes[ln] = b;
     const late = x.items.some(itemLate);
-    return '<button type="button" class="ss-seg ' + x.state + (late ? ' late' : '') + (b - a >= 22 ? ' wide' : '') + '" data-act="plan-stage" data-stage="' + i + '" style="inset-inline-start:' + a + '%;width:' + (b - a) + '%;top:' + (ln * 32) + 'px"' +
+    return '<button type="button" class="ss-seg ' + x.state + (late ? ' late' : '') + '" data-act="plan-stage" data-stage="' + i + '" style="inset-inline-start:' + a + '%;width:' + (b - a) + '%;--ln:' + ln + '"' +
       ' title="' + esc(x.name + ' | ' + x.done + ' من ' + x.total + (x.start ? ' | ' + dayLbl(x.start, false) + ' – ' + dayLbl(x.end || x.start, false) : '') + (late ? ' | فيها متأخر' : '')) + '">' +
-      '<span class="ss-n">' + AR(i + 1) + '</span><span class="ss-t">' + esc(x.name) + '</span><i style="width:' + Math.round(x.done / x.total * 100) + '%"></i></button>';
+      '<span class="ss-t">' + esc(x.name) + '</span><i style="width:' + Math.round(x.done / x.total * 100) + '%"></i></button>';
   }).join('');
   const tp = (today.getTime() - lo) / span * 100;
   const now = tp >= 0 && tp <= 100 ? '<span class="ss-today" style="inset-inline-start:' + tp + '%" aria-hidden="true"><b>اليوم</b></span>' : '';
-  return '<div class="ss"><div class="ss-lanes" style="height:' + (lanes.length * 32 - 4) + 'px">' + segs + now + '</div>' +
-    '<div class="ss-ends"><span><bdi>' + dayLbl(s, false) + '</bdi></span><span><bdi>' + dayLbl(e) + '</bdi></span></div></div>';
+  /* سطر الحال للشاشة الضيقة: الشريط هناك خط ملوّن بلا أزرار، والمرحلة الحالية مكتوبة تحته */
+  const ci = st.findIndex(x => x.state === 'now'), cur = st[ci];
+  const over = today > toDate(e) ? days(toDate(e), today) : 0;
+  const cap = (cur ? 'الآن: <b>' + esc(cur.name) + '</b> | المرحلة <bdi>' + AR(ci + 1) + ' من ' + AR(st.length) + '</bdi>' : '<b>أُنجزت كل المراحل</b>') +
+    (over ? ' | <span class="late-n">تجاوز النهاية بـ ' + cnt(over, W_DAY) + '</span>' : '');
+  return '<div class="ss"><div class="ss-lanes" style="--lanes:' + lanes.length + '">' + segs + now + '</div>' +
+    '<div class="ss-ends"><span><bdi>' + dayLbl(s, false) + '</bdi></span><span><bdi>' + dayLbl(e) + '</bdi></span></div>' +
+    '<p class="ss-cap">' + cap + '</p></div>';
 }
 function planCard(p){
   const items = planOf(p);
