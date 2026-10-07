@@ -223,6 +223,28 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .ss{container-type:inline-size}
 .ss-seg span{position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .ss-cap{display:none;margin:var(--sp-2) 0 0;font-size:var(--fs-sm);color:var(--ink-2)}
+.plan-card{container-type:inline-size}
+.sl{display:none;list-style:none;margin:var(--sp-2) 0 0;padding:0;position:relative}
+.sl::before{content:"";position:absolute;inset-block:22px;inset-inline-start:17px;width:2px;background:var(--rule)}
+.sl-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:2px var(--sp-3);align-items:center;width:100%;padding:var(--sp-2) var(--sp-1) var(--sp-2) var(--sp-2);
+  border:0;border-radius:var(--r-md);background:none;color:var(--ink);font:inherit;text-align:start;cursor:pointer}
+.sl-row:hover{background:var(--stripe)}
+.sl-n{grid-row:span 3;position:relative;z-index:1;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:var(--fs-xs);font-weight:700;
+  background:var(--paper);border:2px solid var(--field-line);color:var(--ink-2)}
+.sl-n .ic{width:14px;height:14px}
+.sl-row.done .sl-n{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
+.sl-row.now{background:var(--stripe)}
+.sl-row.now .sl-n{border-color:var(--cta);color:var(--focus-ink);box-shadow:0 0 0 4px var(--ring)}
+.sl-row b{font-size:var(--fs-base);font-weight:600;min-width:0}
+.sl-row b em{font-style:normal;font-size:11px;font-weight:700;color:var(--focus-ink);background:var(--focus-bg);border-radius:var(--r-sm);padding:1px 6px;margin-inline-start:var(--sp-2);vertical-align:1px}
+.sl-row:not(.done):not(.now) b{font-weight:400;color:var(--ink-2)}
+.sl-tag{grid-row:span 3;align-self:center;font-size:11px;font-weight:700;border-radius:var(--r-sm);padding:2px var(--sp-2);white-space:nowrap;background:var(--stripe);color:var(--muted)}
+.sl-tag.ok{background:var(--done-bg);color:var(--done)} .sl-tag.run{background:var(--focus-bg);color:var(--focus-ink)}
+.sl-row small{grid-column:2;font-size:var(--fs-xs);color:var(--muted)}
+.sl-row small .late-n{color:var(--urgent);font-weight:600}
+.sl-bar{grid-column:2;height:4px;max-width:180px;border-radius:var(--r-pill);background:var(--rule);overflow:hidden}
+.sl-bar i{display:block;height:100%;background:var(--cta)}
+@container (max-width:520px){ .plan-card :is(.ss,.steps,.plan-next){display:none} .plan-card .sl{display:block} }
 .ss-cap .late-n{color:var(--urgent);font-weight:600}
 /* على الشاشة الضيقة: خط زمني رفيع بلا أزرار (الألوان تدل على حال كل مرحلة)، وسطر الحال تحته */
 @container (max-width:520px){
@@ -2133,7 +2155,30 @@ function planCard(p){
     '<div class="prog"><div class="bar" aria-hidden="true"><i style="width:' + Math.round(done / Math.max(1, real.length) * 100) + '%"></i></div>' +
       '<b>' + pct(done / Math.max(1, real.length)) + '</b></div>' +
     '<p class="note plan-counts">منجز ' + AR(done) + ' | المتبقي ' + AR(real.length - done) + (late ? ' | <span class="late-n">متأخر ' + AR(late) + '</span>' : '') + '</p>' +
-    stepper + next + groups + devNote() + '</article>';
+    stepper + stageList(st) + next + groups + devNote() + '</article>';
+}
+/* المراحل على الشاشة الضيقة بنمط «قائمة المهام» (GOV.UK) ومؤشر الخطوات الرأسي (Carbon):
+   كل مرحلة سطر برقمها واسمها وتاريخها وما أُنجز منها ووسم حالتها مكتوبًا، والحالية مميزة،
+   والضغط يفتح بنودها؛ وإن زادت على 6 تُطوى المكتملة في سطر واحد */
+function stageList(st){
+  if(!st.length) return '';
+  const range = s => s.start || s.end ? (s.start && s.end && s.start !== s.end ? dayLbl(s.start, false) + ' – ' + dayLbl(s.end, false) : dayLbl(s.end || s.start, false)) : '';
+  const fold = st.length > 6 ? st.filter(s => s.state === 'done').length : 0;
+  const row = (s, i) => {
+    const late = s.items.filter(itemLate), cls = s.state === 'done' ? 'done' : s.state === 'now' ? 'now' : '';
+    const tag = s.state === 'done' ? '<span class="sl-tag ok">مكتملة</span>' : s.state === 'now' || s.done ? '<span class="sl-tag run">جارية</span>' : '<span class="sl-tag">لم تبدأ</span>';
+    const lateTxt = late.length === 1 ? '«' + late[0].title + '» متأخر ' + cnt(days(toDate(late[0].end), today), W_DAY) : late.length ? AR(late.length) + ' بنود متأخرة' : '';
+    return '<li><button type="button" class="sl-row ' + cls + '" data-act="plan-stage" data-stage="' + i + '" aria-label="' + esc(s.name + '، ' + (s.state === 'done' ? 'مكتملة' : s.state === 'now' ? 'المرحلة الحالية' : 'لم تبدأ') + '، أُنجز ' + s.done + ' من ' + s.total + '، اضغط لفتح بنودها') + '">' +
+      '<span class="sl-n">' + (s.state === 'done' ? icon('check') : AR(i + 1)) + '</span>' +
+      '<b>' + esc(s.name) + (s.state === 'now' ? '<em>الحالية</em>' : '') + '</b>' + tag +
+      '<small>' + [range(s), AR(s.done) + ' من ' + AR(s.total)].filter(Boolean).join(' | ') + (lateTxt ? ' | <span class="late-n">' + esc(lateTxt) + '</span>' : '') + '</small>' +
+      (s.done || s.state === 'now' ? '<span class="sl-bar"><i style="width:' + Math.round(s.done / s.total * 100) + '%"></i></span>' : '') + '</button></li>';
+  };
+  const firstOpen = st.findIndex(s => s.state !== 'done');
+  return '<ol class="sl" aria-label="مراحل المشروع">' +
+    (fold > 1 ? '<li><button type="button" class="sl-row done" data-act="plan-stage" data-stage="0"><span class="sl-n">' + icon('check') + '</span><b>' + AR(fold) + ' مراحل مكتملة</b><span class="sl-tag ok">مكتملة</span>' +
+      '<small>' + st.filter(s => s.state === 'done').map(s => esc(s.name)).join('، ') + '</small></button></li>' + st.map((s, i) => s.state === 'done' ? '' : row(s, i)).join('')
+      : st.map(row).join('')) + '</ol>';
 }
 function planRow(it){
   if(QE && QE.id === it.id) return planQuick(it);
