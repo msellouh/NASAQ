@@ -483,6 +483,9 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 .fld-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-3)}
 .dlg-acts{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-1)}
 .dlg-acts .push{margin-inline-start:auto}
+/* أزرار الحفظ والإلغاء ثابتة أسفل النافذة: النموذج الطويل يُمرَّر تحتها ولا تختفي خارج الشاشة */
+dialog .dlg-acts{position:sticky;bottom:calc(-1 * var(--sp-5));z-index:2;margin:var(--sp-1) calc(-1 * var(--sp-5)) calc(-1 * var(--sp-5));
+  padding:var(--sp-3) var(--sp-5) var(--sp-5);background:var(--paper);border-top:1px solid var(--rule)}
 .toast{position:fixed;bottom:22px;left:50%;translate:-50% 20px;opacity:0;z-index:80;background:var(--ink);color:var(--paper);padding:var(--sp-2) var(--sp-4);border-radius:var(--r-md);font-size:var(--fs-sm);
   box-shadow:var(--shadow);transition:opacity calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),translate calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out);pointer-events:none;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;translate:-50% 0}
@@ -509,6 +512,21 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
   .brand-name{display:none}
   .hb{grid-template-columns:96px minmax(0,1fr)} .hb .vl{grid-column:2}
   .kpis{grid-template-columns:1fr 1fr}
+  /* الشريط العلوي كان أعرض من شاشة الجوال، فتنزاح الصفحة كلها جانبيًا ومعها النوافذ فيُقصّ زر الحفظ */
+  .tb{gap:var(--sp-2);padding-inline:var(--sp-3)}
+  .orgs a{padding:var(--sp-1) var(--sp-2)}
+  .tb-nav{gap:0}
+  .tb-nav button{padding:var(--sp-2) var(--sp-1)}
+  .tb-nav button.on::after{inset-inline:var(--sp-1)}
+  .tb-end{gap:var(--sp-1)}
+  .src{padding:var(--sp-1)}
+  .tb .icon-btn{width:32px;height:32px}
+  .orbit{width:32px;height:32px} .brand-mark{width:20px;height:20px}
+}
+@media (max-width:420px){
+  .orgs a,.tb-nav button{font-size:var(--fs-sm)}
+  .src{display:none}
+  .tb{gap:var(--sp-1);padding-inline:var(--sp-2)}
 }
 /* داخل تبويب «نَسَق»: الصفحة تُعرض في إطار، فالعلامة والرجوع في الشريط الجانبي للوح */
 :root.embed .brand{display:none}
