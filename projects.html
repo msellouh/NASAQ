@@ -1066,6 +1066,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     <div class="fld-row">
       <label class="fld">المرحلة<input name="stage" list="stageList" maxlength="120" placeholder="اسم مرحلة خاصة بهذا المشروع"></label>
       <label class="fld">الحالة<select name="status"><option>لم يبدأ</option><option>جارٍ</option><option>منجز</option><option>متوقف</option></select></label>
+      <label class="fld">نسبة الإنجاز<input name="pct" type="number" min="0" max="100" step="5" inputmode="numeric" placeholder="50 إن تُركت"></label>
     </div>
     <datalist id="stageList"></datalist>
     <div class="fld-row">
@@ -1539,7 +1540,7 @@ function stagesOf(p){
   return [...m.entries()].map(([name, items]) => {
     const done = items.filter(x => x.status === 'منجز').length;
     const dates = items.flatMap(x => [x.start, x.end]).filter(Boolean).sort();
-    const s = { name, items, done, total: items.length, start: dates[0] || null, end: dates[dates.length - 1] || null };
+    const s = { name, items, done, total: items.length, pct: avgProg(items, today), start: dates[0] || null, end: dates[dates.length - 1] || null };
     s.state = done === s.total ? 'done' : open ? 'todo' : (open = true, 'now');
     return s;
   });
@@ -1547,7 +1548,7 @@ function stagesOf(p){
 /* الإنجاز: من الخطة إن وُجدت، وإلا من «نسبة الإنجاز» في نوشن */
 function progressOf(p){
   const it = planOf(p);
-  if(it.length) return it.filter(x => x.status === 'منجز').length / it.length;
+  if(it.length) return avgProg(it.filter(x => !x._draft), today);
   return p.progress != null ? num(p.progress) : null;
 }
 function spanOf(p){
@@ -1691,8 +1692,13 @@ function itemState(it, asOf){
   if(it.status === 'جارٍ' || it.status === 'منجز') return 'جارٍ';
   return it.start && toDate(it.start) <= asOf ? 'تأخر بدؤه' : 'لم يبدأ';
 }
-const itemProg = (it, asOf) => itemDoneAt(it, asOf) ? 1 : it.status === 'جارٍ' || it.status === 'منجز'
-  ? Math.max(.1, Math.min(.9, (asOf - toDate(it.start)) / Math.max(DAY, toDate(it.end) - toDate(it.start)))) : 0;
+/* قاعدة واحدة للإنجاز في كل الأقسام (أعراف إدارة القيمة المكتسبة):
+   المنجز 100%، والبند بنسبة مُدخلة يأخذها (الإنجاز الفعلي)، والبند الذي بدأ بلا نسبة 50% (قاعدة 50/50)، والباقي 0 */
+const hasPct = it => it.pct !== '' && it.pct != null && isFinite(Number(it.pct));
+const itemProg = (it, asOf) => itemDoneAt(it, asOf || today) ? 1
+  : it.status === 'لم يبدأ' || !it.status ? 0
+  : hasPct(it) ? Math.max(0, Math.min(.99, Number(it.pct) / 100)) : it.status === 'منجز' ? 1 : .5;
+const avgProg = (items, asOf) => items.length ? items.reduce((a, it) => a + itemProg(it, asOf), 0) / items.length : 0;
 const ST_CLS = {'منجز': 'ok', 'جارٍ': 'run', 'متأخر': 'late', 'تأخر بدؤه': 'late', 'متوقف': 'late', 'لم يبدأ': ''};
 /* الموقف الزمني في تاريخ: الوقت المنقضي مقابل الإنجاز وحكمٌ واحد (صورة مبسطة لمؤشر SPI) */
 function schedHealth(p, M, asOf){
@@ -2171,7 +2177,7 @@ function stageStrip(p, st){
     const late = x.items.some(itemLate);
     return '<button type="button" class="ss-seg ' + x.state + (late ? ' late' : '') + '" data-act="plan-stage" data-stage="' + i + '" style="inset-inline-start:' + a + '%;width:' + (b - a) + '%;--ln:' + ln + '"' +
       ' title="' + esc(x.name + ' | ' + x.done + ' من ' + x.total + (x.start ? ' | ' + dayLbl(x.start, false) + ' – ' + dayLbl(x.end || x.start, false) : '') + (late ? ' | فيها متأخر' : '')) + '">' +
-      '<span class="ss-t">' + esc(x.name) + '</span><i style="width:' + Math.round(x.done / x.total * 100) + '%"></i></button>';
+      '<span class="ss-t">' + esc(x.name) + '</span><i style="width:' + Math.round(x.pct * 100) + '%"></i></button>';
   }).join('');
   const tp = (today.getTime() - lo) / span * 100;
   const now = tp >= 0 && tp <= 100 ? '<span class="ss-today" style="inset-inline-start:' + tp + '%" aria-hidden="true"><b>اليوم</b></span>' : '';
@@ -2229,8 +2235,8 @@ function planCard(p){
       '<small>' + cnt(real.length, W_ITEM) + ' في ' + AR(st.length) + ' مراحل</small>' +
       '<span class="end"><button class="btn soft sm plan-tgl" type="button" data-act="plan-toggle" aria-expanded="' + open + '"' + (open ? ' aria-controls="planBody"' : '') + '>' +
         (open ? 'إخفاء البنود' : 'عرض البنود') + icon('chevron-down') + '</button></span></div>' +
-    '<div class="prog"><div class="bar" aria-hidden="true"><i style="width:' + Math.round(done / Math.max(1, real.length) * 100) + '%"></i></div>' +
-      '<b>' + pct(done / Math.max(1, real.length)) + '</b></div>' +
+    '<div class="prog" title="الإنجاز: المنجز 100%، والجاري بنسبته المدخلة أو 50% إن لم تُدخل"><div class="bar" aria-hidden="true"><i style="width:' + Math.round(avgProg(real) * 100) + '%"></i></div>' +
+      '<b>' + pct(avgProg(real)) + '</b></div>' +
     '<p class="note plan-counts">منجز ' + AR(done) + ' | المتبقي ' + AR(real.length - done) + (late ? ' | <span class="late-n">متأخر ' + AR(late) + '</span>' : '') + '</p>' +
     stepper + stageList(st) + next + groups + devNote() + '</article>';
 }
@@ -2249,7 +2255,7 @@ function stageList(st){
       '<span class="sl-n">' + (s.state === 'done' ? icon('check') : AR(i + 1)) + '</span>' +
       '<b>' + esc(s.name) + (s.state === 'now' ? '<em>الحالية</em>' : '') + '</b>' + tag +
       '<small>' + [range(s), AR(s.done) + ' من ' + AR(s.total)].filter(Boolean).join(' | ') + (lateTxt ? ' | <span class="late-n">' + esc(lateTxt) + '</span>' : '') + '</small>' +
-      (s.done || s.state === 'now' ? '<span class="sl-bar"><i style="width:' + Math.round(s.done / s.total * 100) + '%"></i></span>' : '') + '</button></li>';
+      (s.pct > 0 || s.state === 'now' ? '<span class="sl-bar"><i style="width:' + Math.round(s.pct * 100) + '%"></i></span>' : '') + '</button></li>';
   };
   const firstOpen = st.findIndex(s => s.state !== 'done');
   return '<ol class="sl" aria-label="مراحل المشروع">' +
@@ -2268,6 +2274,7 @@ function planRow(it){
     '<button class="pi-main" type="button" data-act="qedit" data-id="' + esc(it.id) + '" aria-label="تعديل سريع: ' + esc(it.title) + '">' +
       '<span class="pi-title">' + esc(it.title) + '</span><span class="pi-meta"><span>' + when + '</span>' +
       (late ? '<span class="flag late">متأخر ' + cnt(days(toDate(it.end), today), W_DAY) + '</span>' : '') +
+      (!done && it.status && it.status !== 'لم يبدأ' ? '<span' + (hasPct(it) ? '' : ' title="بلا نسبة مدخلة: يُحسب 50%"') + '>أُنجز ' + pct(itemProg(it)) + '</span>' : '') +
       (it.owner ? '<span>' + esc(it.owner) + '</span>' : '') + (it.notes ? '<span title="' + esc(it.notes) + '">ملاحظة</span>' : '') + '</span></button>' +
     '<button class="pill pi-st ' + stPill(stt) + '" type="button" data-act="cycle" data-id="' + esc(it.id) + '" title="اضغط لتغيير الحالة" aria-label="الحالة: ' + esc(stt) + '، اضغط للتالية"><i></i>' + esc(stt) + '</button>' +
     '<button class="icon-btn sm pi-more" type="button" data-act="edit" data-id="' + esc(it.id) + '" title="التفاصيل والملاحظات" aria-label="تفاصيل: ' + esc(it.title) + '">' + icon('more') + '</button>' +
@@ -2281,7 +2288,8 @@ function planQuick(it){
     '<div class="fld-row"><label class="fld">الحالة<select name="status">' + o(PLAN_ST, it.status || 'لم يبدأ') + '</select></label>' +
       '<label class="fld">البداية<input name="start" type="date" value="' + esc(it.start || '') + '"></label>' +
       '<label class="fld">النهاية<input name="end" type="date" value="' + esc(it.end || '') + '"></label>' +
-      '<label class="fld">المسؤول<select name="owner">' + o(people, it.owner || '', '— بلا مسؤول —') + '</select></label></div>' +
+      '<label class="fld">المسؤول<select name="owner">' + o(people, it.owner || '', '— بلا مسؤول —') + '</select></label>' +
+      '<label class="fld">نسبة الإنجاز<input name="pct" type="number" min="0" max="100" step="5" inputmode="numeric" placeholder="50 إن تُركت" value="' + (hasPct(it) ? esc(it.pct) : '') + '"></label></div>' +
     '<div class="pq-acts"><button class="btn cta sm" type="submit">' + (it._draft ? 'إضافة' : 'حفظ') + '</button>' +
       '<button class="btn ghost sm" type="button" data-act="qcancel">إلغاء</button>' +
       (it._draft ? '' : '<button class="btn ghost sm" type="button" data-act="edit" data-id="' + esc(it.id) + '">التفاصيل والملاحظات</button>' +
@@ -2310,7 +2318,10 @@ function qDrop(){
 }
 function qSave(f){
   const it = DATA.plan.find(x => x.id === f.dataset.qform); if(!it) return;
-  const vals = { title: f.elements.title.value.trim(), status: f.elements.status.value, start: f.elements.start.value, end: f.elements.end.value, owner: f.elements.owner.value };
+  const pv = f.elements.pct.value.trim();
+  const vals = { title: f.elements.title.value.trim(), status: f.elements.status.value, start: f.elements.start.value, end: f.elements.end.value, owner: f.elements.owner.value,
+    pct: pv === '' ? '' : Math.max(0, Math.min(100, Math.round(Number(pv)))) };
+  if(vals.status === 'منجز') vals.pct = 100;
   if(!vals.title){ f.elements.title.focus(); return; }
   if(vals.end && vals.start && vals.end < vals.start){ toast('النهاية قبل البداية', true); f.elements.end.focus(); return; }
   const prev = it._draft ? null : Object.assign({}, it);
@@ -2323,6 +2334,7 @@ function cycleItem(id){
   const prev = Object.assign({}, it);
   it.status = PLAN_ST[(PLAN_ST.indexOf(it.status || 'لم يبدأ') + 1) % PLAN_ST.length];
   it.done = it.status === 'منجز' ? iso(today) : '';
+  if(it.status === 'منجز') it.pct = 100; else if(it.status === 'لم يبدأ') it.pct = '';
   rerender(); saveItem(it, prev);
 }
 /* الحذف فوري مع «تراجع» خمس ثوانٍ، ثم يُرسل إلى نوشن (سلة نوشن) أو يُحفظ محليًا */
@@ -2403,8 +2415,8 @@ function timelineCard(p){
     '<span class="tlx-lbl" style="inset-inline-end:calc(' + (100 - xe) + '% + 8px)">' + dayLbl(e) + '</span></div>';
   const rowsSt = stg.map(z => {
     const i = st.indexOf(z), a = x(toDate(z.start || z.end)), w = Math.max(1.2, x(toDate(z.end || z.start)) - a);
-    const late = z.items.some(itemLate), pc = Math.round(z.done / z.total * 100);
-    const lab = pct(z.done / z.total) + (late ? ' | متأخرة' : '');
+    const late = z.items.some(itemLate), pc = Math.round(z.pct * 100);
+    const lab = pct(z.pct) + (late ? ' | متأخرة' : '');
     const lbl = a + w < 78 ? '<span class="tlx-lbl' + (late ? ' late' : '') + '" style="inset-inline-start:calc(' + (a + w) + '% + 8px)">' + lab + '</span>'
       : '<span class="tlx-lbl' + (late ? ' late' : '') + '" style="inset-inline-end:calc(' + (100 - a) + '% + 8px)">' + lab + '</span>';
     const tip = z.name + '\n' + (z.start ? dayLbl(z.start, false) + ' – ' + dayLbl(z.end || z.start, false) : '') + '\nأُنجز ' + AR(z.done) + ' من ' + AR(z.total) + (late ? '\nفيها بنود تجاوزت موعدها' : '') + '\nاضغط لفتح بنودها';
@@ -2430,7 +2442,7 @@ function timelineCard(p){
     if(o.k === 's'){ const z = o.z, late = z.items.some(itemLate), c = z.state === 'done' ? 'done' : late ? 'late' : z.state === 'now' ? 'now' : '';
       vt += '<li class="' + c + '"><span class="dot"><i></i></span><span class="bd"><b>' + esc(z.name) + '</b><small>' +
         (z.start ? dayLbl(z.start, false) + ' – ' + dayLbl(z.end || z.start, false) + ' | ' : '') + AR(z.done) + ' من ' + AR(z.total) + (late ? ' | <em>متأخرة</em>' : '') +
-        '</small><span class="mini"><i style="width:' + Math.round(z.done / z.total * 100) + '%"></i></span></span></li>'; }
+        '</small><span class="mini"><i style="width:' + Math.round(z.pct * 100) + '%"></i></span></span></li>'; }
     else if(o.k === 'm'){ const k = delState(o.m);
       vt += '<li class="ms ' + (k === 'late' ? 'mlate' : k) + '"><span class="dot"><i></i></span><span class="bd"><b>' + esc(delName(o.m)) + '</b><small>' + dayLbl(o.m.due) + ' | ' + (k === 'late' ? '<em>متأخر</em>' : DEL_LBL[k]) + '</small></span></li>'; }
     else vt += '<li class="endl"><span class="dot"><i></i></span><span class="bd"><b>نهاية المدة</b><small>' + dayLbl(e) + '</small></span></li>';
@@ -2839,7 +2851,7 @@ function projTable(rows){
 const isTmp = id => /^(tmp|lp)-/.test(String(id || ''));
 const newId = pre => pre + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const planPayload = it => ({ id: isTmp(it.id) ? null : it.id, project: it.project, title: it.title, stage: it.stage, order: it.order,
-  status: it.status, start: it.start || '', end: it.end || '', done: it.done || '', owner: it.owner || '', notes: it.notes || '', localId: it.id });
+  status: it.status, start: it.start || '', end: it.end || '', done: it.done || '', owner: it.owner || '', notes: it.notes || '', pct: hasPct(it) ? Number(it.pct) : '', localId: it.id });
 let toastT;
 function toast(msg, bad, action){
   const t = $('toast'); t.textContent = msg; t.className = 'toast on' + (bad ? ' bad' : '') + (action ? ' act' : '');
@@ -2871,6 +2883,7 @@ function toggleItem(id){
   const prev = Object.assign({}, it);
   it.status = it.status === 'منجز' ? 'لم يبدأ' : 'منجز';
   it.done = it.status === 'منجز' ? iso(today) : null;
+  it.pct = it.status === 'منجز' ? 100 : '';
   rerender(); saveItem(it, prev);
 }
 function tplItems(p, tpl){
@@ -3213,6 +3226,7 @@ function openPlanDlg(p, it, stage, newStage){
   $('planDlgSub').textContent = (p.code ? p.code + ' | ' : '') + p.name;
   f.title.value = it ? it.title : ''; f.stage.value = it ? (it.stage || '') : (newStage ? '' : (stage || ''));
   f.status.value = it ? (it.status || 'لم يبدأ') : 'لم يبدأ';
+  f.pct.value = it && hasPct(it) ? it.pct : '';
   f.start.value = it ? (it.start || '') : ''; f.end.value = it ? (it.end || '') : '';
   fillOwners(it ? (it.owner || '') : (p.coordinator || '')); f.notes.value = it ? (it.notes || '') : '';
   $('peoplePanel').hidden = true; $('peopleToggle').setAttribute('aria-expanded', 'false');
@@ -3225,7 +3239,8 @@ $('planForm').addEventListener('submit', e => {
   e.preventDefault();
   const f = e.target, p = dlgProject; if(!p) return;
   const vals = { title: f.title.value.trim(), stage: f.stage.value.trim(), status: f.status.value, start: f.start.value, end: f.end.value,
-    owner: $('ownerSel').value, notes: f.notes.value.trim() };
+    owner: $('ownerSel').value, notes: f.notes.value.trim(), pct: f.pct.value.trim() === '' ? '' : Math.max(0, Math.min(100, Math.round(Number(f.pct.value)))) };
+  if(vals.status === 'منجز') vals.pct = 100;
   if(!vals.title){ f.title.focus(); return; }
   if(vals.end && vals.start && vals.end < vals.start){ toast('النهاية المخططة قبل البداية', true); f.end.focus(); return; }
   $('planDlg').close();
