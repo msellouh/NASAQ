@@ -333,25 +333,96 @@ dialog.sheet[open]{animation:sheet-in calc(var(--dur-3) * var(--motion-scale,1))
 .dev-note{display:block;margin-top:var(--sp-3);font-size:var(--fs-xs);color:var(--hold-ink)}
 
 /* ---------- المخطط الزمني ---------- */
-.tl{position:relative;margin:var(--sp-5) var(--sp-1) var(--sp-1);height:98px}
-.tl.lanes{height:124px}
-.tl-track{position:absolute;top:40px;inset-inline:0;height:10px;border-radius:var(--r-pill);background:var(--stripe);border:1px solid var(--rule)}
-.tl-span{position:absolute;top:40px;height:10px;border-radius:var(--r-pill);background:var(--c-soft)}
-.tl-done{position:absolute;top:40px;height:10px;border-radius:var(--r-pill);background:var(--grad-line)}
-.tl-today{position:absolute;top:22px;height:48px;width:2px;background:var(--urgent);transform:translateX(50%)}
-.tl-today span{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:var(--fs-xs);font-weight:600;color:var(--urgent);white-space:nowrap}
-.tl-mark{position:absolute;top:34px;width:22px;height:22px;transform:translateX(50%);border:0;background:transparent;padding:0}
-.tl-mark i{display:block;width:12px;height:12px;margin:var(--sp-1) auto;transform:rotate(45deg);border-radius:var(--r-sm);background:var(--muted);border:2px solid var(--paper)}
-.tl-mark.ok i{background:var(--done)} .tl-mark.prep i{background:var(--hold)} .tl-mark.late i{background:var(--urgent)}
-.tl-st{position:absolute;top:60px;height:20px;border-radius:var(--r-md);background:var(--stripe);border:1px solid var(--rule);overflow:hidden;
-  font-size:var(--fs-xs);line-height:18px;padding:0 var(--sp-1);color:var(--ink-2);white-space:nowrap;text-overflow:ellipsis}
-.tl-st.done{background:var(--done-bg);border-color:transparent;color:var(--done)}
-.tl-st.now{background:var(--focus-bg);border-color:color-mix(in srgb,var(--focus) 45%,transparent);color:var(--focus-ink);font-weight:600}
-.tl-edge{position:absolute;top:62px;font-size:var(--fs-xs);color:var(--muted);white-space:nowrap}
-.tl.lanes .tl-edge{top:88px}
-.tl-edge b{display:block;color:var(--ink-2);font-weight:600}
-.tl-tick{position:absolute;top:0;font-size:var(--fs-xs);color:var(--muted);transform:translateX(50%);white-space:nowrap}
-.tl-tick::after{content:"";display:block;width:1px;height:10px;background:var(--rule);margin:2px auto 0}
+.tlx{container-type:inline-size}
+.tlx .card-h .pill .ic{width:14px;height:14px}
+/* مؤشر الصحة: الوقت المنقضي مقابل الإنجاز على مقياس واحد 0–100% (صورة مبسطة لمؤشر SPI) */
+.tlx-health{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--sp-3) var(--sp-5);align-items:center;padding:var(--sp-3) var(--sp-4);border-radius:var(--r-lg);background:var(--stripe);margin-bottom:var(--sp-4)}
+.tlx-hb{display:grid;gap:var(--sp-2)}
+.tlx-hr{display:grid;grid-template-columns:auto minmax(0,1fr) 46px;gap:var(--sp-3);align-items:center;font-size:var(--fs-sm);white-space:nowrap}
+.tlx-hr > span:first-child{color:var(--ink-2);min-width:92px}
+.tlx-hr b{text-align:end;font-variant-numeric:tabular-nums}
+.tlx-track{position:relative;height:8px;border-radius:var(--r-pill);background:var(--rule);overflow:hidden}
+.tlx-track i{position:absolute;inset-block:0;inset-inline-start:0;border-radius:var(--r-pill)}
+.tlx-track .t-time{background:var(--muted)}
+.tlx-track .t-work{background:var(--cta)}
+.tlx-verdict{display:grid;gap:2px;max-width:280px}
+.tlx-verdict b{font-size:var(--fs-base)}
+.tlx-verdict small{font-size:var(--fs-xs);color:var(--muted)}
+.tlx-verdict.bad b{color:var(--urgent)} .tlx-verdict.warn b{color:var(--hold-ink)} .tlx-verdict.good b{color:var(--done)}
+/* المخطط: عمود أسماء ثابت، ومحور واحد، وشبكة شعرية، وخط «اليوم» بتسمية في سطر خاص */
+.tlx-g{display:grid;grid-template-columns:150px minmax(0,1fr)}
+.tlx-names{display:grid;grid-auto-rows:38px;padding-top:44px}
+.tlx-names div{display:flex;align-items:center;gap:var(--sp-2);padding-inline-end:var(--sp-3);font-size:var(--fs-sm);font-weight:600;min-width:0;color:var(--ink)}
+.tlx-names div span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tlx-names small{margin-inline-start:auto;font-weight:400;font-size:var(--fs-xs);color:var(--muted);font-variant-numeric:tabular-nums}
+.tlx-names .sub{color:var(--ink-2);font-weight:600}
+.tlx-plot{position:relative;border-inline-start:1px solid var(--rule);min-width:0}
+.tlx-axis{position:relative;height:44px;border-bottom:1px solid var(--rule)}
+.tlx-tick{position:absolute;bottom:6px;font-size:var(--fs-xs);color:var(--muted);transform:translateX(50%);white-space:nowrap}
+.tlx-grid{position:absolute;top:44px;bottom:0;width:1px;background:var(--rule);opacity:.7}
+.tlx-rows{position:relative;display:grid;grid-auto-rows:38px}
+.tlx-row{position:relative;border-bottom:1px solid var(--rule)}
+.tlx-row:last-child{border-bottom:0}
+.tlx-span{position:absolute;top:50%;height:4px;translate:0 -50%;border-radius:var(--r-pill);background:var(--field-line)}
+.tlx-flag{position:absolute;top:50%;width:2px;height:20px;translate:50% -50%;background:var(--ink-2)}
+.tlx-lbl{position:absolute;top:50%;translate:0 -50%;background:var(--paper);padding:0 var(--sp-1);border-radius:var(--r-sm);font-size:var(--fs-xs);color:var(--ink-2);white-space:nowrap;pointer-events:none;font-variant-numeric:tabular-nums}
+.tlx-lbl.late{color:var(--urgent);font-weight:600}
+.tlx-bar{position:absolute;top:50%;height:18px;translate:0 -50%;border:0;padding:0;border-radius:4px;background:var(--c-soft);overflow:hidden;cursor:pointer;
+  transition:box-shadow calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
+.tlx-bar i{position:absolute;inset-block:0;inset-inline-start:0;background:var(--cta)}
+.tlx-bar.late{box-shadow:inset 0 0 0 1.5px var(--urgent)}
+.tlx-bar:hover,.tlx-bar:focus-visible{box-shadow:0 0 0 2px var(--paper),0 0 0 4px var(--focus);outline:0}
+.tlx-ms{position:absolute;top:50%;width:14px;height:14px;padding:0;translate:50% -50%;rotate:45deg;border:2px solid var(--paper);border-radius:3px;background:var(--paper);box-shadow:inset 0 0 0 2px var(--muted);cursor:pointer}
+.tlx-ms::after{content:"";position:absolute;inset:-8px}
+.tlx-ms.ok{background:var(--done);box-shadow:none} .tlx-ms.prep{background:var(--hold);box-shadow:none} .tlx-ms.late{background:var(--urgent);box-shadow:none}
+.tlx-ms:hover,.tlx-ms:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.tlx-today{position:absolute;top:20px;bottom:0;width:2px;background:var(--urgent);translate:50% 0;pointer-events:none;z-index:2}
+.tlx-today b{position:absolute;top:-20px;inset-inline-start:6px;font-size:var(--fs-xs);font-weight:600;color:var(--urgent);white-space:nowrap;background:var(--paper);padding:0 var(--sp-1);border-radius:var(--r-sm)}
+.tlx-today.edge b{inset-inline-start:auto;inset-inline-end:6px}
+.tlx-over{position:absolute;top:44px;bottom:0;background:repeating-linear-gradient(135deg,transparent 0 6px,var(--urgent-bg) 6px 8px)}
+.tlx-over-l{position:absolute;top:55px;z-index:1;background:var(--paper);padding:0 var(--sp-1);border-radius:var(--r-sm);font-size:var(--fs-xs);font-weight:600;color:var(--urgent);white-space:nowrap}
+.tlx-legend{display:flex;flex-wrap:wrap;gap:var(--sp-2) var(--sp-4);font-size:var(--fs-xs);color:var(--ink-2);margin-top:var(--sp-3)}
+.tlx-legend span{display:inline-flex;align-items:center;gap:6px}
+.tlx-legend .lb{width:22px;height:10px;border-radius:3px;background:linear-gradient(to left,var(--cta) 55%,var(--c-soft) 55%)}
+.tlx-legend .lm{width:10px;height:10px;rotate:45deg;border-radius:2px}
+.tlx-legend .lt{width:2px;height:12px;background:var(--urgent)}
+.tlx-legend .lo{width:16px;height:10px;background:repeating-linear-gradient(135deg,transparent 0 3px,var(--urgent-bg) 3px 5px);border:1px solid var(--urgent-bg)}
+.tlx-more{margin-top:var(--sp-3)}
+.tlx-more summary{cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-sm);font-weight:600;color:var(--ink-2);list-style:none}
+.tlx-more summary::-webkit-details-marker{display:none}
+.tlx-more summary .ic{width:15px;height:15px;transition:transform calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
+.tlx-more[open] summary .ic{transform:rotate(180deg)}
+.tlx-tip{position:absolute;z-index:70;max-width:280px;padding:var(--sp-2) var(--sp-3);border-radius:var(--r-md);background:var(--ink);color:var(--paper);font-size:var(--fs-xs);line-height:1.55;
+  white-space:pre-line;box-shadow:var(--shadow);pointer-events:none;translate:50% calc(-100% - 10px)}
+.tlx-tip::first-line{font-weight:700;font-size:var(--fs-sm)}
+/* الجوال: خط رأسي بالترتيب الزمني، و«أنت هنا» في موضع اليوم */
+.tlx-v{display:none;list-style:none;margin:0;padding:0;position:relative}
+.tlx-v::before{content:"";position:absolute;inset-block:12px;inset-inline-start:11px;width:2px;background:var(--rule)}
+.tlx-v li{position:relative;display:grid;grid-template-columns:24px minmax(0,1fr);gap:var(--sp-3);padding-block:var(--sp-2)}
+.tlx-v .dot{position:relative;z-index:1;width:24px;height:24px;display:grid;place-items:center}
+.tlx-v .dot i{width:14px;height:14px;border-radius:50%;background:var(--paper);box-shadow:inset 0 0 0 2px var(--muted)}
+.tlx-v .done .dot i{background:var(--cta);box-shadow:none}
+.tlx-v .now .dot i{box-shadow:inset 0 0 0 3px var(--cta)}
+.tlx-v .late .dot i{box-shadow:inset 0 0 0 3px var(--urgent)}
+.tlx-v .ms .dot i{width:12px;height:12px;border-radius:3px;rotate:45deg}
+.tlx-v .ms.ok .dot i{background:var(--done);box-shadow:none} .tlx-v .ms.prep .dot i{background:var(--hold);box-shadow:none} .tlx-v .ms.mlate .dot i{background:var(--urgent);box-shadow:none}
+.tlx-v .bd{display:grid;gap:1px;min-width:0}
+.tlx-v .bd b{font-weight:600}
+.tlx-v .bd small{font-size:var(--fs-xs);color:var(--muted)}
+.tlx-v .bd small em{font-style:normal;color:var(--urgent);font-weight:600}
+.tlx-v .mini{height:4px;max-width:220px;margin-top:4px;border-radius:var(--r-pill);background:var(--rule);overflow:hidden}
+.tlx-v .mini i{display:block;height:100%;background:var(--cta)}
+.tlx-v .here{align-items:center}
+.tlx-v .here .dot i{width:10px;height:10px;background:var(--urgent);box-shadow:0 0 0 4px var(--urgent-bg)}
+.tlx-v .here .bd{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-xs);font-weight:700;color:var(--urgent)}
+.tlx-v .here .bd::after{content:"";flex:1;height:1px;background:var(--urgent);opacity:.5}
+.tlx-v .endl .dot i{width:10px;height:10px;border-radius:2px;background:var(--ink-2);box-shadow:none}
+@container (max-width:600px){
+  .tlx-g,.tlx-legend{display:none}
+  .tlx-v{display:block}
+  .tlx-health{grid-template-columns:1fr}
+  .tlx-hr > span:first-child{min-width:0}
+}
 .legend{display:flex;flex-wrap:wrap;gap:var(--sp-3);font-size:var(--fs-xs);color:var(--muted);margin-top:var(--sp-2)}
 .legend i{display:inline-block;width:9px;height:9px;transform:rotate(45deg);border-radius:var(--r-sm);margin-inline-end:var(--sp-1);vertical-align:1px}
 .tbl-wrap{overflow-x:auto}
@@ -2011,58 +2082,131 @@ function delItem(it){
 }
 
 /* ---------- المخطط الزمني ---------- */
+/* المخطط الزمني: يجيب بالترتيب عن ثلاثة أسئلة — هل المشروع في موعده؟ أين نحن من المراحل؟ وما المحطات؟
+   مبني على ممارسات تقارير المحطات (Microsoft Project/MPUG)، ومقارنة الوقت بالإنجاز (مؤشر SPI في إدارة القيمة المكتسبة)،
+   ومحور واحد بعلامات رفيعة، والخط الرأسي على الجوال، وجدول بديل للنص (W3C: الصور المركّبة). */
+const DEL_LBL = {ok: 'صدر', prep: 'قيد الإعداد', todo: 'لم يبدأ', late: 'متأخر'};
+const delName = d => (d.kind || d.title || 'استحقاق') + (d.num && d.kind === 'تقرير مرحلي' ? ' ' + AR(d.num) : '');
+const delState = d => d.status === 'صدر' ? 'ok' : d.due && toDate(d.due) < today ? 'late' : d.status === 'قيد الإعداد' ? 'prep' : 'todo';
 function timelineCard(p){
-  const dels = delsOf(p);
-  const stages = stagesOf(p).filter(s => s.start || s.end);
+  const dels = delsOf(p), msd = dels.filter(d => d.due);
+  const st = stagesOf(p), stg = st.filter(x => x.start || x.end);
   const { s, e } = spanOf(p);
   if(!(s && e && toDate(e) > toDate(s))){
     return '<article class="card"><div class="card-h"><h2>المخطط الزمني</h2></div><p class="note" style="margin:0">لا يكفي ما هو مسجّل لرسم المخطط: يحتاج تاريخ بداية ونهاية' +
       (p.approvalDate ? ' (المسجّل تاريخ الاعتماد ' + dayLbl(p.approvalDate) + ' فقط)' : '') + '. أضف تواريخ لبنود الخطة ليُرسم منها.</p>' + delsTable(dels) + '</article>';
   }
-  const pts = [toDate(s), toDate(e), ...dels.map(d => toDate(d.due)).filter(Boolean), ...stages.flatMap(x => [x.start, x.end]).filter(Boolean).map(toDate)];
-  let lo = new Date(Math.min(...pts)), hi = new Date(Math.max(...pts));
-  if(today > hi && days(hi, today) < 120) hi = today;
-  if(today < lo && days(today, lo) < 60) lo = today;
-  const span = hi - lo || DAY;
-  const pos = d => ((d - lo) / span) * 100;
-  const ps = pos(toDate(s)), pe = pos(toDate(e));
-  const doneTo = Math.min(Math.max(today, toDate(s)), toDate(e));
-  let ticks = '';
-  const m = new Date(lo.getFullYear(), lo.getMonth() + 1, 1);
-  const step = Math.round(span / (30 * DAY)) > 10 ? 2 : 1;
-  for(let i = 0; m <= hi && i < 24; i++, m.setMonth(m.getMonth() + step))
-    ticks += '<span class="tl-tick" style="inset-inline-start:' + pos(m) + '%">' + fmtDate(m, {month:'short'}) + '</span>';
-  const marks = dels.filter(d => d.due).map(d => {
-    const late = d.status !== 'صدر' && toDate(d.due) < today;
-    const cls = d.status === 'صدر' ? 'ok' : late ? 'late' : d.status === 'قيد الإعداد' ? 'prep' : '';
-    return '<button type="button" class="tl-mark ' + cls + '" style="inset-inline-start:' + pos(toDate(d.due)) + '%" title="' +
-      esc(d.title + ' | ' + dayLbl(d.due) + ' | ' + (d.status || '')) + '"><i></i><span class="sr">' + esc(d.title) + '</span></button>';
+  const S0 = toDate(s), E0 = toDate(e), dur = days(S0, E0);
+  const done = p.status === 'مكتمل';
+  const left = days(today, E0), over = !done && left < 0 ? -left : 0;
+  const el = Math.min(1, Math.max(0, days(S0, today) / dur));
+  const work = done ? 1 : progressOf(p);
+  /* الحكم: متأخر إن انقضت المدة ولم يكتمل، وأبطأ من الوقت إن قلّ الإنجاز عن 85% من الوقت المنقضي */
+  const ratio = work == null || !el ? null : work / el;
+  const v = done ? {c: 'good', b: 'مكتمل', t: 'أُغلق المشروع.'}
+    : over ? {c: 'bad', b: 'متأخر عن الخطة', t: 'انقضت المدة كلها' + (work != null ? ' وأُنجز ' + pct(work) + ' فقط.' : '.')}
+    : today < S0 ? {c: 'warn', b: 'لم يبدأ بعد', t: 'يبدأ ' + dayLbl(s) + '، بعد ' + cnt(days(today, S0), W_DAY) + '.'}
+    : ratio == null ? {c: 'warn', b: 'لا بيانات إنجاز', t: 'أنشئ خطة التنفيذ ليُقارن الإنجاز بالوقت.'}
+    : ratio < .85 ? {c: 'warn', b: 'الإنجاز أبطأ من الوقت', t: 'انقضى ' + pct(el) + ' من المدة وأُنجز ' + pct(work) + '.'}
+    : {c: 'good', b: 'في موعده', t: 'الإنجاز يواكب الوقت المنقضي.'};
+  const tail = done ? 'مكتمل' : left === 0 ? 'ينتهي اليوم' : left > 0 ? 'باقي ' + cnt(left, W_DAY) : 'تجاوز النهاية بـ ' + cnt(-left, W_DAY);
+  const health = '<div class="tlx-health"><div class="tlx-hb">' +
+      '<div class="tlx-hr"><span>الوقت المنقضي</span><span class="tlx-track"><i class="t-time" style="width:' + Math.round(el * 100) + '%"></i></span><b>' + pct(el) + '</b></div>' +
+      (work != null ? '<div class="tlx-hr"><span>الإنجاز</span><span class="tlx-track"><i class="t-work" style="width:' + Math.round(work * 100) + '%"></i></span><b>' + pct(work) + '</b></div>' : '') +
+    '</div><div class="tlx-verdict ' + v.c + '"><b>' + v.b + '</b><small>' + v.t + '</small></div></div>';
+
+  /* المحور: من أول الشهر الأول إلى أول الشهر بعد آخر تاريخ؛ و«اليوم» يدخل إن قرُب */
+  const pts = [S0, E0, ...msd.map(d => toDate(d.due)), ...stg.flatMap(x => [x.start, x.end]).filter(Boolean).map(toDate)];
+  if(p.approvalDate) pts.push(toDate(p.approvalDate));
+  if(Math.abs(days(E0, today)) < 75 || (today > S0 && today < E0)) pts.push(today);
+  const lo = new Date(Math.min(...pts)); lo.setDate(1);
+  const hi = new Date(Math.max(...pts)); hi.setMonth(hi.getMonth() + 1, 1);
+  const span = hi - lo, x = d => (d - lo) / span * 100;
+  const months = Math.round(span / (30 * DAY)), step = months > 14 ? 3 : months > 8 ? 2 : 1;
+  let ticks = '', grid = '';
+  for(const m = new Date(lo); m < hi; m.setMonth(m.getMonth() + 1)){
+    const gx = x(m); if(gx > 0) grid += '<span class="tlx-grid" style="inset-inline-start:' + gx + '%"></span>';
+    if((m.getMonth() - lo.getMonth() + 12) % step) continue;
+    const mid = new Date(m.getFullYear(), m.getMonth(), 15);
+    ticks += '<span class="tlx-tick" style="inset-inline-start:' + x(mid) + '%">' + fmtDate(m, m.getMonth() === 0 ? {month: 'short', year: 'numeric'} : {month: 'short'}) + '</span>';
+  }
+  const tX = x(today), inAxis = tX >= 0 && tX <= 100;
+  const overBox = over ? '<span class="tlx-over" style="inset-inline-start:' + x(E0) + '%;width:' + (Math.min(tX, 100) - x(E0)) + '%"></span>' +
+    '<span class="tlx-over-l" style="inset-inline-start:calc(' + x(E0) + '% + 6px)">خارج المدة</span>' : '';
+  const names = '<div class="tlx-names" aria-hidden="true"><div class="sub"><span>مدة المشروع</span><small>' + cnt(dur, W_DAY) + '</small></div>' +
+    stg.map(x => '<div><span>' + esc(x.name) + '</span><small>' + AR(x.done) + '/' + AR(x.total) + '</small></div>').join('') +
+    (msd.length ? '<div class="sub"><span>المحطات والتقارير</span><small>' + AR(msd.filter(d => d.status === 'صدر').length) + '/' + AR(msd.length) + '</small></div>' : '') + '</div>';
+  const xs = x(S0), xe = x(E0);
+  const rowSpan = '<div class="tlx-row"><span class="tlx-span" style="inset-inline-start:' + xs + '%;width:' + (xe - xs) + '%"></span>' +
+    '<span class="tlx-flag" style="inset-inline-start:' + xs + '%"></span><span class="tlx-flag" style="inset-inline-start:' + xe + '%"></span>' +
+    '<span class="tlx-lbl" style="inset-inline-start:calc(' + xs + '% + 8px)">' + dayLbl(s, false) + (p.start ? '' : ' (تقديرية)') + '</span>' +
+    '<span class="tlx-lbl" style="inset-inline-end:calc(' + (100 - xe) + '% + 8px)">' + dayLbl(e) + '</span></div>';
+  const rowsSt = stg.map(z => {
+    const i = st.indexOf(z), a = x(toDate(z.start || z.end)), w = Math.max(1.2, x(toDate(z.end || z.start)) - a);
+    const late = z.items.some(itemLate), pc = Math.round(z.done / z.total * 100);
+    const lab = pct(z.done / z.total) + (late ? ' | متأخرة' : '');
+    const lbl = a + w < 78 ? '<span class="tlx-lbl' + (late ? ' late' : '') + '" style="inset-inline-start:calc(' + (a + w) + '% + 8px)">' + lab + '</span>'
+      : '<span class="tlx-lbl' + (late ? ' late' : '') + '" style="inset-inline-end:calc(' + (100 - a) + '% + 8px)">' + lab + '</span>';
+    const tip = z.name + '\n' + (z.start ? dayLbl(z.start, false) + ' – ' + dayLbl(z.end || z.start, false) : '') + '\nأُنجز ' + AR(z.done) + ' من ' + AR(z.total) + (late ? '\nفيها بنود تجاوزت موعدها' : '') + '\nاضغط لفتح بنودها';
+    return '<div class="tlx-row"><button type="button" class="tlx-bar' + (late ? ' late' : '') + '" data-act="plan-stage" data-stage="' + i + '" data-tip="' + esc(tip) + '"' +
+      ' style="inset-inline-start:' + a + '%;width:' + w + '%" aria-label="' + esc(z.name + '، أُنجز ' + z.done + ' من ' + z.total + (late ? '، متأخرة' : '') + '، اضغط لفتح بنودها') + '"><i style="width:' + pc + '%"></i></button>' + lbl + '</div>';
   }).join('');
-  const lanes = stages.map(x => {
-    const a = pos(toDate(x.start || x.end)), b = pos(toDate(x.end || x.start));
-    return '<span class="tl-st ' + (x.state === 'todo' ? '' : x.state) + '" style="inset-inline-start:' + a + '%;width:' + Math.max(b - a, 1.5) + '%" title="' +
-      esc(x.name + ' | ' + AR(x.done) + ' من ' + AR(x.total)) + '">' + esc(x.name) + '</span>';
-  }).join('');
-  const todayMark = today >= lo && today <= hi ? '<div class="tl-today" style="inset-inline-start:' + pos(today) + '%"><span>اليوم</span></div>' : '';
-  const left = days(today, toDate(e));
-  const tail = p.status === 'مكتمل' ? 'مكتمل' : left === 0 ? 'ينتهي اليوم' : left > 0 ? 'باقي ' + cnt(left, W_DAY) : 'تجاوز الموعد بـ ' + cnt(-left, W_DAY);
-  return '<article class="card"><div class="card-h"><h2>المخطط الزمني</h2>' + (p.start ? '' : '<small>البداية تقديرية من تاريخ الاعتماد</small>') +
-      '<span class="end"><span class="pill ' + (left < 0 && p.status !== 'مكتمل' ? 'st-late' : 'st-run') + '">' + tail + '</span></span></div>' +
-    '<div class="tl' + (lanes ? ' lanes' : '') + '" role="img" aria-label="المخطط الزمني من ' + dayLbl(s) + ' إلى ' + dayLbl(e) + '">' + ticks +
-      '<div class="tl-track"></div><div class="tl-span" style="inset-inline-start:' + ps + '%;width:' + (pe - ps) + '%"></div>' +
-      '<div class="tl-done" style="inset-inline-start:' + ps + '%;width:' + Math.max(0, pos(doneTo) - ps) + '%"></div>' +
-      todayMark + marks + lanes +
-      /* مشروع قصير على محور طويل: تسمية واحدة للمدة بدل تسميتين متراكبتين */
-      (pe - ps < 16
-        ? '<div class="tl-edge" style="inset-inline-start:' + Math.min(ps, 70) + '%"><b>مدة المشروع</b>' + dayLbl(s, false) + ' – ' + dayLbl(e) + '</div>'
-        : '<div class="tl-edge" style="inset-inline-start:' + ps + '%"><b>البداية</b>' + dayLbl(s) + '</div>' +
-          '<div class="tl-edge" style="inset-inline-start:' + pe + '%;transform:translateX(100%)"><b>النهاية</b>' + dayLbl(e) + '</div>') +
-    '</div>' +
-    '<div class="legend"><span><i style="background:var(--done)"></i>صدر</span><span><i style="background:var(--hold)"></i>قيد الإعداد</span>' +
-      '<span><i style="background:var(--muted)"></i>لم يبدأ</span><span><i style="background:var(--urgent)"></i>متأخر</span>' +
-      (lanes ? '<span>والشرائط تحت المحور مراحل الخطة</span>' : '') + '</div>' +
-    delsTable(dels) + '</article>';
+  const rowMs = msd.length ? '<div class="tlx-row">' + msd.map(d => { const k = delState(d);
+    const tip = delName(d) + '\n' + dayLbl(d.due) + ' | ' + DEL_LBL[k] + (k === 'late' ? ' منذ ' + cnt(days(toDate(d.due), today), W_DAY) : '') + (d.issued ? '\nصدر ' + dayLbl(d.issued) : '');
+    return '<button type="button" class="tlx-ms ' + k + '" style="inset-inline-start:' + x(toDate(d.due)) + '%" data-tip="' + esc(tip) + '" aria-label="' + esc(tip.replace(/\n/g, '، ')) + '"></button>'; }).join('') + '</div>' : '';
+  const todayEl = inAxis ? '<span class="tlx-today' + (tX > 82 ? ' edge' : '') + '" style="inset-inline-start:' + tX + '%"><b>اليوم ' + dayLbl(iso(today), false) + '</b></span>' : '';
+  const legend = '<div class="tlx-legend">' + (stg.length ? '<span><i class="lb"></i>مرحلة: الغامق ما أُنجز</span>' : '') +
+    (msd.length ? '<span><i class="lm" style="background:var(--done)"></i>صدر</span><span><i class="lm" style="background:var(--hold)"></i>قيد الإعداد</span>' +
+      '<span><i class="lm" style="box-shadow:inset 0 0 0 2px var(--muted)"></i>لم يبدأ</span><span><i class="lm" style="background:var(--urgent)"></i>متأخر</span>' : '') +
+    (inAxis ? '<span><i class="lt"></i>اليوم</span>' : '') + (over ? '<span><i class="lo"></i>بعد نهاية المدة</span>' : '') + '</div>';
+
+  /* الجوال: المراحل والمحطات ونهاية المدة مرتّبة بالتاريخ، و«أنت هنا» في موضعه */
+  const ev = [...stg.map(z => ({d: z.start || z.end, k: 's', z})), ...msd.map(d => ({d: d.due, k: 'm', m: d})), {d: e, k: 'e'}]
+    .sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : (a.k === 'e') - (b.k === 'e'));
+  let here = false, vt = '';
+  const hereLi = '<li class="here"><span class="dot"><i></i></span><span class="bd">أنت هنا | ' + dayLbl(iso(today), false) + '</span></li>';
+  ev.forEach(o => {
+    if(!here && toDate(o.d) > today){ here = true; vt += hereLi; }
+    if(o.k === 's'){ const z = o.z, late = z.items.some(itemLate), c = z.state === 'done' ? 'done' : late ? 'late' : z.state === 'now' ? 'now' : '';
+      vt += '<li class="' + c + '"><span class="dot"><i></i></span><span class="bd"><b>' + esc(z.name) + '</b><small>' +
+        (z.start ? dayLbl(z.start, false) + ' – ' + dayLbl(z.end || z.start, false) + ' | ' : '') + AR(z.done) + ' من ' + AR(z.total) + (late ? ' | <em>متأخرة</em>' : '') +
+        '</small><span class="mini"><i style="width:' + Math.round(z.done / z.total * 100) + '%"></i></span></span></li>'; }
+    else if(o.k === 'm'){ const k = delState(o.m);
+      vt += '<li class="ms ' + (k === 'late' ? 'mlate' : k) + '"><span class="dot"><i></i></span><span class="bd"><b>' + esc(delName(o.m)) + '</b><small>' + dayLbl(o.m.due) + ' | ' + (k === 'late' ? '<em>متأخر</em>' : DEL_LBL[k]) + '</small></span></li>'; }
+    else vt += '<li class="endl"><span class="dot"><i></i></span><span class="bd"><b>نهاية المدة</b><small>' + dayLbl(e) + '</small></span></li>';
+  });
+  if(!here) vt += hereLi;
+
+  const stTable = stg.length ? '<div class="tbl-wrap"><table class="dl"><thead><tr><th>المرحلة</th><th>من</th><th>إلى</th><th>الإنجاز</th></tr></thead><tbody>' +
+    stg.map(z => '<tr><td>' + esc(z.name) + '</td><td>' + dayLbl(z.start) + '</td><td>' + dayLbl(z.end) + '</td><td>' + AR(z.done) + ' من ' + AR(z.total) + (z.items.some(itemLate) ? ' <span class="delay late">متأخرة</span>' : '') + '</td></tr>').join('') +
+    '</tbody></table></div>' : '';
+  const plotLbl = 'المخطط الزمني من ' + dayLbl(s) + ' إلى ' + dayLbl(e) + '، ' + tail;
+  return '<article class="card tlx" id="tlCard"><div class="card-h"><h2>المخطط الزمني</h2><small>' + dayLbl(s, false) + ' – ' + dayLbl(e) + (p.start ? '' : ' | البداية تقديرية من الاعتماد') + '</small>' +
+      '<span class="end"><span class="pill ' + (over ? 'st-late' : done ? 'st-done' : 'st-run') + '">' + (over ? icon('alert') : icon('clock')) + tail + '</span></span></div>' +
+    health +
+    '<div class="tlx-g" role="group" aria-label="' + esc(plotLbl) + '">' + names + '<div class="tlx-plot"><div class="tlx-axis" aria-hidden="true">' + ticks + '</div>' + grid + overBox +
+      '<div class="tlx-rows">' + rowSpan + rowsSt + rowMs + '</div>' + todayEl + '</div></div>' + legend +
+    '<ol class="tlx-v" aria-label="المراحل والمحطات بالترتيب الزمني">' + vt + '</ol>' +
+    '<details class="tlx-more"><summary>' + icon('chevron-down') + 'عرض كجدول' + (dels.length ? ' (الاستحقاقات ' + AR(dels.length) + ')' : '') + '</summary>' + stTable + delsTable(dels) + '</details>' +
+  '</article>';
 }
+/* تلميح المخطط: نصّ عادي (من نوشن) يُدرج بـ textContent، ويظهر بالمرور أو التركيز أو اللمس */
+(() => {
+  let tip = null;
+  const show = el => {
+    if(!tip){ tip = document.createElement('div'); tip.className = 'tlx-tip'; tip.setAttribute('role', 'tooltip'); document.body.appendChild(tip); }
+    tip.textContent = el.dataset.tip; tip.hidden = false;
+    const r = el.getBoundingClientRect();
+    tip.style.top = (r.top + scrollY) + 'px';
+    tip.style.left = Math.min(document.documentElement.clientWidth - 150, Math.max(150, r.left + r.width / 2)) + scrollX + 'px';
+  };
+  const hide = () => { if(tip) tip.hidden = true; };
+  document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#tlCard [data-tip]'); if(t) show(t); });
+  document.addEventListener('pointerout', e => { if(e.target.closest && e.target.closest('#tlCard [data-tip]')) hide(); });
+  document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#tlCard [data-tip]'); t ? show(t) : hide(); });
+  addEventListener('scroll', hide, {passive: true});
+})();
+
 function delsTable(dels){
   if(!dels.length) return '<p class="note">لا استحقاقات مسجّلة لهذا المشروع في قاعدة «استحقاقات المشاريع».</p>';
   return '<div class="tbl-wrap"><table class="dl"><thead><tr><th>الاستحقاق</th><th>الموعد</th><th>الحالة</th><th>التسليم</th></tr></thead><tbody>' +
