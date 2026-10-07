@@ -336,6 +336,15 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .pi-st:hover{filter:brightness(.97);border-color:currentColor}
 .pi-more .ic{width:18px;height:18px}
 .pi-q{margin:var(--sp-2) 0;list-style:none}
+.stg-menu{position:relative;display:inline-block}
+.stg-menu summary{list-style:none;cursor:pointer}
+.stg-menu summary::-webkit-details-marker{display:none}
+.stg-menu summary .ic{width:18px;height:18px}
+.stg-menu .am-list{min-width:220px}
+.am-list .danger-i b{color:var(--urgent)}
+.stg-form{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);flex:1;min-width:0}
+.stg-form input{flex:1;min-width:140px;padding:var(--sp-2) var(--sp-3);border:1px solid var(--focus);border-radius:var(--r-md);background:var(--paper);font:inherit;font-weight:600;color:var(--ink);box-shadow:0 0 0 3px var(--ring)}
+html:not(.can-plan) #planCard .stg-menu{display:none}
 .pq{display:grid;gap:var(--sp-3);padding:var(--sp-4);border:1px solid var(--focus);border-radius:var(--r-lg);background:var(--paper);box-shadow:0 0 0 3px var(--ring);
   animation:plan-in calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .pq-acts{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center}
@@ -2148,7 +2157,7 @@ const devNote = () => SOURCE === 'local' ? '<span class="dev-note">نسخة ال
    التعديل السريع داخل الصف (Atlassian Inline Edit: Enter يحفظ وEsc يلغي)، والتفاصيل في لوحة جانبية
    تصير لوحة سفلية على الجوال (Material 3 side/bottom sheets)، والحذف فوري مع «تراجع» بدل التأكيد. */
 const PLAN_OPEN_KEY = 'daily-board-projects-plan-open-' + ORG;
-let PLAN_OPEN = new Set(), QE = null, PLAN_FLASH = '';
+let PLAN_OPEN = new Set(), QE = null, PLAN_FLASH = '', STG_EDIT = -1;
 try{ PLAN_OPEN = new Set(JSON.parse(localStorage.getItem(PLAN_OPEN_KEY) || '[]')); }catch(e){}
 function planOpenSet(id, on){
   on ? PLAN_OPEN.add(id) : PLAN_OPEN.delete(id);
@@ -2226,9 +2235,19 @@ function planCard(p){
       '<button class="btn cta sm" type="button" data-act="add" data-stage="' + esc((st[nowIdx] || st[st.length - 1]).name) + '">' + ICON_PLUS + 'بند</button>' +
       '<span class="plan-hint">اضغط البند لتعديله في مكانه | <kbd>Enter</kbd> حفظ | <kbd>Esc</kbd> إلغاء</span></div>' +
     st.map((s, i) => '<section class="stage ' + s.state + (PLAN_FLASH === String(i) ? ' flash' : '') + '" id="stg-' + i + '">' +
-      '<div class="stage-h"><span class="no">' + (s.state === 'done' ? icon('check') : AR(i + 1)) + '</span><h3>' + esc(s.name) + '</h3>' +
-        '<small><bdi>' + AR(s.done) + ' من ' + AR(s.total) + '</bdi>' + (range(s) ? ' | <bdi>' + range(s) + '</bdi>' : '') + '</small>' +
-        '<span class="end"><button class="btn ghost sm" type="button" data-act="add" data-stage="' + esc(s.name) + '">' + ICON_PLUS + 'بند</button></span></div>' +
+      '<div class="stage-h"><span class="no">' + (s.state === 'done' ? icon('check') : AR(i + 1)) + '</span>' +
+        (STG_EDIT === i
+          ? '<form class="stg-form" data-stage="' + i + '"><input name="name" required maxlength="120" value="' + esc(s.name) + '" aria-label="اسم المرحلة"><button class="btn cta sm" type="submit">حفظ</button><button class="btn ghost sm" type="button" data-act="stg-cancel">إلغاء</button></form>'
+          : '<h3>' + esc(s.name) + '</h3>' +
+            '<small><bdi>' + AR(s.done) + ' من ' + AR(s.total) + '</bdi>' + (range(s) ? ' | <bdi>' + range(s) + '</bdi>' : '') + '</small>' +
+            '<span class="end"><button class="btn ghost sm" type="button" data-act="add" data-stage="' + esc(s.name) + '">' + ICON_PLUS + 'بند</button>' +
+            /* إدارة المرحلة كلها: تسمية، ونقل، وحذف مع تراجع */
+            '<details class="stg-menu"><summary class="icon-btn sm" title="إدارة المرحلة" aria-label="إدارة مرحلة ' + esc(s.name) + '">' + icon('more') + '</summary><div class="am-list">' +
+              '<button type="button" data-act="stg-rename" data-stage="' + i + '"><b>إعادة التسمية</b><small>تُطبَّق على كل بنودها</small></button>' +
+              (i > 0 ? '<button type="button" data-act="stg-move" data-dir="-1" data-stage="' + i + '"><b>نقل إلى الأعلى</b></button>' : '') +
+              (i < st.length - 1 ? '<button type="button" data-act="stg-move" data-dir="1" data-stage="' + i + '"><b>نقل إلى الأسفل</b></button>' : '') +
+              '<button type="button" data-act="stg-del" data-stage="' + i + '" class="danger-i"><b>حذف المرحلة</b><small>مع بنودها ' + AR(s.total) + '، ويمكن التراجع</small></button>' +
+            '</div></details></span>') + '</div>' +
       '<ul class="pis">' + s.items.map(planRow).join('') + '</ul></section>').join('') + '</div>';
   return '<article class="card plan-card' + (open ? ' open' : ' collapsed') + '" id="planCard">' +
     '<div class="card-h"><h2>خطة التنفيذ</h2>' +
@@ -2297,6 +2316,49 @@ function planQuick(it){
     '</div></form></li>';
 }
 function planRefresh(p){ refreshCard('planCard', planCard(p)); }
+/* حفظ بنود كثيرة معًا (تسمية مرحلة أو نقلها) بتنبيه واحد، والتراجع عنها كلها إن فشل */
+async function saveMany(list, msg){
+  if(!list.length) return;
+  try{
+    if(SOURCE === 'live') for(const {it} of list){ const d = await post({action: 'plan_save', org: ORG, item: planPayload(it)}); Object.assign(it, d.item); }
+    else localPlanWrite();
+    toast(msg);
+  }catch(err){ list.forEach(({it, prev}) => Object.assign(it, prev)); toast('تعذّر الحفظ: ' + err.message, true); }
+  rerender();
+}
+function stgRename(p, i, name){
+  const st = stagesOf(p), g = st[i]; name = name.trim();
+  STG_EDIT = -1;
+  if(!g || !name || name === g.name){ planRefresh(p); return; }
+  if(st.some((x, k) => k !== i && x.name === name)){ toast('توجد مرحلة بهذا الاسم', true); planRefresh(p); return; }
+  const list = g.items.map(it => ({it, prev: Object.assign({}, it)}));
+  list.forEach(({it}) => it.stage = name);
+  rerender(); saveMany(list, 'أُعيدت تسمية المرحلة إلى «' + name + '»');
+}
+/* الترتيب يُعاد بنائه من ترتيب المراحل: المرحلة k تأخذ k×1000، وبنودها بفارق 10 */
+function stgMove(p, i, dir){
+  const st = stagesOf(p), j = i + dir; if(j < 0 || j >= st.length) return;
+  [st[i], st[j]] = [st[j], st[i]];
+  const list = [];
+  st.forEach((g, k) => g.items.forEach((it, n) => { const o = k * 1000 + n * 10; if(num(it.order) !== o){ list.push({it, prev: Object.assign({}, it)}); it.order = o; } }));
+  PLAN_FLASH = String(j); rerender(); setTimeout(() => { PLAN_FLASH = ''; }, 1800);
+  saveMany(list, 'نُقلت مرحلة «' + st[j].name + '»');
+}
+function stgDelete(p, i){
+  const g = stagesOf(p)[i]; if(!g) return;
+  const removed = g.items.map(it => [it, DATA.plan.indexOf(it)]);
+  DATA.plan = DATA.plan.filter(x => !g.items.includes(x)); QE = null; rerender();
+  let undone = false;
+  const restore = () => { removed.slice().sort((a, b) => a[1] - b[1]).forEach(([it, k]) => DATA.plan.splice(Math.min(k, DATA.plan.length), 0, it)); rerender(); };
+  const t = setTimeout(async () => {
+    if(undone) return;
+    try{
+      if(SOURCE === 'live') for(const [it] of removed){ if(!isTmp(it.id)) await post({action: 'plan_delete', org: ORG, id: it.id}); }
+      else localPlanWrite();
+    }catch(err){ restore(); toast('تعذّر حذف المرحلة: ' + err.message, true); }
+  }, 5200);
+  toast('حُذفت مرحلة «' + g.name + '» و' + cnt(g.items.length, W_ITEM), false, {label: 'تراجع', fn: () => { undone = true; clearTimeout(t); restore(); }});
+}
 function planOpen(p, then){
   if(!PLAN_OPEN.has(p.id)) planOpenSet(p.id, true);
   planRefresh(p);
@@ -3417,6 +3479,15 @@ $('detail').addEventListener('click', e => {
   if(act === 'qcancel'){ qDrop(); planRefresh(p); return; }
   if(act === 'qdel'){ const it = DATA.plan.find(x => x.id === b.dataset.id); if(it) delItem(it); return; }
   if(act === 'add' && b.closest('#planCard')){ qNew(p, b.dataset.stage || ''); return; }
+  if(/^stg-/.test(act)){
+    if(!can.plan()) return;
+    const k = +b.dataset.stage, m = b.closest('details'); if(m) m.open = false;
+    if(act === 'stg-rename'){ qDrop(); STG_EDIT = k; planRefresh(p); const inp = document.querySelector('#planCard .stg-form input'); if(inp){ inp.focus(); inp.select(); } }
+    else if(act === 'stg-cancel'){ STG_EDIT = -1; planRefresh(p); }
+    else if(act === 'stg-move') stgMove(p, k, +b.dataset.dir);
+    else if(act === 'stg-del') stgDelete(p, k);
+    return;
+  }
   if((act === 'gantt-dur' && !can.edit()) || (act === 'money-edit' && !can.moneyEdit()) || (act === 'delete' && !ACC.owner)) return;
   if(act === 'fget'){ openViaBridge(p, b.dataset.id); return; }
   if(act === 'toggle') toggleItem(b.dataset.id);
@@ -3458,8 +3529,13 @@ function qNew(p, stage){
   QE = {id: it.id};
   planOpen(p, () => { const f = document.querySelector('#planCard form.pq'); if(f){ f.scrollIntoView({block: 'nearest'}); f.elements.title.focus({preventScroll: true}); } });
 }
-$('detail').addEventListener('submit', e => { const f = e.target.closest('form.pq'); if(!f) return; e.preventDefault(); qSave(f); });
+$('detail').addEventListener('submit', e => {
+  const sf = e.target.closest('form.stg-form');
+  if(sf){ e.preventDefault(); const p = DATA.projects.find(x => x.id === S.sel); if(p) stgRename(p, +sf.dataset.stage, sf.elements.name.value); return; }
+  const f = e.target.closest('form.pq'); if(!f) return; e.preventDefault(); qSave(f);
+});
 $('detail').addEventListener('keydown', e => {
+  if(e.key === 'Escape' && e.target.closest('form.stg-form')){ e.preventDefault(); STG_EDIT = -1; const p = DATA.projects.find(x => x.id === S.sel); if(p) planRefresh(p); return; }
   if(e.key !== 'Escape' || !e.target.closest('form.pq')) return;
   e.preventDefault();
   const p = DATA.projects.find(x => x.id === S.sel), id = QE && QE.id;
@@ -3515,7 +3591,10 @@ $('fltDlg').addEventListener('close', () => { $('fltBtn').setAttribute('aria-exp
 if(S.fopen && !fltPhone()) fltSet(true);
 $('driveMenuBtn').addEventListener('click', () => { $('adminMenu').open = false; $('driveBtn').click(); });
 ['namesBtn', 'donorsBtn'].forEach(id => $(id).addEventListener('click', () => { $('adminMenu').open = false; }));
-document.addEventListener('click', e => { const m = $('adminMenu'); if(m.open && !m.contains(e.target)) m.open = false; });
+document.addEventListener('click', e => {
+  const m = $('adminMenu'); if(m.open && !m.contains(e.target)) m.open = false;
+  document.querySelectorAll('.stg-menu[open]').forEach(d => { if(!d.contains(e.target)) d.open = false; });
+});
 window.addEventListener('hashchange', () => { readHash(); render(); });
 
 /* الشريط العلوي يختفي عند النزول ويعود عند الصعود، كشريط «مَدار» في نَسَق */
