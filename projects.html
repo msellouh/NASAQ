@@ -208,6 +208,75 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .brief{margin-top:var(--sp-3);font-size:var(--fs-base);color:var(--ink-2);background:var(--stripe);border-radius:var(--r-md);padding:var(--sp-3) var(--sp-3)}
 
 /* ---------- خطة التنفيذ ---------- */
+/* مطوية: الملخّص والشريط الزمني والتالي ظاهرة، والبطاقة كلها تُوسَّع بضغطة؛ موسّعة: البنود والتعديل */
+.plan-card.collapsed{cursor:pointer;transition:border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),box-shadow calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
+.plan-card.collapsed:hover{border-color:var(--field-line);box-shadow:var(--shadow)}
+.plan-tgl .ic{width:16px;height:16px;transition:transform calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
+.plan-tgl[aria-expanded="true"] .ic{transform:rotate(180deg)}
+.plan-counts{margin:calc(-1 * var(--sp-2)) 0 var(--sp-4)}
+.plan-counts .late-n{color:var(--urgent);font-weight:600}
+.ss{margin:var(--sp-2) 0 var(--sp-1)}
+.ss-lanes{position:relative;margin-top:var(--sp-5)}
+.ss-seg{position:absolute;height:28px;display:flex;align-items:center;padding:0 var(--sp-2);border:1px solid var(--rule);border-radius:var(--r-md);background:var(--stripe);
+  color:var(--ink-2);font:inherit;font-size:var(--fs-xs);font-weight:600;overflow:hidden;cursor:pointer;text-align:start;
+  transition:transform calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
+.ss{container-type:inline-size}
+.ss-seg span{position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ss-n{display:none;flex:none;font-variant-numeric:tabular-nums}
+/* على الشاشة الضيقة: الشرائح القصيرة برقم المرحلة، والاسم في التلميح */
+@container (max-width:520px){ .ss-seg:not(.wide) .ss-n{display:inline} .ss-seg:not(.wide) .ss-t{display:none} }
+.ss-seg i{position:absolute;inset-block-end:0;inset-inline-start:0;height:3px;background:var(--cta)}
+.ss-seg:hover{border-color:var(--focus);transform:translateY(-1px)}
+.ss-seg.done{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
+.ss-seg.done i{display:none}
+.ss-seg.now{border-color:var(--cta);box-shadow:0 0 0 3px var(--ring);color:var(--ink)}
+.ss-seg.late{border-color:var(--urgent)}
+.ss-seg.late::after{content:"";position:relative;z-index:1;flex:none;width:6px;height:6px;margin-inline-start:var(--sp-1);border-radius:50%;background:var(--urgent)}
+.ss-today{position:absolute;top:-18px;bottom:-4px;width:2px;background:var(--urgent);transform:translateX(50%);pointer-events:none;z-index:2}
+.ss-today b{position:absolute;top:0;inset-inline-start:4px;font-size:var(--fs-xs);font-weight:600;color:var(--urgent);white-space:nowrap;line-height:1}
+.ss-ends{display:flex;justify-content:space-between;margin-top:var(--sp-1);font-size:var(--fs-xs);color:var(--muted)}
+.plan-next{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 var(--sp-3);align-items:center;width:100%;margin-top:var(--sp-4);padding:var(--sp-3) var(--sp-4);
+  border:1px solid var(--rule);border-radius:var(--r-lg);background:var(--paper);color:var(--ink);font:inherit;text-align:start;cursor:pointer}
+.plan-next:hover{border-color:var(--focus)}
+.plan-next .lbl{grid-row:span 2;font-size:var(--fs-xs);font-weight:700;color:var(--focus-ink);background:var(--focus-bg);border-radius:var(--r-md);padding:2px var(--sp-2)}
+.plan-next.late .lbl{color:var(--urgent);background:var(--urgent-bg)}
+.plan-next b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plan-next small{font-size:var(--fs-xs);color:var(--muted)}
+.plan-next.all-done{display:flex;gap:var(--sp-2);cursor:default;color:var(--done);font-weight:600}
+.plan-next.all-done .ic{width:16px;height:16px}
+.plan-body{margin-top:var(--sp-4);border-top:1px solid var(--rule);padding-top:var(--sp-3)}
+.plan-body.plan-in{animation:plan-in calc(var(--dur-3) * var(--motion-scale,1)) var(--ease-out)}
+@keyframes plan-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.plan-tools{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2)}
+.plan-hint{margin-inline-start:auto;font-size:var(--fs-xs);color:var(--muted)}
+.plan-hint kbd{font:inherit;font-size:11px;border:1px solid var(--field-line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--stripe)}
+.stage.flash{animation:stg-flash 1.6s var(--ease-out)}
+@keyframes stg-flash{0%,40%{background:var(--focus-bg)}100%{background:transparent}}
+.pi-main{display:grid;gap:1px;min-width:0;padding:var(--sp-1) 0;border:0;background:none;color:inherit;font:inherit;text-align:start;cursor:pointer;border-radius:var(--r-sm)}
+.pi-st{cursor:pointer;font:inherit;font-size:var(--fs-xs);font-weight:600}
+.pi-st:hover{filter:brightness(.97);border-color:currentColor}
+.pi-more .ic{width:18px;height:18px}
+.pi-q{margin:var(--sp-2) 0;list-style:none}
+.pq{display:grid;gap:var(--sp-3);padding:var(--sp-4);border:1px solid var(--focus);border-radius:var(--r-lg);background:var(--paper);box-shadow:0 0 0 3px var(--ring);
+  animation:plan-in calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
+.pq-acts{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center}
+.pq-acts .push{margin-inline-start:auto}
+.pq-acts .ic{width:15px;height:15px}
+/* تفاصيل البند: لوحة جانبية على الحاسوب وسفلية على الجوال (Material 3) */
+dialog.sheet{margin:0;position:fixed;inset-block:var(--sp-3);inset-inline-end:var(--sp-3);inset-inline-start:auto;width:min(460px,calc(100% - 24px));max-height:none;height:auto}
+dialog.sheet form{position:relative;min-height:100%;align-content:start}
+dialog.sheet[open]{animation:sheet-in calc(var(--dur-3) * var(--motion-scale,1)) var(--ease-out)}
+@keyframes sheet-in{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
+.sheet-x{position:absolute;top:var(--sp-4);inset-inline-end:var(--sp-4)}
+.sheet-x svg{width:18px;height:18px}
+@media (max-width:640px){
+  dialog.sheet{inset:auto 0 0 0;width:100%;max-width:none;max-height:88dvh;border-radius:var(--r-lg) var(--r-lg) 0 0}
+  dialog.sheet[open]{animation-name:sheet-up}
+  @keyframes sheet-up{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+  .plan-hint{display:none}
+  .pi-more{display:none}
+}
+@media (prefers-reduced-motion:reduce){ .plan-body.plan-in,.pq,dialog.sheet[open],.stage.flash{animation:none} }
 .prog{display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-4)}
 .prog .bar{flex:1;height:8px;border-radius:var(--r-pill);background:var(--rule);overflow:hidden}
 .prog .bar i{display:block;height:100%;background:var(--grad-line);border-radius:var(--r-pill)}
@@ -232,7 +301,8 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .stage-h small{color:var(--muted);font-size:var(--fs-xs)}
 .stage-h .end{margin-inline-start:auto}
 .pis{list-style:none;margin:var(--sp-2) 0 0;padding:0}
-.pi{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-1);border-radius:var(--r-md)}
+.pi{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:var(--sp-2) var(--sp-3);padding:var(--sp-1) var(--sp-1);border-radius:var(--r-md)}
+@media (max-width:640px){ .pi{grid-template-columns:auto minmax(0,1fr) auto} }
 .pi:hover{background:var(--stripe)}
 .chk{width:22px;height:22px;border-radius:var(--r-md);border:2px solid var(--field-line);background:var(--paper);padding:0;display:grid;place-items:center;transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .chk:hover{border-color:var(--focus)}
@@ -502,6 +572,8 @@ dialog .dlg-acts{position:sticky;bottom:calc(-1 * var(--sp-5));z-index:2;margin:
 .toast{position:fixed;bottom:22px;left:50%;translate:-50% 20px;opacity:0;z-index:80;background:var(--ink);color:var(--paper);padding:var(--sp-2) var(--sp-4);border-radius:var(--r-md);font-size:var(--fs-sm);
   box-shadow:var(--shadow);transition:opacity calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),translate calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out);pointer-events:none;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;translate:-50% 0}
+.toast.act{pointer-events:auto}
+.toast button{margin-inline-start:var(--sp-3);border:0;background:none;color:inherit;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:0}
 .toast.bad{background:var(--urgent);color:#fff}
 
 @media (max-width:1280px){ .counters{grid-template-columns:repeat(3,minmax(0,1fr))} }
@@ -562,7 +634,8 @@ dialog[open]::backdrop{animation:m-fade-in calc(var(--dur-3) * var(--motion-scal
 /* الصلاحيات: أدوات التعديل تختفي لمن لا يملكها (الجسر يرفضها أصلًا) */
 html:not(.is-owner) :is(#driveBtn,.danger-zone){display:none}
 html:not(.can-create) #newProjBtn,html:not(.can-config) :is(#namesBtn,#donorsBtn,#peopleAddBtn){display:none}
-html:not(.can-plan) #planCard :is([data-act="tpl"],[data-act="add"],[data-act="add-stage"],[data-act="edit"]){display:none}
+html:not(.can-plan) #planCard :is([data-act="tpl"],[data-act="add"],[data-act="add-stage"],[data-act="edit"],.plan-hint){display:none}
+html:not(.can-plan) #planCard :is(.pi-main,.pi-st,.chk){pointer-events:none}
 html:not(.can-plan) #planCard [data-act="toggle"]{pointer-events:none}
 html:not(.can-edit) [data-act="gantt-dur"],html:not(.can-money-edit) [data-act="money-edit"]{display:none}
 html:not(.can-money) :is(#moneyCard,.money-line){display:none}
@@ -785,9 +858,10 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     </div>
   </form>
 </dialog>
-<dialog id="planDlg" aria-labelledby="planDlgTitle">
+<dialog id="planDlg" class="sheet" aria-labelledby="planDlgTitle">
   <form id="planForm" method="dialog">
     <h2 id="planDlgTitle">بند جديد</h2>
+    <button class="icon-btn sheet-x" type="button" data-close title="إغلاق" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <p class="sub" id="planDlgSub"></p>
     <label class="fld">البند<input name="title" required maxlength="300" placeholder="مثال: التعاقد مع المورد"></label>
     <div class="fld-row">
@@ -908,6 +982,11 @@ if(EMBED){
     HTMLDialogElement.prototype.showModal = function(){
       showModal0.call(this);
       const v = hostView();
+      /* اللوحة الجانبية بطول الجزء الظاهر، وعلى الجوال لوحة سفلية تبدأ من 12% منه */
+      if(this.classList.contains('sheet')){
+        const phone = matchMedia('(max-width:640px)').matches, h = phone ? Math.round(v.h * .88) : Math.max(260, v.h - 24);
+        Object.assign(this.style, {top: (v.top + (phone ? v.h - h : 12)) + 'px', bottom: 'auto', height: h + 'px', maxHeight: h + 'px', overflow: 'auto', overscrollBehavior: 'contain'});
+      }else
       Object.assign(this.style, {top: (v.top + 12) + 'px', bottom: 'auto', marginTop: '0', marginBottom: '0',
         maxHeight: Math.max(260, v.h - 24) + 'px', overflow: 'auto', overscrollBehavior: 'contain'});
       try{ parent.document.documentElement.classList.add('frame-modal'); }catch(e){}
@@ -1179,7 +1258,7 @@ $('donorsList').addEventListener('submit', async e => {
 const LOCAL_PLAN_KEY = 'daily-board-projects-plan-dev-' + ORG;
 const LOCAL_PEOPLE_KEY = 'daily-board-projects-people-dev-' + ORG;
 function localPlanRead(){ try{ return JSON.parse(localStorage.getItem(LOCAL_PLAN_KEY) || '[]'); }catch(e){ return []; } }
-function localPlanWrite(){ try{ localStorage.setItem(LOCAL_PLAN_KEY, JSON.stringify(DATA.plan.filter(x => /^lp-/.test(x.id)))); }catch(e){} }
+function localPlanWrite(){ try{ localStorage.setItem(LOCAL_PLAN_KEY, JSON.stringify(DATA.plan.filter(x => /^lp-/.test(x.id) && !x._draft))); }catch(e){} }
 function localPeopleRead(){ try{ return JSON.parse(localStorage.getItem(LOCAL_PEOPLE_KEY) || 'null'); }catch(e){ return null; } }
 function localPeopleWrite(){ try{ localStorage.setItem(LOCAL_PEOPLE_KEY, JSON.stringify(DATA.people)); }catch(e){} }
 const uniqNames = list => [...new Set(list.map(n => String(n || '').trim()).filter(Boolean))];
@@ -1735,6 +1814,47 @@ function tplPreview(key){
   return t.stages.map(([s, items]) => '<span>' + esc(s) + ' | ' + cnt(items.length, W_ITEM) + '</span>').join('');
 }
 const devNote = () => SOURCE === 'local' ? '<span class="dev-note">نسخة التطوير: ما تُدخله هنا يُحفظ في هذا المتصفح فقط، وبعد نشر الجسر يُحفظ في نوشن.</span>' : '';
+/* بطاقة الخطة بالكشف التدريجي (NN/g Progressive Disclosure): الملخّص والشريط الزمني للمراحل ظاهران دائمًا،
+   والبنود بتعديلها وإضافتها وحذفها خلف زر توسيع (نمط Disclosure في WAI-ARIA)؛ حالة التوسيع محفوظة لكل مشروع.
+   التعديل السريع داخل الصف (Atlassian Inline Edit: Enter يحفظ وEsc يلغي)، والتفاصيل في لوحة جانبية
+   تصير لوحة سفلية على الجوال (Material 3 side/bottom sheets)، والحذف فوري مع «تراجع» بدل التأكيد. */
+const PLAN_OPEN_KEY = 'daily-board-projects-plan-open-' + ORG;
+let PLAN_OPEN = new Set(), QE = null, PLAN_FLASH = '';
+try{ PLAN_OPEN = new Set(JSON.parse(localStorage.getItem(PLAN_OPEN_KEY) || '[]')); }catch(e){}
+function planOpenSet(id, on){
+  on ? PLAN_OPEN.add(id) : PLAN_OPEN.delete(id);
+  try{ localStorage.setItem(PLAN_OPEN_KEY, JSON.stringify([...PLAN_OPEN].slice(-80))); }catch(e){}
+}
+const PLAN_ST = ['لم يبدأ', 'جارٍ', 'منجز', 'متوقف'];
+const stPill = s => s === 'منجز' ? 'st-done' : s === 'جارٍ' ? 'st-run' : s === 'متوقف' ? 'st-late' : '';
+const planReduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* البند التالي: المتأخر أولًا، ثم الجاري، ثم الأقرب موعدًا */
+function nextItem(p){
+  const open = planOf(p).filter(x => x.status !== 'منجز' && !x._draft);
+  const rank = x => itemLate(x) ? 0 : x.status === 'جارٍ' ? 1 : 2;
+  return open.sort((a, b) => rank(a) - rank(b) || String(a.end || '9').localeCompare(String(b.end || '9')))[0] || null;
+}
+/* الشريط الزمني للمراحل: كل مرحلة شريحة على محور مدة المشروع، بمسارات إن تداخلت، وبداخلها شريط إنجازها */
+function stageStrip(p, st){
+  const { s, e } = spanOf(p);
+  if(!(s && e && toDate(e) > toDate(s)) || !st.some(x => x.start || x.end)) return '';
+  const lo = toDate(s).getTime(), span = toDate(e).getTime() - lo;
+  const pos = d => Math.min(100, Math.max(0, (toDate(d).getTime() - lo) / span * 100));
+  const lanes = [];
+  const segs = st.map((x, i) => {
+    let a = pos(x.start || x.end), b = Math.max(pos(x.end || x.start), a + 6);
+    if(b > 100){ a = Math.max(0, a - (b - 100)); b = 100; }
+    let ln = lanes.findIndex(end => end <= a + .5); if(ln < 0){ ln = lanes.length; lanes.push(0); } lanes[ln] = b;
+    const late = x.items.some(itemLate);
+    return '<button type="button" class="ss-seg ' + x.state + (late ? ' late' : '') + (b - a >= 22 ? ' wide' : '') + '" data-act="plan-stage" data-stage="' + i + '" style="inset-inline-start:' + a + '%;width:' + (b - a) + '%;top:' + (ln * 32) + 'px"' +
+      ' title="' + esc(x.name + ' | ' + x.done + ' من ' + x.total + (x.start ? ' | ' + dayLbl(x.start, false) + ' – ' + dayLbl(x.end || x.start, false) : '') + (late ? ' | فيها متأخر' : '')) + '">' +
+      '<span class="ss-n">' + AR(i + 1) + '</span><span class="ss-t">' + esc(x.name) + '</span><i style="width:' + Math.round(x.done / x.total * 100) + '%"></i></button>';
+  }).join('');
+  const tp = (today.getTime() - lo) / span * 100;
+  const now = tp >= 0 && tp <= 100 ? '<span class="ss-today" style="inset-inline-start:' + tp + '%" aria-hidden="true"><b>اليوم</b></span>' : '';
+  return '<div class="ss"><div class="ss-lanes" style="height:' + (lanes.length * 32 - 4) + 'px">' + segs + now + '</div>' +
+    '<div class="ss-ends"><span><bdi>' + dayLbl(s, false) + '</bdi></span><span><bdi>' + dayLbl(e) + '</bdi></span></div></div>';
+}
 function planCard(p){
   const items = planOf(p);
   if(!items.length){
@@ -1751,40 +1871,122 @@ function planCard(p){
         '<p class="note">تُوزَّع المراحل على مدة المشروع، ويُعلَّم منجزًا كل بند مستنده مرفق في الأرشيف.</p>' +
       '</div>' + devNote() + '</article>';
   }
-  const st = stagesOf(p);
-  const done = items.filter(x => x.status === 'منجز').length, late = items.filter(itemLate).length;
+  const st = stagesOf(p), open = PLAN_OPEN.has(p.id);
+  const real = items.filter(x => !x._draft);
+  const done = real.filter(x => x.status === 'منجز').length, late = real.filter(itemLate).length;
+  const nx = nextItem(p);
+  const strip = stageStrip(p, st);
   const nowIdx = st.findIndex(s => s.state === 'now');
   const fillW = st.length > 1 ? ((nowIdx < 0 ? st.length - 1 : nowIdx) / (st.length - 1)) * 88 : 0;
-  const stepper = '<div class="steps"><span class="fill" style="width:' + fillW + '%"></span>' + st.map((s, i) =>
+  const stepper = strip || '<div class="steps"><span class="fill" style="width:' + fillW + '%"></span>' + st.map((s, i) =>
     '<div class="step ' + (s.state === 'todo' ? '' : s.state) + '"' + (s.state === 'now' ? ' aria-current="step"' : '') + '><div class="dot">' +
       (s.state === 'done' ? icon('check') : AR(i + 1)) + '</div>' + esc(s.name) + '<small><bdi>' + AR(s.done) + ' من ' + AR(s.total) + '</bdi></small></div>').join('') + '</div>';
+  const next = nx ? '<button type="button" class="plan-next' + (itemLate(nx) ? ' late' : '') + '" data-act="plan-focus" data-id="' + esc(nx.id) + '">' +
+      '<span class="lbl">' + (itemLate(nx) ? 'متأخر' : 'التالي') + '</span><b>' + esc(nx.title) + '</b>' +
+      '<small>' + [nx.stage, nx.owner, nx.end ? (itemLate(nx) ? 'منذ ' + cnt(days(toDate(nx.end), today), W_DAY) : 'حتى ' + dayLbl(nx.end, false)) : ''].filter(Boolean).map(esc).join(' | ') + '</small></button>'
+    : '<p class="plan-next all-done">' + icon('check') + ' أُنجزت كل البنود</p>';
   const range = s => s.start || s.end ? (s.start && s.end && s.start !== s.end ? dayLbl(s.start, false) + ' – ' + dayLbl(s.end, false) : 'حتى ' + dayLbl(s.end || s.start, false)) : '';
-  const groups = st.map((s, i) => '<section class="stage ' + s.state + '">' +
-    '<div class="stage-h"><span class="no">' + (s.state === 'done' ? icon('check') : AR(i + 1)) + '</span><h3>' + esc(s.name) + '</h3>' +
-      '<small><bdi>' + AR(s.done) + ' من ' + AR(s.total) + '</bdi>' + (range(s) ? ' | <bdi>' + range(s) + '</bdi>' : '') + '</small>' +
-      '<span class="end"><button class="btn ghost sm" type="button" data-act="add" data-stage="' + esc(s.name) + '">' + ICON_PLUS + 'بند</button></span></div>' +
-    '<ul class="pis">' + s.items.map(planRow).join('') + '</ul></section>').join('');
-  return '<article class="card" id="planCard"><div class="card-h"><h2>خطة التنفيذ</h2>' +
-      '<small>' + cnt(items.length, W_ITEM) + ' في ' + AR(st.length) + ' مراحل خاصة بهذا المشروع</small>' +
-      '<span class="end"><button class="btn ghost sm" type="button" data-act="add-stage">' + ICON_PLUS + 'مرحلة</button>' +
-      '<button class="btn cta sm" type="button" data-act="add" data-stage="' + esc((st[nowIdx] || st[st.length - 1]).name) + '">' + ICON_PLUS + 'بند</button></span></div>' +
-    '<div class="prog"><div class="bar" aria-hidden="true"><i style="width:' + Math.round(done / items.length * 100) + '%"></i></div>' +
-      '<b>' + pct(done / items.length) + '</b></div>' +
-    '<p class="note" style="margin:-8px 0 14px">منجز ' + AR(done) + ' | المتبقي ' + AR(items.length - done) + (late ? ' | <span style="color:var(--urgent);font-weight:600">متأخر ' + AR(late) + '</span>' : '') + '</p>' +
-    stepper + groups + devNote() + '</article>';
+  const groups = !open ? '' : '<div class="plan-body" id="planBody">' +
+    '<div class="plan-tools"><button class="btn ghost sm" type="button" data-act="add-stage">' + ICON_PLUS + 'مرحلة</button>' +
+      '<button class="btn cta sm" type="button" data-act="add" data-stage="' + esc((st[nowIdx] || st[st.length - 1]).name) + '">' + ICON_PLUS + 'بند</button>' +
+      '<span class="plan-hint">اضغط البند لتعديله في مكانه | <kbd>Enter</kbd> حفظ | <kbd>Esc</kbd> إلغاء</span></div>' +
+    st.map((s, i) => '<section class="stage ' + s.state + (PLAN_FLASH === String(i) ? ' flash' : '') + '" id="stg-' + i + '">' +
+      '<div class="stage-h"><span class="no">' + (s.state === 'done' ? icon('check') : AR(i + 1)) + '</span><h3>' + esc(s.name) + '</h3>' +
+        '<small><bdi>' + AR(s.done) + ' من ' + AR(s.total) + '</bdi>' + (range(s) ? ' | <bdi>' + range(s) + '</bdi>' : '') + '</small>' +
+        '<span class="end"><button class="btn ghost sm" type="button" data-act="add" data-stage="' + esc(s.name) + '">' + ICON_PLUS + 'بند</button></span></div>' +
+      '<ul class="pis">' + s.items.map(planRow).join('') + '</ul></section>').join('') + '</div>';
+  return '<article class="card plan-card' + (open ? ' open' : ' collapsed') + '" id="planCard">' +
+    '<div class="card-h"><h2>خطة التنفيذ</h2>' +
+      '<small>' + cnt(real.length, W_ITEM) + ' في ' + AR(st.length) + ' مراحل</small>' +
+      '<span class="end"><button class="btn soft sm plan-tgl" type="button" data-act="plan-toggle" aria-expanded="' + open + '"' + (open ? ' aria-controls="planBody"' : '') + '>' +
+        (open ? 'إخفاء البنود' : 'عرض البنود') + icon('chevron-down') + '</button></span></div>' +
+    '<div class="prog"><div class="bar" aria-hidden="true"><i style="width:' + Math.round(done / Math.max(1, real.length) * 100) + '%"></i></div>' +
+      '<b>' + pct(done / Math.max(1, real.length)) + '</b></div>' +
+    '<p class="note plan-counts">منجز ' + AR(done) + ' | المتبقي ' + AR(real.length - done) + (late ? ' | <span class="late-n">متأخر ' + AR(late) + '</span>' : '') + '</p>' +
+    stepper + next + groups + devNote() + '</article>';
 }
 function planRow(it){
+  if(QE && QE.id === it.id) return planQuick(it);
   const done = it.status === 'منجز', late = itemLate(it);
   const when = done ? (it.done ? 'أُنجز ' + dayLbl(it.done, false) : 'منجز') :
-    it.start && it.end ? dayLbl(it.start, false) + ' – ' + dayLbl(it.end, false) : it.end ? 'حتى ' + dayLbl(it.end, false) : it.start ? 'يبدأ ' + dayLbl(it.start, false) : '';
-  const st = !done && it.status && it.status !== 'لم يبدأ' ? '<span class="pill ' + (it.status === 'متوقف' ? 'st-late' : 'st-run') + '">' + esc(it.status) + '</span>' : '';
-  return '<li class="pi' + (done ? ' is-done' : '') + (late ? ' is-late' : '') + '">' +
+    it.start && it.end ? dayLbl(it.start, false) + ' – ' + dayLbl(it.end, false) : it.end ? 'حتى ' + dayLbl(it.end, false) : it.start ? 'يبدأ ' + dayLbl(it.start, false) : 'بلا موعد';
+  const stt = it.status || 'لم يبدأ';
+  return '<li class="pi' + (done ? ' is-done' : '') + (late ? ' is-late' : '') + '" data-id="' + esc(it.id) + '">' +
     '<button class="chk" type="button" data-act="toggle" data-id="' + esc(it.id) + '" aria-pressed="' + done + '" aria-label="' + (done ? 'إلغاء الإنجاز: ' : 'تعليم كمنجز: ') + esc(it.title) + '">' + ICON_CHECK + '</button>' +
-    '<div><div class="pi-title">' + esc(it.title) + '</div><div class="pi-meta">' +
-      (when ? '<span>' + when + '</span>' : '') + (late ? '<span class="flag late">متأخر ' + cnt(days(toDate(it.end), today), W_DAY) + '</span>' : '') +
-      st + (it.owner ? '<span>' + esc(it.owner) + '</span>' : '') + (it.notes ? '<span title="' + esc(it.notes) + '">ملاحظة</span>' : '') + '</div></div>' +
-    '<button class="icon-btn sm" type="button" data-act="edit" data-id="' + esc(it.id) + '" title="تعديل البند" aria-label="تعديل: ' + esc(it.title) + '">' + ICON_EDIT + '</button>' +
+    '<button class="pi-main" type="button" data-act="qedit" data-id="' + esc(it.id) + '" aria-label="تعديل سريع: ' + esc(it.title) + '">' +
+      '<span class="pi-title">' + esc(it.title) + '</span><span class="pi-meta"><span>' + when + '</span>' +
+      (late ? '<span class="flag late">متأخر ' + cnt(days(toDate(it.end), today), W_DAY) + '</span>' : '') +
+      (it.owner ? '<span>' + esc(it.owner) + '</span>' : '') + (it.notes ? '<span title="' + esc(it.notes) + '">ملاحظة</span>' : '') + '</span></button>' +
+    '<button class="pill pi-st ' + stPill(stt) + '" type="button" data-act="cycle" data-id="' + esc(it.id) + '" title="اضغط لتغيير الحالة" aria-label="الحالة: ' + esc(stt) + '، اضغط للتالية"><i></i>' + esc(stt) + '</button>' +
+    '<button class="icon-btn sm pi-more" type="button" data-act="edit" data-id="' + esc(it.id) + '" title="التفاصيل والملاحظات" aria-label="تفاصيل: ' + esc(it.title) + '">' + icon('more') + '</button>' +
   '</li>';
+}
+function planQuick(it){
+  const people = DATA.people.slice(); if(it.owner && !people.includes(it.owner)) people.unshift(it.owner);
+  const o = (list, v, blank) => (blank ? '<option value="">' + blank + '</option>' : '') + list.map(x => '<option' + (x === v ? ' selected' : '') + '>' + esc(x) + '</option>').join('');
+  return '<li class="pi-q"><form class="pq" data-qform="' + esc(it.id) + '" aria-label="' + (it._draft ? 'بند جديد' : 'تعديل البند') + '">' +
+    '<label class="fld">البند<input name="title" required maxlength="300" value="' + esc(it.title) + '" placeholder="مثال: التعاقد مع المورد"></label>' +
+    '<div class="fld-row"><label class="fld">الحالة<select name="status">' + o(PLAN_ST, it.status || 'لم يبدأ') + '</select></label>' +
+      '<label class="fld">البداية<input name="start" type="date" value="' + esc(it.start || '') + '"></label>' +
+      '<label class="fld">النهاية<input name="end" type="date" value="' + esc(it.end || '') + '"></label>' +
+      '<label class="fld">المسؤول<select name="owner">' + o(people, it.owner || '', '— بلا مسؤول —') + '</select></label></div>' +
+    '<div class="pq-acts"><button class="btn cta sm" type="submit">' + (it._draft ? 'إضافة' : 'حفظ') + '</button>' +
+      '<button class="btn ghost sm" type="button" data-act="qcancel">إلغاء</button>' +
+      (it._draft ? '' : '<button class="btn ghost sm" type="button" data-act="edit" data-id="' + esc(it.id) + '">التفاصيل والملاحظات</button>' +
+        '<button class="btn danger sm push" type="button" data-act="qdel" data-id="' + esc(it.id) + '">' + icon('trash') + 'حذف</button>') +
+    '</div></form></li>';
+}
+function planRefresh(p){ refreshCard('planCard', planCard(p)); }
+function planOpen(p, then){
+  if(!PLAN_OPEN.has(p.id)) planOpenSet(p.id, true);
+  planRefresh(p);
+  const b = document.querySelector('#planCard .plan-body'); if(b) b.classList.add('plan-in');
+  if(then) then();
+}
+function qStart(p, id){
+  qDrop();
+  QE = {id};
+  planOpen(p, () => {
+    const f = document.querySelector('#planCard form.pq');
+    if(f){ f.scrollIntoView({block: 'nearest', behavior: planReduced() ? 'auto' : 'smooth'}); f.elements.title.focus({preventScroll: true}); }
+  });
+}
+/* المسودة غير المحفوظة تُزال عند الإلغاء أو بدء تعديل آخر */
+function qDrop(){
+  if(QE){ const d = DATA.plan.find(x => x.id === QE.id && x._draft); if(d) DATA.plan.splice(DATA.plan.indexOf(d), 1); }
+  QE = null;
+}
+function qSave(f){
+  const it = DATA.plan.find(x => x.id === f.dataset.qform); if(!it) return;
+  const vals = { title: f.elements.title.value.trim(), status: f.elements.status.value, start: f.elements.start.value, end: f.elements.end.value, owner: f.elements.owner.value };
+  if(!vals.title){ f.elements.title.focus(); return; }
+  if(vals.end && vals.start && vals.end < vals.start){ toast('النهاية قبل البداية', true); f.elements.end.focus(); return; }
+  const prev = it._draft ? null : Object.assign({}, it);
+  vals.done = vals.status === 'منجز' ? (it.status === 'منجز' && it.done ? it.done : iso(today)) : '';
+  Object.assign(it, vals); delete it._draft;
+  QE = null; rerender(); saveItem(it, prev);
+}
+function cycleItem(id){
+  const it = DATA.plan.find(x => x.id === id); if(!it) return;
+  const prev = Object.assign({}, it);
+  it.status = PLAN_ST[(PLAN_ST.indexOf(it.status || 'لم يبدأ') + 1) % PLAN_ST.length];
+  it.done = it.status === 'منجز' ? iso(today) : '';
+  rerender(); saveItem(it, prev);
+}
+/* الحذف فوري مع «تراجع» خمس ثوانٍ، ثم يُرسل إلى نوشن (سلة نوشن) أو يُحفظ محليًا */
+function delItem(it){
+  const idx = DATA.plan.indexOf(it); if(idx < 0) return;
+  DATA.plan.splice(idx, 1); if(QE && QE.id === it.id) QE = null; rerender();
+  let undone = false;
+  const restore = () => { DATA.plan.splice(Math.min(idx, DATA.plan.length), 0, it); rerender(); };
+  const t = setTimeout(async () => {
+    if(undone) return;
+    try{
+      if(SOURCE === 'live' && !isTmp(it.id)) await post({action: 'plan_delete', org: ORG, id: it.id});
+      else localPlanWrite();
+    }catch(err){ restore(); toast('تعذّر الحذف: ' + err.message, true); }
+  }, 5200);
+  toast('حُذف «' + it.title + '»', false, {label: 'تراجع', fn: () => { undone = true; clearTimeout(t); restore(); }});
 }
 
 /* ---------- المخطط الزمني ---------- */
@@ -2214,11 +2416,13 @@ const newId = pre => pre + '-' + Date.now().toString(36) + Math.random().toStrin
 const planPayload = it => ({ id: isTmp(it.id) ? null : it.id, project: it.project, title: it.title, stage: it.stage, order: it.order,
   status: it.status, start: it.start || '', end: it.end || '', done: it.done || '', owner: it.owner || '', notes: it.notes || '', localId: it.id });
 let toastT;
-function toast(msg, bad){
-  const t = $('toast'); t.textContent = msg; t.className = 'toast on' + (bad ? ' bad' : '');
+function toast(msg, bad, action){
+  const t = $('toast'); t.textContent = msg; t.className = 'toast on' + (bad ? ' bad' : '') + (action ? ' act' : '');
+  if(action){ const b = document.createElement('button'); b.type = 'button'; b.textContent = action.label;
+    b.onclick = () => { action.fn(); t.className = 'toast'; }; t.append(' ', b); }
   /* داخل اللوح: أسفل الجزء الظاهر من الإطار لا أسفل الإطار كله */
   if(window.hostView){ const v = hostView(); t.style.top = (v.top + v.h - 72) + 'px'; t.style.bottom = 'auto'; }
-  clearTimeout(toastT); toastT = setTimeout(() => { t.className = 'toast' + (bad ? ' bad' : ''); }, bad ? 5200 : 2600);
+  clearTimeout(toastT); toastT = setTimeout(() => { t.className = 'toast' + (bad ? ' bad' : ''); }, bad || action ? 5200 : 2600);
 }
 function rerender(){ if(S.view === 'list'){ renderList(filtered()); renderDetail(); } }
 async function saveItem(it, prev){
@@ -2276,6 +2480,7 @@ function tplItems(p, tpl){
 async function createFromTemplate(p, key){
   const tpl = TEMPLATES.find(t => t.key === key); if(!tpl) return;
   const items = tplItems(p, tpl);
+  planOpenSet(p.id, true);
   DATA.plan.push(...items); rerender();
   try{
     if(SOURCE === 'live'){
@@ -2579,7 +2784,7 @@ $('moneyForm').addEventListener('submit', async e => {
 function openPlanDlg(p, it, stage, newStage){
   dlgProject = p; dlgItem = it || null;
   const f = $('planForm');
-  $('planDlgTitle').textContent = it ? 'تعديل البند' : newStage ? 'مرحلة جديدة' : 'بند جديد';
+  $('planDlgTitle').textContent = it ? 'تفاصيل البند' : newStage ? 'مرحلة جديدة' : 'بند جديد';
   $('planDlgSub').textContent = (p.code ? p.code + ' | ' : '') + p.name;
   f.title.value = it ? it.title : ''; f.stage.value = it ? (it.stage || '') : (newStage ? '' : (stage || ''));
   f.status.value = it ? (it.status || 'لم يبدأ') : 'لم يبدأ';
@@ -2612,14 +2817,8 @@ $('planForm').addEventListener('submit', e => {
   }
 });
 $('planDel').addEventListener('click', async e => {
-  const b = e.currentTarget, it = dlgItem; if(!it) return;
-  if(!b.dataset.armed){ b.dataset.armed = '1'; b.textContent = 'تأكيد الحذف'; return; }
-  $('planDlg').close();
-  const idx = DATA.plan.indexOf(it); DATA.plan.splice(idx, 1); rerender();
-  try{
-    if(SOURCE === 'live' && !isTmp(it.id)){ await post({action: 'plan_delete', org: ORG, id: it.id}); toast('نُقل البند إلى سلة نوشن'); }
-    else{ localPlanWrite(); toast('حُذف البند'); }
-  }catch(err){ DATA.plan.splice(idx, 0, it); rerender(); toast('تعذّر الحذف: ' + err.message, true); }
+  const it = dlgItem; if(!it) return;
+  $('planDlg').close(); delItem(it);
 });
 document.querySelectorAll('dialog [data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
 
@@ -2741,17 +2940,43 @@ function openProject(id){
 }
 $('items').addEventListener('click', e => {
   const b = e.target.closest('.item'); if(!b) return;
-  S.sel = b.dataset.id;
+  qDrop(); S.sel = b.dataset.id;
   const p = DATA.projects.find(x => x.id === S.sel);
   history.replaceState(null, '', '#' + encodeURIComponent((p && p.code) || S.sel));
   renderList(filtered()); renderDetail();
   if(matchMedia('(max-width:880px)').matches) $('detail').scrollIntoView({behavior: 'smooth', block: 'start'});
 });
 $('detail').addEventListener('click', e => {
+  /* البطاقة المطوية كلها زر توسيع (عدا عناصرها التفاعلية) */
+  if(e.target.closest('#planCard.collapsed') && !e.target.closest('[data-act],a,button,input,select,textarea,label')){
+    const pp = DATA.projects.find(x => x.id === S.sel); if(pp){ planOpen(pp); const t = document.querySelector('#planCard .plan-tgl'); if(t) t.focus({preventScroll: true}); }
+    return;
+  }
   const b = e.target.closest('[data-act]'); if(!b) return;
   const p = DATA.projects.find(x => x.id === S.sel); if(!p) return;
   const act = b.dataset.act;
-  if(['toggle', 'edit', 'add', 'add-stage', 'tpl'].includes(act) && !can.plan()) return;
+  if(['toggle', 'edit', 'add', 'add-stage', 'tpl', 'qedit', 'cycle', 'qdel'].includes(act) && !can.plan()) return;
+  if(act === 'plan-toggle'){
+    if(PLAN_OPEN.has(p.id)){ qDrop(); planOpenSet(p.id, false); planRefresh(p); } else planOpen(p);
+    const t = document.querySelector('#planCard .plan-tgl'); if(t) t.focus({preventScroll: true});
+    return;
+  }
+  if(act === 'plan-stage'){
+    const k = b.dataset.stage; PLAN_FLASH = k;
+    planOpen(p, () => { const el = $('stg-' + k); if(el) el.scrollIntoView({block: 'start', behavior: planReduced() ? 'auto' : 'smooth'}); });
+    setTimeout(() => { PLAN_FLASH = ''; const el = $('stg-' + k); if(el) el.classList.remove('flash'); }, 1800);
+    return;
+  }
+  if(act === 'plan-focus'){
+    if(can.plan()) qStart(p, b.dataset.id);
+    else planOpen(p, () => { const li = document.querySelector('#planCard li[data-id="' + CSS.escape(b.dataset.id) + '"]'); if(li) li.scrollIntoView({block: 'center'}); });
+    return;
+  }
+  if(act === 'qedit'){ qStart(p, b.dataset.id); return; }
+  if(act === 'cycle'){ cycleItem(b.dataset.id); return; }
+  if(act === 'qcancel'){ qDrop(); planRefresh(p); return; }
+  if(act === 'qdel'){ const it = DATA.plan.find(x => x.id === b.dataset.id); if(it) delItem(it); return; }
+  if(act === 'add' && b.closest('#planCard')){ qNew(p, b.dataset.stage || ''); return; }
   if((act === 'gantt-dur' && !can.edit()) || (act === 'money-edit' && !can.moneyEdit()) || (act === 'delete' && !ACC.owner)) return;
   if(act === 'fget'){ openViaBridge(p, b.dataset.id); return; }
   if(act === 'toggle') toggleItem(b.dataset.id);
@@ -2783,6 +3008,24 @@ $('detail').addEventListener('drop', e => {
   if(p && e.dataTransfer && e.dataTransfer.files.length) uploadToSlot(p, slotName(sl), e.dataTransfer.files);
 });
 $('detail').addEventListener('change', e => { if(e.target.id === 'tplSel') $('tplPreview').innerHTML = tplPreview(e.target.value); });
+/* بند جديد يُكتب في مكانه داخل مرحلته، ولا يُحفظ قبل «إضافة» */
+function qNew(p, stage){
+  qDrop();
+  const same = planOf(p).filter(x => (x.stage || '') === stage), all = planOf(p);
+  const order = same.length ? Math.max(...same.map(x => num(x.order))) + 10 : (all.length ? Math.max(...all.map(x => num(x.order))) + 100 : 0);
+  const it = { id: newId(SOURCE === 'live' ? 'tmp' : 'lp'), project: p.id, title: '', stage, order, status: 'لم يبدأ', start: '', end: '', owner: p.coordinator || '', notes: '', done: '', _draft: true };
+  DATA.plan.push(it);
+  QE = {id: it.id};
+  planOpen(p, () => { const f = document.querySelector('#planCard form.pq'); if(f){ f.scrollIntoView({block: 'nearest'}); f.elements.title.focus({preventScroll: true}); } });
+}
+$('detail').addEventListener('submit', e => { const f = e.target.closest('form.pq'); if(!f) return; e.preventDefault(); qSave(f); });
+$('detail').addEventListener('keydown', e => {
+  if(e.key !== 'Escape' || !e.target.closest('form.pq')) return;
+  e.preventDefault();
+  const p = DATA.projects.find(x => x.id === S.sel), id = QE && QE.id;
+  qDrop(); if(p) planRefresh(p);
+  const back = id && document.querySelector('#planCard li[data-id="' + CSS.escape(id) + '"] .pi-main'); if(back) back.focus();
+});
 $('views').addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b || b.dataset.view === S.view) return;
   S.view = b.dataset.view;
