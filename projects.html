@@ -976,6 +976,12 @@ const FILES = {};                 /* قوائم الملفات المقروءة 
 const filesLoading = new Set();
 const EXPANDED = new Set();       /* خانات مستندات فُتحت كل ملفاتها */
 const S = { q:'', year:'2026', status:'', donor:'', type:'', std:'', coord:'', sort:'smart', sel:null, view:'list', tsort:'approved', tdir:-1 };
+/* حالة العرض محفوظة لكل مؤسسة: الفلاتر والبحث والترتيب والمشروع المفتوح والتبويب ومكان التمرير،
+   فتعود الصفحة كما تُركت بعد الانتقال إلى صفحة أخرى أو إعادة الفتح */
+const VIEW_KEY = 'daily-board-projects-view-' + ORG, VIEW_KEYS = ['q', 'year', 'status', 'donor', 'type', 'std', 'coord', 'sort', 'sel', 'view', 'tsort', 'tdir'];
+let VIEW0 = null;
+try{ VIEW0 = JSON.parse(localStorage.getItem(VIEW_KEY) || 'null'); if(VIEW0) VIEW_KEYS.forEach(k => { if(k in VIEW0) S[k] = VIEW0[k]; }); }catch(e){}
+function saveView(){ try{ const v = {y: EMBED ? 0 : scrollY}; VIEW_KEYS.forEach(k => v[k] = S[k]); localStorage.setItem(VIEW_KEY, JSON.stringify(v)); }catch(e){} }
 
 /* ================= الاتصال بالجسر (نفس قناة نَسَق) ================= */
 const DEFAULT_BRIDGE = 'https://script.google.com/macros/s/AKfycbwwrcb-T-vBdPd2u94XfiFspyDwBKXec-NNeUzZiJMCupbUp91dFwZM2Wfj-F3dncw/exec';
@@ -1235,7 +1241,10 @@ function use(d, src, note){
   const el = $('src'); el.hidden = false; el.className = 'src ' + src;
   el.querySelector('span').textContent = src === 'live' ? 'مباشر من نوشن' : 'نسخة محلية للتطوير';
   el.title = note ? 'الجسر لم يستجب: ' + note : '';
-  buildFilters(); readHash(); render();
+  const first = !use.done; use.done = true;
+  if(first){ $('q').value = S.q; $('sort').value = S.sort; }
+  buildFilters(); readHash(first); render();
+  if(first && VIEW0 && VIEW0.y && !location.hash) requestAnimationFrame(() => scrollTo({top: VIEW0.y}));
 }
 
 /* ================= الحسابات ================= */
@@ -1318,6 +1327,7 @@ function statusPill(s){
 }
 const codeChip = p => p.code ? '<span class="code' + (ORG === 'humera' ? ' h' : '') + '">' + esc(p.code) + '</span>' : '';
 function render(){
+  queueMicrotask(saveView);
   const rows = filtered();
   const st = S.view === 'stats';
   $('stats').hidden = !st; $('listView').hidden = st;
@@ -2314,8 +2324,11 @@ function projPreview(){
   const code = f.elements.code.value.trim().toUpperCase();
   $('projTitlePrev').textContent = t ? 'الاسم: ' + t + ' | مجلد درايف: ' + (code ? code + '- ' : '') + t : '';
 }
+/* الخيارات: القائمة المعتمدة من الجسر (options.coordinators وأخواتها) إن وصلت، مع القيم المستعملة في المشاريع */
+const OPT_KEYS = {donor: 'donors', type: 'types', coordinator: 'coordinators', marketer: 'marketers', country: 'countries', place: 'places'};
 function fillList(id, key){
-  const vals = [...new Set(DATA.projects.map(p => p[key]).filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b), 'ar'));
+  const extra = ((DATA.options || {})[OPT_KEYS[key]] || []).map(String);
+  const vals = [...new Set(extra.concat(DATA.projects.map(p => p[key])).filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b), 'ar'));
   $(id).innerHTML = vals.map(v => '<option value="' + esc(v) + '">').join('');
 }
 $('newProjBtn').addEventListener('click', () => {
@@ -2327,6 +2340,8 @@ $('newProjBtn').addEventListener('click', () => {
   f.elements.code.value = nextCode();
   f.elements.year.value = String(new Date().getFullYear());
   [['dlDonor', 'donor'], ['dlType', 'type'], ['dlCoord', 'coordinator'], ['dlMarketer', 'marketer'], ['dlCountry', 'country'], ['dlPlace', 'place']].forEach(x => fillList(x[0], x[1]));
+  /* حساب نطاقه «مشاريعه»: المنسق افتراضيًا اسمه المربوط بحسابه */
+  if(!ACC.owner && ACC.coords && ACC.coords.length) f.elements.coordinator.value = ACC.coords[0];
   $('projDlgSub').textContent = ORG_INFO.full;
   budReset();
   projPreview();
@@ -2704,8 +2719,9 @@ $('driveForm').addEventListener('submit', async e => {
 });
 
 /* ================= التفاعل ================= */
-function readHash(){
+function readHash(first){
   const h = decodeURIComponent(location.hash.slice(1));
+  if(first && !h) return;   /* أول فتح بلا رابط محدد: يبقى العرض المحفوظ */
   if(h === 'stats'){ S.view = 'stats'; return; }
   const rm = h.match(/^report=([^@]+)(?:@(\d{4}-\d{2}-\d{2}))?$/);
   if(rm){ const rp = DATA.projects.find(x => x.code === rm[1] || x.id === rm[1]);
@@ -2713,7 +2729,9 @@ function readHash(){
   S.view = 'list';
   if(!h) return;
   const p = DATA.projects.find(x => x.code === h || x.id === h);
-  if(p){ S.sel = p.id; if(S.year && p.year !== S.year) S.year = p.year || ''; }
+  if(p){ S.sel = p.id; if(S.year && p.year !== S.year) S.year = p.year || '';
+    /* فلتر محفوظ يخفي المشروع المطلوب بالرابط: يُفرَّغ ليظهر */
+    if(!filtered().some(x => x.id === p.id)){ S.q = S.status = S.donor = S.type = S.std = S.coord = ''; $('q').value = ''; buildFilters(); } }
 }
 function openProject(id){
   const p = DATA.projects.find(x => x.id === id); if(!p) return;
@@ -2792,6 +2810,7 @@ window.addEventListener('hashchange', () => { readHash(); render(); });
 let lastY = scrollY;
 addEventListener('scroll', () => {
   const y = scrollY, tb = $('tb');
+  clearTimeout(saveView.t); saveView.t = setTimeout(saveView, 300);
   if(y > lastY + 6 && y > 140 && !document.querySelector('dialog[open]')) tb.classList.add('hide');
   else if(y < lastY - 6) tb.classList.remove('hide');
   lastY = y;

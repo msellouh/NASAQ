@@ -2428,7 +2428,11 @@ function tabFromHash(){
   const hsh = (location.hash || '').replace('#','');
   return Object.keys(TAB_HASH).find(k=>TAB_HASH[k]===hsh) || '';
 }
+/* مكان التمرير لكل صفحة: العودة إلى صفحة تُعيدك حيث تركتها، لا إلى أعلاها */
+const TAB_Y = {};
 function showTab(name){
+  const prevTab = document.documentElement.dataset.tab;
+  if(prevTab) TAB_Y[prevTab] = window.scrollY;
   if(TAB_NAMES.indexOf(name)<0) name = 'board';
   if(!tabAllowed(name)) name = TAB_NAMES.find(tabAllowed) || 'board';
   TAB_NAMES.forEach(n=>{
@@ -2445,7 +2449,7 @@ function showTab(name){
   if(name==='projects') loadProjectsTab();
   if(name==='expenses') loadExpenseTab();
   if(name==='tasks') renderTasksPage();
-  window.scrollTo(0, 0);
+  window.scrollTo(0, name === prevTab ? window.scrollY : TAB_Y[name] || 0);
   try{ topbarUpdate(); }catch(e){}   /* حالة الشريط العلوي تتبع الصفحة (بواجهة أو بدونها) */
 }
 window.addEventListener('popstate', ()=>{ const t = tabFromHash(); if(t) showTab(t); });
@@ -3058,7 +3062,18 @@ function pinAsGoal(text){
 }
 
 /* ---------- تصفية مهام اليوم ---------- */
-let taskFilter = 'all';
+/* حالة الواجهة محفوظة: تصفية مهام اليوم، والبحث والفلاتر في صفحة المهام والأرشيف،
+   فتعود كما تُركت بعد الانتقال إلى صفحة أخرى أو إعادة الفتح */
+const UI_KEY = 'daily-board-ui-state';
+const UI = (()=>{ try{ return JSON.parse(localStorage.getItem(UI_KEY) || '{}') || {}; }catch(e){ return {}; } })();
+function uiSave(){
+  try{
+    Object.assign(UI, {taskFilter, tpSearch: $('tpSearch').value, tpProj: $('tpProj').value || $('tpProj').dataset.want || '',
+      tpNotion: $('tpNotion').getAttribute('aria-pressed') === 'true', arcSearch: $('arcSearch').value});
+    localStorage.setItem(UI_KEY, JSON.stringify(UI));
+  }catch(e){}
+}
+let taskFilter = ['all', 'today', 'upcoming', 'overdue', 'nodate', 'done'].includes(UI.taskFilter) ? UI.taskFilter : 'all';
 const FILTER_EMPTY = {
   all:'يومك هادئ حتى الآن. خطوة واحدة تكفي للبدء — اكتب أول مهمة في الأعلى.',
   today:'لا شيء مستحق اليوم.', upcoming:'لا مهام قادمة بموعد.', overdue:'لا شيء متأخر — كل شيء في مكانه.',
@@ -4028,11 +4043,12 @@ function renderTasksPage(){
   if(!wrap || $('tabTasks').hidden) return;   /* تُرسم حين تكون ظاهرة فقط */
   const q = ($('tpSearch').value || '').trim().toLowerCase();
   /* قائمة المشاريع في الفلتر — مع الحفاظ على الاختيار الحالي */
-  const sel = $('tpProj'), cur = sel.value;
+  const sel = $('tpProj'), cur = sel.value || sel.dataset.want || '';
   const projs = [...new Set(tasks.map(t=>(t.proj||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ar'));
   sel.innerHTML = '<option value="">كل المشاريع</option>';
   projs.forEach(p=>{ const o = document.createElement('option'); o.value = p; o.textContent = p; sel.appendChild(o); });
   sel.value = projs.includes(cur) ? cur : '';
+  if(projs.length) delete sel.dataset.want;
   const pj = sel.value;
   const fromN = $('tpNotion').getAttribute('aria-pressed') === 'true', month = iso(new Date()).slice(0, 7);
   const match = t => (!pj || (t.proj||'').trim() === pj) && (!fromN || (t.fromNotion && String(t.createdAt || '').slice(0, 7) === month)) &&
@@ -4383,8 +4399,14 @@ function renderHabitsMini(){
 
 $('taskFilters').addEventListener('click', e=>{
   const b = e.target.closest('button[data-f]'); if(!b) return;
-  taskFilter = b.dataset.f; render();
+  taskFilter = b.dataset.f; render(); uiSave();
 });
+/* استعادة البحث والفلاتر المحفوظة، ثم حفظها مع كل تغيير */
+$('tpSearch').value = UI.tpSearch || ''; $('arcSearch').value = UI.arcSearch || '';
+if(UI.tpProj) $('tpProj').dataset.want = UI.tpProj;
+$('tpNotion').setAttribute('aria-pressed', String(!!UI.tpNotion));
+['tpSearch', 'tpProj', 'arcSearch'].forEach(id=>$(id).addEventListener(id === 'tpProj' ? 'change' : 'input', uiSave));
+$('tpNotion').addEventListener('click', uiSave);
 $('habitsMore').onclick = ()=>showTab('flow');
 $('brainDump').addEventListener('input', renderDaySummary);
 
