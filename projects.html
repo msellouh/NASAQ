@@ -112,6 +112,48 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .page-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:var(--sp-2) var(--sp-5);margin-bottom:var(--sp-4)}
 .page-head h1{font-size:clamp(28px,3vw,40px);font-weight:700;line-height:1.15;color:var(--ink)}
 .page-head p{margin:var(--sp-1) 0 0;color:var(--muted);font-size:var(--fs-base)}
+.ph-acts{display:flex;align-items:center;gap:var(--sp-2)}
+.admin-menu{position:relative}
+.admin-menu summary{list-style:none;cursor:pointer}
+.admin-menu summary::-webkit-details-marker{display:none}
+.am-list{position:absolute;inset-inline-end:0;top:calc(100% + 6px);z-index:30;min-width:240px;display:grid;gap:2px;padding:var(--sp-1);background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.am-list button{display:grid;gap:1px;text-align:start;border:0;background:none;color:var(--ink);font:inherit;padding:var(--sp-2) var(--sp-3);border-radius:var(--r-md);cursor:pointer}
+.am-list button:hover,.am-list button:focus-visible{background:var(--stripe)}
+.am-list b{font-size:var(--fs-sm);font-weight:600} .am-list small{font-size:var(--fs-xs);color:var(--muted)}
+html:not(.can-config):not(.is-owner) #adminMenu{display:none}
+html:not(.is-owner) #driveMenuBtn{display:none}
+.flt-btn{display:inline-flex;align-items:center;gap:var(--sp-1)}
+.flt-btn .ic{width:16px;height:16px}
+.flt-btn[aria-expanded="true"]{border-color:var(--focus);box-shadow:0 0 0 2px var(--ring)}
+.fcount[hidden]{display:none}
+.fcount{min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--cta);color:var(--on-cta);font-size:var(--fs-xs);font-weight:700;display:inline-grid;place-items:center}
+.flt-head{display:none;align-items:center;justify-content:space-between}
+.flt-head h2{font-size:var(--fs-md)}
+.flt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--sp-3)}
+.flt-grid select{appearance:none;-webkit-appearance:none;padding-left:var(--sp-6);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA1BE' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:left 12px center}
+.flt-foot{display:none;gap:var(--sp-2)}
+.flt-foot .btn{flex:1;justify-content:center}
+@media (min-width:641px){
+  dialog.sheet.flt-dlg{position:static;inset:auto;width:auto;max-width:none;height:auto;max-height:none;margin:calc(-1 * var(--sp-3)) 0 var(--sp-4);padding:var(--sp-4);
+    border:1px solid var(--rule);border-radius:var(--r-lg);background:var(--paper);box-shadow:none;animation:none;overflow:visible}
+  dialog.flt-dlg[open]{display:block}
+}
+@media (max-width:640px){
+  dialog.flt-dlg{padding:var(--sp-4) var(--sp-4) calc(var(--sp-4) + env(safe-area-inset-bottom))}
+  dialog.flt-dlg[open]{display:grid;gap:var(--sp-3);align-content:start}
+  .flt-head{display:flex}
+  .flt-head .sheet-x{position:static}
+  .flt-grid{grid-template-columns:1fr}
+  .flt-foot{display:flex;position:sticky;bottom:0;background:var(--paper);padding-top:var(--sp-2)}
+}
+.flt-chips{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);margin:calc(-1 * var(--sp-2)) 0 var(--sp-4)}
+.flt-chips:empty{display:none}
+.fchip{display:inline-flex;align-items:center;gap:var(--sp-1);min-height:30px;padding:0 var(--sp-1) 0 var(--sp-3);border:0;border-radius:var(--r-pill);background:var(--focus-bg);color:var(--focus-ink);font:inherit;font-size:var(--fs-xs);font-weight:600;cursor:pointer}
+.fchip i{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--paper);font-style:normal;font-size:12px}
+.fchip:hover i{background:var(--urgent-bg);color:var(--urgent)}
+.fclear{border:0;background:none;color:var(--focus-ink);font:inherit;font-size:var(--fs-xs);font-weight:600;text-decoration:underline;cursor:pointer;padding:var(--sp-1)}
 
 /* الفلاتر */
 .filters{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center;margin-bottom:var(--sp-5)}
@@ -159,6 +201,11 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .kpi span{display:block;font-size:var(--fs-xs);color:var(--muted)}
 .kpi b{display:block;font-family:var(--font-head);font-size:var(--fs-xl);font-weight:700;color:var(--ink);line-height:1.35;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kpi small{display:block;font-size:var(--fs-xs);color:var(--muted);margin-top:2px}
+.kpi small b{display:inline;font-size:inherit;font-family:inherit;color:var(--ink-2);font-weight:700}
+.kpi :is(b,small) span{display:inline;font-size:inherit;color:inherit}
+.kpi small span.alert{display:block;color:var(--urgent);font-weight:600;cursor:help}
+.kpi b .v-s{display:none}
+@media (max-width:560px){ .kpi b .v-f{display:none} .kpi b .v-s{display:inline} }
 .meter{height:5px;border-radius:var(--r-pill);background:var(--rule);margin-top:var(--sp-2);overflow:hidden}
 .meter i{display:block;height:100%;border-radius:var(--r-pill);background:var(--grad-line)}
 
@@ -173,6 +220,7 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
   position:sticky;top:calc(var(--tb-h) + 16px);max-height:calc(100vh - var(--tb-h) - 32px);display:flex;flex-direction:column;min-width:0}
 .list-head{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--rule);font-size:var(--fs-sm);color:var(--muted)}
 .list-head select{border:0;background:transparent;font-size:var(--fs-sm);color:var(--ink-2);padding:2px}
+.item .meta .late-t{color:var(--urgent)}
 .items{overflow:auto;padding:var(--sp-2);flex:1}
 .item{display:block;width:100%;text-align:right;border:1px solid transparent;background:transparent;border-radius:var(--r-lg);padding:var(--sp-3) var(--sp-3);margin-bottom:2px;transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .item:hover{background:var(--stripe)}
@@ -809,9 +857,18 @@ button.file{font:inherit;cursor:pointer;text-align:start}
 <main class="wrap">
   <div class="page-head">
     <div><h1 id="pageTitle">المشاريع</h1><p id="pageSub">جارٍ التحميل…</p></div>
-    <button class="btn" type="button" id="namesBtn" title="مجموعات الأسماء المتشابهة لتعتمد لها اسمًا موحّدًا">مراجعة الأسماء</button>
-    <button class="btn" type="button" id="donorsBtn" title="أسماء المانحين ودولهم — تُعتمد في قاعدة «المانحون» وتُستعمل في الإحصائيات">المانحون</button>
-    <button class="btn cta" type="button" id="newProjBtn">＋ مشروع جديد</button>
+    <div class="ph-acts">
+      <!-- أدوات الإدارة النادرة في قائمة، و«مشروع جديد» الزر الأساسي الوحيد -->
+      <details class="admin-menu" id="adminMenu">
+        <summary class="btn">⋯ إدارة</summary>
+        <div class="am-list">
+          <button type="button" id="namesBtn"><b>مراجعة الأسماء</b><small>توحيد أسماء المشاريع المتشابهة</small></button>
+          <button type="button" id="donorsBtn"><b>المانحون</b><small>أسماء المانحين ودولهم للإحصائيات</small></button>
+          <button type="button" id="driveMenuBtn"><b>أرشيف درايف</b><small>مجلدات المشاريع</small></button>
+        </div>
+      </details>
+      <button class="btn cta" type="button" id="newProjBtn">＋ مشروع جديد</button>
+    </div>
   </div>
 
   <div class="filters" role="search">
@@ -820,12 +877,25 @@ button.file{font:inherit;cursor:pointer;text-align:start}
       <input id="q" type="search" placeholder="اسم المشروع، الكود، المانح…" autocomplete="off">
     </label>
     <div class="seg" id="yearSeg" role="group" aria-label="السنة"></div>
-    <label><span class="sr">الحالة</span><select id="fStatus"></select></label>
-    <label><span class="sr">الجهة الممولة</span><select id="fDonor"></select></label>
-    <label><span class="sr">نوع المشروع</span><select id="fType"></select></label>
-    <label><span class="sr">المشروع الموحّد</span><select id="fStd"></select></label>
-    <label><span class="sr">المنسق</span><select id="fCoord"></select></label>
+    <button class="btn flt-btn" type="button" id="fltBtn" aria-expanded="false" aria-controls="fltDlg">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>تصفية<span class="fcount" id="fltCount" hidden></span>
+    </button>
   </div>
+  <!-- الفلاتر: لوحة تحت الأدوات على الحاسوب، ولوحة سفلية على الجوال (Shopify/eBay: الفلاتر في درج على الجوال) -->
+  <dialog class="sheet flt-dlg" id="fltDlg" aria-labelledby="fltTitle">
+    <div class="flt-head"><h2 id="fltTitle">تصفية المشاريع</h2>
+      <button class="icon-btn sheet-x" type="button" data-close title="إغلاق" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="flt-grid">
+      <label class="fld">الحالة<select id="fStatus"></select></label>
+      <label class="fld">الجهة الممولة<select id="fDonor"></select></label>
+      <label class="fld">نوع المشروع<select id="fType"></select></label>
+      <label class="fld">المشروع الموحّد<select id="fStd"></select></label>
+      <label class="fld">المنسق<select id="fCoord"></select></label>
+    </div>
+    <div class="flt-foot"><button class="btn" type="button" data-fclear>مسح الكل</button><button class="btn cta" type="button" data-close id="fltShow">عرض المشاريع</button></div>
+  </dialog>
+  <!-- الفلاتر المطبقة رقائق قابلة للحذف، و«مسح الكل» (Baymard: نظرة واحدة على ما طُبّق) -->
+  <div class="flt-chips" id="fltChips" aria-live="polite"></div>
 
   <section class="stats" id="stats" aria-label="إحصائيات المشاريع المعروضة" hidden></section>
 
@@ -1186,7 +1256,7 @@ const EXPANDED = new Set();       /* خانات مستندات فُتحت كل �
 const S = { q:'', year:'2026', status:'', donor:'', type:'', std:'', coord:'', sort:'smart', sel:null, view:'list', tsort:'approved', tdir:-1 };
 /* حالة العرض محفوظة لكل مؤسسة: الفلاتر والبحث والترتيب والمشروع المفتوح والتبويب ومكان التمرير،
    فتعود الصفحة كما تُركت بعد الانتقال إلى صفحة أخرى أو إعادة الفتح */
-const VIEW_KEY = 'daily-board-projects-view-' + ORG, VIEW_KEYS = ['q', 'year', 'status', 'donor', 'type', 'std', 'coord', 'sort', 'sel', 'view', 'tsort', 'tdir'];
+const VIEW_KEY = 'daily-board-projects-view-' + ORG, VIEW_KEYS = ['q', 'year', 'status', 'donor', 'type', 'std', 'coord', 'sort', 'sel', 'view', 'tsort', 'tdir', 'fopen'];
 let VIEW0 = null;
 try{ VIEW0 = JSON.parse(localStorage.getItem(VIEW_KEY) || 'null'); if(VIEW0) VIEW_KEYS.forEach(k => { if(k in VIEW0) S[k] = VIEW0[k]; }); }catch(e){}
 function saveView(){ try{ const v = {y: EMBED ? 0 : scrollY}; VIEW_KEYS.forEach(k => v[k] = S[k]); localStorage.setItem(VIEW_KEY, JSON.stringify(v)); }catch(e){} }
@@ -1545,7 +1615,8 @@ function render(){
   $('pageTitle').textContent = (st ? 'إحصائيات ' : 'مشاريع ') + ORG_INFO.name;
   document.title = 'نَسَق — ' + $('pageTitle').textContent;
   const scope = [ORG_INFO.full, S.year ? 'سنة ' + AR(S.year).replace(/[٬,]/g, '') : 'كل السنوات'].join(' | ');
-  $('pageSub').textContent = cnt(rows.length, W_PROJ) + ' | ' + scope + (st ? ' | الأرقام تتبع الفلاتر' : '');
+  $('pageSub').textContent = scope + (st ? ' | الأرقام تتبع الفلاتر' : '');
+  renderChips(rows.length);
   document.querySelectorAll('#orgs a').forEach(a => {
     const on = a.dataset.org === ORG;
     a.classList.toggle('on', on); a.toggleAttribute('aria-current', on);
@@ -1557,6 +1628,9 @@ function render(){
   if(!S.sel && rows.length) S.sel = rows[0].id;
   renderKpis(rows); renderList(rows); renderDetail();
 }
+/* مبلغ مختصر للجوال: $2.4M و$636K، والكامل في title */
+const moneyShort = n => { const v = Math.abs(Number(n) || 0); return '$' + (v >= 1e6 ? AR(Math.round(n / 1e5) / 10) + 'M' : v >= 1e4 ? AR(Math.round(n / 1e3)) + 'K' : AR(Math.round(n))); };
+const moneyFS = n => '<span class="v-f">' + money(n) + '</span><span class="v-s" title="' + money(n) + '">' + moneyShort(n) + '</span>';
 function renderKpis(rows){
   const approved = rows.reduce((t, p) => t + num(p.approved), 0);
   const exec = rows.reduce((t, p) => t + num(p.exec), 0);
@@ -1565,25 +1639,28 @@ function renderKpis(rows){
   const late = rows.filter(p => isLate(p) || lateDels(p).length).length;
   const withRecv = rows.filter(p => p.received != null && num(p.approved));
   const recv = withRecv.reduce((t, p) => t + num(p.received), 0), recvOf = withRecv.reduce((t, p) => t + num(p.approved), 0);
+  const nBen = rows.filter(p => num(p.benef) > 0).length;
+  /* بطاقات بتشريح واحد: العنوان، الرقم، سطر سياق صريح، وشريط عند الحاجة (Stephen Few: كل رقم بسياقه) */
   $('kpis').innerHTML =
-    kpiBox('المشاريع', AR(rows.length), AR(active) + ' جارية | ' + AR(late) + ' تحتاج متابعة') +
-    kpiBox('المبلغ المعتمد', money(approved), recvOf ? 'المستلم ' + money(recv) + ' من ' + money(recvOf) : 'للمشاريع المسجّل لها اعتماد') +
-    kpiBox('مبلغ التنفيذ', money(exec), approved ? 'نسبة الصرف ' + pct(exec / approved) : '', approved ? exec / approved : null) +
-    kpiBox('المستفيدون', AR(Math.round(benef)), 'من الأعداد المسجّلة رقمًا');
+    kpiBox('المشاريع', AR(rows.length), '<b>' + AR(active) + '</b> جارية' + (late ? '<span class="alert" title="تحتاج متابعة: تجاوز موعد نهايته، أو له استحقاق للمانح أو بند في الخطة تجاوز موعده">' + AR(late) + ' تحتاج متابعة</span>' : '')) +
+    kpiBox('المبلغ المعتمد', moneyFS(approved), recvOf ? '<span title="المستلم من المانحين، من معتمد المشاريع المسجّل فيها الاستلام">مستلم <b>' + pct(recv / recvOf) + '</b>: <bdi>' + moneyShort(recv) + '</bdi> من <bdi>' + moneyShort(recvOf) + '</bdi></span>' : 'للمشاريع المسجّل لها اعتماد', recvOf ? recv / recvOf : null) +
+    kpiBox('مبلغ التنفيذ', moneyFS(exec), approved ? 'صُرف <b>' + pct(exec / approved) + '</b> من المعتمد' : '', approved ? exec / approved : null) +
+    kpiBox('المستفيدون', AR(Math.round(benef)), nBen ? 'من <b>' + AR(nBen) + '</b> ' + (nBen === 1 ? 'مشروع' : 'مشروعًا') + ' سُجّل فيه العدد' : 'لم يُسجّل عدد بعد');
 }
 function renderList(rows){
   const box = $('items'), top = box.scrollTop;
   $('count').textContent = cnt(rows.length, W_PROJ);
   if(!rows.length){ box.innerHTML = '<div class="empty">لا توجد مشاريع تطابق هذه الفلاتر.</div>'; return; }
   box.innerHTML = rows.map(p => {
-    const ld = lateDels(p).length, lp = planOf(p).filter(itemLate).length;
-    const flag = isLate(p) ? '<span class="badge b-danger">' + icon('alert') + 'تجاوز الموعد</span>' : (ld + lp) ? '<span class="badge b-warning">' + icon('clock') + cnt(ld + lp, W_ITEM) + ' متأخر</span>' : '';
+    /* الأحمر لما يحتاج إجراءً الآن فقط: استحقاق للمانح تجاوز موعده؛ وانتهاء المدة سطر نصي هادئ (إرهاق التنبيهات) */
+    const ld = lateDels(p).length;
+    const flag = ld ? '<span class="badge b-danger">' + icon('alert') + 'استحقاق متأخر' + (ld > 1 ? ' (' + AR(ld) + ')' : '') + '</span>' : '';
     const pr = progressOf(p);
     return '<button type="button" class="item' + (p.id === S.sel ? ' on' : '') + '" data-id="' + esc(p.id) + '" aria-current="' + (p.id === S.sel) + '">' +
       '<div class="row1">' + codeChip(p) + statusPill(p.status) + flag + '</div>' +
       '<div class="nm">' + esc(p.name) + '</div>' +
       '<div class="meta"><span>' + esc(p.donor || 'بلا جهة ممولة') + '</span>' +
-        (p.end ? '<span>ينتهي ' + dayLbl(p.end, false) + '</span>' : p.approvalDate ? '<span>اعتماد ' + dayLbl(p.approvalDate, false) + '</span>' : '') +
+        (p.end ? (isLate(p) ? '<span class="late-t">انتهى قبل ' + cnt(days(toDate(p.end), today), W_DAY) + '</span>' : '<span>ينتهي ' + dayLbl(p.end, false) + '</span>') : p.approvalDate ? '<span>اعتماد ' + dayLbl(p.approvalDate, false) + '</span>' : '') +
         ((p.approved || p.exec) ? '<span class="num">' + money(p.approved || p.exec) + '</span>' : '') +
         (p.docsChecked ? '<span title="المستندات المرفقة">مستندات ' + AR((p.docsDone || []).length) + '/' + AR(DOCS_N) + '</span>' : '') + '</div>' +
       (pr != null ? '<div class="mini" aria-hidden="true"><i style="width:' + Math.round(pr * 100) + '%"></i></div>' : '') +
@@ -3395,6 +3472,35 @@ let qT; $('q').addEventListener('input', e => { clearTimeout(qT); qT = setTimeou
 [['fStatus','status'],['fDonor','donor'],['fType','type'],['fStd','std'],['fCoord','coord'],['sort','sort']].forEach(([id, k]) =>
   $(id).addEventListener('change', e => { S[k] = e.target.value; render(); }));
 $('reloadBtn').addEventListener('click', load);
+/* ---------- لوحة التصفية والرقائق ---------- */
+const FLT = [['status', 'fStatus', 'الحالة'], ['donor', 'fDonor', 'الجهة'], ['type', 'fType', 'النوع'], ['std', 'fStd', 'المشروع الموحّد'], ['coord', 'fCoord', 'المنسق']];
+function renderChips(n){
+  const on = FLT.filter(([k]) => S[k]);
+  const c = $('fltCount'); c.hidden = !on.length; c.textContent = AR(on.length);
+  $('fltShow').textContent = 'عرض ' + cnt(n, W_PROJ);
+  const chips = (S.q.trim() ? [['q', 'بحث', S.q.trim()]] : []).concat(on.map(([k, , l]) => [k, l, S[k]]));
+  $('fltChips').innerHTML = chips.map(([k, l, v]) => '<button type="button" class="fchip" data-fchip="' + k + '" aria-label="' + esc('حذف فلتر ' + l + ': ' + v) + '">' + esc(l + ': ' + v) + '<i aria-hidden="true">×</i></button>').join('') +
+    (chips.length > 1 ? '<button type="button" class="fclear" data-fclear>مسح الكل</button>' : '');
+}
+function clearFilters(){ FLT.forEach(([k]) => S[k] = ''); S.q = ''; $('q').value = ''; buildFilters(); render(); }
+document.addEventListener('click', e => {
+  const ch = e.target.closest('[data-fchip]');
+  if(ch){ const k = ch.dataset.fchip; S[k] = ''; if(k === 'q') $('q').value = ''; buildFilters(); render(); return; }
+  if(e.target.closest('[data-fclear]')) clearFilters();
+});
+const fltPhone = () => matchMedia('(max-width:640px)').matches;
+function fltSet(open){
+  const d = $('fltDlg');
+  if(open && !d.open){ fltPhone() ? d.showModal() : d.show(); }
+  if(!open && d.open) d.close();
+  S.fopen = open && !fltPhone(); $('fltBtn').setAttribute('aria-expanded', String(d.open)); saveView();
+}
+$('fltBtn').addEventListener('click', () => fltSet(!$('fltDlg').open));
+$('fltDlg').addEventListener('close', () => { $('fltBtn').setAttribute('aria-expanded', 'false'); if(fltPhone()) return; S.fopen = false; saveView(); });
+if(S.fopen && !fltPhone()) fltSet(true);
+$('driveMenuBtn').addEventListener('click', () => { $('adminMenu').open = false; $('driveBtn').click(); });
+['namesBtn', 'donorsBtn'].forEach(id => $(id).addEventListener('click', () => { $('adminMenu').open = false; }));
+document.addEventListener('click', e => { const m = $('adminMenu'); if(m.open && !m.contains(e.target)) m.open = false; });
 window.addEventListener('hashchange', () => { readHash(); render(); });
 
 /* الشريط العلوي يختفي عند النزول ويعود عند الصعود، كشريط «مَدار» في نَسَق */
