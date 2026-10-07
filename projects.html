@@ -738,6 +738,15 @@ html:not(.can-plan) #planCard [data-act="toggle"]{pointer-events:none}
 html:not(.can-edit) [data-act="gantt-dur"],html:not(.can-money-edit) [data-act="money-edit"]{display:none}
 html:not(.can-money) :is(#moneyCard,.money-line){display:none}
 button.file{font:inherit;cursor:pointer;text-align:start}
+
+/* علامات الرسم ليست أزرار لمس: تُستثنى من الحد الأدنى 44px للمس (طبقة utilities في nasaq-ui.css)،
+   وإلا تضخمت على الآيفون. في الطبقة نفسها وبانتقاء أدق ليتقدّم عليها */
+@layer utilities{
+  #detail :is(.ss .ss-seg,.tlx .tlx-bar,.tlx .tlx-ms){min-height:0;min-width:0}
+  /* مربع الإنجاز ورقاقة الحالة: حجمهما المرئي كما هو، ومساحة لمس 44px حولهما بطبقة شفافة */
+  #detail .pi :is(.chk,.pi-st){min-height:0;position:relative}
+  #detail .pi :is(.chk,.pi-st)::after{content:"";position:absolute;inset:-11px -6px}
+}
 </style>
 <link rel="stylesheet" href="nasaq-theme.css?v=20261007a">
 <link rel="stylesheet" href="layouts/nav-side.css?v=20261001a">
