@@ -655,17 +655,15 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 .g-tools input{padding:var(--sp-1) var(--sp-2);margin-inline-start:var(--sp-1)}
 .g-wrap{overflow-x:auto;border:1px solid var(--rep-teal);border-radius:var(--r-md)}
 .gantt{border-collapse:collapse;font-size:var(--fs-xs);font-weight:700;width:100%;table-layout:fixed}
-.gantt col.g-c0{width:150px}
-.gantt col.g-cn{width:34px} .gantt col.g-cp{width:52px}
-.gantt .g-no{background:var(--rep-pale);color:var(--rep-grey);font-size:var(--fs-xs);white-space:nowrap}
-.gantt thead .g-no,.gantt .g-ph .g-no{background:var(--rep-cyan);color:#fff}
+.gantt col.g-c0{width:184px}
+.gantt col.g-cp{width:52px}
+.gantt .g-n{display:inline-block;min-width:2.3em;text-indent:0;font-weight:800;opacity:.85;font-variant-numeric:tabular-nums}
 .gantt td.pd,.g-legend .pd{background:var(--rep-ms-ok);color:#fff}
 .gantt td.pg,.g-legend .pg{background:var(--rep-planned);color:var(--rep-grey)}
 .gantt td.pg.s{border-inline-start-color:#fff}
 .gantt td:is(.pd,.pg) b{font-size:var(--fs-xs);font-weight:800}
 .gantt .g-pc.ok{color:var(--rep-ok-t)}
-.gantt col.g-co{width:76px} .gantt .g-ow{font-size:var(--fs-xs);font-weight:600;color:var(--rep-grey);padding:0 var(--sp-1);overflow-wrap:anywhere;line-height:1.3}
-@container (max-width:600px){ .gantt col.g-c0{width:116px} .gantt col.g-cn{width:30px} .gantt .g-lbl{inset-inline-start:30px} }
+@container (max-width:600px){ .gantt col.g-c0{width:146px} }
 .gantt .g-hd{background:var(--rep-cyan);color:#fff;font-size:var(--fs-xs)}
 .gantt .g-st,.gantt .g-pc{font-size:var(--fs-xs);white-space:nowrap;color:var(--rep-grey)}
 .gantt .g-ph .g-st,.gantt .g-ph .g-pc{background:var(--rep-soft)}
@@ -678,8 +676,7 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 .gantt .mslate,.g-legend .mslate{color:var(--rep-ms-late)} .gantt .mstodo,.g-legend .mstodo{color:var(--rep-ms-todo)}
 .g-legend b{font-weight:400}
 .gantt th,.gantt td{border:1px solid var(--rep-mid);height:26px;text-align:center;padding:0}
-.gantt .g-lbl{position:sticky;inset-inline-start:34px;z-index:1;text-align:start;padding:3px var(--sp-2);line-height:1.35;overflow-wrap:anywhere}
-.gantt .g-no{position:sticky;inset-inline-start:0;z-index:1}
+.gantt .g-lbl{position:sticky;inset-inline-start:0;z-index:1;text-align:start;padding:3px var(--sp-2);line-height:1.35;overflow-wrap:anywhere;padding-inline-start:calc(2.3em + var(--sp-2));text-indent:-2.3em}
 .gantt thead .g-lbl{background:var(--rep-cyan);color:#fff}
 .gantt .g-mon{background:var(--rep-pale);color:var(--rep-grey);padding:var(--sp-1) 2px}
 .gantt .g-wk{background:var(--rep-teal);color:#fff;font-size:var(--fs-xs)}
@@ -1819,10 +1816,8 @@ function ganttCard(p){
 const donorState = (pr, done) => done ? 'منجز' : pr > 0 ? 'جارٍ' : 'مخطط';
 function ganttTable(p, M, asOf, donor){
   const nowI = M.weeks.findIndex(w => asOf >= w.a && asOf <= new Date(w.b.getTime() + DAY - 1)), nW = M.weeks.length;
-  /* عمود المسؤول (دليل إدارة دورة المشروع للمفوضية الأوروبية: الجدول يحدد من ينفّذ كل نشاط) — في العرض الداخلي فقط، فأسماء الفريق لا تُرسل للمانح */
-  const own = !donor && M.stages.some(g => g.items.some(it => it.owner)), ownTd = (v, h) => own ? (h ? '<th class="g-hd" rowspan="2">المسؤول</th>' : '<td class="g-ow">' + v + '</td>') : '';
   const grp = M.unit === 4 ? 'الربع ' : 'الشهر ', wk = M.unit === 4 ? 'M' : M.unit === 2 ? '' : 'W';
-  const head1 = '<tr><th class="g-no" rowspan="2">#</th><th class="g-lbl" rowspan="2">النشاط</th><th class="g-hd" rowspan="2">الإنجاز</th>' + ownTd('', 1) +
+  const head1 = '<tr><th class="g-lbl" rowspan="2">النشاط</th><th class="g-hd" rowspan="2">الإنجاز</th>' +
     M.months.map((m, i) => '<th class="g-mon" colspan="' + m.n + '" title="' + esc(m.label) + '">' + grp + (i + 1) + '</th>').join('') + '</tr>';
   const head2 = '<tr>' + M.weeks.map((w, i) => '<th class="g-wk' + (i === nowI ? ' now' : '') + (w.out ? ' out' : '') + '" title="' + dayLbl(iso(w.a), false) + ' – ' + dayLbl(iso(w.b), false) + (w.out ? ' | خارج المدة' : '') + '">' + wk + (M.unit === 2 ? AR(i % 2 + 1) : i + 1) + '</th>').join('') + '</tr>';
   /* خانة الإنجاز: ✓ للمكتمل وإلا النسبة؛ في العرض الداخلي يُلوَّن بحاله ويظهر الحال عند المرور، ونسخة المانح محايدة */
@@ -1840,10 +1835,10 @@ function ganttTable(p, M, asOf, donor){
     const wide = kd >= n - kd ? 'd' : 'p', tip = ' title="' + esc(g.name) + ': ' + pct(gp) + (donor ? '' : ' | ' + gst) + '"';
     const bar = (kd > 0 ? '<td class="pd"' + tip + ' colspan="' + kd + '">' + (wide === 'd' ? lab : '') + '</td>' : '') +
       (n - kd > 0 ? '<td class="pg' + (kd ? ' s' : '') + '"' + tip + ' colspan="' + (n - kd) + '">' + (wide === 'p' ? lab : '') + '</td>' : '');
-    const phase = '<tr class="g-ph"><td class="g-no">' + AR(si + 1) + '</td><th class="g-lbl">' + esc(g.name) + '</th>' + pcCell(gp, gst) + ownTd('') +
+    const phase = '<tr class="g-ph"><th class="g-lbl"><span class="g-n">' + AR(si + 1) + '</span>' + esc(g.name) + '</th>' + pcCell(gp, gst) +
       (i0 < 0 ? gap(nW) : gap(i0) + bar + gap(nW - 1 - i1)) + '</tr>';
-    const rows = g.items.map((it, k) => '<tr class="g-it"><td class="g-no">' + AR(si + 1) + '.' + AR(k + 1) + '</td><th class="g-lbl" title="' + esc(it.title + (donor ? '' : ' | ' + sts[k] + (it.owner ? '، ' + it.owner : ''))) + '">' + esc(it.title) + '</th>' +
-      pcCell(itemProg(it, asOf), sts[k]) + ownTd(esc(it.owner || '')) +
+    const rows = g.items.map((it, k) => '<tr class="g-it"><th class="g-lbl" title="' + esc(it.title + (donor ? '' : ' | ' + sts[k])) + '"><span class="g-n">' + AR(si + 1) + '.' + AR(k + 1) + '</span>' + esc(it.title) + '</th>' +
+      pcCell(itemProg(it, asOf), sts[k]) +
       M.weeks.map((w, i) => '<td class="' + ganttCell(it, w, asOf, si, M.stages.length, donor) + (i === nowI ? ' now' : '') + '"></td>').join('') + '</tr>').join('');
     return phase + rows;
   }).join('');
@@ -1851,13 +1846,13 @@ function ganttTable(p, M, asOf, donor){
   if(M.dels.length){
     const k = d => d.status === 'صدر' && (!d.issued || toDate(d.issued) <= asOf) ? 'msok' : donor ? 'mstodo' : toDate(d.due) < asOf ? 'mslate' : d.status === 'قيد الإعداد' ? 'msprep' : 'mstodo';
     const issued = M.dels.filter(d => k(d) === 'msok').length;
-    ms = '<tr class="g-ph g-ms"><td class="g-no">◆</td><th class="g-lbl">المحطات والتقارير</th><td class="g-pc">' + AR(issued) + ' من ' + AR(M.dels.length) + '</td>' + ownTd('') +
+    ms = '<tr class="g-ph g-ms"><th class="g-lbl"><span class="g-n">◆</span>المحطات والتقارير</th><td class="g-pc">' + AR(issued) + ' من ' + AR(M.dels.length) + '</td>' +
       M.weeks.map((w, i) => { const hit = M.dels.filter(d => toDate(d.due) >= w.a && toDate(d.due) <= new Date(w.b.getTime() + DAY - 1));
         if(!hit.length) return '<td class="' + (w.out ? 'out' : '') + (i === nowI ? ' now' : '') + '"></td>';
         const c = hit.map(k).sort((a, b) => ['mslate', 'msprep', 'mstodo', 'msok'].indexOf(a) - ['mslate', 'msprep', 'mstodo', 'msok'].indexOf(b))[0];
         return '<td class="ms ' + c + (i === nowI ? ' now' : '') + '" title="' + esc(hit.map(d => delName(d) + ' | ' + dayLbl(d.due) + ' | ' + (d.status || '')).join('\n')) + '">◆</td>'; }).join('') + '</tr>';
   }
-  return '<table class="gantt" style="min-width:' + (236 + (own ? 76 : 0) + nW * 24) + 'px"><colgroup><col class="g-cn"><col class="g-c0"><col class="g-cp">' + (own ? '<col class="g-co">' : '') + '<col span="' + nW + '"></colgroup><thead>' + head1 + head2 + '</thead><tbody>' + body + ms + '</tbody></table>';
+  return '<table class="gantt" style="min-width:' + (236 + nW * 24) + 'px"><colgroup><col class="g-c0"><col class="g-cp"><col span="' + nW + '"></colgroup><thead>' + head1 + head2 + '</thead><tbody>' + body + ms + '</tbody></table>';
 }
 function ganttLegend(M, donor){
   const out = !donor && M.weeks.some(w => w.out);
@@ -1890,7 +1885,6 @@ function wordGantt(t){
     if(c.classList.contains('g-mon')) [bg, fg] = C.mon;
     else if(c.classList.contains('g-wk')) [bg, fg] = c.classList.contains('out') ? [RCOL.grey, RCOL.white] : C.wk;
     else if(c.classList.contains('g-hd')) [bg, fg] = C.lblHead;
-    else if(c.classList.contains('g-no')) [bg, fg] = c.closest('thead') ? C.lblHead : c.closest('tr').classList.contains('g-ph') ? C.ph : C.it;
     else if(c.classList.contains('pd')) [bg, fg] = [C.pd, RCOL.white];
     else if(c.classList.contains('pg')) [bg, fg] = [C.pg, RCOL.grey];
     else if(c.classList.contains('g-st') || c.classList.contains('g-pc')){
@@ -1900,12 +1894,13 @@ function wordGantt(t){
     else if(c.classList.contains('g-lbl')) [bg, fg] = c.closest('thead') ? C.lblHead : c.closest('tr').classList.contains('g-ph') ? C.ph : C.it;
     else if(c.classList.contains('ph')) bg = C.phfill;
     else ['dn1', 'dn2', 'dn3', 'pl', 'lt', 'out'].forEach(k => { if(c.classList.contains(k)) bg = C[k]; });
-    const narrow = !(c.classList.contains('g-lbl') || c.classList.contains('g-no') || c.classList.contains('g-st') || c.classList.contains('g-pc') || c.classList.contains('g-hd')) && c.colSpan === 1;
-    c.setAttribute('style', base + 'background:' + bg + ';color:' + fg + ';' + (c.classList.contains('g-lbl') ? 'text-align:right;width:112pt;' : c.classList.contains('g-no') ? 'white-space:nowrap;width:22pt;' :
+    const narrow = !(c.classList.contains('g-lbl') || c.classList.contains('g-st') || c.classList.contains('g-pc') || c.classList.contains('g-hd')) && c.colSpan === 1;
+    c.setAttribute('style', base + 'background:' + bg + ';color:' + fg + ';' + (c.classList.contains('g-lbl') ? 'text-align:right;width:130pt;' :
       c.classList.contains('g-st') || c.classList.contains('g-hd') ? 'white-space:nowrap;width:46pt;' : c.classList.contains('g-pc') ? 'width:34pt;' : narrow ? 'width:16pt;' : '') +
       (c.classList.contains('now') ? 'border-left:1.5pt solid ' + RCOL.gold + ';border-right:1.5pt solid ' + RCOL.gold + ';' : ''));
     c.removeAttribute('class'); c.removeAttribute('title');
   });
+  t.querySelectorAll('.g-n').forEach(n => { n.removeAttribute('class'); n.textContent += '\u00a0\u00a0'; });
   t.removeAttribute('class'); t.removeAttribute('style'); t.setAttribute('style', 'border-collapse:collapse;direction:rtl;'); t.querySelectorAll('colgroup').forEach(c => c.remove());
   return t;
 }
