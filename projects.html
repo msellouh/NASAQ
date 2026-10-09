@@ -1747,7 +1747,7 @@ function itemState(it, asOf){
    المنجز 100%، والبند بنسبة مُدخلة يأخذها (الإنجاز الفعلي)، والبند الذي بدأ بلا نسبة 50% (قاعدة 50/50)، والباقي 0 */
 const hasPct = it => it.pct !== '' && it.pct != null && isFinite(Number(it.pct));
 const itemProg = (it, asOf) => itemDoneAt(it, asOf || today) ? 1
-  : it.status === 'لم يبدأ' || !it.status ? 0
+  : it.status === 'لم يبدأ' || !it.status || (it.started && toDate(it.started) > (asOf || today)) ? 0
   : hasPct(it) ? Math.max(0, Math.min(.99, Number(it.pct) / 100)) : it.status === 'منجز' ? 1 : .5;
 const avgProg = (items, asOf) => items.length ? items.reduce((a, it) => a + itemProg(it, asOf), 0) / items.length : 0;
 const ST_CLS = {'منجز': 'ok', 'جارٍ': 'run', 'متأخر': 'late', 'تأخر بدؤه': 'late', 'متوقف': 'late', 'لم يبدأ': ''};
@@ -1790,10 +1790,19 @@ function ganttModel(p, asOf, donor){
   const nW = Math.max(1, Math.ceil((reach - s0 + DAY) / (7 * DAY)));
   /* مقياس الزمن بحسب طول المشروع ليبقى الجدول في صفحة عرضية واحدة: أسبوع حتى 6 أشهر، ثم نصف شهر حتى سنة، ثم شهر (وتُجمع الأشهر حينها أرباعًا) */
   const unit = nW <= 26 ? 1 : nW <= 52 ? 2 : 4, nP = Math.ceil(nW / unit);
-  const weeks = [...Array(nP)].map((_, i) => { const a = new Date(s0.getTime() + i * unit * 7 * DAY); return {a, b: new Date(a.getTime() + (unit * 7 - 1) * DAY), out: a > pEnd}; });
+  /* المشروع القصير بأسابيعه، والطويل بأنصاف الأشهر الميلادية (1–15 و16–آخره) أو بالأشهر الميلادية، فيطابق عدد الأشهر مدته الفعلية */
+  let weeks = [];
+  if(unit === 1) weeks = [...Array(nP)].map((_, i) => { const a = new Date(s0.getTime() + i * 7 * DAY); return {a, b: new Date(a.getTime() + 6 * DAY), out: a > pEnd}; });
+  else for(let d = new Date(s0.getFullYear(), s0.getMonth(), 1); d <= reach; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)){
+    const y = d.getFullYear(), m = d.getMonth(), last = new Date(y, m + 1, 0);
+    (unit === 2 ? [[new Date(y, m, 1), new Date(y, m, 15)], [new Date(y, m, 16), last]] : [[d, last]])
+      .forEach(([a, b]) => { if(b >= s0 && a <= reach) weeks.push({a, b, out: a > pEnd}); });
+  }
   /* شهر المشروع = 4 أسابيع ثابتة (الشهر 1 = W1–W4) كما في جداول التقارير المعتمدة، لا الشهر الميلادي */
   const months = [], fd = x => fmtDate(x, {day: 'numeric', month: 'short'}), per = unit === 4 ? 3 : 4 / unit;
-  for(let i = 0; i < weeks.length; i += per){ const g = weeks.slice(i, i + per); months.push({n: g.length, label: fd(g[0].a) + ' – ' + fd(g[g.length - 1].b)}); }
+  if(unit === 2) weeks.forEach(w => { const k = w.a.getFullYear() * 12 + w.a.getMonth(), last = months[months.length - 1];
+    if(last && last.k === k) last.n++; else months.push({k, n: 1, name: fmtDate(w.a, {month: 'long'}), label: fmtDate(w.a, {month: 'long', year: 'numeric'})}); });
+  else for(let i = 0; i < weeks.length; i += per){ const g = weeks.slice(i, i + per); months.push({n: g.length, label: fd(g[0].a) + ' – ' + fd(g[g.length - 1].b)}); }
   const stages = [];
   items.slice().sort((a, b) => (num(a.order) - num(b.order)) || (toDate(a.start) - toDate(b.start))).forEach(it => {
     const k = it.stage || 'بلا مرحلة'; let g = stages.find(x => x.name === k); if(!g) stages.push(g = {name: k, items: []}); g.items.push(it);
@@ -1803,15 +1812,15 @@ function ganttModel(p, asOf, donor){
 }
 /* مدة البند الفعلية: من بدايته الفعلية (أو المخططة إن لم يبدأ) بطول مدته المخططة، والمنجز حتى تاريخ إنجازه
    (Microsoft Project: البداية الفعلية ونسبة الإنجاز تُرسم داخل شريط البند) */
-function itemSpan(it){
-  const ps = toDate(it.start), pe = toDate(it.end), as = it.started ? toDate(it.started) : null, s = as || ps;
+function itemSpan(it, asOf){
+  const ps = toDate(it.start), pe = toDate(it.end), as = it.started && (!asOf || toDate(it.started) <= asOf) ? toDate(it.started) : null, s = as || ps;
   const e = it.status === 'منجز' && it.done && toDate(it.done) >= s ? toDate(it.done) : new Date(s.getTime() + Math.max(0, pe - ps));
   return {ps, pe, as, s, e};
 }
 /* خانات صف البند: المنفّذ بقدر نسبته من أول خاناته، والباقي مخطط؛ في العرض الداخلي ما مرّ تاريخه بلا إنجاز أحمر،
    والأسابيع المخططة قبل بدايته الفعلية المتأخرة مخططة سابقًا (مخططة بخطوط). نسخة المانح: منفّذ ومخطط فقط */
 function ganttCells(it, M, asOf, si, donor){
-  const {ps, as, s, e} = itemSpan(it), dn = /توثيق|تقارير/.test(it.stage || '') ? 'dn3' : si < 2 && M.stages.length > 2 ? 'dn1' : 'dn2';
+  const {ps, as, s, e} = itemSpan(it, asOf), dn = /توثيق|تقارير/.test(it.stage || '') ? 'dn3' : si < 2 && M.stages.length > 2 ? 'dn1' : 'dn2';
   const idx = []; M.weeks.forEach((w, i) => { if(w.b >= s && w.a <= e) idx.push(i); });
   const pr = itemProg(it, asOf), k = pr >= 1 ? idx.length : Math.min(idx.length - 1, Math.round(idx.length * pr));
   return M.weeks.map((w, i) => {
@@ -1842,7 +1851,7 @@ function ganttCard(p){
         : '<p class="note" style="margin:0">لا تاريخ بداية ولا تاريخ اعتماد لهذا المشروع — أضفهما في نوشن ليُرسم الجدول.</p>') + '</article>';
   }
   const H = schedHealth(p, M, asOf), nOut = M.weeks.filter(w => w.out).length, uL = {1: 'أسبوعًا', 2: 'نصف شهر', 4: 'شهرًا'}[M.unit];
-  return '<article class="card tlx" id="ganttCard"><div class="card-h"><h2>الجدول الزمني' + (M.unit === 1 ? ' الأسبوعي' : '') + '</h2><small>بنمط التقارير المرحلية المعتمدة — ' + AR(M.weeks.length - nOut) + ' ' + uL + (nOut ? ' + ' + AR(nOut) + ' خارج المدة' : '') + (M.unit > 1 ? ' (مشروع طويل: كل عمود ' + (M.unit === 2 ? 'أسبوعان' : '4 أسابيع') + ')' : '') + '</small>' +
+  return '<article class="card tlx" id="ganttCard"><div class="card-h"><h2>الجدول الزمني' + (M.unit === 1 ? ' الأسبوعي' : '') + '</h2><small>بنمط التقارير المرحلية المعتمدة — ' + AR(M.weeks.length - nOut) + ' ' + uL + (nOut ? ' + ' + AR(nOut) + ' خارج المدة' : '') + (M.unit > 1 ? ' (مشروع طويل: كل عمود ' + (M.unit === 2 ? 'نصف شهر' : 'شهر') + ')' : '') + '</small>' +
     (M.preview ? '<span class="g-prev">مقترح من قالب «' + esc(M.preview.label) + '»</span>' : '') + '</div>' +
     (M.preview ? '<p class="note" style="margin:0 0 10px">لا خطة تنفيذ لهذا المشروع بعد، فهذا جدول مقترح من مدته ونوعه. أنشئ الخطة من بطاقة «خطة التنفيذ» لتعتمده وتتابع إنجاز بنوده.</p>' : '') +
     '<div class="g-tools"><label>حالة الجدول في تاريخ <input type="date" data-gasof="' + esc(p.id) + '" value="' + iso(asOf) + '"></label>' +
@@ -1864,8 +1873,8 @@ function ganttTable(p, M, asOf, donor){
   const nowI = M.weeks.findIndex(w => asOf >= w.a && asOf <= new Date(w.b.getTime() + DAY - 1)), nW = M.weeks.length;
   const grp = M.unit === 4 ? 'الربع ' : 'الشهر ', wk = M.unit === 4 ? 'M' : M.unit === 2 ? '' : 'W';
   const head1 = '<tr><th class="g-lbl" rowspan="2">النشاط</th><th class="g-hd" rowspan="2">الإنجاز</th><th class="g-hd" rowspan="2">البداية الفعلية</th>' +
-    M.months.map((m, i) => '<th class="g-mon" colspan="' + m.n + '" title="' + esc(m.label) + '">' + grp + (i + 1) + '</th>').join('') + '</tr>';
-  const head2 = '<tr>' + M.weeks.map((w, i) => '<th class="g-wk' + (i === nowI ? ' now' : '') + (w.out ? ' out' : '') + '" title="' + dayLbl(iso(w.a), false) + ' – ' + dayLbl(iso(w.b), false) + (w.out ? ' | خارج المدة' : '') + '">' + wk + (M.unit === 2 ? AR(i % 2 + 1) : i + 1) + '</th>').join('') + '</tr>';
+    M.months.map((m, i) => '<th class="g-mon" colspan="' + m.n + '" title="' + esc(m.label) + '">' + (m.name || grp + (i + 1)) + '</th>').join('') + '</tr>';
+  const head2 = '<tr>' + M.weeks.map((w, i) => '<th class="g-wk' + (i === nowI ? ' now' : '') + (w.out ? ' out' : '') + '" title="' + dayLbl(iso(w.a), false) + ' – ' + dayLbl(iso(w.b), false) + (w.out ? ' | خارج المدة' : '') + '">' + wk + (M.unit === 2 ? AR(w.a.getDate() < 16 ? 1 : 2) : i + 1) + '</th>').join('') + '</tr>';
   /* خانة الإنجاز: ✓ للمكتمل وإلا النسبة؛ في العرض الداخلي يُلوَّن بحاله ويظهر الحال عند المرور، ونسخة المانح محايدة */
   const asCell = d => '<td class="g-as">' + (d ? dayLbl(d, false) : '—') + '</td>';
   const pcCell = (pr, st) => '<td class="g-pc ' + (pr >= 1 ? 'ok' : donor ? '' : ST_CLS[st] || '') + '"' + (donor || !st ? '' : ' title="' + st + '"') + '>' + (pr >= 1 ? '✓' : pct(pr)) + '</td>';
