@@ -664,16 +664,13 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 .g-wrap{overflow-x:auto;border:1px solid var(--rep-teal);border-radius:var(--r-md)}
 .gantt{border-collapse:collapse;font-size:var(--fs-xs);font-weight:700;width:100%;table-layout:fixed}
 .gantt col.g-c0{width:184px}
-.gantt col.g-cp{width:52px} .gantt col.g-ca{width:64px}
-.gantt .g-as{font-size:var(--fs-xs);font-weight:600;color:var(--rep-grey);white-space:nowrap}
-.gantt .g-ph .g-as{background:var(--rep-soft)}
+.gantt .g-sub{font-size:var(--fs-xs);font-weight:600;opacity:.9}
 .gantt td.was,.g-legend .was{background:repeating-linear-gradient(135deg,var(--rep-planned) 0 3px,var(--rep-out) 3px 6px)}
 .gantt .g-n{display:inline-block;min-width:2.3em;text-indent:0;font-weight:800;opacity:.85;font-variant-numeric:tabular-nums}
 .gantt td.pd,.g-legend .pd{background:var(--rep-ms-ok);color:#fff}
 .gantt td.pg,.g-legend .pg{background:var(--rep-planned);color:var(--rep-grey)}
 .gantt td.pg.s{border-inline-start-color:#fff}
 .gantt td:is(.pd,.pg) b{font-size:var(--fs-xs);font-weight:800}
-.gantt .g-pc.ok{color:var(--rep-ok-t)}
 @container (max-width:600px){ .gantt col.g-c0{width:146px} }
 .gantt .g-hd{background:var(--rep-cyan);color:#fff;font-size:var(--fs-xs)}
 .gantt .g-st,.gantt .g-pc{font-size:var(--fs-xs);white-space:nowrap;color:var(--rep-grey)}
@@ -1872,15 +1869,11 @@ const donorState = (pr, done) => done ? 'منجز' : pr > 0 ? 'جارٍ' : 'مخ
 function ganttTable(p, M, asOf, donor){
   const nowI = M.weeks.findIndex(w => asOf >= w.a && asOf <= new Date(w.b.getTime() + DAY - 1)), nW = M.weeks.length;
   const grp = M.unit === 4 ? 'الربع ' : 'الشهر ', wk = M.unit === 4 ? 'M' : M.unit === 2 ? '' : 'W';
-  const head1 = '<tr><th class="g-lbl" rowspan="2">النشاط</th><th class="g-hd" rowspan="2">الإنجاز</th><th class="g-hd" rowspan="2">البداية الفعلية</th>' +
+  const head1 = '<tr><th class="g-lbl" rowspan="2">النشاط</th>' +
     M.months.map((m, i) => '<th class="g-mon" colspan="' + m.n + '" title="' + esc(m.label) + '">' + (m.name || grp + (i + 1)) + '</th>').join('') + '</tr>';
   const head2 = '<tr>' + M.weeks.map((w, i) => '<th class="g-wk' + (i === nowI ? ' now' : '') + (w.out ? ' out' : '') + '" title="' + dayLbl(iso(w.a), false) + ' – ' + dayLbl(iso(w.b), false) + (w.out ? ' | خارج المدة' : '') + '">' + wk + (M.unit === 2 ? AR(w.a.getDate() < 16 ? 1 : 2) : i + 1) + '</th>').join('') + '</tr>';
-  /* خانة الإنجاز: ✓ للمكتمل وإلا النسبة؛ في العرض الداخلي يُلوَّن بحاله ويظهر الحال عند المرور، ونسخة المانح محايدة */
-  const asCell = d => '<td class="g-as">' + (d ? dayLbl(d, false) : '—') + '</td>';
-  const pcCell = (pr, st) => '<td class="g-pc ' + (pr >= 1 ? 'ok' : donor ? '' : ST_CLS[st] || '') + '"' + (donor || !st ? '' : ' title="' + st + '"') + '>' + (pr >= 1 ? '✓' : pct(pr)) + '</td>';
   const body = M.stages.map((g, si) => {
     const ga = new Date(Math.min(...g.items.map(x => itemSpan(x).s))), gb = new Date(Math.max(...g.items.map(x => itemSpan(x).e)));
-    const gs = g.items.filter(x => x.started).map(x => x.started).sort()[0] || '';
     const on = M.weeks.map(w => w.b >= ga && w.a <= gb), i0 = on.indexOf(true), i1 = on.lastIndexOf(true);
     const gap = n => n > 0 ? '<td colspan="' + n + '"></td>' : '';
     const gp = g.items.reduce((a, it) => a + itemProg(it, asOf), 0) / g.items.length;
@@ -1892,10 +1885,9 @@ function ganttTable(p, M, asOf, donor){
     const wide = kd >= n - kd ? 'd' : 'p', tip = ' title="' + esc(g.name) + ': ' + pct(gp) + (donor ? '' : ' | ' + gst) + '"';
     const bar = (kd > 0 ? '<td class="pd"' + tip + ' colspan="' + kd + '">' + (wide === 'd' ? lab : '') + '</td>' : '') +
       (n - kd > 0 ? '<td class="pg' + (kd ? ' s' : '') + '"' + tip + ' colspan="' + (n - kd) + '">' + (wide === 'p' ? lab : '') + '</td>' : '');
-    const phase = '<tr class="g-ph"><th class="g-lbl"><span class="g-n">' + AR(si + 1) + '</span>' + esc(g.name) + '</th>' + pcCell(gp, gst) + asCell(gs) +
+    const phase = '<tr class="g-ph"><th class="g-lbl"><span class="g-n">' + AR(si + 1) + '</span>' + esc(g.name) + '</th>' +
       (i0 < 0 ? gap(nW) : gap(i0) + bar + gap(nW - 1 - i1)) + '</tr>';
-    const rows = g.items.map((it, k) => '<tr class="g-it"><th class="g-lbl" title="' + esc(it.title + (donor ? '' : ' | ' + sts[k])) + '"><span class="g-n">' + AR(si + 1) + '.' + AR(k + 1) + '</span>' + esc(it.title) + '</th>' +
-      pcCell(itemProg(it, asOf), sts[k]) + asCell(it.started && toDate(it.started) <= asOf ? it.started : '') +
+    const rows = g.items.map((it, k) => '<tr class="g-it"><th class="g-lbl" title="' + esc(it.title + ' | ' + (itemProg(it, asOf) >= 1 ? 'مكتمل' : 'أُنجز ' + pct(itemProg(it, asOf))) + (donor ? '' : ' | ' + sts[k])) + '"><span class="g-n">' + AR(si + 1) + '.' + AR(k + 1) + '</span>' + esc(it.title) + '</th>' +
       ganttCells(it, M, asOf, si, donor).map((c, i) => '<td class="' + c + (i === nowI ? ' now' : '') + '"></td>').join('') + '</tr>').join('');
     return phase + rows;
   }).join('');
@@ -1903,13 +1895,13 @@ function ganttTable(p, M, asOf, donor){
   if(M.dels.length){
     const k = d => d.status === 'صدر' && (!d.issued || toDate(d.issued) <= asOf) ? 'msok' : donor ? 'mstodo' : toDate(d.due) < asOf ? 'mslate' : d.status === 'قيد الإعداد' ? 'msprep' : 'mstodo';
     const issued = M.dels.filter(d => k(d) === 'msok').length;
-    ms = '<tr class="g-ph g-ms"><th class="g-lbl"><span class="g-n">◆</span>المحطات والتقارير</th><td class="g-pc">' + AR(issued) + ' من ' + AR(M.dels.length) + '</td><td class="g-as"></td>' +
+    ms = '<tr class="g-ph g-ms"><th class="g-lbl"><span class="g-n">◆</span>المحطات والتقارير <small class="g-sub">' + AR(issued) + ' من ' + AR(M.dels.length) + '</small></th>' +
       M.weeks.map((w, i) => { const hit = M.dels.filter(d => toDate(d.due) >= w.a && toDate(d.due) <= new Date(w.b.getTime() + DAY - 1));
         if(!hit.length) return '<td class="' + (w.out ? 'out' : '') + (i === nowI ? ' now' : '') + '"></td>';
         const c = hit.map(k).sort((a, b) => ['mslate', 'msprep', 'mstodo', 'msok'].indexOf(a) - ['mslate', 'msprep', 'mstodo', 'msok'].indexOf(b))[0];
         return '<td class="ms ' + c + (i === nowI ? ' now' : '') + '" title="' + esc(hit.map(d => delName(d) + ' | ' + dayLbl(d.due) + ' | ' + (d.status || '')).join('\n')) + '">◆</td>'; }).join('') + '</tr>';
   }
-  return '<table class="gantt" style="min-width:' + (300 + nW * 24) + 'px"><colgroup><col class="g-c0"><col class="g-cp"><col class="g-ca"><col span="' + nW + '"></colgroup><thead>' + head1 + head2 + '</thead><tbody>' + body + ms + '</tbody></table>';
+  return '<table class="gantt" style="min-width:' + (184 + nW * 24) + 'px"><colgroup><col class="g-c0"><col span="' + nW + '"></colgroup><thead>' + head1 + head2 + '</thead><tbody>' + body + ms + '</tbody></table>';
 }
 function ganttLegend(M, donor){
   const out = !donor && M.weeks.some(w => w.out);
