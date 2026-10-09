@@ -336,6 +336,14 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .pi-st:hover{filter:brightness(.97);border-color:currentColor}
 .pi-more .ic{width:18px;height:18px}
 .pi-q{margin:var(--sp-2) 0;list-style:none}
+.wk-list{display:grid;gap:var(--sp-1);max-height:min(52vh,460px);overflow:auto;padding-inline-end:2px}
+.wk-grp{margin:var(--sp-2) 0 0;font-size:var(--fs-xs);font-weight:700;color:var(--muted)}
+.wk-row{display:grid;grid-template-columns:auto 1fr auto;gap:var(--sp-3);align-items:center;border:1px solid var(--rule);border-radius:var(--r-md);padding:var(--sp-2) var(--sp-3);cursor:pointer}
+.wk-row b{display:block;font-size:var(--fs-sm)} .wk-row small{display:block;font-size:var(--fs-xs);color:var(--muted)}
+.wk-row em{font-style:normal;font-size:var(--fs-xs);font-weight:700;color:var(--focus);white-space:nowrap}
+.wk-row input{width:18px;height:18px;accent-color:var(--focus)}
+.wk-row:has(input:checked){border-color:var(--focus);background:color-mix(in srgb,var(--focus) 6%,var(--paper))}
+.wk-row.dup{opacity:.6;cursor:default}
 .stg-menu{position:relative;display:inline-block}
 .stg-menu summary{list-style:none;cursor:pointer}
 .stg-menu summary::-webkit-details-marker{display:none}
@@ -656,7 +664,10 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 .g-wrap{overflow-x:auto;border:1px solid var(--rep-teal);border-radius:var(--r-md)}
 .gantt{border-collapse:collapse;font-size:var(--fs-xs);font-weight:700;width:100%;table-layout:fixed}
 .gantt col.g-c0{width:184px}
-.gantt col.g-cp{width:52px}
+.gantt col.g-cp{width:52px} .gantt col.g-ca{width:64px}
+.gantt .g-as{font-size:var(--fs-xs);font-weight:600;color:var(--rep-grey);white-space:nowrap}
+.gantt .g-ph .g-as{background:var(--rep-soft)}
+.gantt td.was,.g-legend .was{background:repeating-linear-gradient(135deg,var(--rep-planned) 0 3px,var(--rep-out) 3px 6px)}
 .gantt .g-n{display:inline-block;min-width:2.3em;text-indent:0;font-weight:800;opacity:.85;font-variant-numeric:tabular-nums}
 .gantt td.pd,.g-legend .pd{background:var(--rep-ms-ok);color:#fff}
 .gantt td.pg,.g-legend .pg{background:var(--rep-planned);color:var(--rep-grey)}
@@ -818,7 +829,7 @@ dialog[open]::backdrop{animation:m-fade-in calc(var(--dur-3) * var(--motion-scal
 /* الصلاحيات: أدوات التعديل تختفي لمن لا يملكها (الجسر يرفضها أصلًا) */
 html:not(.is-owner) :is(#driveBtn,.danger-zone){display:none}
 html:not(.can-create) #newProjBtn,html:not(.can-config) :is(#namesBtn,#donorsBtn,#peopleAddBtn){display:none}
-html:not(.can-plan) #planCard :is([data-act="tpl"],[data-act="add"],[data-act="add-stage"],[data-act="edit"],.plan-hint){display:none}
+html:not(.can-plan) #planCard :is([data-act="tpl"],[data-act="works"],[data-act="add"],[data-act="add-stage"],[data-act="edit"],.plan-hint){display:none}
 html:not(.can-plan) #planCard :is(.pi-main,.pi-st,.chk){pointer-events:none}
 html:not(.can-plan) #planCard [data-act="toggle"]{pointer-events:none}
 html:not(.can-edit) [data-act="gantt-dur"],html:not(.can-money-edit) [data-act="money-edit"]{display:none}
@@ -1073,6 +1084,17 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     </div>
   </form>
 </dialog>
+<dialog id="worksDlg" class="sheet works-dlg" aria-labelledby="worksTitle">
+  <form id="worksForm" method="dialog">
+    <h2 id="worksTitle">إضافة أعمال إنشائية</h2>
+    <button class="icon-btn sheet-x" type="button" data-close title="إغلاق" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <p class="sub">تُضاف في مرحلة «الأعمال الإنشائية» بترتيبها المعتاد، ومددها تملأ مدة التنفيذ. تعدّل التواريخ بعدها من كل بند.</p>
+    <div class="wk-list" id="worksList"></div>
+    <label class="fld">عمل آخر<input id="worksOther" list="worksNames" maxlength="200" placeholder="مثال: أعمال الجبس"></label>
+    <datalist id="worksNames"></datalist>
+    <div class="dlg-acts"><button class="btn" type="button" data-close>إلغاء</button><button class="btn cta" type="submit" id="worksAdd">أضف</button></div>
+  </form>
+</dialog>
 <dialog id="planDlg" class="sheet" aria-labelledby="planDlgTitle">
   <form id="planForm" method="dialog">
     <h2 id="planDlgTitle">بند جديد</h2>
@@ -1088,6 +1110,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     <div class="fld-row">
       <label class="fld">البداية المخططة<input name="start" type="date"></label>
       <label class="fld">النهاية المخططة<input name="end" type="date"></label>
+      <label class="fld">البداية الفعلية<input name="started" type="date"></label>
     </div>
     <div class="fld"><label for="ownerSel">المسؤول</label>
       <div class="owner-row">
@@ -1264,6 +1287,17 @@ const TEMPLATES = [
   { key:'general', label:'عام — المراحل الثماني', test: () => true, stages: PHASES.map(ph => [ph, [[ph]]]) }
 ];
 const PLAN_STATUSES = ['لم يبدأ','جارٍ','منجز','متوقف'];
+/* الأعمال الإنشائية بتسلسلها المعتاد في الموقع (تقسيم MasterFormat: الأوضاع القائمة والهدم، الخرسانة، البناء، السباكة،
+   الكهرباء، التشطيبات): [الاسم، توضيح، بداية نسبية بالأسابيع، مدة بالأسابيع، مختار افتراضيًا].
+   التمديدات متوازية، والقصارة بعدها، والدهان آخرًا؛ والمدد تتمدد لتملأ مدة مرحلة التنفيذ */
+const WORKS_STAGE = 'الأعمال الإنشائية';
+const WORKS_LIB = [
+  ['قبل البدء', [['الأعمال التحضيرية وتجهيز الموقع', 'تسوير، لوحة المشروع، الخدمات المؤقتة', 0, 1, 1], ['أعمال الإزالة والهدم', 'البلاط والقواطع والتمديدات القديمة', 1, 2, 1]]],
+  ['الهيكل', [['أعمال الحفر والردم', 'للتوسعة أو الأساسات', 2, 2, 0], ['أعمال الحديد والخرسانة', 'التسليح والصب', 3, 3, 1], ['أعمال البناء (البلوك)', 'الجدران والقواطع', 4, 3, 1]]],
+  ['التمديدات', [['السباكة (التمديدات)', 'مياه وصرف', 6, 3, 1], ['الكهرباء (التمديدات)', 'أنابيب وأسلاك وعلب', 6, 3, 1], ['العزل المائي والحراري', 'الأسطح والحمامات', 8, 1, 0]]],
+  ['التشطيبات', [['القصارة', 'اللياسة الداخلية والخارجية', 8, 3, 1], ['البلاط والسيراميك', '', 10, 3, 1], ['الدهان والتشطيبات', '', 12, 2, 1],
+    ['الألمنيوم والأبواب', '', 12, 2, 0], ['التركيبات الصحية والكهربائية النهائية', '', 14, 1, 0]]]
+];
 
 let DATA = { projects: [], deliverables: [], plan: [], files: {}, driveRoot: '', people: [] };
 let SOURCE = '';
@@ -1524,6 +1558,7 @@ async function openViaBridge(p, id){
 }
 function use(d, src, note){
   ACC = (src === 'live' && d.access) || {owner: true}; applyAcc();
+  if(src === 'live') ovApply(d.plan || []);
   DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [], options: d.options || {}, donorCountries: d.donorCountries || {}, donors: d.donors || [] };
   applyDonorCountries();
   if(src === 'live') loadFilesCache();
@@ -1747,8 +1782,8 @@ function ganttModel(p, asOf, donor){
     items = tplItems(p, preview);
     if(p.status === 'مكتمل') items.forEach(x => { x.status = 'منجز'; x.done = x.end; });
   }
-  const s0 = new Date(Math.min(...items.map(x => toDate(x.start)), ...(p.start ? [toDate(p.start)] : [])));
-  const e0 = new Date(Math.max(...items.map(x => toDate(x.end)), ...(p.end ? [toDate(p.end)] : [])));
+  const s0 = new Date(Math.min(...items.map(x => itemSpan(x).s), ...(p.start ? [toDate(p.start)] : [])));
+  const e0 = new Date(Math.max(...items.map(x => itemSpan(x).e), ...(p.end ? [toDate(p.end)] : [])));
   /* مشروع تجاوز نهايته: تمتد الأسابيع حتى تاريخ الجدول (حتى 26 أسبوعًا) فيظهر التأخر، وتُعلَّم «خارج المدة» */
   const pEnd = p.end ? toDate(p.end) : e0;
   const reach = !donor && asOf && p.status !== 'مكتمل' && asOf > e0 ? new Date(Math.min(asOf, e0.getTime() + 26 * 7 * DAY)) : e0;
@@ -1766,14 +1801,25 @@ function ganttModel(p, asOf, donor){
   const dels = delsOf(p).filter(d => d.due);
   return {weeks, months, stages, preview, dels, unit, nWeeks: Math.ceil((Math.min(reach, pEnd) - s0 + DAY) / (7 * DAY))};
 }
-function ganttCell(it, w, asOf, si, nStages, donor){
-  const a = toDate(it.start), b = toDate(it.end);
-  if(w.b < a || w.a > b) return w.out ? 'out' : '';
-  /* «منجز»: كامل مدته منجزة إن سبق تاريخُ إنجازه تاريخَ الجدول، وإلا حتى تاريخ الجدول. «جارٍ»: حتى تاريخ الجدول. */
-  const doneAt = it.status === 'منجز' ? (it.done ? toDate(it.done) : b) : null;
-  const isDone = doneAt && doneAt <= asOf ? true : (it.status === 'منجز' || it.status === 'جارٍ') && w.a <= asOf;
-  if(!isDone) return !donor && w.a <= asOf ? 'lt' : 'pl';
-  return /توثيق|تقارير/.test(it.stage || '') ? 'dn3' : si < 2 && nStages > 2 ? 'dn1' : 'dn2';
+/* مدة البند الفعلية: من بدايته الفعلية (أو المخططة إن لم يبدأ) بطول مدته المخططة، والمنجز حتى تاريخ إنجازه
+   (Microsoft Project: البداية الفعلية ونسبة الإنجاز تُرسم داخل شريط البند) */
+function itemSpan(it){
+  const ps = toDate(it.start), pe = toDate(it.end), as = it.started ? toDate(it.started) : null, s = as || ps;
+  const e = it.status === 'منجز' && it.done && toDate(it.done) >= s ? toDate(it.done) : new Date(s.getTime() + Math.max(0, pe - ps));
+  return {ps, pe, as, s, e};
+}
+/* خانات صف البند: المنفّذ بقدر نسبته من أول خاناته، والباقي مخطط؛ في العرض الداخلي ما مرّ تاريخه بلا إنجاز أحمر،
+   والأسابيع المخططة قبل بدايته الفعلية المتأخرة مخططة سابقًا (مخططة بخطوط). نسخة المانح: منفّذ ومخطط فقط */
+function ganttCells(it, M, asOf, si, donor){
+  const {ps, as, s, e} = itemSpan(it), dn = /توثيق|تقارير/.test(it.stage || '') ? 'dn3' : si < 2 && M.stages.length > 2 ? 'dn1' : 'dn2';
+  const idx = []; M.weeks.forEach((w, i) => { if(w.b >= s && w.a <= e) idx.push(i); });
+  const pr = itemProg(it, asOf), k = pr >= 1 ? idx.length : Math.min(idx.length - 1, Math.round(idx.length * pr));
+  return M.weeks.map((w, i) => {
+    const j = idx.indexOf(i);
+    if(j >= 0) return j < k ? dn : !donor && w.a <= asOf ? 'lt' : 'pl';
+    if(!donor && as && as > ps && w.b >= ps && w.a < s) return 'was';
+    return w.out ? 'out' : '';
+  });
 }
 /* مدة المشروع ← تاريخ النهاية (كما في نموذج المشروع الجديد) */
 function addDur(st, n, u){
@@ -1817,13 +1863,15 @@ const donorState = (pr, done) => done ? 'منجز' : pr > 0 ? 'جارٍ' : 'مخ
 function ganttTable(p, M, asOf, donor){
   const nowI = M.weeks.findIndex(w => asOf >= w.a && asOf <= new Date(w.b.getTime() + DAY - 1)), nW = M.weeks.length;
   const grp = M.unit === 4 ? 'الربع ' : 'الشهر ', wk = M.unit === 4 ? 'M' : M.unit === 2 ? '' : 'W';
-  const head1 = '<tr><th class="g-lbl" rowspan="2">النشاط</th><th class="g-hd" rowspan="2">الإنجاز</th>' +
+  const head1 = '<tr><th class="g-lbl" rowspan="2">النشاط</th><th class="g-hd" rowspan="2">الإنجاز</th><th class="g-hd" rowspan="2">البداية الفعلية</th>' +
     M.months.map((m, i) => '<th class="g-mon" colspan="' + m.n + '" title="' + esc(m.label) + '">' + grp + (i + 1) + '</th>').join('') + '</tr>';
   const head2 = '<tr>' + M.weeks.map((w, i) => '<th class="g-wk' + (i === nowI ? ' now' : '') + (w.out ? ' out' : '') + '" title="' + dayLbl(iso(w.a), false) + ' – ' + dayLbl(iso(w.b), false) + (w.out ? ' | خارج المدة' : '') + '">' + wk + (M.unit === 2 ? AR(i % 2 + 1) : i + 1) + '</th>').join('') + '</tr>';
   /* خانة الإنجاز: ✓ للمكتمل وإلا النسبة؛ في العرض الداخلي يُلوَّن بحاله ويظهر الحال عند المرور، ونسخة المانح محايدة */
+  const asCell = d => '<td class="g-as">' + (d ? dayLbl(d, false) : '—') + '</td>';
   const pcCell = (pr, st) => '<td class="g-pc ' + (pr >= 1 ? 'ok' : donor ? '' : ST_CLS[st] || '') + '"' + (donor || !st ? '' : ' title="' + st + '"') + '>' + (pr >= 1 ? '✓' : pct(pr)) + '</td>';
   const body = M.stages.map((g, si) => {
-    const ga = new Date(Math.min(...g.items.map(x => toDate(x.start)))), gb = new Date(Math.max(...g.items.map(x => toDate(x.end))));
+    const ga = new Date(Math.min(...g.items.map(x => itemSpan(x).s))), gb = new Date(Math.max(...g.items.map(x => itemSpan(x).e)));
+    const gs = g.items.filter(x => x.started).map(x => x.started).sort()[0] || '';
     const on = M.weeks.map(w => w.b >= ga && w.a <= gb), i0 = on.indexOf(true), i1 = on.lastIndexOf(true);
     const gap = n => n > 0 ? '<td colspan="' + n + '"></td>' : '';
     const gp = g.items.reduce((a, it) => a + itemProg(it, asOf), 0) / g.items.length;
@@ -1835,30 +1883,31 @@ function ganttTable(p, M, asOf, donor){
     const wide = kd >= n - kd ? 'd' : 'p', tip = ' title="' + esc(g.name) + ': ' + pct(gp) + (donor ? '' : ' | ' + gst) + '"';
     const bar = (kd > 0 ? '<td class="pd"' + tip + ' colspan="' + kd + '">' + (wide === 'd' ? lab : '') + '</td>' : '') +
       (n - kd > 0 ? '<td class="pg' + (kd ? ' s' : '') + '"' + tip + ' colspan="' + (n - kd) + '">' + (wide === 'p' ? lab : '') + '</td>' : '');
-    const phase = '<tr class="g-ph"><th class="g-lbl"><span class="g-n">' + AR(si + 1) + '</span>' + esc(g.name) + '</th>' + pcCell(gp, gst) +
+    const phase = '<tr class="g-ph"><th class="g-lbl"><span class="g-n">' + AR(si + 1) + '</span>' + esc(g.name) + '</th>' + pcCell(gp, gst) + asCell(gs) +
       (i0 < 0 ? gap(nW) : gap(i0) + bar + gap(nW - 1 - i1)) + '</tr>';
     const rows = g.items.map((it, k) => '<tr class="g-it"><th class="g-lbl" title="' + esc(it.title + (donor ? '' : ' | ' + sts[k])) + '"><span class="g-n">' + AR(si + 1) + '.' + AR(k + 1) + '</span>' + esc(it.title) + '</th>' +
-      pcCell(itemProg(it, asOf), sts[k]) +
-      M.weeks.map((w, i) => '<td class="' + ganttCell(it, w, asOf, si, M.stages.length, donor) + (i === nowI ? ' now' : '') + '"></td>').join('') + '</tr>').join('');
+      pcCell(itemProg(it, asOf), sts[k]) + asCell(it.started && toDate(it.started) <= asOf ? it.started : '') +
+      ganttCells(it, M, asOf, si, donor).map((c, i) => '<td class="' + c + (i === nowI ? ' now' : '') + '"></td>').join('') + '</tr>').join('');
     return phase + rows;
   }).join('');
   let ms = '';
   if(M.dels.length){
     const k = d => d.status === 'صدر' && (!d.issued || toDate(d.issued) <= asOf) ? 'msok' : donor ? 'mstodo' : toDate(d.due) < asOf ? 'mslate' : d.status === 'قيد الإعداد' ? 'msprep' : 'mstodo';
     const issued = M.dels.filter(d => k(d) === 'msok').length;
-    ms = '<tr class="g-ph g-ms"><th class="g-lbl"><span class="g-n">◆</span>المحطات والتقارير</th><td class="g-pc">' + AR(issued) + ' من ' + AR(M.dels.length) + '</td>' +
+    ms = '<tr class="g-ph g-ms"><th class="g-lbl"><span class="g-n">◆</span>المحطات والتقارير</th><td class="g-pc">' + AR(issued) + ' من ' + AR(M.dels.length) + '</td><td class="g-as"></td>' +
       M.weeks.map((w, i) => { const hit = M.dels.filter(d => toDate(d.due) >= w.a && toDate(d.due) <= new Date(w.b.getTime() + DAY - 1));
         if(!hit.length) return '<td class="' + (w.out ? 'out' : '') + (i === nowI ? ' now' : '') + '"></td>';
         const c = hit.map(k).sort((a, b) => ['mslate', 'msprep', 'mstodo', 'msok'].indexOf(a) - ['mslate', 'msprep', 'mstodo', 'msok'].indexOf(b))[0];
         return '<td class="ms ' + c + (i === nowI ? ' now' : '') + '" title="' + esc(hit.map(d => delName(d) + ' | ' + dayLbl(d.due) + ' | ' + (d.status || '')).join('\n')) + '">◆</td>'; }).join('') + '</tr>';
   }
-  return '<table class="gantt" style="min-width:' + (236 + nW * 24) + 'px"><colgroup><col class="g-c0"><col class="g-cp"><col span="' + nW + '"></colgroup><thead>' + head1 + head2 + '</thead><tbody>' + body + ms + '</tbody></table>';
+  return '<table class="gantt" style="min-width:' + (300 + nW * 24) + 'px"><colgroup><col class="g-c0"><col class="g-cp"><col class="g-ca"><col span="' + nW + '"></colgroup><thead>' + head1 + head2 + '</thead><tbody>' + body + ms + '</tbody></table>';
 }
 function ganttLegend(M, donor){
   const out = !donor && M.weeks.some(w => w.out);
   return '<div class="g-legend"><span><i class="pd"></i>المرحلة: المنفّذ</span><span><i class="pg"></i>المرحلة: المتبقي</span>' +
     '<span><i class="dn2"></i>بند منفّذ</span><span><i class="dn1"></i>منفّذ (المراحل الأولى)</span><span><i class="dn3"></i>التوثيق والتقارير</span>' +
-    '<span><i class="pl"></i>بند مخطط</span>' + (donor ? '' : '<span><i class="lt"></i>مخطط مرّ دون إنجاز</span>') + (out ? '<span><i class="out"></i>خارج المدة</span>' : '') +
+    '<span><i class="pl"></i>بند مخطط</span>' + (donor ? '' : '<span><i class="lt"></i>مخطط مرّ دون إنجاز</span>' +
+      (M.stages.some(g => g.items.some(x => x.started && x.start && x.started > x.start)) ? '<span><i class="was"></i>مخطط سابقًا (بدأ بعده)</span>' : '')) + (out ? '<span><i class="out"></i>خارج المدة</span>' : '') +
     (M.dels.length ? '<span><b class="msok">◆</b> صدر</span>' + (donor ? '<span><b class="mstodo">◆</b> مخطط</span>' : '<span><b class="msprep">◆</b> قيد الإعداد</span><span><b class="mslate">◆</b> متأخر</span>') : '') +
     '<span><b class="msok">✓</b> مكتمل</span><span><i class="nowk"></i>' + (donor ? 'أسبوع التقرير' : 'أسبوع التاريخ المختار') + '</span></div>';
 }
@@ -1875,7 +1924,7 @@ async function ganttCopy(p){
 }
 function wordGantt(t){
   const C = {mon: [RCOL.pale, RCOL.grey], wk: [RCOL.teal, RCOL.white], lblHead: [RCOL.cyan, RCOL.white], ph: [RCOL.cyan, RCOL.white], it: [RCOL.pale, RCOL.grey],
-    phfill: RCOL.mid, pd: RCOL.msOk, pg: RCOL.planned, dn1: RCOL.done1, dn2: RCOL.done2, dn3: RCOL.done3, pl: RCOL.planned, lt: RCOL.late, out: RCOL.out};
+    phfill: RCOL.mid, pd: RCOL.msOk, pg: RCOL.planned, was: RCOL.out, dn1: RCOL.done1, dn2: RCOL.done2, dn3: RCOL.done3, pl: RCOL.planned, lt: RCOL.late, out: RCOL.out};
   const MS = {msok: RCOL.msOk, msprep: RCOL.msPrep, mslate: RCOL.msLate, mstodo: RCOL.msTodo};
   const ST = {ok: RCOL.okText, run: RCOL.teal, late: RCOL.msLate};
   const base = 'border:0.5pt solid ' + RCOL.teal + ';font-family:\'Sakkal Majalla\';font-size:13pt;font-weight:bold;text-align:center;vertical-align:middle;padding:2pt 3pt;';
@@ -1887,15 +1936,15 @@ function wordGantt(t){
     else if(c.classList.contains('g-hd')) [bg, fg] = C.lblHead;
     else if(c.classList.contains('pd')) [bg, fg] = [C.pd, RCOL.white];
     else if(c.classList.contains('pg')) [bg, fg] = [C.pg, RCOL.grey];
-    else if(c.classList.contains('g-st') || c.classList.contains('g-pc')){
+    else if(c.classList.contains('g-st') || c.classList.contains('g-pc') || c.classList.contains('g-as')){
       const ph = c.closest('tr').classList.contains('g-ph');
       bg = ph ? RCOL.soft : RCOL.white; fg = ST[['ok', 'run', 'late'].find(k => c.classList.contains(k))] || RCOL.grey; }
     else if(c.classList.contains('ms')){ fg = MS[['msok', 'msprep', 'mslate', 'mstodo'].find(k => c.classList.contains(k))] || RCOL.grey; }
     else if(c.classList.contains('g-lbl')) [bg, fg] = c.closest('thead') ? C.lblHead : c.closest('tr').classList.contains('g-ph') ? C.ph : C.it;
     else if(c.classList.contains('ph')) bg = C.phfill;
-    else ['dn1', 'dn2', 'dn3', 'pl', 'lt', 'out'].forEach(k => { if(c.classList.contains(k)) bg = C[k]; });
-    const narrow = !(c.classList.contains('g-lbl') || c.classList.contains('g-st') || c.classList.contains('g-pc') || c.classList.contains('g-hd')) && c.colSpan === 1;
-    c.setAttribute('style', base + 'background:' + bg + ';color:' + fg + ';' + (c.classList.contains('g-lbl') ? 'text-align:right;width:130pt;' :
+    else ['dn1', 'dn2', 'dn3', 'pl', 'lt', 'out', 'was'].forEach(k => { if(c.classList.contains(k)) bg = C[k]; });
+    const narrow = !(c.classList.contains('g-lbl') || c.classList.contains('g-st') || c.classList.contains('g-pc') || c.classList.contains('g-as') || c.classList.contains('g-hd')) && c.colSpan === 1;
+    c.setAttribute('style', base + 'background:' + bg + ';color:' + fg + ';' + (c.classList.contains('g-lbl') ? 'text-align:right;width:130pt;' : c.classList.contains('g-as') ? 'white-space:nowrap;width:44pt;font-size:11pt;' :
       c.classList.contains('g-st') || c.classList.contains('g-hd') ? 'white-space:nowrap;width:46pt;' : c.classList.contains('g-pc') ? 'width:34pt;' : narrow ? 'width:16pt;' : '') +
       (c.classList.contains('now') ? 'border-left:1.5pt solid ' + RCOL.gold + ';border-right:1.5pt solid ' + RCOL.gold + ';' : ''));
     c.removeAttribute('class'); c.removeAttribute('title');
@@ -1908,7 +1957,7 @@ function wordGantt(t){
 function wordLegend(lg){
   if(!lg) return '';
   const sw = c => '<span style="display:inline-block;width:10pt;height:10pt;background:' + c + ';border:0.5pt solid ' + RCOL.mid + ';margin:0 10pt 0 3pt;vertical-align:-1pt">&nbsp;</span>';
-  const map = {pd: RCOL.msOk, pg: RCOL.planned, dn1: RCOL.done1, dn2: RCOL.done2, dn3: RCOL.done3, pl: RCOL.planned, lt: RCOL.late, out: RCOL.out, nowk: RCOL.white};
+  const map = {pd: RCOL.msOk, pg: RCOL.planned, was: RCOL.out, dn1: RCOL.done1, dn2: RCOL.done2, dn3: RCOL.done3, pl: RCOL.planned, lt: RCOL.late, out: RCOL.out, nowk: RCOL.white};
   const MS = {msok: RCOL.msOk, msprep: RCOL.msPrep, mslate: RCOL.msLate, mstodo: RCOL.msTodo};
   const parts = [...lg.children].map(sp => { const i = sp.querySelector('i'), b = sp.querySelector('b'), txt = sp.textContent.replace('◆', '').trim();
     if(i) return sw(map[i.className] || RCOL.white) + txt;
@@ -2255,6 +2304,7 @@ function planCard(p){
   const groups = !open ? '' : '<div class="plan-body" id="planBody">' +
     '<div class="plan-tools"><button class="btn ghost sm" type="button" data-act="add-stage">' + ICON_PLUS + 'مرحلة</button>' +
       '<button class="btn cta sm" type="button" data-act="add" data-stage="' + esc((st[nowIdx] || st[st.length - 1]).name) + '">' + ICON_PLUS + 'بند</button>' +
+      (TEMPLATES.find(t => t.key === 'construction').test(p) || st.some(x => x.name === WORKS_STAGE) ? '<button class="btn ghost sm" type="button" data-act="works">' + ICON_PLUS + 'أعمال إنشائية</button>' : '') +
       '<span class="plan-hint">اضغط البند لتعديله في مكانه | <kbd>Enter</kbd> حفظ | <kbd>Esc</kbd> إلغاء</span></div>' +
     st.map((s, i) => '<section class="stage ' + s.state + (PLAN_FLASH === String(i) ? ' flash' : '') + '" id="stg-' + i + '">' +
       '<div class="stage-h"><span class="no">' + (s.state === 'done' ? icon('check') : AR(i + 1)) + '</span>' +
@@ -2315,6 +2365,7 @@ function planRow(it){
     '<button class="pi-main" type="button" data-act="qedit" data-id="' + esc(it.id) + '" aria-label="تعديل سريع: ' + esc(it.title) + '">' +
       '<span class="pi-title">' + esc(it.title) + '</span><span class="pi-meta"><span>' + when + '</span>' +
       (late ? '<span class="flag late">متأخر ' + cnt(days(toDate(it.end), today), W_DAY) + '</span>' : '') +
+      (!done && it.started ? '<span>بدأ ' + dayLbl(it.started, false) + '</span>' : '') +
       (!done && it.status && it.status !== 'لم يبدأ' ? '<span' + (hasPct(it) ? '' : ' title="بلا نسبة مدخلة: يُحسب 50%"') + '>أُنجز ' + pct(itemProg(it)) + '</span>' : '') +
       (it.owner ? '<span>' + esc(it.owner) + '</span>' : '') + (it.notes ? '<span title="' + esc(it.notes) + '">ملاحظة</span>' : '') + '</span></button>' +
     '<button class="pill pi-st ' + stPill(stt) + '" type="button" data-act="cycle" data-id="' + esc(it.id) + '" title="اضغط لتغيير الحالة" aria-label="الحالة: ' + esc(stt) + '، اضغط للتالية"><i></i>' + esc(stt) + '</button>' +
@@ -2330,7 +2381,8 @@ function planQuick(it){
       '<label class="fld">البداية<input name="start" type="date" value="' + esc(it.start || '') + '"></label>' +
       '<label class="fld">النهاية<input name="end" type="date" value="' + esc(it.end || '') + '"></label>' +
       '<label class="fld">المسؤول<select name="owner">' + o(people, it.owner || '', '— بلا مسؤول —') + '</select></label>' +
-      '<label class="fld">نسبة الإنجاز<input name="pct" type="number" min="0" max="100" step="5" inputmode="numeric" placeholder="50 إن تُركت" value="' + (hasPct(it) ? esc(it.pct) : '') + '"></label></div>' +
+      '<label class="fld">نسبة الإنجاز<input name="pct" type="number" min="0" max="100" step="5" inputmode="numeric" placeholder="50 إن تُركت" value="' + (hasPct(it) ? esc(it.pct) : '') + '"></label>' +
+      '<label class="fld">البداية الفعلية<input name="started" type="date" value="' + esc(it.started || '') + '"></label></div>' +
     '<div class="pq-acts"><button class="btn cta sm" type="submit">' + (it._draft ? 'إضافة' : 'حفظ') + '</button>' +
       '<button class="btn ghost sm" type="button" data-act="qcancel">إلغاء</button>' +
       (it._draft ? '' : '<button class="btn ghost sm" type="button" data-act="edit" data-id="' + esc(it.id) + '">التفاصيل والملاحظات</button>' +
@@ -2342,7 +2394,8 @@ function planRefresh(p){ refreshCard('planCard', planCard(p)); }
 async function saveMany(list, msg){
   if(!list.length) return;
   try{
-    if(SOURCE === 'live') for(const {it} of list){ const d = await post({action: 'plan_save', org: ORG, item: planPayload(it)}); Object.assign(it, d.item); }
+    if(SOURCE === 'live') for(const {it} of list){ const keep = {pct: it.pct, started: it.started}; const d = await post({action: 'plan_save', org: ORG, item: planPayload(it)}); Object.assign(it, d.item);
+      if(!hasPct(it) && keep.pct !== '' && keep.pct != null) it.pct = keep.pct; if(!it.started && keep.started) it.started = keep.started; ovSave([it]); }
     else localPlanWrite();
     toast(msg);
   }catch(err){ list.forEach(({it, prev}) => Object.assign(it, prev)); toast('تعذّر الحفظ: ' + err.message, true); }
@@ -2404,13 +2457,13 @@ function qSave(f){
   const it = DATA.plan.find(x => x.id === f.dataset.qform); if(!it) return;
   const pv = f.elements.pct.value.trim();
   const vals = { title: f.elements.title.value.trim(), status: f.elements.status.value, start: f.elements.start.value, end: f.elements.end.value, owner: f.elements.owner.value,
-    pct: pv === '' ? '' : Math.max(0, Math.min(100, Math.round(Number(pv)))) };
+    pct: pv === '' ? '' : Math.max(0, Math.min(100, Math.round(Number(pv)))), started: f.elements.started.value };
   if(vals.status === 'منجز') vals.pct = 100;
   if(!vals.title){ f.elements.title.focus(); return; }
   if(vals.end && vals.start && vals.end < vals.start){ toast('النهاية قبل البداية', true); f.elements.end.focus(); return; }
   const prev = it._draft ? null : Object.assign({}, it);
   vals.done = vals.status === 'منجز' ? (it.status === 'منجز' && it.done ? it.done : iso(today)) : '';
-  Object.assign(it, vals); delete it._draft;
+  Object.assign(it, vals); delete it._draft; autoStart(it);
   QE = null; rerender(); saveItem(it, prev);
 }
 function cycleItem(id){
@@ -2419,6 +2472,7 @@ function cycleItem(id){
   it.status = PLAN_ST[(PLAN_ST.indexOf(it.status || 'لم يبدأ') + 1) % PLAN_ST.length];
   it.done = it.status === 'منجز' ? iso(today) : '';
   if(it.status === 'منجز') it.pct = 100; else if(it.status === 'لم يبدأ') it.pct = '';
+  autoStart(it);
   rerender(); saveItem(it, prev);
 }
 /* الحذف فوري مع «تراجع» خمس ثوانٍ، ثم يُرسل إلى نوشن (سلة نوشن) أو يُحفظ محليًا */
@@ -2935,7 +2989,29 @@ function projTable(rows){
 const isTmp = id => /^(tmp|lp)-/.test(String(id || ''));
 const newId = pre => pre + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const planPayload = it => ({ id: isTmp(it.id) ? null : it.id, project: it.project, title: it.title, stage: it.stage, order: it.order,
-  status: it.status, start: it.start || '', end: it.end || '', done: it.done || '', owner: it.owner || '', notes: it.notes || '', pct: hasPct(it) ? Number(it.pct) : '', localId: it.id });
+  status: it.status, start: it.start || '', end: it.end || '', done: it.done || '', owner: it.owner || '', notes: it.notes || '', pct: hasPct(it) ? Number(it.pct) : '',
+  started: it.started || '', localId: it.id });
+/* «نسبة الإنجاز» و«البداية الفعلية» تُحفظان أيضًا في هذا المتصفح حتى يدعمهما الجسر؛ ما يردّه نوشن يتقدم دائمًا */
+const PLAN_OV_KEY = 'daily-board-plan-extra-' + ORG;
+function ovRead(){ try{ return JSON.parse(localStorage.getItem(PLAN_OV_KEY) || '{}'); }catch(e){ return {}; } }
+function ovSave(list){
+  const o = ovRead();
+  list.forEach(it => { if(!it || !it.id || isTmp(it.id)) return; o[it.id] = {pct: hasPct(it) ? Number(it.pct) : '', started: it.started || ''}; });
+  try{ localStorage.setItem(PLAN_OV_KEY, JSON.stringify(o)); }catch(e){}
+}
+function ovApply(plan){
+  const o = ovRead();
+  plan.forEach(it => { const x = o[it.id]; if(!x) return;
+    if(!hasPct(it) && x.pct !== '' && x.pct != null) it.pct = x.pct;
+    if(!it.started && x.started) it.started = x.started; });
+}
+/* البداية الفعلية: تُسجَّل تلقائيًا عند أول «جارٍ» بتاريخ اليوم، وعند الإنجاز بلا بداية تُعدّ البداية المخططة، وتُمسح إن عاد «لم يبدأ» */
+function autoStart(it){
+  if(it.status === 'لم يبدأ' || !it.status){ it.started = ''; return; }
+  if(it.started) return;
+  if(it.status === 'جارٍ') it.started = iso(today);
+  else if(it.status === 'منجز') it.started = it.start && toDate(it.start) <= (it.done ? toDate(it.done) : today) ? it.start : (it.done || iso(today));
+}
 let toastT;
 function toast(msg, bad, action){
   const t = $('toast'); t.textContent = msg; t.className = 'toast on' + (bad ? ' bad' : '') + (action ? ' act' : '');
@@ -2949,8 +3025,12 @@ function rerender(){ if(S.view === 'list'){ renderList(filtered()); renderDetail
 async function saveItem(it, prev){
   try{
     if(SOURCE === 'live'){
+      const keep = {pct: it.pct, started: it.started};
       const d = await post({action: 'plan_save', org: ORG, item: planPayload(it)});
       Object.assign(it, d.item);
+      if(!hasPct(it) && keep.pct !== '' && keep.pct != null) it.pct = keep.pct;
+      if(!it.started && keep.started) it.started = keep.started;
+      ovSave([it]);
       toast('حُفظ في نوشن');
     }else{
       if(!/^lp-/.test(it.id)) it.id = newId('lp');
@@ -2968,6 +3048,7 @@ function toggleItem(id){
   it.status = it.status === 'منجز' ? 'لم يبدأ' : 'منجز';
   it.done = it.status === 'منجز' ? iso(today) : null;
   it.pct = it.status === 'منجز' ? 100 : '';
+  autoStart(it);
   rerender(); saveItem(it, prev);
 }
 function tplItems(p, tpl){
@@ -3001,21 +3082,66 @@ function tplItems(p, tpl){
 }
 async function createFromTemplate(p, key){
   const tpl = TEMPLATES.find(t => t.key === key); if(!tpl) return;
-  const items = tplItems(p, tpl);
+  bulkAdd(p, tplItems(p, tpl), 'أُنشئت الخطة', 'تعذّر إنشاء الخطة');
+}
+async function bulkAdd(p, items, okMsg, badMsg){
   planOpenSet(p.id, true);
   DATA.plan.push(...items); rerender();
   try{
     if(SOURCE === 'live'){
       const d = await post({action: 'plan_bulk', org: ORG, items: items.map(planPayload)});
       d.items.forEach(r => { const it = items.find(x => x.id === r.localId); if(it) Object.assign(it, r); });
-      toast('أُنشئت الخطة في نوشن: ' + cnt(items.length, W_ITEM));
-    }else{ localPlanWrite(); toast('أُنشئت الخطة في هذا المتصفح: ' + cnt(items.length, W_ITEM)); }
+      toast(okMsg + ' في نوشن: ' + cnt(items.length, W_ITEM));
+    }else{ localPlanWrite(); toast(okMsg + ' في هذا المتصفح: ' + cnt(items.length, W_ITEM)); }
   }catch(err){
     DATA.plan = DATA.plan.filter(x => !items.includes(x));
-    toast('تعذّر إنشاء الخطة: ' + err.message, true);
+    toast(badMsg + ': ' + err.message, true);
   }
   rerender();
 }
+/* نافذة «أعمال إنشائية»: اختيار من القائمة أو اسم آخر، وتُضاف دفعة واحدة في مرحلة «الأعمال الإنشائية» بعد مرحلة التنفيذ */
+let worksP = null;
+function openWorks(p){
+  worksP = p;
+  const have = new Set(planOf(p).map(x => x.title.trim()));
+  $('worksList').innerHTML = WORKS_LIB.map(([g, l]) => '<p class="wk-grp">' + g + '</p>' + l.map(([n, d, o, w, on]) => {
+    const dup = have.has(n);
+    return '<label class="wk-row' + (dup ? ' dup' : '') + '"><input type="checkbox" name="w" value="' + esc(n) + '"' + (on && !dup ? ' checked' : '') + (dup ? ' disabled' : '') + '>' +
+      '<span><b>' + esc(n) + '</b>' + (dup ? '<small>موجود في الخطة</small>' : d ? '<small>' + esc(d) + '</small>' : '') + '</span><em>' + cnt(w, W_WEEK) + '</em></label>'; }).join('')).join('');
+  $('worksOther').value = '';
+  $('worksNames').innerHTML = WORKS_LIB.flatMap(([, l]) => l).map(r => '<option value="' + esc(r[0]) + '">').join('');
+  worksCount(); $('worksDlg').showModal();
+}
+const W_WEEK = ['أسبوع واحد', 'أسبوعان', 'أسابيع', 'أسبوعًا', 'أسبوع'];
+function worksCount(){
+  const n = $('worksDlg').querySelectorAll('input[name="w"]:checked').length + ($('worksOther').value.trim() ? 1 : 0);
+  $('worksAdd').disabled = !n; $('worksAdd').textContent = n ? 'أضف ' + cnt(n, W_ITEM) : 'اختر الأعمال';
+}
+function addWorks(p){
+  const lib = WORKS_LIB.flatMap(([, l]) => l), pick = [...$('worksDlg').querySelectorAll('input[name="w"]:checked')].map(x => lib.find(r => r[0] === x.value)).filter(Boolean);
+  const other = $('worksOther').value.trim(), have = new Set(planOf(p).map(x => x.title.trim()));
+  if(other && !have.has(other) && !pick.some(r => r[0] === other)){ const last = pick.reduce((a, r) => Math.max(a, r[2] + r[3]), 0); pick.push(lib.find(r => r[0] === other) || [other, '', last, 2, 1]); }
+  const list = pick.filter(r => !have.has(r[0])).sort((a, b) => a[2] - b[2]);
+  if(!list.length){ toast('كل الأعمال المختارة موجودة في الخطة', true); return; }
+  /* مدة مرحلة التنفيذ إن وُجدت، وإلا مدة المشروع */
+  const st = stagesOf(p), ex = st.find(x => /تنفيذ|تشغيل|التوزيع/.test(x.name)) || null;
+  const S0 = ex && ex.start ? toDate(ex.start) : toDate(p.start || p.approvalDate || iso(today));
+  const E0 = ex && ex.end ? toDate(ex.end) : p.end ? toDate(p.end) : new Date(S0.getTime() + 12 * 7 * DAY);
+  const u0 = Math.min(...list.map(r => r[2])), u1 = Math.max(...list.map(r => r[2] + r[3])), k = Math.max(DAY, (E0 - S0) / Math.max(1, u1 - u0));
+  const cur = st.find(x => x.name === WORKS_STAGE);
+  const base = cur ? Math.max(...cur.items.map(x => num(x.order))) + 1 : ex ? Math.max(...ex.items.map(x => num(x.order))) + 1 : (planOf(p).length ? Math.max(...planOf(p).map(x => num(x.order))) + 100 : 0);
+  const items = list.map((r, i) => {
+    const a = new Date(S0.getTime() + (r[2] - u0) * k), b = new Date(Math.max(a.getTime(), a.getTime() + r[3] * k - DAY));
+    return { id: newId(SOURCE === 'live' ? 'tmp' : 'lp'), project: p.id, title: r[0], stage: WORKS_STAGE, order: base + i, status: 'لم يبدأ',
+      start: iso(a), end: iso(b), done: '', started: '', pct: '', owner: p.coordinator || '', notes: '' };
+  });
+  $('worksDlg').close();
+  bulkAdd(p, items, 'أُضيفت الأعمال', 'تعذّر إضافة الأعمال');
+  const skipped = pick.length - list.length; if(skipped) setTimeout(() => toast('تُخطّي ' + cnt(skipped, W_ITEM) + ' موجود في الخطة'), 2700);
+}
+$('worksDlg').addEventListener('change', worksCount);
+$('worksOther').addEventListener('input', worksCount);
+$('worksForm').addEventListener('submit', e => { e.preventDefault(); if(worksP) addWorks(worksP); });
 
 /* نافذة البند */
 let dlgItem = null, dlgProject = null;
@@ -3311,7 +3437,7 @@ function openPlanDlg(p, it, stage, newStage){
   f.title.value = it ? it.title : ''; f.stage.value = it ? (it.stage || '') : (newStage ? '' : (stage || ''));
   f.status.value = it ? (it.status || 'لم يبدأ') : 'لم يبدأ';
   f.pct.value = it && hasPct(it) ? it.pct : '';
-  f.start.value = it ? (it.start || '') : ''; f.end.value = it ? (it.end || '') : '';
+  f.start.value = it ? (it.start || '') : ''; f.end.value = it ? (it.end || '') : ''; f.started.value = it ? (it.started || '') : '';
   fillOwners(it ? (it.owner || '') : (p.coordinator || '')); f.notes.value = it ? (it.notes || '') : '';
   $('peoplePanel').hidden = true; $('peopleToggle').setAttribute('aria-expanded', 'false');
   $('stageList').innerHTML = stagesOf(p).map(s => '<option value="' + esc(s.name) + '">').join('');
@@ -3323,7 +3449,7 @@ $('planForm').addEventListener('submit', e => {
   e.preventDefault();
   const f = e.target, p = dlgProject; if(!p) return;
   const vals = { title: f.title.value.trim(), stage: f.stage.value.trim(), status: f.status.value, start: f.start.value, end: f.end.value,
-    owner: $('ownerSel').value, notes: f.notes.value.trim(), pct: f.pct.value.trim() === '' ? '' : Math.max(0, Math.min(100, Math.round(Number(f.pct.value)))) };
+    owner: $('ownerSel').value, notes: f.notes.value.trim(), pct: f.pct.value.trim() === '' ? '' : Math.max(0, Math.min(100, Math.round(Number(f.pct.value)))), started: f.started.value };
   if(vals.status === 'منجز') vals.pct = 100;
   if(!vals.title){ f.title.focus(); return; }
   if(vals.end && vals.start && vals.end < vals.start){ toast('النهاية المخططة قبل البداية', true); f.end.focus(); return; }
@@ -3332,7 +3458,7 @@ $('planForm').addEventListener('submit', e => {
     const prev = Object.assign({}, dlgItem);
     if(vals.status === 'منجز' && dlgItem.status !== 'منجز') vals.done = iso(today);
     if(vals.status !== 'منجز') vals.done = '';
-    Object.assign(dlgItem, vals); rerender(); saveItem(dlgItem, prev);
+    Object.assign(dlgItem, vals); autoStart(dlgItem); rerender(); saveItem(dlgItem, prev);
   }else{
     const same = planOf(p).filter(x => (x.stage || '') === vals.stage);
     const order = same.length ? Math.max(...same.map(x => num(x.order))) + 10 : (planOf(p).length ? Math.max(...planOf(p).map(x => num(x.order))) + 100 : 0);
@@ -3517,6 +3643,7 @@ $('detail').addEventListener('click', e => {
   else if(act === 'add') openPlanDlg(p, null, b.dataset.stage);
   else if(act === 'add-stage') openPlanDlg(p, null, '', true);
   else if(act === 'tpl') createFromTemplate(p, $('tplSel').value);
+  else if(act === 'works') openWorks(p);
   else if(act === 'more'){ const k = b.dataset.key; EXPANDED.has(k) ? EXPANDED.delete(k) : EXPANDED.add(k); refreshCard('docsCard', docsCard(p)); }
   else if(act === 'files-refresh'){ delete FILES[p.code]; fetchFiles(p, true); refreshCard('docsCard', docsCard(p)); }
   else if(act === 'delete') deleteProject(p);
