@@ -186,7 +186,13 @@ window.NasaqAuth = (function(){
     try{ window[to].setItem(KEY, JSON.stringify(a)); }catch(e){}
     del(other, KEY);
   }
-  function clear(){ del('localStorage', KEY); del('sessionStorage', KEY); }
+  /* الخروج وانتهاء الجلسة يمسحان أيضًا نسخ المشاريع وقوائم ملفاتها (فيها المبالغ والملاحظات)، فلا تبقى على جهاز مشترك.
+     التعبير نفسه في resetLocalForUser (index.html) */
+  function clear(){
+    del('localStorage', KEY); del('sessionStorage', KEY);
+    try{ Object.keys(localStorage).filter(function(k){ return /^daily-board-(projects-cache|projfiles)-/.test(k); })
+      .forEach(function(k){ localStorage.removeItem(k); }); }catch(e){}
+  }
   function rememberedUser(){ try{ return localStorage.getItem(USER_KEY) || ''; }catch(e){ return ''; } }
   function rememberUser(u){ try{ u ? localStorage.setItem(USER_KEY, u) : localStorage.removeItem(USER_KEY); }catch(e){} }
   return { load: load, save: save, clear: clear, persistent: persistent,
