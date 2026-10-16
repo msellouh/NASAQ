@@ -174,7 +174,7 @@ html:not(.is-owner) #driveMenuBtn{display:none}
 /* ---------- البطاقات ---------- */
 .card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);padding:var(--sp-5) var(--sp-5);box-shadow:var(--shadow);min-width:0}
 .card-h{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2) var(--sp-3);margin-bottom:var(--sp-4)}
-.card-h h2{font-size:var(--fs-md);color:var(--ink)}
+.card-h :is(h2,h3){font-size:var(--fs-md);color:var(--ink)}
 .card-h small{font-size:var(--fs-xs);color:var(--muted)}
 .card-h .end{margin-inline-start:auto;display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2)}
 .note{font-size:var(--fs-sm);color:var(--muted);margin:var(--sp-3) 0 0}
@@ -248,7 +248,7 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
   -webkit-mask:linear-gradient(to right,#000,transparent 62%);mask:linear-gradient(to right,#000,transparent 62%)}
 .hero > *{position:relative}
 .hero .tags{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1)}
-.hero h3{margin:var(--sp-3) 0 0;font-size:clamp(20px,2vw,26px);font-weight:700;line-height:1.35;color:var(--ink)}
+.hero h2{margin:var(--sp-3) 0 0;font-size:clamp(20px,2vw,26px);font-weight:700;line-height:1.35;color:var(--ink)}
 .hero .acts{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-4)}
 .facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:var(--sp-3) var(--sp-5);margin-top:var(--sp-4)}
 .fact span{display:block;font-size:var(--fs-xs);color:var(--muted)}
@@ -393,7 +393,8 @@ dialog.sheet[open]{animation:sheet-in calc(var(--dur-3) * var(--motion-scale,1))
 .stage-h .no{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-head);font-size:var(--fs-xs);font-weight:700;background:var(--stripe);color:var(--ink-2);border:1px solid var(--rule)}
 .stage.done .stage-h .no{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
 .stage.now .stage-h .no{border-color:var(--cta);color:var(--focus-ink)}
-.stage-h h3{font-size:var(--fs-base)}
+.stage-h h4{font-size:var(--fs-base);text-wrap:balance}
+:root[data-field="box"] .stage-h h4{font-weight:var(--head-weight,600)}   /* كما كان h3 (nasaq-ui.css:18) */
 .stage-h small{color:var(--muted);font-size:var(--fs-xs)}
 .stage-h .end{margin-inline-start:auto}
 .pis{list-style:none;margin:var(--sp-2) 0 0;padding:0}
@@ -711,7 +712,7 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 .g-legend i{display:inline-block;width:14px;height:14px;border-radius:var(--r-sm);margin-inline-end:var(--sp-1);vertical-align:-2px;border:1px solid var(--rep-mid)}
 .g-legend .nowk{background:#fff;box-shadow:inset 0 0 0 2px var(--rep-now)}
 .danger-zone{border-color:color-mix(in srgb,var(--urgent) 35%,var(--rule))}
-.danger-zone h2{color:var(--urgent)}
+.danger-zone :is(h2,h3){color:var(--urgent)}
 .btn-danger{border-radius:var(--r-md);padding:var(--sp-2) var(--sp-4);font-weight:600;cursor:pointer}
 .btn-danger[disabled]{opacity:.6;cursor:wait}
 .del-form{display:grid;gap:var(--sp-3);padding:var(--sp-5) var(--sp-5)}
@@ -859,6 +860,8 @@ button.file{font:inherit;cursor:pointer;text-align:start}
 <link rel="stylesheet" href="themes/nasaq360.css?v=20261001a">
 </head>
 <body>
+<a class="skip-link" href="#items">تخطَّ إلى قائمة المشاريع</a>
+<a class="skip-link" href="#detail">تخطَّ إلى تفاصيل المشروع</a>
 <header class="tb" id="tb">
   <a class="brand" href="index.html" title="العودة إلى لوح اليوم" aria-label="نَسَق — العودة إلى لوح اليوم">
     <span class="orbit"><svg class="brand-mark" viewBox="34 36 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><use href="#nasaqMark"/></svg></span>
@@ -943,9 +946,9 @@ button.file{font:inherit;cursor:pointer;text-align:start}
             </select>
           </label>
         </div>
-        <div class="items" id="items"><div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div></div>
+        <div class="items" id="items" tabindex="-1"><div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div></div>
       </nav>
-      <section class="detail" id="detail" aria-live="polite"></section>
+      <section class="detail" id="detail" aria-live="polite" tabindex="-1"></section>
     </div>
   </div>
 </main>
@@ -1754,10 +1757,10 @@ function renderList(rows){
     const ld = lateDels(p).length;
     const flag = ld ? '<span class="badge b-danger">' + icon('alert') + 'استحقاق متأخر' + (ld > 1 ? ' (' + AR(ld) + ')' : '') + '</span>' : '';
     const pr = progressOf(p);
-    return '<button type="button" class="item' + (p.id === S.sel ? ' on' : '') + '" data-id="' + esc(p.id) + '" aria-current="' + (p.id === S.sel) + '">' +
-      '<div class="row1">' + codeChip(p) + statusPill(p.status) + flag + '</div>' +
+    return '<button type="button" class="item' + (p.id === S.sel ? ' on' : '') + '" data-id="' + esc(p.id) + '" aria-label="' + esc((p.code ? p.code + ' ' : '') + (p.name || '')) + '" aria-describedby="r1-' + esc(p.id) + ' mt-' + esc(p.id) + '"' + (p.id === S.sel ? ' aria-current="true"' : '') + '>' +
+      '<div class="row1" id="r1-' + esc(p.id) + '">' + codeChip(p) + statusPill(p.status) + flag + '</div>' +
       '<div class="nm">' + esc(p.name) + '</div>' +
-      '<div class="meta"><span>' + esc(p.donor || 'بلا جهة ممولة') + '</span>' +
+      '<div class="meta" id="mt-' + esc(p.id) + '"><span>' + esc(p.donor || 'بلا جهة ممولة') + '</span>' +
         (p.end ? (isLate(p) ? '<span class="late-t">انتهى قبل ' + cnt(days(toDate(p.end), today), W_DAY) + '</span>' : '<span>ينتهي ' + dayLbl(p.end, false) + '</span>') : p.approvalDate ? '<span>اعتماد ' + dayLbl(p.approvalDate, false) + '</span>' : '') +
         ((p.approved || p.exec) ? '<span class="num">' + money(p.approved || p.exec) + '</span>' : '') +
         (p.docsChecked ? '<span title="المستندات المرفقة">مستندات ' + AR((p.docsDone || []).length) + '/' + AR(DOCS_N) + '</span>' : '') + '</div>' +
@@ -1889,7 +1892,7 @@ function ganttCard(p){
   const M = ganttModel(p, asOf);
   if(!M){
     const s = p.start || p.approvalDate;
-    return '<article class="card" id="ganttCard"><div class="card-h"><h2>الجدول الزمني الأسبوعي</h2></div>' +
+    return '<article class="card" id="ganttCard"><div class="card-h"><h3>الجدول الزمني الأسبوعي</h3></div>' +
       (s ? '<p class="note" style="margin:0 0 10px">يُرسم الجدول من مدة المشروع. البداية ' + dayLbl(s) + (p.start ? '' : ' (تاريخ الاعتماد)') + ' — أدخل المدة لتُحسب النهاية وتُحفظ في نوشن.</p>' +
         '<div class="g-tools g-dur"><label>مدة المشروع <input type="number" min="1" max="120" id="gDurN" inputmode="numeric" placeholder="6"></label>' +
         '<select id="gDurU" aria-label="وحدة المدة"><option value="m">أشهر</option><option value="w">أسابيع</option><option value="d">أيام</option></select>' +
@@ -1897,7 +1900,7 @@ function ganttCard(p){
         : '<p class="note" style="margin:0">لا تاريخ بداية ولا تاريخ اعتماد لهذا المشروع — أضفهما في نوشن ليُرسم الجدول.</p>') + '</article>';
   }
   const H = schedHealth(p, M, asOf), nOut = M.weeks.filter(w => w.out).length, uL = {1: 'أسبوعًا', 2: 'نصف شهر', 4: 'شهرًا'}[M.unit];
-  return '<article class="card tlx" id="ganttCard"><div class="card-h"><h2>الجدول الزمني' + (M.unit === 1 ? ' الأسبوعي' : '') + '</h2><small>بنمط التقارير المرحلية المعتمدة — ' + AR(M.weeks.length - nOut) + ' ' + uL + (nOut ? ' + ' + AR(nOut) + ' خارج المدة' : '') + (M.unit > 1 ? ' (مشروع طويل: كل عمود ' + (M.unit === 2 ? 'نصف شهر' : 'شهر') + ')' : '') + '</small>' +
+  return '<article class="card tlx" id="ganttCard"><div class="card-h"><h3>الجدول الزمني' + (M.unit === 1 ? ' الأسبوعي' : '') + '</h3><small>بنمط التقارير المرحلية المعتمدة — ' + AR(M.weeks.length - nOut) + ' ' + uL + (nOut ? ' + ' + AR(nOut) + ' خارج المدة' : '') + (M.unit > 1 ? ' (مشروع طويل: كل عمود ' + (M.unit === 2 ? 'نصف شهر' : 'شهر') + ')' : '') + '</small>' +
     (M.preview ? '<span class="g-prev">مقترح من قالب «' + esc(M.preview.label) + '»</span>' : '') + '</div>' +
     (M.preview ? '<p class="note" style="margin:0 0 10px">لا خطة تنفيذ لهذا المشروع بعد، فهذا جدول مقترح من مدته ونوعه. أنشئ الخطة من بطاقة «خطة التنفيذ» لتعتمده وتتابع إنجاز بنوده.</p>' : '') +
     '<div class="g-tools"><label>حالة الجدول في تاريخ <input type="date" data-gasof="' + esc(p.id) + '" value="' + iso(asOf) + '"></label>' +
@@ -1905,7 +1908,7 @@ function ganttCard(p){
       '<button class="btn soft" type="button" data-act="report" data-kind="final">مسودة تقرير ختامي</button>' +
       '<button class="btn cta" type="button" data-act="report" data-kind="interim">مسودة تقرير مرحلي</button></span></div>' +
     healthStrip(H) +
-    '<div class="g-wrap">' + ganttTable(p, M, asOf) + '</div>' + ganttLegend(M) +
+    '<div class="g-wrap" tabindex="0" role="region" aria-label="الجدول الزمني الأسبوعي">' + ganttTable(p, M, asOf) + '</div>' + ganttLegend(M) +
     '<p class="note">هذا العرض للمتابعة الداخلية ويُظهر التأخر. ما يُنسخ للتقرير ومسودتا التقريرين تُظهر الإنجاز الفعلي والمرحلي فقط: منجز، جارٍ، مخطط. عدّل التواريخ والحالات من بطاقة «خطة التنفيذ».</p></article>';
 }
 /* الجدول نفسه للبطاقة والتقرير ونسخة Word (الدمج 1): صف المرحلة شريط متصل على امتداد أسابيعها، أخضر بقدر إنجازها
@@ -2204,7 +2207,7 @@ td .manual{min-height:0;border-width:1px;padding:0 6pt;color:${RCOL.grey}}
    يشترط كتابة كوده، والجسر يتحقق منه مرة ثانية. الأرشفة والمهملات تُسترجعان نحو 30 يومًا. */
 function dangerCard(p){
   if(SOURCE !== 'live' || !p.code) return '';
-  return '<article class="card danger-zone"><div class="card-h"><h2>حذف المشروع</h2><small>من نوشن ودرايف واللوح معًا</small></div>' +
+  return '<article class="card danger-zone"><div class="card-h"><h3>حذف المشروع</h3><small>من نوشن ودرايف واللوح معًا</small></div>' +
     '<p class="note">يُؤرشف المشروع واستحقاقاته وخطته في نوشن، وينتقل مجلده في درايف إلى المهملات، فيختفي من المنصة كلها. يمكن استرجاعه خلال نحو 30 يومًا من سلة نوشن ومهملات درايف.</p>' +
     '<button type="button" class="btn-danger" data-act="delete">احذف ' + esc(p.code) + '</button></article>';
 }
@@ -2247,7 +2250,7 @@ function heroCard(p){
   return '<article class="card hero">' +
     '<div class="tags">' + codeChip(p) + statusPill(p.status) +
       (p.type ? '<span class="pill">' + esc(p.type) + '</span>' : '') + (p.year ? '<span class="pill">' + esc(p.year) + '</span>' : '') + '</div>' +
-    '<h3>' + esc(p.name) + '</h3>' +
+    '<h2>' + esc(p.name) + '</h2>' +
     '<div class="facts">' +
       f('الجهة الممولة', p.donor) + f('المنسق', p.coordinator) + f('مكان التنفيذ', p.place || p.country) +
       f('الجهات المستفيدة', p.entities) + f('المستفيدون', benef) + f('جهة التعاقد', p.contractor) +
@@ -2328,7 +2331,7 @@ function planCard(p){
   const items = planOf(p);
   if(!items.length){
     const k = suggestTpl(p);
-    return '<article class="card" id="planCard"><div class="card-h"><h2>خطة التنفيذ</h2>' +
+    return '<article class="card" id="planCard"><div class="card-h"><h3>خطة التنفيذ</h3>' +
         '<small>' + (PHASES.indexOf(p.phase) >= 0 ? 'المرحلة الحالية حسب نوشن: ' + esc(p.phase) : 'لم تُحدَّد المرحلة في نوشن') + '</small></div>' +
       phaseStepper(p) +
       '<div class="empty-plan"><p><b>لا خطة تنفيذ لهذا المشروع بعد.</b> لكل مشروع مراحله الخاصة: ابدأ من قالب قريب من طبيعته ثم عدّل مراحله وبنوده، أو ابنِ الخطة بندًا بندًا.</p>' +
@@ -2364,7 +2367,7 @@ function planCard(p){
       '<div class="stage-h"><span class="no">' + (s.state === 'done' ? icon('check') : AR(i + 1)) + '</span>' +
         (STG_EDIT === i
           ? '<form class="stg-form" data-stage="' + i + '"><input name="name" required maxlength="120" value="' + esc(s.name) + '" aria-label="اسم المرحلة"><button class="btn cta sm" type="submit">حفظ</button><button class="btn ghost sm" type="button" data-act="stg-cancel">إلغاء</button></form>'
-          : '<h3>' + esc(s.name) + '</h3>' +
+          : '<h4>' + esc(s.name) + '</h4>' +
             '<small><bdi>' + AR(s.done) + ' من ' + AR(s.total) + '</bdi>' + (range(s) ? ' | <bdi>' + range(s) + '</bdi>' : '') + '</small>' +
             '<span class="end"><button class="btn ghost sm" type="button" data-act="add" data-stage="' + esc(s.name) + '">' + ICON_PLUS + 'بند</button>' +
             /* إدارة المرحلة كلها: تسمية، ونقل، وحذف مع تراجع */
@@ -2376,7 +2379,7 @@ function planCard(p){
             '</div></details></span>') + '</div>' +
       '<ul class="pis">' + s.items.map(planRow).join('') + '</ul></section>').join('') + '</div>';
   return '<article class="card plan-card' + (open ? ' open' : ' collapsed') + '" id="planCard">' +
-    '<div class="card-h"><h2>خطة التنفيذ</h2>' +
+    '<div class="card-h"><h3>خطة التنفيذ</h3>' +
       '<small>' + cnt(real.length, W_ITEM) + ' في ' + AR(st.length) + ' مراحل</small>' +
       '<span class="end"><button class="btn soft sm plan-tgl" type="button" data-act="plan-toggle" aria-expanded="' + open + '"' + (open ? ' aria-controls="planBody"' : '') + '>' +
         (open ? 'إخفاء البنود' : 'عرض البنود') + icon('chevron-down') + '</button></span></div>' +
@@ -2394,9 +2397,11 @@ function stageList(st){
   const fold = st.length > 6 ? st.filter(s => s.state === 'done').length : 0;
   const row = (s, i) => {
     const late = s.items.filter(itemLate), cls = s.state === 'done' ? 'done' : s.state === 'now' ? 'now' : '';
-    const tag = s.state === 'done' ? '<span class="sl-tag ok">مكتملة</span>' : s.state === 'now' || s.done ? '<span class="sl-tag run">جارية</span>' : '<span class="sl-tag">لم تبدأ</span>';
+    /* نص الحالة واحد للوسم المرئي وللاسم المسموع (WCAG 2.5.3): كان الوسم «جارية» والاسم «لم تبدأ» لمرحلة أُنجز بعض بنودها */
+    const stTxt = s.state === 'done' ? 'مكتملة' : s.state === 'now' || s.done ? 'جارية' : 'لم تبدأ';
+    const tag = '<span class="sl-tag' + (s.state === 'done' ? ' ok' : stTxt === 'جارية' ? ' run' : '') + '">' + stTxt + '</span>';
     const lateTxt = late.length === 1 ? '«' + late[0].title + '» متأخر ' + cnt(days(toDate(late[0].end), today), W_DAY) : late.length ? AR(late.length) + ' بنود متأخرة' : '';
-    return '<li><button type="button" class="sl-row ' + cls + '" data-act="plan-stage" data-stage="' + i + '" aria-label="' + esc(s.name + '، ' + (s.state === 'done' ? 'مكتملة' : s.state === 'now' ? 'المرحلة الحالية' : 'لم تبدأ') + '، أُنجز ' + s.done + ' من ' + s.total + '، اضغط لفتح بنودها') + '">' +
+    return '<li><button type="button" class="sl-row ' + cls + '" data-act="plan-stage" data-stage="' + i + '" aria-label="' + esc(s.name + '، ' + (s.state === 'now' ? 'المرحلة الحالية، ' : '') + stTxt + '، أُنجز ' + s.done + ' من ' + s.total + '، اضغط لفتح بنودها') + '">' +
       '<span class="sl-n">' + (s.state === 'done' ? icon('check') : AR(i + 1)) + '</span>' +
       '<b>' + esc(s.name) + (s.state === 'now' ? '<em>الحالية</em>' : '') + '</b>' + tag +
       '<small>' + [range(s), AR(s.done) + ' من ' + AR(s.total)].filter(Boolean).join(' | ') + (lateTxt ? ' | <span class="late-n">' + esc(lateTxt) + '</span>' : '') + '</small>' +
@@ -2557,7 +2562,7 @@ function timelineCard(p){
   const st = stagesOf(p), stg = st.filter(x => x.start || x.end);
   const { s, e } = spanOf(p);
   if(!(s && e && toDate(e) > toDate(s))){
-    return '<article class="card"><div class="card-h"><h2>المخطط الزمني</h2></div><p class="note" style="margin:0">لا يكفي ما هو مسجّل لرسم المخطط: يحتاج تاريخ بداية ونهاية' +
+    return '<article class="card"><div class="card-h"><h3>المخطط الزمني</h3></div><p class="note" style="margin:0">لا يكفي ما هو مسجّل لرسم المخطط: يحتاج تاريخ بداية ونهاية' +
       (p.approvalDate ? ' (المسجّل تاريخ الاعتماد ' + dayLbl(p.approvalDate) + ' فقط)' : '') + '. أضف تواريخ لبنود الخطة ليُرسم منها.</p>' + delsTable(dels) + '</article>';
   }
   const S0 = toDate(s), E0 = toDate(e), dur = days(S0, E0);
@@ -2645,7 +2650,7 @@ function timelineCard(p){
     stg.map(z => '<tr><td>' + esc(z.name) + '</td><td>' + dayLbl(z.start) + '</td><td>' + dayLbl(z.end) + '</td><td>' + AR(z.done) + ' من ' + AR(z.total) + (z.items.some(itemLate) ? ' <span class="delay late">متأخرة</span>' : '') + '</td></tr>').join('') +
     '</tbody></table></div>' : '';
   const plotLbl = 'المخطط الزمني من ' + dayLbl(s) + ' إلى ' + dayLbl(e) + '، ' + tail;
-  return '<article class="card tlx" id="tlCard"><div class="card-h"><h2>المخطط الزمني</h2><small>' + dayLbl(s, false) + ' – ' + dayLbl(e) + (p.start ? '' : ' | البداية تقديرية من الاعتماد') + '</small>' +
+  return '<article class="card tlx" id="tlCard"><div class="card-h"><h3>المخطط الزمني</h3><small>' + dayLbl(s, false) + ' – ' + dayLbl(e) + (p.start ? '' : ' | البداية تقديرية من الاعتماد') + '</small>' +
       '<span class="end"><span class="pill ' + (over ? 'st-late' : done ? 'st-done' : 'st-run') + '">' + (over ? icon('alert') : icon('clock')) + tail + '</span></span></div>' +
     health +
     '<div class="tlx-g" role="group" aria-label="' + esc(plotLbl) + '">' + names + '<div class="tlx-plot"><div class="tlx-axis" aria-hidden="true">' + ticks + '</div>' + grid + overBox +
@@ -2734,7 +2739,7 @@ function moneyCard(p){
   const mline = A ? '<p class="money-line">' + (R0 != null ? 'مستلم ' + nb(R0) + ' من ' + nb(A) : 'المعتمد ' + nb(A)) +
       (F ? ' | منفَّذ ' + nb(F) + ' (' + pct(F / A) + ' من المعتمد)' : '') +
       ' <button type="button" class="info-tip" aria-label="شرح الأرقام" title="المستلم: ما وصل من المانح حتى الآن.&#10;المعتمد: المبلغ الكلي حسب الاعتماد.&#10;المنفَّذ: مبلغ التنفيذ الفعلي (حسب الاعتماد − التشغيلية)، ونسبته من المعتمد.">' + icon('info') + '</button></p>' : '';
-  return '<article class="card" id="moneyCard"><div class="card-h"><h2>المالية</h2><span class="end">' + payPill + (p.payStatus ? '<span class="pill">' + esc(p.payStatus) + '</span>' : '') +
+  return '<article class="card" id="moneyCard"><div class="card-h"><h3>المالية</h3><span class="end">' + payPill + (p.payStatus ? '<span class="pill">' + esc(p.payStatus) + '</span>' : '') +
       '<button class="btn soft sm" type="button" data-act="money-edit">تعديل المبالغ</button></span></div>' +
     mline + '<div class="money">' +
       m('المبلغ الكلي', money(p.approved), 'حسب الاعتماد') +
@@ -2852,7 +2857,7 @@ function docsCard(p){
   const ratio = nDone / DOCS_N;
   const driveUrl = (f && f.url) || p.drive;
   const head = '<article class="card" id="docsCard"><div class="card-h"><span class="dring" style="--p:' + Math.round(ratio * 100) + '" aria-hidden="true"><b>' + AR(Math.round(ratio * 100)) + '%</b></span>' +
-      '<div><h2>مستندات المشروع</h2><small>' + (!checked && !f ? (DATA.driveRoot ? 'لم يُفحص المجلد بعد' : 'الأرشيف غير مربوط') :
+      '<div><h3>مستندات المشروع</h3><small>' + (!checked && !f ? (DATA.driveRoot ? 'لم يُفحص المجلد بعد' : 'الأرشيف غير مربوط') :
         AR(nDone) + ' من ' + AR(DOCS_N) + ' مرفقة' + (nMissing ? ' | ' + AR(nMissing) + ' ناقصة حتى هذه المرحلة' : '')) + '</small></div>' +
       '<span class="end">' + (driveUrl ? '<a class="btn soft sm" href="' + esc(safeUrl(driveUrl)) + '" target="_blank" rel="noopener">المجلد في درايف</a>' : '') +
         (SOURCE === 'live' ? '<button class="btn ghost sm" type="button" data-act="files-refresh">' + (loading ? 'جارٍ القراءة…' : 'قراءة الملفات من درايف') + '</button>' : '') + '</span></div>';
@@ -3799,6 +3804,8 @@ document.addEventListener('click', e => {
   document.querySelectorAll('.stg-menu[open]').forEach(d => { if(!d.contains(e.target)) d.open = false; });
 });
 window.addEventListener('hashchange', () => { readHash(); render(); });
+/* رابطا التخطي: ينقلان التركيز دون تغيير الرابط، فيبقى #كود المشروع كما هو (التنقل إلى #detail كان سيُطلق hashchange ويُعيد الرسم) */
+document.querySelectorAll('.skip-link').forEach(a => a.addEventListener('click', e => { const t = $(a.getAttribute('href').slice(1)); if(t){ e.preventDefault(); t.focus(); } }));
 
 /* الشريط العلوي يختفي عند النزول ويعود عند الصعود، كشريط «مَدار» في نَسَق */
 let lastY = scrollY;
