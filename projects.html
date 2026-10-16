@@ -846,6 +846,16 @@ button.file{font:inherit;cursor:pointer;text-align:start}
   /* مربع الإنجاز ورقاقة الحالة: حجمهما المرئي كما هو، ومساحة لمس 44px حولهما بطبقة شفافة */
   #detail .pi :is(.chk,.pi-st){min-height:0;position:relative}
   #detail .pi :is(.chk,.pi-st)::after{content:"";position:absolute;inset:-11px -6px}
+  /* أهداف النقر 24px على الأقل (WCAG 2.2، المعيار 2.5.8): مساحة نقر أكبر، والشكل المرئي والتخطيط كما هما */
+  /* بلا لمس فقط: تحت اللمس ترفعها قاعدة nasaq-ui.css إلى 44px أصلًا، والهامش السالب حينها يُقصّر الصفحة */
+  @media not (pointer:coarse){
+    .list-head select{padding-block:3px;margin-block:-1px}
+    .tlx-more summary,.slot-h .link{padding-block:2px;margin-block:-2px}
+  }
+  #detail .tlx .tlx-bar{height:24px;border-block:3px solid transparent;background-clip:padding-box;border-radius:4px / 7px}   /* الشريط المرئي 18px كما كان */
+  #detail .tlx .tlx-ms::after{content:"";position:absolute;inset:-7px;rotate:-45deg}   /* مربع نقر 24px مستقيم حول المعيّن */
+  /* تحت اللمس: مساحة مربع الإنجاز 44×44 (كانت 40×30 لأن الإزاحة تُحسب من داخل الحد 2px)، وتمتد 11px خارج حده فلا تتجاوز الفجوة 12px إلى عنوان البند */
+  @media (pointer:coarse){ #detail .pi .chk::after{inset:-13px} }
 }
 </style>
 <link rel="stylesheet" href="nasaq-theme.css?v=20261007b">
