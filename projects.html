@@ -810,6 +810,9 @@ dialog .dlg-acts{position:sticky;bottom:calc(-1 * var(--sp-5));z-index:2;margin:
   .orgs a,.tb-nav button{font-size:var(--fs-sm)}
   .src{display:none}
   .tb{gap:var(--sp-1);padding-inline:var(--sp-2)}
+  /* المؤسسة بحرفها الأول: الاسم الكامل يبقى نصًّا في الرابط فيقرؤه قارئ الشاشة، ويُرى أوله فقط */
+  .orgs a{font-size:0;min-width:var(--sp-5);text-align:center;align-content:center}
+  .orgs a::first-letter{font-size:var(--fs-sm)}
 }
 /* داخل تبويب «نَسَق»: الصفحة تُعرض في إطار، فالعلامة والرجوع في الشريط الجانبي للوح */
 :root.embed .brand{display:none}
@@ -846,6 +849,8 @@ button.file{font:inherit;cursor:pointer;text-align:start}
   /* مربع الإنجاز ورقاقة الحالة: حجمهما المرئي كما هو، ومساحة لمس 44px حولهما بطبقة شفافة */
   #detail .pi :is(.chk,.pi-st){min-height:0;position:relative}
   #detail .pi :is(.chk,.pi-st)::after{content:"";position:absolute;inset:-11px -6px}
+  /* علامة «نَسَق 360» تبقى 56px على الجوال لأن قاعدتها في طبقة components (nasaq-ui.css)؛ هنا تأخذ مقاس الجوال المقصود في طبقة base */
+  @media (max-width:560px){ .tb .orbit{width:32px;height:32px} .tb .orbit .brand-mark{width:20px;height:20px} }
   /* أهداف النقر 24px على الأقل (WCAG 2.2، المعيار 2.5.8): مساحة نقر أكبر، والشكل المرئي والتخطيط كما هما */
   /* بلا لمس فقط: تحت اللمس ترفعها قاعدة nasaq-ui.css إلى 44px أصلًا، والهامش السالب حينها يُقصّر الصفحة */
   @media not (pointer:coarse){
