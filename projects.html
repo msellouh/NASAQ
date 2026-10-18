@@ -654,7 +654,11 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 .ngroup .nhead{display:grid;grid-template-columns:1fr auto;gap:var(--sp-2);align-items:center}
 .ngroup .nhead input{padding:var(--sp-2) var(--sp-3);font-weight:600}
 .ngroup ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--sp-1)}
-.ngroup li label{display:grid;grid-template-columns:auto auto 1fr auto;gap:var(--sp-2);align-items:center;font-size:var(--fs-sm)}
+.ngroup li{display:grid;grid-template-columns:auto 1fr;gap:var(--sp-2);align-items:start;font-size:var(--fs-sm);padding-block:var(--sp-1);border-top:1px solid var(--rule)}
+.ngroup li .nsel{display:flex;gap:var(--sp-2);align-items:center;padding-top:2px}
+.ngroup li .nrow{display:grid;gap:var(--sp-1);min-width:0}
+.ngroup li .ncustom{padding:var(--sp-1) var(--sp-2);font-size:var(--fs-sm)}
+.ngroup li .nnew{color:var(--ink-2);overflow-wrap:anywhere}
 .ngroup li code{font-size:var(--fs-xs);color:var(--focus)}
 .ngroup li small{color:var(--muted);font-size:var(--fs-xs)}
 .ngroup li small.diff{color:var(--hold)}
@@ -1371,7 +1375,9 @@ async function load(){
 /* ---------- مراجعة الأسماء المتشابهة ----------
    تجمع المشاريع ذات الأسماء المتقاربة (تشابه الكلمات بعد حذف الحشو والمانح)، وتقترح اسمًا موحّدًا
    لكل مجموعة: الأكثر تكرارًا من «المشروع الموحد» الحالي، وإلا الكلمات المشتركة. تعدّل الاسم، وتختار
-   المشاريع، ثم «اعتمد» — فيُكتب في «المشروع الموحد» فقط، ولا يتغيّر عنوان أي مشروع. لا دمج تلقائي. */
+   المشاريع، وتراجع «الاسم المخصص» لكل مشروع، ثم «اعتمد» — فيُكتب الاسم الموحّد والمخصص، ويصير عنوان
+   المشروع «مشروع <الموحّد> - <المخصص> - <المانح>»، ويُعاد تسمية مجلده في درايف «الكود- العنوان».
+   كل اعتماد يُحفظ في الجسر ويمكن التراجع عنه. لا دمج تلقائي. */
 const NM_FILL = new Set(['مشروع','اجراء','توزيع','توريد','توفير','تقديم','تنفيذ','في','على','من','الى','قطاع','غزه','لصالح','ضمن','و','عن','مع','خلال','مرحله','نازحين','مرضي','مصابين','جرحي','مستفيدين','اسر','عائلات','شمال','جنوب','وسط','محافظات','مخيمات','خيام']);
 const nmNorm = w => String(w).replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[\u064B-\u0652\u0640]/g, '').replace(/^(وال|بال|لل|ال|و)(?=..)/, '').toLowerCase();
 function nmTokens(p){
@@ -1405,33 +1411,75 @@ function nmGroups(){
     return {members, sug: sug || '', mixed: Object.keys(stdCount).length > 1 || members.some(p => !p.stdName)};
   }).sort((a, b) => (b.mixed - a.mixed) || (b.members.length - a.members.length));
 }
+/* الاسم المخصص المقترح: المحفوظ في نوشن، وإلا ما يبقى من العنوان بعد حذف كلمات الموحّد والحشو والمانح
+   (كما يفعل الجسر عند الإنشاء). مشاريع التأهيل يبقى فيها المكان والتفاصيل كاملة. */
+function nmCustom(p, std){
+  if(p.custom) return String(p.custom);
+  let t = String(p.name || '').replace(/\s+/g, ' ').trim();
+  const paren = (t.match(/\(([^)]*)\)/) || [])[1] || '';
+  t = t.replace(/\([^)]*\)/g, ' ');
+  const core = t.split(/\s+[-–]\s+|\s+-|-\s+/).map(x => x.trim()).filter(x => x && !(/[A-Za-z]/.test(x) && !/[؀-ۿ]/.test(x)))
+    .join(' - ').replace(/^مشروع\s+/, '').trim();
+  if(/تأهيل/.test(std)) return [core.replace(/^((إعادة|اعادة)\s+)?تأهيل\s+(?=\S)/, ''), paren].filter(Boolean).join(' ');
+  const drop = new Set(String(std).split(/\s+/).concat([...NM_FILL]).concat(String(p.donor || '').split(/\s+/)).map(nmNorm));
+  const out = core.split(/\s+/).filter(w => w && !drop.has(nmNorm(w))).join(' ').replace(/^[-–\s]+|[-–\s]+$/g, '').replace(/\s*-\s*-\s*/g, ' - ').trim();
+  return [out, paren].filter(Boolean).join(' ');
+}
+const nmTitle = (std, custom, donor) => ['مشروع ' + String(std).replace(/^مشروع\s+/, ''), custom, donor].filter(x => x && String(x).trim()).join(' - ');
 function openNamesReview(){
   let d = $('namesDlg');
   if(!d){ d = document.createElement('dialog'); d.id = 'namesDlg'; d.className = 'names-dlg'; document.body.appendChild(d); }
-  const G = nmGroups(), live = SOURCE === 'live', opts = [...new Set(DATA.projects.map(p => p.stdName).filter(Boolean))];
+  const G = nmGroups(), live = SOURCE === 'live', opts = [...new Set(((DATA.options || {}).names || []).concat(DATA.projects.map(p => p.stdName)).filter(Boolean))];
   d.innerHTML = '<div class="names-body"><h2>مراجعة الأسماء المتشابهة</h2>' +
-    '<p class="sub">' + (G.length ? cnt(G.length, ['مجموعة واحدة', 'مجموعتان', 'مجموعات', 'مجموعة', 'مجموعة']) + ' من المشاريع ذات الأسماء المتقاربة. المختلفة أولًا. عدّل الاسم المقترح، واختر المشاريع، ثم «اعتمد» — يُحفظ في «المشروع الموحد» ولا يتغيّر عنوان أي مشروع.' : 'لا مجموعات متشابهة.') +
+    '<p class="sub">' + (G.length ? cnt(G.length, ['مجموعة واحدة', 'مجموعتان', 'مجموعات', 'مجموعة', 'مجموعة']) + ' من المشاريع ذات الأسماء المتقاربة، المختلفة أولًا. ' +
+      'اكتب الاسم الموحّد للمجموعة، وراجع الاسم المخصص لكل مشروع (ما يميّزه: الشهر، المرحلة، المكان…)، ثم «اعتمد». ' +
+      'يصير العنوان «مشروع الموحّد - المخصص - المانح» في نوشن، ويُعاد تسمية مجلد المشروع في درايف، ويمكن التراجع.' : 'لا مجموعات متشابهة.') +
     (live ? '' : ' <b>للعرض فقط — الاعتماد يحتاج الاتصال بنوشن.</b>') + '</p>' +
     '<datalist id="dlStd">' + opts.map(o => '<option value="' + esc(o) + '">').join('') + '</datalist>' +
-    G.map((g, k) => '<section class="ngroup" data-g="' + k + '"><div class="nhead"><input list="dlStd" value="' + esc(g.sug) + '" placeholder="اكتب الاسم الموحّد" aria-label="الاسم الموحّد"><button type="button" class="btn cta" data-approve="' + k + '"' + (live ? '' : ' disabled') + '>اعتمد</button></div><ul>' +
-      g.members.map(p => '<li><label><input type="checkbox" checked value="' + esc(p.id) + '"><code>' + esc(p.code || '') + '</code><span>' + esc(p.name) + '</span>' +
-        '<small class="' + (p.stdName && p.stdName !== g.sug ? 'diff' : '') + '">' + esc(p.stdName || 'بلا اسم موحّد') + '</small></label></li>').join('') + '</ul></section>').join('') +
+    G.map((g, k) => '<section class="ngroup" data-g="' + k + '"><div class="nhead"><input class="nstd" list="dlStd" value="' + esc(g.sug) + '" placeholder="اكتب الاسم الموحّد" aria-label="الاسم الموحّد"><button type="button" class="btn cta" data-approve="' + k + '"' + (live ? '' : ' disabled') + '>اعتمد</button></div><ul>' +
+      g.members.map(p => '<li data-id="' + esc(p.id) + '"><label class="nsel"><input type="checkbox" checked aria-label="اختيار ' + esc(p.code || p.name) + '"><code>' + esc(p.code || '') + '</code></label>' +
+        '<div class="nrow"><span class="nold">' + esc(p.name) + (p.stdName ? ' <small class="' + (p.stdName !== g.sug ? 'diff' : '') + '">' + esc(p.stdName) + '</small>' : ' <small class="diff">بلا اسم موحّد</small>') + '</span>' +
+        '<input class="ncustom" value="' + esc(nmCustom(p, g.sug)) + '" placeholder="الاسم المخصص" aria-label="الاسم المخصص لـ' + esc(p.code || p.name) + '">' +
+        '<small class="nnew"></small></div></li>').join('') + '</ul></section>').join('') +
     '<div class="row"><button type="button" class="btn" data-close>إغلاق</button></div></div>';
+  const byId = id => DATA.projects.find(p => p.id === id);
+  /* معاينة العنوان الجديد لكل مشروع مع كل تعديل */
+  const preview = sec => {
+    const std = sec.querySelector('.nstd').value.trim();
+    sec.querySelectorAll('li').forEach(li => {
+      const p = byId(li.dataset.id), t = std ? nmTitle(std, li.querySelector('.ncustom').value.trim(), p.donor) : '';
+      li.querySelector('.nnew').textContent = t ? '← ' + t + (p.code ? '  |  مجلد: ' + p.code + '- ' + t : '') : '';
+    });
+  };
+  d.querySelectorAll('.ngroup').forEach(sec => { preview(sec); sec.addEventListener('input', () => preview(sec)); });
   d.querySelector('[data-close]').onclick = () => d.close();
   d.querySelectorAll('[data-approve]').forEach(b => b.onclick = async () => {
-    const sec = b.closest('.ngroup'), std = sec.querySelector('.nhead input').value.trim();
-    const ids = [...sec.querySelectorAll('li input:checked')].map(i => i.value);
+    const sec = b.closest('.ngroup'), std = sec.querySelector('.nstd').value.trim();
+    const items = [...sec.querySelectorAll('li')].filter(li => li.querySelector('.nsel input').checked)
+      .map(li => ({id: li.dataset.id, custom: li.querySelector('.ncustom').value.trim()}));
     if(!std){ toast('اكتب الاسم الموحّد', true); return; }
-    if(!ids.length){ toast('اختر مشروعًا واحدًا على الأقل', true); return; }
+    if(!items.length){ toast('اختر مشروعًا واحدًا على الأقل', true); return; }
     b.disabled = true; b.textContent = 'جارٍ الحفظ…';
     try{
-      const r = await post({action: 'std_name_set', org: ORG, std, ids});
-      DATA.projects.forEach(p => { if(ids.includes(p.id)) p.stdName = std; });
+      const r = await post({action: 'std_name_set', org: ORG, std, items});
+      (r.results || []).forEach(x => { const p = byId(x.id); if(p) Object.assign(p, {stdName: std, custom: x.custom, name: x.name, folder: x.folder || p.folder}); });
       sec.classList.add('done'); b.innerHTML = icon('check') + ' اعتُمد لـ' + esc(r.updated);
-      sec.querySelectorAll('li small').forEach((sm, i) => { if(sec.querySelectorAll('li input')[i].checked){ sm.textContent = std; sm.className = ''; } });
+      const bad = (r.results || []).filter(x => x.folderError);
+      toast('اعتُمد «' + std + '» لـ' + r.updated + ' مشروع، وأُعيد تسمية ' + (r.renamed || 0) + ' مجلد' + (bad.length ? '، وتعذّر ' + bad.length + ': ' + bad[0].folderError : ''),
+        !!bad.length, r.undoId ? {label: 'تراجع', fn: () => undoNames(r.undoId)} : null);
+      rerender();
     }catch(err){ b.disabled = false; b.textContent = 'اعتمد'; toast(err.message || 'تعذّر الحفظ', true); }
   });
   d.showModal();
+}
+/* التراجع عن اعتماد: يعيد العنوان والموحّد والمخصص واسم المجلد كما كانت قبله */
+async function undoNames(undoId){
+  try{
+    const r = await post({action: 'std_name_undo', org: ORG, undoId});
+    (r.results || []).forEach(x => { const p = DATA.projects.find(q => q.id === x.id); if(p) Object.assign(p, {stdName: x.stdName, custom: x.custom, name: x.name, folder: x.folder || p.folder}); });
+    toast('تراجعت عن الاعتماد في ' + (r.restored || 0) + ' مشروع'); rerender();
+    if($('namesDlg') && $('namesDlg').open) openNamesReview();
+  }catch(err){ toast(err.message || 'تعذّر التراجع', true); }
 }
 $('namesBtn').addEventListener('click', openNamesReview);
 /* دولة كل مانح (من الجسر) تُنسخ إلى المشاريع لتُجمَّع في الإحصائيات */
