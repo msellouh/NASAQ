@@ -192,6 +192,8 @@ window.NasaqAuth = (function(){
     del('localStorage', KEY); del('sessionStorage', KEY);
     try{ Object.keys(localStorage).filter(function(k){ return /^daily-board-(projects-cache|projfiles)-/.test(k); })
       .forEach(function(k){ localStorage.removeItem(k); }); }catch(e){}
+    /* وذاكرتا التقويم: مهام نوشن لكل شهر ومواعيد تقويم Google (CALKEY وGCAL_KEY في index.html) */
+    del('localStorage', 'daily-board-cal-cache'); del('localStorage', 'daily-board-gcal');
   }
   function rememberedUser(){ try{ return localStorage.getItem(USER_KEY) || ''; }catch(e){ return ''; } }
   function rememberUser(u){ try{ u ? localStorage.setItem(USER_KEY, u) : localStorage.removeItem(USER_KEY); }catch(e){} }
