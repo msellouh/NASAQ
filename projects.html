@@ -303,16 +303,6 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .ov-row small{font-size:var(--fs-xs);color:var(--muted)}
 .sched-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--sp-2);margin-bottom:calc(-1 * var(--sp-2));padding-inline:var(--sp-2)}
 .sched-bar > span{font-size:var(--fs-sm);font-weight:600;color:var(--muted)}
-/* زر «تحرير المشروع» في زاوية الترويسة (A9a): خارج التدفق فلا يزيد ارتفاعها، والنص يفسح له */
-.phead{position:relative}
-.ph-edit{position:absolute;top:var(--sp-2);inset-inline-end:var(--sp-2);display:grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid var(--rule);border-radius:var(--r-md);background:var(--paper);color:var(--ink-2);cursor:pointer}
-.ph-edit:hover{color:var(--ink);border-color:var(--field-line)}
-.ph-edit svg{width:16px;height:16px}
-html.can-edit .phead :is(.ph-row,h2){padding-inline-end:40px}
-@media (pointer:coarse){ .ph-edit{width:44px;height:44px;top:var(--sp-1);inset-inline-end:var(--sp-1)} html.can-edit .phead :is(.ph-row,h2){padding-inline-end:48px} }
-.edit-warn{padding:var(--sp-3);border-radius:var(--r-md);background:var(--urgent-bg);color:var(--urgent);font-size:var(--fs-sm);font-weight:600}
-.edit-ack{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-sm);font-weight:600;min-height:24px}
-.edit-go{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--sp-2);font-size:var(--fs-sm);color:var(--muted)}
 
 /* ---------- خطة التنفيذ ---------- */
 /* مطوية: الملخّص والشريط الزمني والتالي ظاهرة، والبطاقة كلها تُوسَّع بضغطة؛ موسّعة: البنود والتعديل */
@@ -904,7 +894,6 @@ html:not(.can-plan) #planCard :is([data-act="tpl"],[data-act="works"],[data-act=
 html:not(.can-plan) #planCard :is(.pi-main,.pi-st,.chk){pointer-events:none}
 html:not(.can-plan) #planCard [data-act="toggle"]{pointer-events:none}
 html:not(.can-edit) [data-act="gantt-dur"],html:not(.can-money-edit) [data-act="money-edit"]{display:none}
-html:not(.can-edit) .ph-edit{display:none}
 html:not(.can-money) :is(#moneyCard,.money-line){display:none}
 button.file{font:inherit;cursor:pointer;text-align:start}
 
@@ -1179,26 +1168,6 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     <div class="donors-list" id="donorsList"></div>
     <div class="dlg-acts"><button class="btn ghost" type="button" data-close>إغلاق</button></div>
   </div>
-</dialog>
-<!-- تحرير المشروع (A9a): الحالة والتواريخ بإجراءي الجسر القائمين؛ الاسم والكود والجهة الممولة لاحقًا (A9b) -->
-<dialog id="editDlg" aria-labelledby="editDlgTitle">
-  <form id="editForm" method="dialog">
-    <h2 id="editDlgTitle">تحرير المشروع</h2>
-    <p class="sub" id="editDlgSub"></p>
-    <label class="fld">الحالة<select name="status"></select></label>
-    <div class="fld-row">
-      <label class="fld">تاريخ البداية<input name="start" type="date"></label>
-      <label class="fld">تاريخ النهاية<input name="end" type="date"></label>
-    </div>
-    <p class="edit-warn" id="editWarn" role="alert" hidden></p>
-    <label class="edit-ack" id="editAckRow" hidden><input type="checkbox" name="ack">أغلق المشروع مع ذلك</label>
-    <p class="note" style="margin:0">الاسم والكود والجهة الممولة تُعدَّل من هذه اللوحة لاحقًا (تحتاج تحديثًا في الجسر).</p>
-    <div class="edit-go"><span>وفي التبويبات:</span><button class="btn ghost sm" type="button" data-edit-go="plan">المراحل والبنود</button><button class="btn ghost sm" type="button" data-edit-go="money">المبالغ</button><button class="btn ghost sm" type="button" data-edit-go="docs">الملفات</button></div>
-    <div class="dlg-acts">
-      <button class="btn cta" type="submit" value="save">حفظ</button>
-      <button class="btn ghost" type="button" data-close>إلغاء</button>
-    </div>
-  </form>
 </dialog>
 <dialog id="moneyDlg" aria-labelledby="moneyDlgTitle">
   <form id="moneyForm" method="dialog">
@@ -2501,8 +2470,7 @@ function projHead(p){
   const H = projectHealth(p, today), v = H.el == null && !H.done ? {c: '', b: 'بلا مدة مسجّلة', t: 'حدّد مدة المشروع ليُقارن الإنجاز بالوقت.'} : H.v;
   const cls = {good: 'st-done', warn: 'st-plan', bad: 'st-late'}[v.c] || '';
   return '<div class="ph-row">' + codeChip(p) + '<span class="pill ' + cls + '" title="' + esc(v.t) + '">' + (v.c === 'bad' ? icon('alert') : '') + esc(v.b) + '</span>' + moneyLine(p) + '</div>' +
-    '<h2 title="' + esc(p.name) + '">' + esc(p.name) + '</h2>' +
-    '<button type="button" class="ph-edit" data-act="proj-edit" aria-label="تحرير المشروع" title="تحرير المشروع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/></svg></button>';
+    '<h2 title="' + esc(p.name) + '">' + esc(p.name) + '</h2>';
 }
 /* المستندات المرفقة من الخانات المتاحة لهذا المستخدم، كما تعدّها بطاقة المستندات */
 function docsDone(p){
@@ -3775,60 +3743,6 @@ $('moneyForm').addEventListener('submit', async e => {
   finally{ btn.disabled = false; }
 });
 
-/* ---------- تحرير المشروع (A9a) ----------
-   الحالة بإجراء project_status والتواريخ بإجراء project_dates القائمين في الجسر (صلاحية edit على المؤسسة، والجسر يفحص النطاق).
-   إغلاق مشروع فيه بنود لم تُنجز أو مبلغ لم يُستلم يحتاج تأكيدًا صريحًا (القرار 23)، والأثر الكامل للإغلاق في الدورة المالية.
-   لا يُدمج من ردّ الجسر إلا الحقل المحفوظ: الرد صف المشروع كاملًا دون تشكيله حسب الصلاحية */
-const PROJ_STATUSES = ['مخطط له', 'قيد التنفيذ', 'نشط', 'مكتمل', 'متوقف'];
-let editP = null;
-function closeRisks(p){
-  const open = planOf(p).filter(x => !x._draft && x.status !== 'منجز').length;
-  const A = num(p.approved), R = p.received == null || p.received === '' ? null : num(p.received);
-  return {open, due: A && R != null && A - R >= 1 ? A - R : 0};
-}
-function editWarn(){
-  const f = $('editForm'), p = editP; if(!p) return;
-  const r = closeRisks(p), risky = f.elements.status.value === 'مكتمل' && p.status !== 'مكتمل' && !!(r.open || r.due);
-  $('editWarn').hidden = !risky; $('editAckRow').hidden = !risky;
-  if(risky) $('editWarn').textContent = 'سيُغلق المشروع وفيه ' + [r.open ? cnt(r.open, W_ITEM) + ' في الخطة لم تُنجز' : '', r.due ? 'مبلغ لم يُستلم من المانح بعد (' + money(r.due) + ')' : ''].filter(Boolean).join('، و') +
-    '. تبقى كما هي، ولا يقفل الإغلاق التعديل ولا يوقف التنبيهات بعد.';
-  else f.elements.ack.checked = false;
-}
-function openEditDlg(p){
-  editP = p; const f = $('editForm');
-  $('editDlgSub').textContent = (p.code ? p.code + ' | ' : '') + p.name;
-  f.elements.status.innerHTML = (PROJ_STATUSES.includes(p.status) ? '' : '<option value="">' + esc(p.status || '— غير محددة —') + '</option>') +
-    PROJ_STATUSES.map(s => '<option' + (s === p.status ? ' selected' : '') + '>' + s + '</option>').join('');
-  f.elements.start.value = p.start || ''; f.elements.end.value = p.end || ''; f.elements.ack.checked = false;
-  editWarn(); $('editDlg').showModal();
-}
-$('editForm').addEventListener('change', editWarn);
-$('editDlg').addEventListener('click', e => { const g = e.target.closest('[data-edit-go]'); if(!g) return; $('editDlg').close(); setTab(g.dataset.editGo, true); });
-$('editForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const p = editP; if(!p) return;
-  const f = $('editForm'), status = f.elements.status.value, start = f.elements.start.value, end = f.elements.end.value;
-  const sCh = !!status && status !== (p.status || ''), aCh = start !== (p.start || ''), bCh = end !== (p.end || '');
-  if(!sCh && !aCh && !bCh){ $('editDlg').close(); return; }
-  if(start && end && end < start){ toast('النهاية قبل البداية', true); f.elements.end.focus(); return; }
-  if(!$('editAckRow').hidden && !f.elements.ack.checked){ toast('أكّد الإغلاق أولًا: في المشروع ما لم يكتمل', true); f.elements.ack.focus(); return; }
-  if(SOURCE !== 'live'){ toast('الحفظ يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true); return; }
-  const btn = e.submitter || f.querySelector('[type=submit]'); btn.disabled = true;
-  const done = [], fin = () => { try{ localStorage.removeItem('daily-board-projects-cache-' + ORG); }catch(err){} render();
-    const eb = document.querySelector('#projHead .ph-edit'); if(eb) eb.focus({preventScroll: true}); };
-  try{
-    if(sCh){ const d = await post({action: 'project_status', org: ORG, id: p.id, status}); p.status = (d.project && d.project.status) || status; done.push('الحالة'); }
-    if(aCh || bCh){
-      const d = await post(Object.assign({action: 'project_dates', org: ORG, id: p.id}, aCh ? {start: start || null} : {}, bCh ? {end: end || null} : {}));
-      const r = d.project || {}; if(aCh) p.start = r.start !== undefined ? r.start : start || null; if(bCh) p.end = r.end !== undefined ? r.end : end || null; done.push('التواريخ');
-    }
-    $('editDlg').close(); fin(); toast('حُفظت ' + done.join(' و') + ' في نوشن');
-  }catch(err){
-    if(done.length) fin();
-    toast((done.length ? 'حُفظت ' + done.join(' و') + '، وتعذّر الباقي: ' : 'تعذّر الحفظ: ') + (err.message || ''), true);
-  }finally{ btn.disabled = false; }
-});
-
 function openPlanDlg(p, it, stage, newStage){
   dlgProject = p; dlgItem = it || null;
   const f = $('planForm');
@@ -4043,7 +3957,7 @@ $('detail').addEventListener('click', e => {
     else if(act === 'stg-del') stgDelete(p, k);
     return;
   }
-  if(((act === 'gantt-dur' || act === 'proj-edit') && !can.edit()) || (act === 'money-edit' && !can.moneyEdit()) || (act === 'delete' && !ACC.owner)) return;
+  if((act === 'gantt-dur' && !can.edit()) || (act === 'money-edit' && !can.moneyEdit()) || (act === 'delete' && !ACC.owner)) return;
   if(act === 'fget'){ openViaBridge(p, b.dataset.id); return; }
   if(act === 'toggle') toggleItem(b.dataset.id);
   else if(act === 'edit') openPlanDlg(p, DATA.plan.find(x => x.id === b.dataset.id));
@@ -4059,7 +3973,6 @@ $('detail').addEventListener('click', e => {
   else if(act === 'report') openReport(p, b.dataset.kind);
   else if(act === 'up') pickFiles(p, b.dataset.slot);
   else if(act === 'money-edit') openMoneyDlg(p);
-  else if(act === 'proj-edit') openEditDlg(p);
 });
 /* السحب والإفلات على الخانة نفسها */
 function slotOf(e){ return e.target.closest('#docsCard .slot'); }
