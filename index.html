@@ -6754,6 +6754,7 @@ function renderBudgetDashboard(d){
     '</div>';
   }).join('');
 }
+const BUDGET_H0 = 300;   /* حجز أول زيارة بالبكسل: ضمن حدّ القائمة 340 */
 const BUDGET_H_KEY = 'daily-board-budget-h';   /* آخر ارتفاع لقائمة الميزانية بالبكسل (رقم واحد بلا مبالغ)، يُمسح عند الخروج في NasaqAuth.clear() */
 function loadBudgetSummary(){
   if(!notionOK()){
@@ -6763,9 +6764,11 @@ function loadBudgetSummary(){
   }
   const month = monthKey(new Date());
   const list = $('budgetList');
-  if(!list.childElementCount){ let h = 0; try{ h = +localStorage.getItem(BUDGET_H_KEY) || 0; }catch(e){} if(h > 0) list.style.minHeight = h + 'px'; }
+  /* أول زيارة (لا ارتفاع محفوظ): حجز افتراضي BUDGET_H0 قريب من الارتفاع الشائع، فلا تقفز البطاقة حين يردّ الجسر */
+  if(!list.childElementCount){ let h = 0; try{ h = +localStorage.getItem(BUDGET_H_KEY) || 0; }catch(e){} list.style.minHeight = (h > 0 ? h : BUDGET_H0) + 'px'; }
+  const card = list.closest('section'); card.setAttribute('aria-busy', 'true');
   $('expSyncNote').textContent = 'يُحدَّث…';
-  post({action:'expense_summary', month}).then(d=>{
+  post({action:'expense_summary', month}).finally(() => card.removeAttribute('aria-busy')).then(d=>{
     renderBudgetDashboard(d);
     const last = list.lastElementChild;   /* الارتفاع الطبيعي للمحتوى لا الأدنى المحجوز */
     try{ localStorage.setItem(BUDGET_H_KEY, String(last ? Math.ceil(last.getBoundingClientRect().bottom - list.getBoundingClientRect().top) : 0)); }catch(e){}
