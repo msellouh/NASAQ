@@ -1938,9 +1938,10 @@ function renderDetail(){
         TABS.map(([k, l]) => '<button type="button" role="tab" id="tab-' + k + '" data-tab="' + k + '" aria-controls="pnl-' + k + '">' + l + '</button>').join('') + '</div>' +
       TABS.map(([k]) => '<div class="ppanel" role="tabpanel" id="pnl-' + k + '" aria-labelledby="tab-' + k + '" tabindex="0"></div>').join('');
   }
+  const keep = fresh ? null : draftsGrab(d);   /* المشروع نفسه: ما يُكتب في النماذج يبقى (A7b) */
   $('projHead').innerHTML = projHead(p);
   TAB_KEYS.forEach(k => renderPanel(k, p));
-  tabsSync(); schedSync();
+  tabsSync(); schedSync(); draftsPut(keep);
   /* الحركة عند فتح مشروع فقط، وللوحة الظاهرة وحدها */
   if(fresh) [$('projHead'), ...$('pnl-' + S.tab).querySelectorAll('.card')].forEach((c, i) => { c.classList.add('rise'); c.style.animationDelay = (i * 50) + 'ms'; });
   if(SOURCE === 'live' && DATA.driveRoot && p.code && (!FILES[p.code] || FILES_STALE.has(p.code)) && !filesLoading.has(p.code)) fetchFiles(p);
@@ -2409,7 +2410,34 @@ function deleteProject(p){
 }
 function refreshCard(id, html){
   const el = $(id); if(!el) return;
+  const keep = draftsGrab(el);
   const t = document.createElement('div'); t.innerHTML = html; el.replaceWith(t.firstElementChild);
+  draftsPut(keep);
+}
+/* المسودات (A7b): ما يُكتب في نموذج بند (form.pq) أو تسمية مرحلة (stg-form) أو مدة المشروع (#gDurN) لا يضيع حين
+   تعيد الرسمَ عمليةٌ أخرى (اكتمال حفظ سابق ينتهي دائمًا بـ rerender، أو «تراجع»، أو تحديث الملفات). تُلتقط القيم والتركيز
+   قبل الرسم وتُعاد بعده إلى النموذج نفسه إن بقي؛ والحفظ والإلغاء يزيلان النموذج، فلا يعود ما حُفظ أو أُلغي */
+const draftKey = f => f.matches('form.pq') ? 'pq:' + f.dataset.qform : f.matches('form.stg-form') ? 'stg:' + f.dataset.stage : '';
+const draftForm = k => document.querySelector(k.startsWith('pq:') ? '#detail form.pq[data-qform="' + CSS.escape(k.slice(3)) + '"]'
+  : '#detail form.stg-form[data-stage="' + CSS.escape(k.slice(4)) + '"]');
+function draftsGrab(root){
+  const d = {forms: {}, focus: null}; if(!root) return d;
+  root.querySelectorAll('form.pq, form.stg-form').forEach(f => { const v = {}; [...f.elements].forEach(e => { if(e.name) v[e.name] = e.value; }); d.forms[draftKey(f)] = v; });
+  const n = root.querySelector('#gDurN'); if(n) d.forms.gdur = {n: n.value, u: ($('gDurU') || {}).value};
+  const a = document.activeElement;
+  if(a && root.contains(a) && (a.form ? draftKey(a.form) : /^gDur[NU]$/.test(a.id)))
+    d.focus = {k: a.form ? draftKey(a.form) : 'gdur', name: a.form ? a.name : a.id, s: a.selectionStart, e: a.selectionEnd};
+  return d;
+}
+function draftsPut(d){
+  if(!d) return;
+  Object.entries(d.forms).forEach(([k, v]) => {
+    if(k === 'gdur'){ const n = $('gDurN'), u = $('gDurU'); if(n && v.n){ n.value = v.n; if(u && v.u) u.value = v.u; n.dispatchEvent(new Event('input', {bubbles: true})); } return; }
+    const f = draftForm(k); if(f) Object.entries(v).forEach(([name, val]) => { const e = f.elements[name]; if(e && 'value' in e) e.value = val; });
+  });
+  const fo = d.focus; if(!fo) return;
+  const f = fo.k === 'gdur' ? null : draftForm(fo.k), el = fo.k === 'gdur' ? $(fo.name) : f && f.elements[fo.name];
+  if(el && el !== document.activeElement){ el.focus({preventScroll: true}); try{ if(fo.s != null) el.setSelectionRange(fo.s, fo.e); }catch(e){} }
 }
 
 function tabsSync(){
