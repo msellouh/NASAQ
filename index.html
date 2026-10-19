@@ -22,8 +22,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده؛ وخط الطابع الافتراضي «نَسَق» يُحمَّل مسبقًا -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
+<!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده -->
 <style>
 @layer tokens, base, layouts, components, theme, utilities;
 @layer base{
@@ -982,6 +981,12 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .budget-bar.warn>div{background:var(--hold)}
 .budget-bar.over>div{background:var(--urgent)}
 .budget-list{max-height:340px;overflow-y:auto}
+/* البطاقة بارتفاعها النهائي قبل ردّ الجسر: كان يملؤها الرد بعد ثوانٍ فتنزاح الصفحة (على الجوال البطاقة فوق نموذج الإضافة).
+   الملخص بهيكل بالمقاس نفسه، والقائمة بآخر ارتفاع عُرضت به (BUDGET_H_KEY) */
+.budget-overall .sk{background:var(--rule);border-radius:var(--r-sm);color:transparent;inline-size:60%}
+.budget-overall .sub.sk{inline-size:85%}
+.budget-overall .budget-bar.sk{inline-size:auto}
+.budget-bar.ghost{visibility:hidden}
 .budget-item{padding:var(--sp-2) 0;border-bottom:1px dotted var(--rule);font-size:var(--fs-xs)}
 .budget-item .row{display:flex;justify-content:space-between;color:var(--ink-2);margin-bottom:var(--sp-1);gap:var(--sp-1)}
 .budget-item .row b{color:var(--ink);font-weight:600}
@@ -2187,7 +2192,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <aside class="exp-side">
     <section class="card">
       <div class="card-head"><h3><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg> ميزانية هذا الشهر</h3></div>
-      <div class="budget-overall" id="budgetOverall"></div>
+      <div class="budget-overall" id="budgetOverall"><div class="big sk">&nbsp;</div><div class="sub sk">&nbsp;</div><div class="budget-bar sk"><div></div></div></div>
       <div class="budget-list" id="budgetList"></div>
       <div class="exp-sync-note" id="expSyncNote"></div>
     </section>
@@ -6737,7 +6742,7 @@ function renderBudgetDashboard(d){
   overall.innerHTML =
     '<div class="big">'+fmtMoney(d.totalActual)+'</div>'+
     '<div class="sub">'+(d.totalPlanned>0 ? ('المتبقي '+fmtMoney(remaining)+' من '+fmtMoney(d.totalPlanned)) : 'بلا حدّ مخطط')+'</div>'+
-    (d.totalPlanned>0 ? renderBudgetBar(pct) : '');
+    (d.totalPlanned>0 ? renderBudgetBar(pct) : '<div class="budget-bar ghost"><div></div></div>');   /* شريط مخفي يحفظ ارتفاع البطاقة */
 
   const list = $('budgetList');
   if(!d.items.length){ list.innerHTML = '<div class="empty" style="border:0;padding:6px 0">لا حركة مسجّلة هذا الشهر في نوشن بعد.</div>'; return; }
@@ -6749,6 +6754,7 @@ function renderBudgetDashboard(d){
     '</div>';
   }).join('');
 }
+const BUDGET_H_KEY = 'daily-board-budget-h';   /* آخر ارتفاع لقائمة الميزانية بالبكسل (رقم واحد بلا مبالغ)، يُمسح عند الخروج في NasaqAuth.clear() */
 function loadBudgetSummary(){
   if(!notionOK()){
     $('budgetOverall').innerHTML = '<div class="sub">لوحة الميزانية تقرأ من نوشن، وهي متاحة لصاحب اللوح فقط. تسجيل المصروفات يعمل لديك محليًا ويُزامَن بين أجهزتك.</div>';
@@ -6756,12 +6762,16 @@ function loadBudgetSummary(){
     return;
   }
   const month = monthKey(new Date());
+  const list = $('budgetList');
+  if(!list.childElementCount){ let h = 0; try{ h = +localStorage.getItem(BUDGET_H_KEY) || 0; }catch(e){} if(h > 0) list.style.minHeight = h + 'px'; }
   $('expSyncNote').textContent = 'يُحدَّث…';
   post({action:'expense_summary', month}).then(d=>{
     renderBudgetDashboard(d);
+    const last = list.lastElementChild;   /* الارتفاع الطبيعي للمحتوى لا الأدنى المحجوز */
+    try{ localStorage.setItem(BUDGET_H_KEY, String(last ? Math.ceil(last.getBoundingClientRect().bottom - list.getBoundingClientRect().top) : 0)); }catch(e){}
     $('expSyncNote').textContent = 'آخر تحديث ' + fmtTime(new Date());
   }).catch(e=>{
-    $('budgetOverall').innerHTML = '<div class="sub">تعذّر تحميل الميزانية: '+esc(e.message)+'</div>';
+    $('budgetOverall').innerHTML = '<div class="big">&nbsp;</div><div class="sub">تعذّر تحميل الميزانية: '+esc(e.message)+'</div><div class="budget-bar ghost"><div></div></div>';
     $('expSyncNote').textContent = '';
   });
 }
