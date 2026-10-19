@@ -214,6 +214,12 @@ html:not(.is-owner) #driveMenuBtn{display:none}
 .kpi :is(b,small) span{display:inline;font-size:inherit;color:inherit}
 .kpi small span.alert{display:block;color:var(--urgent);font-weight:600;cursor:help}
 .kpi b .v-s{display:none}
+/* سطر المؤشرات المختصر للجوال (640px أو أقل): يفتح البطاقات الأربع */
+.kpi-line{align-items:center;gap:var(--sp-2);width:100%;min-height:44px;padding:var(--sp-2) var(--sp-3);background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--shadow);font-size:var(--fs-sm);color:var(--ink-2);text-align:right}
+.kpi-line b{color:var(--ink);font-variant-numeric:tabular-nums}
+.kpi-line .alert{color:var(--urgent);font-weight:600}
+.kpi-line svg{width:16px;height:16px;margin-inline-start:auto;flex-shrink:0;transition:rotate calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
+.kpis.open .kpi-line svg{rotate:180deg}
 @media (max-width:560px){ .kpi b .v-f{display:none} .kpi b .v-s{display:inline} }
 .meter{height:5px;border-radius:var(--r-pill);background:var(--rule);margin-top:var(--sp-2);overflow:hidden}
 .meter i{display:block;height:100%;border-radius:var(--r-pill);background:var(--grad-line)}
@@ -231,6 +237,11 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .list-head select{border:0;background:transparent;font-size:var(--fs-sm);color:var(--ink-2);padding:2px}
 .item .meta .late-t{color:var(--urgent)}
 .items{overflow:auto;padding:var(--sp-2);flex:1}
+/* «رجوع إلى المشاريع»: للجوال وحده (880px أو أقل)، حيث تُعرض التفاصيل بدل القائمة */
+.m-back{justify-self:start;align-items:center;gap:var(--sp-1);min-block-size:44px;margin-bottom:var(--sp-3)}
+.m-back svg{width:18px;height:18px}
+/* نص الزر الذي يُختصر على الجوال: على الحاسوب يذوب في الزر (contents) فيبقى عنصرًا واحدًا مع ما قبله كما كان */
+.ph-t{display:contents}
 .item{display:block;width:100%;text-align:right;border:1px solid transparent;background:transparent;border-radius:var(--r-lg);padding:var(--sp-3) var(--sp-3);margin-bottom:2px;transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .item:hover{background:var(--stripe)}
 .item.on{background:var(--focus-bg);border-color:color-mix(in srgb,var(--focus) 30%,transparent)}
@@ -608,6 +619,7 @@ dialog.sheet[open]{animation:sheet-in calc(var(--dur-3) * var(--motion-scale,1))
 
 /* ---------- الإحصائيات ---------- */
 .stats{display:grid;gap:var(--sp-4)}
+.stats[hidden]{display:none}   /* display:grid يغلب [hidden]: بعد زيارة «الإحصائيات» كانت تبقى فوق القائمة */
 .counters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--sp-3)}
 .sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-4)}
 .donut-wrap{display:flex;align-items:center;gap:var(--sp-5);flex-wrap:wrap}
@@ -792,8 +804,12 @@ dialog .dlg-acts{position:sticky;bottom:calc(-1 * var(--sp-5));z-index:2;margin:
   :root{--tb-h:58px}
   .split{grid-template-columns:1fr}
   .list{position:static;max-height:none}
-  .items{max-height:48vh}
-  html.embed .items{max-height:calc(var(--host-vh,100vh) * .48)}
+  /* عرضان متتاليان بدل التمرير الداخلي: القائمة بطول الصفحة، والنقر يفتح التفاصيل وحدها مع «رجوع» (data-mv من render) */
+  html.embed .list{max-height:none}
+  .items{overflow:visible}
+  html[data-mv="list"] #detail,html[data-mv="detail"] :is(.page-head .ph-acts,#pageSub,.filters,.flt-chips,#kpis,.list){display:none}
+  html[data-mv="detail"] .page-head{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  html[data-mv="list"] .skip-link[href="#detail"],html[data-mv="detail"] .skip-link[href="#items"]{display:none}
   .steps{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));row-gap:var(--sp-3)}
   .steps::before,.steps .fill{display:none}
   .counters{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -872,6 +888,37 @@ button.file{font:inherit;cursor:pointer;text-align:start}
   #detail .tlx .tlx-ms::after{content:"";position:absolute;inset:-7px;rotate:-45deg}   /* مربع نقر 24px مستقيم حول المعيّن */
   /* تحت اللمس: مساحة مربع الإنجاز 44×44 (كانت 40×30 لأن الإزاحة تُحسب من داخل الحد 2px)، وتمتد 11px خارج حده فلا تتجاوز الفجوة 12px إلى عنوان البند */
   @media (pointer:coarse){ #detail .pi .chk::after{inset:-13px} }
+  /* A5: زر «رجوع» للجوال وحده (‎.btn‎ في components تغلب base، فالإظهار هنا) */
+  .m-back,.kpi-line{display:none}
+  @media (max-width:880px){ .m-back{display:inline-flex} }
+  /* ترويسة الجوال المضغوطة: أول مشروع قبل 320px على 390 (معيار القبول 11).
+     العنوان والإجراءان في سطر، والبحث والسنة والتصفية في سطر، والمؤشرات الأربعة سطر واحد يتوسع */
+  @media (max-width:640px){
+    .wrap{padding-top:var(--sp-3)}
+    .page-head{flex-wrap:nowrap;align-items:center;padding-block:0;margin-bottom:var(--sp-3)}
+    :root[data-art="ink"] .page-head{padding-bottom:16px;margin-bottom:var(--sp-2)}   /* فاصل ◆ الكلاسيكي يكفي فاصلًا */
+    .page-head > div{min-width:0}
+    .page-head h1{font-size:var(--fs-xl);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #pageSub{display:none}
+    .ph-acts{flex-shrink:0}
+    .ph-t{display:block;position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    #fltBtn{padding-inline:var(--sp-2);min-width:44px;justify-content:center}
+    .filters{flex-wrap:nowrap;margin-bottom:var(--sp-3)}
+    .filters .search{flex:1 1 0;min-width:0}
+    .seg{padding:1px;flex-shrink:0}
+    .kpis{margin-bottom:var(--sp-3)}
+    .kpis:not(.open) .kpi{display:none}
+    .kpi-line{display:flex;grid-column:1/-1}
+    .list-head{padding-block:var(--sp-1)}
+  }
+  /* 400px أو أقل: المؤسسة ظاهرة مختارةً في الشريط العلوي، فيكتفي العنوان المرئي بالقسم (والاسم كاملًا لقارئ الشاشة) */
+  @media (max-width:400px){ .page-head h1{font-size:var(--fs-lg)} .ph-org{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap} }
+  /* أضيق الشاشات (320): العنوان المرئي في الشريط العلوي (القسم والمؤسسة)، فيُخفى هنا بصريًا ويبقى لقارئ الشاشة، والبحث في سطر وحده */
+  @media (max-width:340px){
+    .page-head > div{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+    .ph-acts{margin-inline-start:auto}
+    .filters{flex-wrap:wrap} .filters .search{flex-basis:100%}
+  }
 }
 </style>
 <link rel="stylesheet" href="nasaq-theme.css?v=20261007b">
@@ -918,7 +965,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     <div class="ph-acts">
       <!-- أدوات الإدارة النادرة في قائمة، و«مشروع جديد» الزر الأساسي الوحيد -->
       <details class="admin-menu" id="adminMenu">
-        <summary class="btn">⋯ إدارة</summary>
+        <summary class="btn">⋯<span class="ph-t"> إدارة</span></summary>
         <div class="am-list">
           <button type="button" id="namesBtn"><b>مراجعة الأسماء</b><small>توحيد أسماء المشاريع المتشابهة</small></button>
           <button type="button" id="donorsBtn"><b>المانحون</b><small>أسماء المانحين ودولهم للإحصائيات</small></button>
@@ -936,7 +983,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     </label>
     <div class="seg" id="yearSeg" role="group" aria-label="السنة"></div>
     <button class="btn flt-btn" type="button" id="fltBtn" aria-expanded="false" aria-controls="fltDlg">
-      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>تصفية<span class="fcount" id="fltCount" hidden></span>
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg><span class="ph-t">تصفية</span><span class="fcount" id="fltCount" hidden></span>
     </button>
   </div>
   <!-- الفلاتر: لوحة تحت الأدوات على الحاسوب، ولوحة سفلية على الجوال (Shopify/eBay: الفلاتر في درج على الجوال) -->
@@ -1335,7 +1382,7 @@ let SOURCE = '';
 const FILES = {};                 /* قوائم الملفات المقروءة من الجسر، حسب الكود */
 const filesLoading = new Set();
 const EXPANDED = new Set();       /* خانات مستندات فُتحت كل ملفاتها */
-const S = { q:'', year:'2026', status:'', donor:'', type:'', std:'', coord:'', sort:'smart', sel:null, view:'list', tsort:'approved', tdir:-1 };
+const S = { q:'', year:'2026', status:'', donor:'', type:'', std:'', coord:'', sort:'smart', sel:null, view:'list', tsort:'approved', tdir:-1, mv:'list' };   /* mv: عرض الجوال (القائمة أو التفاصيل)، لا يُحفظ */
 /* حالة العرض محفوظة لكل مؤسسة: الفلاتر والبحث والترتيب والمشروع المفتوح والتبويب ومكان التمرير،
    فتعود الصفحة كما تُركت بعد الانتقال إلى صفحة أخرى أو إعادة الفتح */
 const VIEW_KEY = 'daily-board-projects-view-' + ORG, VIEW_KEYS = ['q', 'year', 'status', 'donor', 'type', 'std', 'coord', 'sort', 'sel', 'view', 'tsort', 'tdir', 'fopen'];
@@ -1739,8 +1786,7 @@ function render(){
   document.querySelectorAll('#views button').forEach(b => {
     const on = b.dataset.view === S.view; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on);
   });
-  $('pageTitle').textContent = (st ? 'إحصائيات ' : 'مشاريع ') + ORG_INFO.name;
-  document.title = 'نَسَق — ' + $('pageTitle').textContent;
+  pageTitle();
   const scope = [ORG_INFO.full, S.year ? 'سنة ' + AR(S.year).replace(/[٬,]/g, '') : 'كل السنوات'].join(' | ');
   $('pageSub').textContent = scope + (st ? ' | الأرقام تتبع الفلاتر' : '');
   renderChips(rows.length);
@@ -1750,10 +1796,41 @@ function render(){
     const qs = [a.dataset.org === 'humera' ? 'org=humera' : '', EMBED ? 'embed=1' : ''].filter(Boolean).join('&');
     a.href = 'projects.html' + (qs ? '?' + qs : '') + (st ? '#stats' : '');
   });
-  if(st){ renderStats(rows); return; }
+  if(st){ renderStats(rows); mvApply(); return; }
   if(S.sel && !rows.some(p => p.id === S.sel)) S.sel = null;
   if(!S.sel && rows.length) S.sel = rows[0].id;
   renderKpis(rows); renderList(rows); renderDetail();
+  mvApply();
+}
+/* العنوان نص واحد كما كان؛ وعلى 400px أو أقل يُفصل اسم المؤسسة في عنصر يُخفى بصريًا (ظاهر مختارًا في الشريط العلوي) ويبقى لقارئ الشاشة */
+const TITLE_NARROW = matchMedia('(max-width:400px)');
+function pageTitle(){
+  const w = S.view === 'stats' ? 'إحصائيات ' : 'مشاريع ', h = $('pageTitle');
+  if(TITLE_NARROW.matches){ h.textContent = w; const o = document.createElement('span'); o.className = 'ph-org'; o.textContent = ORG_INFO.name; h.append(o); }
+  else h.textContent = w + ORG_INFO.name;
+  document.title = 'نَسَق — ' + w + ORG_INFO.name;
+}
+TITLE_NARROW.addEventListener('change', pageTitle);
+/* الجوال (880px أو أقل): القائمة والتفاصيل عرضان متتاليان. فتح مشروع يضيف خطوة في السجل (pushState) فيعيد زر الرجوع إلى القائمة،
+   والرابط #الكود يفتح التفاصيل مباشرة. على الحاسوب العرضان متجاوران ولا أثر لـ mv */
+const splitPhone = () => matchMedia('(max-width:880px)').matches;
+function mvApply(){
+  const root = document.documentElement, prev = root.dataset.mv, mv = S.view === 'stats' ? 'stats' : S.mv;
+  root.dataset.mv = mv;
+  if(!prev || prev === mv || !splitPhone()) return;
+  /* التركيز ينتقل مع العرض: العنصر المنقور يختفي، فيضيع التركيز إن بقي عليه (لوحة المفاتيح وقارئ الشاشة) */
+  if(mv === 'detail'){ EMBED ? $('detail').scrollIntoView({block: 'start'}) : scrollTo({top: 0}); $('detail').focus({preventScroll: true}); }
+  else if(mv === 'list'){ const on = document.querySelector('#items .item.on'); if(on){ on.scrollIntoView({block: 'center'}); on.focus({preventScroll: true}); } }
+}
+function selHash(p){ return '#' + encodeURIComponent(p.code || p.id); }
+/* فتح مشروع: على الجوال خطوة جديدة في السجل، وعلى الحاسوب يُستبدل الرابط كما كان */
+function showProject(p){
+  S.sel = p.id; S.view = 'list'; S.mv = 'detail';
+  if(splitPhone()) history.pushState({mv: 'detail'}, '', selHash(p)); else history.replaceState(null, '', selHash(p));
+}
+function mBack(){
+  if(history.state && history.state.mv === 'detail') return history.back();   /* hashchange يعيد الرسم */
+  S.mv = 'list'; history.replaceState(null, '', location.pathname + location.search); render();
 }
 /* مبلغ مختصر للجوال: $2.4M و$636K، والكامل في title */
 const moneyShort = n => { const v = Math.abs(Number(n) || 0); return '$' + (v >= 1e6 ? AR(Math.round(n / 1e5) / 10) + 'M' : v >= 1e4 ? AR(Math.round(n / 1e3)) + 'K' : AR(Math.round(n))); };
@@ -1768,7 +1845,11 @@ function renderKpis(rows){
   const recv = withRecv.reduce((t, p) => t + num(p.received), 0), recvOf = withRecv.reduce((t, p) => t + num(p.approved), 0);
   const nBen = rows.filter(p => num(p.benef) > 0).length;
   /* بطاقات بتشريح واحد: العنوان، الرقم، سطر سياق صريح، وشريط عند الحاجة (Stephen Few: كل رقم بسياقه) */
-  $('kpis').innerHTML =
+  const k = $('kpis'); k.classList.toggle('open', !!S.kopen);
+  k.innerHTML =
+    '<button type="button" class="kpi-line" aria-expanded="' + !!S.kopen + '"><span>' + cnt(rows.length, W_PROJ) + '</span>' +
+      (approved ? '<span>| <b><bdi>' + moneyShort(approved) + '</bdi></b> معتمد</span>' : '') + (late ? '<span class="alert">| ' + AR(late) + ' تحتاج متابعة</span>' : '') +
+      '<span class="sr">، عرض المؤشرات</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>' +
     kpiBox('المشاريع', AR(rows.length), '<b>' + AR(active) + '</b> جارية' + (late ? '<span class="alert" title="تحتاج متابعة: تجاوز موعد نهايته، أو له استحقاق للمانح أو بند في الخطة تجاوز موعده">' + AR(late) + ' تحتاج متابعة</span>' : '')) +
     kpiBox('المبلغ المعتمد', moneyFS(approved), recvOf ? '<span title="المستلم من المانحين، من معتمد المشاريع المسجّل فيها الاستلام">مستلم <b>' + pct(recv / recvOf) + '</b>: <bdi>' + moneyShort(recv) + '</bdi> من <bdi>' + moneyShort(recvOf) + '</bdi></span>' : 'للمشاريع المسجّل لها اعتماد', recvOf ? recv / recvOf : null) +
     kpiBox('مبلغ التنفيذ', moneyFS(exec), approved ? 'صُرف <b>' + pct(exec / approved) + '</b> من المعتمد' : '', approved ? exec / approved : null) +
@@ -1798,7 +1879,8 @@ function renderList(rows){
 function renderDetail(){
   const p = DATA.projects.find(x => x.id === S.sel);
   if(!p){ $('detail').innerHTML = '<div class="card empty">اختر مشروعًا من القائمة لعرض تفاصيله.</div>'; return; }
-  $('detail').innerHTML = heroCard(p) + planCard(p) + ganttCard(p) + timelineCard(p) + moneyCard(p) + docsCard(p) + dangerCard(p);
+  $('detail').innerHTML = '<button type="button" class="btn soft m-back" data-mback><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>رجوع إلى المشاريع</button>' +
+    heroCard(p) + planCard(p) + ganttCard(p) + timelineCard(p) + moneyCard(p) + docsCard(p) + dangerCard(p);
   $('detail').querySelectorAll('.card').forEach((c, i) => { c.classList.add('rise'); c.style.animationDelay = (i * 50) + 'ms'; });
   if(SOURCE === 'live' && DATA.driveRoot && p.code && (!FILES[p.code] || FILES_STALE.has(p.code)) && !filesLoading.has(p.code)) fetchFiles(p);
 }
@@ -2262,7 +2344,7 @@ function deleteProject(p){
       DATA.plan = DATA.plan.filter(x => x.project !== p.id);
       delete FILES[p.code]; saveFilesCache();
       try{ const k = 'daily-board-projects-cache-' + ORG, c = JSON.parse(localStorage.getItem(k) || 'null'); if(c){ c.projects = DATA.projects; c.deliverables = DATA.deliverables; c.plan = DATA.plan; localStorage.setItem(k, JSON.stringify(c)); } }catch(e){}
-      S.sel = null; history.replaceState(null, '', location.pathname + location.search); render();
+      S.sel = null; S.mv = 'list'; history.replaceState(null, '', location.pathname + location.search); render();
       toast('حُذف ' + p.code + ' — أُرشفت صفحته' + (r.archived ? ' و' + (r.archived.deliverables || 0) + ' استحقاقات و' + (r.archived.plan || 0) + ' بنود خطة' : '') + (r.archived && r.archived.folder ? '، ومجلده في المهملات' : ''));
     }catch(err){ b.disabled = false; b.textContent = 'احذف نهائيًا من المنصة'; toast(err.message || 'تعذّر الحذف', true); }
   };
@@ -3327,7 +3409,7 @@ $('projForm').addEventListener('submit', async e => {
     try{ localStorage.removeItem('daily-board-projects-cache-' + ORG); }catch(err){}
     $('projDlg').close();
     S.q = ''; $('q').value = ''; if(d.project.year && S.year && S.year !== d.project.year) S.year = d.project.year;
-    S.sel = d.project.id; S.view = 'list';
+    S.sel = d.project.id; S.view = 'list'; S.mv = 'detail';
     history.replaceState(null, '', '#' + encodeURIComponent(d.project.code || d.project.id));
     buildFilters(); render();
     toast(d.folderError ? 'أُنشئ المشروع في نوشن، وتعذّر إنشاء مجلده في درايف: ' + d.folderError
@@ -3649,26 +3731,23 @@ function readHash(first){
   const rm = h.match(/^report=([^@~]+)(?:@(\d{4}-\d{2}-\d{2}))?(~final)?$/);
   if(rm){ const rp = DATA.projects.find(x => x.code === rm[1] || x.id === rm[1]);
     if(rp){ if(rm[2]) GANTT_ASOF[rp.id] = rm[2]; setTimeout(() => { document.open(); document.write(reportHTML(rp, rm[3] ? 'final' : 'interim')); document.close(); }, 0); } return; }
-  S.view = 'list';
+  S.view = 'list'; S.mv = 'list';
   if(!h) return;
   const p = DATA.projects.find(x => x.code === h || x.id === h);
-  if(p){ S.sel = p.id; if(S.year && p.year !== S.year) S.year = p.year || '';
+  if(p){ S.sel = p.id; S.mv = 'detail'; if(S.year && p.year !== S.year) S.year = p.year || '';
     /* فلتر محفوظ يخفي المشروع المطلوب بالرابط: يُفرَّغ ليظهر */
     if(!filtered().some(x => x.id === p.id)){ S.q = S.status = S.donor = S.type = S.std = S.coord = ''; $('q').value = ''; buildFilters(); } }
 }
 function openProject(id){
   const p = DATA.projects.find(x => x.id === id); if(!p) return;
-  S.sel = id; S.view = 'list';
-  history.replaceState(null, '', '#' + encodeURIComponent(p.code || id));
+  showProject(p);
   render(); scrollTo({top: 0});
 }
 $('items').addEventListener('click', e => {
   const b = e.target.closest('.item'); if(!b) return;
-  qDrop(); S.sel = b.dataset.id;
-  const p = DATA.projects.find(x => x.id === S.sel);
-  history.replaceState(null, '', '#' + encodeURIComponent((p && p.code) || S.sel));
-  renderList(filtered()); renderDetail();
-  if(matchMedia('(max-width:880px)').matches) $('detail').scrollIntoView({behavior: 'smooth', block: 'start'});
+  const p = DATA.projects.find(x => x.id === b.dataset.id); if(!p) return;
+  qDrop(); showProject(p);
+  renderList(filtered()); renderDetail(); mvApply();
 });
 $('detail').addEventListener('click', e => {
   /* البطاقة المطوية كلها زر توسيع (عدا عناصرها التفاعلية) */
@@ -3767,9 +3846,9 @@ $('detail').addEventListener('keydown', e => {
 });
 $('views').addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b || b.dataset.view === S.view) return;
-  S.view = b.dataset.view;
+  S.view = b.dataset.view; S.mv = 'list';   /* «المشاريع» على الجوال تفتح القائمة، فلا #كود في الرابط */
   const p = DATA.projects.find(x => x.id === S.sel);
-  history.replaceState(null, '', S.view === 'stats' ? '#stats' : p ? '#' + encodeURIComponent(p.code || p.id) : location.pathname + location.search);
+  history.replaceState(null, '', S.view === 'stats' ? '#stats' : p && !splitPhone() ? selHash(p) : location.pathname + location.search);
   render(); scrollTo({top: 0});
 });
 $('stats').addEventListener('click', e => {
@@ -3819,6 +3898,11 @@ document.addEventListener('click', e => {
   document.querySelectorAll('.stg-menu[open]').forEach(d => { if(!d.contains(e.target)) d.open = false; });
 });
 window.addEventListener('hashchange', () => { readHash(); render(); });
+document.addEventListener('click', e => { if(e.target.closest('[data-mback]')) mBack(); });
+$('kpis').addEventListener('click', e => {
+  const b = e.target.closest('.kpi-line'); if(!b) return;
+  S.kopen = !S.kopen; $('kpis').classList.toggle('open', S.kopen); b.setAttribute('aria-expanded', String(S.kopen));
+});
 /* رابطا التخطي: ينقلان التركيز دون تغيير الرابط، فيبقى #كود المشروع كما هو (التنقل إلى #detail كان سيُطلق hashchange ويُعيد الرسم) */
 document.querySelectorAll('.skip-link').forEach(a => a.addEventListener('click', e => { const t = $(a.getAttribute('href').slice(1)); if(t){ e.preventDefault(); t.focus(); } }));
 
