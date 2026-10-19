@@ -1512,7 +1512,7 @@ function openNamesReview(){
       'يصير العنوان «مشروع الموحّد - المخصص - المانح» في نوشن، ويُعاد تسمية مجلد المشروع في درايف، ويمكن التراجع.' : 'لا مجموعات متشابهة.') +
     (live ? '' : ' <b>للعرض فقط — الاعتماد يحتاج الاتصال بنوشن.</b>') + '</p>' +
     '<datalist id="dlStd">' + opts.map(o => '<option value="' + esc(o) + '">').join('') + '</datalist>' +
-    G.map((g, k) => '<section class="ngroup" data-g="' + k + '"><div class="nhead"><input class="nstd" list="dlStd" value="' + esc(g.sug) + '" placeholder="اكتب الاسم الموحّد" aria-label="الاسم الموحّد"><button type="button" class="btn cta" data-approve="' + k + '"' + (live ? '' : ' disabled') + '>اعتمد</button></div><ul>' +
+    G.map((g, k) => '<section class="ngroup" data-g="' + k + '"><div class="nhead"><input class="nstd" list="dlStd" value="' + esc(g.sug) + '" placeholder="اكتب الاسم الموحّد" aria-label="الاسم الموحّد"><button type="button" class="btn soft" data-approve="' + k + '"' + (live ? '' : ' disabled') + '>اعتمد</button></div><ul>' +
       g.members.map(p => '<li data-id="' + esc(p.id) + '"><label class="nsel"><input type="checkbox" checked aria-label="اختيار ' + esc(p.code || p.name) + '"><code>' + esc(p.code || '') + '</code></label>' +
         '<div class="nrow"><span class="nold">' + esc(p.name) + (p.stdName ? ' <small class="' + (p.stdName !== g.sug ? 'diff' : '') + '">' + esc(p.stdName) + '</small>' : ' <small class="diff">بلا اسم موحّد</small>') + '</span>' +
         '<input class="ncustom" value="' + esc(nmCustom(p, g.sug)) + '" placeholder="الاسم المخصص" aria-label="الاسم المخصص لـ' + esc(p.code || p.name) + '">' +
@@ -1861,16 +1861,16 @@ function renderList(rows){
   if(!rows.length){ box.innerHTML = '<div class="empty">لا توجد مشاريع تطابق هذه الفلاتر.</div>'; return; }
   box.innerHTML = rows.map(p => {
     /* الأحمر لما يحتاج إجراءً الآن فقط: استحقاق للمانح تجاوز موعده؛ وانتهاء المدة سطر نصي هادئ (إرهاق التنبيهات) */
+    /* شارة واحدة بالأولوية (الكشف التدريجي): استحقاق متأخر، وإلا الحالة. انتهاء المدة سطر نصي أحمر في البيانات */
     const ld = lateDels(p).length;
-    const flag = ld ? '<span class="badge b-danger">' + icon('alert') + 'استحقاق متأخر' + (ld > 1 ? ' (' + AR(ld) + ')' : '') + '</span>' : '';
+    const flag = ld ? '<span class="badge b-danger">' + icon('alert') + 'استحقاق متأخر' + (ld > 1 ? ' (' + AR(ld) + ')' : '') + '</span>' : statusPill(p.status);
     const pr = progressOf(p);
     return '<button type="button" class="item' + (p.id === S.sel ? ' on' : '') + '" data-id="' + esc(p.id) + '" aria-label="' + esc((p.code ? p.code + ' ' : '') + (p.name || '')) + '" aria-describedby="r1-' + esc(p.id) + ' mt-' + esc(p.id) + '"' + (p.id === S.sel ? ' aria-current="true"' : '') + '>' +
-      '<div class="row1" id="r1-' + esc(p.id) + '">' + codeChip(p) + statusPill(p.status) + flag + '</div>' +
+      '<div class="row1" id="r1-' + esc(p.id) + '">' + codeChip(p) + flag + '</div>' +
       '<div class="nm">' + esc(p.name) + '</div>' +
-      '<div class="meta" id="mt-' + esc(p.id) + '"><span>' + esc(p.donor || 'بلا جهة ممولة') + '</span>' +
+      '<div class="meta" id="mt-' + esc(p.id) + '">' + (ld ? '<span>' + esc(p.status || 'حالة غير محددة') + '</span>' : '') + '<span>' + esc(p.donor || 'بلا جهة ممولة') + '</span>' +
         (p.end ? (isLate(p) ? '<span class="late-t">انتهى قبل ' + cnt(days(toDate(p.end), today), W_DAY) + '</span>' : '<span>ينتهي ' + dayLbl(p.end, false) + '</span>') : p.approvalDate ? '<span>اعتماد ' + dayLbl(p.approvalDate, false) + '</span>' : '') +
-        ((p.approved || p.exec) ? '<span class="num">' + money(p.approved || p.exec) + '</span>' : '') +
-        (p.docsChecked ? '<span title="المستندات المرفقة">مستندات ' + AR((p.docsDone || []).length) + '/' + AR(DOCS_N) + '</span>' : '') + '</div>' +
+        ((p.approved || p.exec) ? '<span class="num">' + money(p.approved || p.exec) + '</span>' : '') + '</div>' +
       (pr != null ? '<div class="mini" aria-hidden="true"><i style="width:' + Math.round(pr * 100) + '%"></i></div>' : '') +
     '</button>';
   }).join('');
@@ -2371,7 +2371,7 @@ function heroCard(p){
     (p.brief ? '<div class="brief">' + esc(p.brief) + '</div>' : '') +
     (p.notes ? '<div class="brief">ملاحظة: ' + esc(p.notes) + '</div>' : '') +
     '<div class="acts">' +
-      (drive ? '<a class="btn cta sm" href="' + esc(safeUrl(drive)) + '" target="_blank" rel="noopener">مجلد المشروع في درايف</a>' : '') +
+      (drive ? '<a class="btn soft sm" href="' + esc(safeUrl(drive)) + '" target="_blank" rel="noopener">مجلد المشروع في درايف</a>' : '') +
       (p.url ? '<a class="btn soft sm" href="' + esc(safeUrl(p.url)) + '" target="_blank" rel="noopener">فتح في نوشن</a>' : '') +
     '</div>' +
   '</article>';
