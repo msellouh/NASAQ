@@ -1826,19 +1826,23 @@ const itemProg = (it, asOf) => itemDoneAt(it, asOf || today) ? 1
   : hasPct(it) ? Math.max(0, Math.min(.99, Number(it.pct) / 100)) : it.status === 'منجز' ? 1 : .5;
 const avgProg = (items, asOf) => items.length ? items.reduce((a, it) => a + itemProg(it, asOf), 0) / items.length : 0;
 const ST_CLS = {'منجز': 'ok', 'جارٍ': 'run', 'متأخر': 'late', 'تأخر بدؤه': 'late', 'متوقف': 'late', 'لم يبدأ': ''};
-/* الموقف الزمني في تاريخ: الوقت المنقضي مقابل الإنجاز وحكمٌ واحد (صورة مبسطة لمؤشر SPI) */
-function schedHealth(p, M, asOf){
-  const s = p.start || p.approvalDate, items = M ? M.stages.flatMap(g => g.items) : [];
-  const done = p.status === 'مكتمل';
-  const el = s && p.end ? Math.max(0, Math.min(1, (asOf - toDate(s)) / Math.max(DAY, toDate(p.end) - toDate(s)))) : null;
-  const work = done ? 1 : items.length ? items.reduce((a, it) => a + itemProg(it, asOf), 0) / items.length : null;
-  const over = !done && p.end && asOf > toDate(p.end) ? days(toDate(p.end), asOf) : 0;
+/* الموقف الزمني في تاريخ: حكمٌ واحد للمشروع (صورة مبسطة لمؤشر SPI) يستعمله الجدول الأسبوعي والمخطط الزمني والتقرير.
+   المدة من spanOf، والإنجاز من الخطة في ذلك التاريخ وإلا «نسبة الإنجاز» في نوشن (كما في progressOf) */
+function projectHealth(p, asOf){
+  asOf = asOf || today;
+  const { s, e } = spanOf(p), done = p.status === 'مكتمل';
+  const S0 = s && e && toDate(e) > toDate(s) ? toDate(s) : null, E0 = S0 ? toDate(e) : null;
+  const el = S0 ? Math.max(0, Math.min(1, (asOf - S0) / Math.max(DAY, E0 - S0))) : null;
+  const items = planOf(p).filter(x => !x._draft);
+  const work = done ? 1 : items.length ? avgProg(items, asOf) : p.progress != null ? num(p.progress) : null;
+  const left = E0 ? days(asOf, E0) : null, over = !done && left != null && left < 0 ? -left : 0;
   const ratio = work == null || !el ? null : work / el;
-  const v = done ? {c: 'good', b: 'مكتمل'} : over ? {c: 'bad', b: 'متأخر عن الخطة'} : el === 0 ? {c: 'warn', b: 'لم يبدأ بعد'}
-    : ratio == null ? {c: 'warn', b: 'لا بيانات إنجاز'} : ratio < .85 ? {c: 'warn', b: 'الإنجاز أبطأ من الوقت'} : {c: 'good', b: 'في موعده'};
-  v.t = over ? 'تجاوز نهاية المدة بـ ' + cnt(over, W_DAY) + (work != null ? '، والإنجاز ' + pct(work) : '') + '.'
-    : el != null && work != null ? 'انقضى ' + pct(el) + ' من المدة، وأُنجز ' + pct(work) + '.' : '';
-  return {el, work, over, v};
+  const v = done ? {c: 'good', b: 'مكتمل', t: 'أُغلق المشروع.'}
+    : over ? {c: 'bad', b: 'متأخر عن الخطة', t: 'تجاوز نهاية المدة بـ ' + cnt(over, W_DAY) + (work != null ? '، والإنجاز ' + pct(work) : '') + '.'}
+    : el === 0 ? {c: 'warn', b: 'لم يبدأ بعد', t: 'يبدأ ' + dayLbl(s) + (asOf < S0 ? '، بعد ' + cnt(days(asOf, S0), W_DAY) : '') + '.'}
+    : ratio == null ? {c: 'warn', b: 'لا بيانات إنجاز', t: 'أنشئ خطة التنفيذ ليُقارن الإنجاز بالوقت.'}
+    : {c: ratio < .85 ? 'warn' : 'good', b: ratio < .85 ? 'الإنجاز أبطأ من الوقت' : 'في موعده', t: 'انقضى ' + pct(el) + ' من المدة، وأُنجز ' + pct(work) + '.'};
+  return {el, work, over, left, done, v};
 }
 function healthStrip(h){
   if(h.el == null) return '';
@@ -1918,14 +1922,14 @@ function ganttCard(p){
   const M = ganttModel(p, asOf);
   if(!M){
     const s = p.start || p.approvalDate;
-    return '<article class="card" id="ganttCard"><div class="card-h"><h3>الجدول الزمني الأسبوعي</h3></div>' +
+    return '<article class="card" id="ganttCard"><div class="card-h"><h3>الجدول الزمني الأسبوعي</h3></div>' + healthStrip(projectHealth(p, today)) +   /* الموقف يظهر هنا وحده، ولو بلا جدول بعد */
       (s ? '<p class="note" style="margin:0 0 10px">يُرسم الجدول من مدة المشروع. البداية ' + dayLbl(s) + (p.start ? '' : ' (تاريخ الاعتماد)') + ' — أدخل المدة لتُحسب النهاية وتُحفظ في نوشن.</p>' +
         '<div class="g-tools g-dur"><label>مدة المشروع <input type="number" min="1" max="120" id="gDurN" inputmode="numeric" placeholder="6"></label>' +
         '<select id="gDurU" aria-label="وحدة المدة"><option value="m">أشهر</option><option value="w">أسابيع</option><option value="d">أيام</option></select>' +
         '<span class="note" id="gDurOut" style="margin:0"></span><button class="btn cta" type="button" data-act="gantt-dur">احفظ المدة وارسم الجدول</button></div>'
         : '<p class="note" style="margin:0">لا تاريخ بداية ولا تاريخ اعتماد لهذا المشروع — أضفهما في نوشن ليُرسم الجدول.</p>') + '</article>';
   }
-  const H = schedHealth(p, M, asOf), nOut = M.weeks.filter(w => w.out).length, uL = {1: 'أسبوعًا', 2: 'نصف شهر', 4: 'شهرًا'}[M.unit];
+  const H = projectHealth(p, asOf), nOut = M.weeks.filter(w => w.out).length, uL = {1: 'أسبوعًا', 2: 'نصف شهر', 4: 'شهرًا'}[M.unit];
   return '<article class="card tlx" id="ganttCard"><div class="card-h"><h3>الجدول الزمني' + (M.unit === 1 ? ' الأسبوعي' : '') + '</h3><small>بنمط التقارير المرحلية المعتمدة — ' + AR(M.weeks.length - nOut) + ' ' + uL + (nOut ? ' + ' + AR(nOut) + ' خارج المدة' : '') + (M.unit > 1 ? ' (مشروع طويل: كل عمود ' + (M.unit === 2 ? 'نصف شهر' : 'شهر') + ')' : '') + '</small>' +
     (M.preview ? '<span class="g-prev">مقترح من قالب «' + esc(M.preview.label) + '»</span>' : '') + '</div>' +
     (M.preview ? '<p class="note" style="margin:0 0 10px">لا خطة تنفيذ لهذا المشروع بعد، فهذا جدول مقترح من مدته ونوعه. أنشئ الخطة من بطاقة «خطة التنفيذ» لتعتمده وتتابع إنجاز بنوده.</p>' : '') +
@@ -2083,7 +2087,7 @@ function reportHTML(p, kind){
   const items = M ? M.stages.flatMap(g => g.items) : [];
   const doneAt = it => itemDoneAt(it, asOf);
   const prog = it => itemProg(it, asOf);
-  const HL = schedHealth(p, M, asOf);
+  const HL = projectHealth(p, asOf);
   const total = HL.work, timeP = HL.el;
   const d = x => x ? fmtDate(toDate(x)) : '—';
   const weeks = M ? M.nWeeks : 0;
@@ -2592,23 +2596,9 @@ function timelineCard(p){
       (p.approvalDate ? ' (المسجّل تاريخ الاعتماد ' + dayLbl(p.approvalDate) + ' فقط)' : '') + '. أضف تواريخ لبنود الخطة ليُرسم منها.</p>' + delsTable(dels) + '</article>';
   }
   const S0 = toDate(s), E0 = toDate(e), dur = days(S0, E0);
-  const done = p.status === 'مكتمل';
-  const left = days(today, E0), over = !done && left < 0 ? -left : 0;
-  const el = Math.min(1, Math.max(0, days(S0, today) / dur));
-  const work = done ? 1 : progressOf(p);
-  /* الحكم: متأخر إن انقضت المدة ولم يكتمل، وأبطأ من الوقت إن قلّ الإنجاز عن 85% من الوقت المنقضي */
-  const ratio = work == null || !el ? null : work / el;
-  const v = done ? {c: 'good', b: 'مكتمل', t: 'أُغلق المشروع.'}
-    : over ? {c: 'bad', b: 'متأخر عن الخطة', t: 'انقضت المدة كلها' + (work != null ? ' وأُنجز ' + pct(work) + ' فقط.' : '.')}
-    : today < S0 ? {c: 'warn', b: 'لم يبدأ بعد', t: 'يبدأ ' + dayLbl(s) + '، بعد ' + cnt(days(today, S0), W_DAY) + '.'}
-    : ratio == null ? {c: 'warn', b: 'لا بيانات إنجاز', t: 'أنشئ خطة التنفيذ ليُقارن الإنجاز بالوقت.'}
-    : ratio < .85 ? {c: 'warn', b: 'الإنجاز أبطأ من الوقت', t: 'انقضى ' + pct(el) + ' من المدة وأُنجز ' + pct(work) + '.'}
-    : {c: 'good', b: 'في موعده', t: 'الإنجاز يواكب الوقت المنقضي.'};
+  /* الموقف الزمني وشريطه في بطاقة الجدول الأسبوعي وحدها (projectHealth)؛ هنا ما يلزم المحور فقط */
+  const { done, left, over } = projectHealth(p, today);
   const tail = done ? 'مكتمل' : left === 0 ? 'ينتهي اليوم' : left > 0 ? 'باقي ' + cnt(left, W_DAY) : 'تجاوز النهاية بـ ' + cnt(-left, W_DAY);
-  const health = '<div class="tlx-health"><div class="tlx-hb">' +
-      '<div class="tlx-hr"><span>الوقت المنقضي</span><span class="tlx-track"><i class="t-time" style="width:' + Math.round(el * 100) + '%"></i></span><b>' + pct(el) + '</b></div>' +
-      (work != null ? '<div class="tlx-hr"><span>الإنجاز</span><span class="tlx-track"><i class="t-work" style="width:' + Math.round(work * 100) + '%"></i></span><b>' + pct(work) + '</b></div>' : '') +
-    '</div><div class="tlx-verdict ' + v.c + '"><b>' + v.b + '</b><small>' + v.t + '</small></div></div>';
 
   /* المحور: من أول الشهر الأول إلى أول الشهر بعد آخر تاريخ؛ و«اليوم» يدخل إن قرُب */
   const pts = [S0, E0, ...msd.map(d => toDate(d.due)), ...stg.flatMap(x => [x.start, x.end]).filter(Boolean).map(toDate)];
@@ -2678,7 +2668,6 @@ function timelineCard(p){
   const plotLbl = 'المخطط الزمني من ' + dayLbl(s) + ' إلى ' + dayLbl(e) + '، ' + tail;
   return '<article class="card tlx" id="tlCard"><div class="card-h"><h3>المخطط الزمني</h3><small>' + dayLbl(s, false) + ' – ' + dayLbl(e) + (p.start ? '' : ' | البداية تقديرية من الاعتماد') + '</small>' +
       '<span class="end"><span class="pill ' + (over ? 'st-late' : done ? 'st-done' : 'st-run') + '">' + (over ? icon('alert') : icon('clock')) + tail + '</span></span></div>' +
-    health +
     '<div class="tlx-g" role="group" aria-label="' + esc(plotLbl) + '">' + names + '<div class="tlx-plot"><div class="tlx-axis" aria-hidden="true">' + ticks + '</div>' + grid + overBox +
       '<div class="tlx-rows">' + rowSpan + rowsSt + rowMs + '</div>' + todayEl + '</div></div>' + legend +
     '<ol class="tlx-v" aria-label="المراحل والمحطات بالترتيب الزمني">' + vt + '</ol>' +
