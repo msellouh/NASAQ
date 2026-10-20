@@ -11,7 +11,7 @@
 <!-- تثبيت اللوح كتطبيق (الهاتف والحاسوب) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#F7F6F2">
-<script src="nasaq-core.js?v=20261020a"></script>
+<script src="nasaq-core.js?v=20261001a"></script>
 <script src="nasaq-art.js?v=20261007b"></script>
 <script src="nasaq-icons.js?v=20261002a"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
@@ -1528,7 +1528,6 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <link rel="stylesheet" href="themes/classic.css?v=20261001a">
 <link rel="stylesheet" href="themes/nasaq.css?v=20261001a">
 <link rel="stylesheet" href="themes/nasaq360.css?v=20261001a">
-<link rel="stylesheet" href="themes/kahraman.css?v=20261020a">
 </head>
 <body>
 <a class="skip-link" href="#mainContent">تخطَّ إلى المحتوى</a>
@@ -2365,7 +2364,7 @@ if(NasaqTheme.takeNotice() === 'vibrant') setTimeout(()=>{ try{ showToast('تغ�
 /* ---------- اختيار الطابع: بطاقات معاينة حية ----------
    كل بطاقة نموذج مصغّر (عنوان، ومهمة، وزر) مرسوم بمتغيرات الطابع نفسه: .nq-scope مع data-palette و data-theme
    على البطاقة تعيد حساب ألوانه وخطوطه داخلها. تُستعمل في الإعدادات ← المظهر، وفي خطوة «اختر طابعك». */
-const THEME_ORDER = ['classic', 'nasaq', 'nasaq360', 'kahraman'];   /* كهرمان رابعًا (K1)، والافتراضي يبقى نَسَق */
+const THEME_ORDER = ['classic', 'nasaq', 'nasaq360'];
 function themeCardsHTML(){
   const m = NasaqTheme.isDark() ? 'dark' : 'light';
   return THEME_ORDER.map(k=>{ const t = NASAQ_THEMES[k];
