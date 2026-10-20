@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده (كما في index.html منذ P1؛ preload المسبق صار غير مستعمل مع هياكل التحميل) -->
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
-<script src="nasaq-core.js?v=20261001a"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
+<script src="nasaq-core.js?v=20261020a"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
 <script src="nasaq-art.js?v=20261007b"></script>
 <script src="nasaq-icons.js?v=20261001a"></script>
 <style>
@@ -245,6 +245,7 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 /* «رجوع إلى المشاريع»: للجوال وحده (880px أو أقل)، حيث تُعرض التفاصيل بدل القائمة */
 .m-back{justify-self:start;align-items:center;gap:var(--sp-1);min-block-size:44px;margin-bottom:var(--sp-3)}
 .m-back svg{width:18px;height:18px}
+.keep-lbl{display:inline-flex;align-items:center;gap:var(--sp-1);min-height:24px;font-size:var(--fs-xs);color:var(--muted);cursor:pointer}
 /* نص الزر الذي يُختصر على الجوال: على الحاسوب يذوب في الزر (contents) فيبقى عنصرًا واحدًا مع ما قبله كما كان */
 .ph-t{display:contents}
 .item{display:block;width:100%;text-align:right;border:1px solid transparent;background:transparent;border-radius:var(--r-lg);padding:var(--sp-3) var(--sp-3);margin-bottom:2px;transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
@@ -1159,6 +1160,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
         <span class="appr-name" data-media-name="org">لا ملفات</span>
         <button class="btn ghost sm" type="button" data-media-clear="org" hidden>إزالة</button>
       </div>
+      <label class="keep-lbl"><input type="checkbox" class="keep-orig">اترك الصور بلا ضغط (تُضغط الصور الكبيرة قبل الرفع افتراضيًا)</label>
       <p class="note" id="mediaNote"></p>
     </section>
     <p class="note" id="projTitlePrev" style="margin:0"></p>
@@ -3114,30 +3116,38 @@ const b64 = file => new Promise((res, rej) => {
   r.onerror = () => rej(new Error('تعذّرت قراءة الملف'));
   r.readAsDataURL(file);
 });
+/* الملف كما يُرسل إلى الجسر بعد تجهيزه (U1: ضغط الصور في المتصفح)؛ حدّ 25MB على الناتج */
+async function upPayload(file, slot){
+  const r = window.NasaqFiles ? await NasaqFiles.prepare(file, {slot}) : {file, compressed: false}, f = r.file;
+  if(f.size > UP_MAX) throw new Error('حجم «' + file.name + '» أكبر من 25 ميجابايت');
+  return {r, file: {name: f.name, mime: f.type || '', data: await b64(f)}};
+}
+const upNote = rs => { const c = rs.filter(r => r.compressed); if(!c.length) return '';
+  return ' — ضُغطت ' + (c.length === 1 ? 'الصورة ' : cnt(c.length, W_FILE) + ' ') + NasaqFiles.note({compressed: true, before: c.reduce((t, r) => t + r.before, 0), after: c.reduce((t, r) => t + r.after, 0)}); };
 async function uploadToSlot(p, slot, files){
   const list = [...files].filter(Boolean);
   if(!list.length) return;
   if(SOURCE !== 'live'){ toast('الرفع يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true); return; }
   const key = p.code + '|' + slot;
   uploading.add(key); refreshCard('docsCard', docsCard(p));
-  let ok = 0;
+  let ok = 0; const rs = [];
   for(const file of list){
     try{
-      if(file.size > UP_MAX) throw new Error('حجم «' + file.name + '» أكبر من 25 ميجابايت');
+      const u = await upPayload(file, slot); rs.push(u.r);
       const d = await post({action:'file_upload', org: ORG, code: p.code, slot, pageId: p.id,
-        file: {name: file.name, mime: file.type || '', project: p.name || '', data: await b64(file)}});
+        file: Object.assign(u.file, {project: p.name || ''})});
       if(d.files){ FILES[p.code] = d.files; Object.assign(p, {docsDone: d.files.done, docsChecked: d.files.checked, folder: d.files.folder, drive: d.files.url}); }
       ok++;
     }catch(err){ toast(err.message || 'تعذّر رفع الملف', true); break; }
   }
   uploading.delete(key);
   refreshCard('docsCard', docsCard(p));
-  if(ok) toast(ok === 1 ? 'رُفع الملف إلى «' + slot + '»' : 'رُفعت ' + cnt(ok, W_FILE) + ' إلى «' + slot + '»');
+  if(ok) toast((ok === 1 ? 'رُفع الملف إلى «' + slot + '»' : 'رُفعت ' + cnt(ok, W_FILE) + ' إلى «' + slot + '»') + upNote(rs));
 }
 function pickFiles(p, slot){
   const inp = $('upInput');
   inp.value = '';
-  inp.onchange = () => { const f = inp.files; inp.value = ''; uploadToSlot(p, slot, f); };
+  inp.onchange = () => { const f = [...inp.files]; inp.value = ''; uploadToSlot(p, slot, f); };   /* نسخة أولًا: تفريغ value يفرّغ FileList نفسها فلا يُرفع شيء */
   inp.click();
 }
 function docsCard(p){
@@ -3169,7 +3179,8 @@ function docsCard(p){
   const head = '<article class="card" id="docsCard"><div class="card-h"><span class="dring" style="--p:' + Math.round(ratio * 100) + '" aria-hidden="true"><b>' + AR(Math.round(ratio * 100)) + '%</b></span>' +
       '<div><h3>مستندات المشروع</h3><small>' + (!checked && !f ? (DATA.driveRoot ? 'لم يُفحص المجلد بعد' : 'الأرشيف غير مربوط') :
         AR(nDone) + ' من ' + AR(DOCS_N) + ' مرفقة' + (nMissing ? ' | ' + AR(nMissing) + ' ناقصة حتى هذه المرحلة' : '')) + '</small></div>' +
-      '<span class="end">' + (driveUrl ? '<a class="btn soft sm" href="' + esc(safeUrl(driveUrl)) + '" target="_blank" rel="noopener">المجلد في درايف</a>' : '') +
+      '<span class="end">' + (canUpload ? '<label class="keep-lbl"><input type="checkbox" class="keep-orig"' + (NasaqFiles.keepOriginal() ? ' checked' : '') + '>اترك الصور بلا ضغط</label>' : '') +
+        (driveUrl ? '<a class="btn soft sm" href="' + esc(safeUrl(driveUrl)) + '" target="_blank" rel="noopener">المجلد في درايف</a>' : '') +
         (SOURCE === 'live' ? '<button class="btn ghost sm" type="button" data-act="files-refresh">' + (loading ? 'جارٍ القراءة…' : 'قراءة الملفات من درايف') + '</button>' : '') + '</span></div>';
   if(!checked && !f && !DATA.driveRoot) return head + '<p class="note" style="margin:0">لم يُربط أرشيف درايف لمؤسسة ' + ORG_INFO.name +
     ' بعد. اربطه من زر الأرشيف أعلى الصفحة، فتُقرأ مجلدات مشاريعها (المسماة بالكود مثل ' + (ORG === 'humera' ? 'H001-' : 'G050-') + ') ملفًا ملفًا.</p></article>';
@@ -3612,7 +3623,7 @@ $('projForm').addEventListener('submit', async e => {
   const btn = f.querySelector('[type=submit]'); btn.disabled = true; btn.setAttribute('aria-busy', 'true');
   try{
     const af = $('apprFile').files[0];
-    const approvalFile = af ? {name: af.name, mime: af.type || '', data: await b64(af)} : null;
+    const approvalFile = af ? (await upPayload(af, 'اعتماد التنفيذ')).file : null;
     const media = [...mediaInp('donor').files].map(f => ['donor', f]).concat([...mediaInp('org').files].map(f => ['org', f]));
     const d = await post({action:'project_create', org: ORG, project: pr, approvalFile});
     DATA.projects.unshift(d.project);
@@ -3644,7 +3655,7 @@ function apprShow(){
 $('apprPick').addEventListener('click', () => $('apprFile').click());
 $('apprFile').addEventListener('change', () => {
   const f = $('apprFile').files[0];
-  if(f && f.size > UP_MAX){ toast('حجم الملف أكبر من 25 ميجابايت', true); $('apprFile').value = ''; }
+  if(f && f.size > UP_MAX && !/^image\//.test(f.type)){ toast('حجم الملف أكبر من 25 ميجابايت', true); $('apprFile').value = ''; }   /* الصور تُفحص بعد ضغطها */
   apprShow();
 });
 $('apprClear').addEventListener('click', () => { $('apprFile').value = ''; apprShow(); $('apprPick').focus(); });
@@ -3662,7 +3673,7 @@ function mediaShow(v){
 ['donor', 'org'].forEach(v => {
   document.querySelector('#projDlg [data-media-pick="' + v + '"]').addEventListener('click', () => mediaInp(v).click());
   mediaInp(v).addEventListener('change', () => {
-    const big = [...mediaInp(v).files].filter(f => f.size > UP_MAX);
+    const big = [...mediaInp(v).files].filter(f => f.size > UP_MAX && !/^image\//.test(f.type));
     if(big.length){ toast('أكبر من 25 ميجابايت: ' + big.map(f => f.name).join('، ') + ' — اختر الملفات من جديد بدونها', true); mediaInp(v).value = ''; }
     mediaShow(v);
   });
@@ -3676,8 +3687,9 @@ async function uploadProjectMedia(p, list){
   for(const [v, f] of list){
     toast('جارٍ رفع الإعلاميات ' + AR(ok + fail.length + 1) + ' من ' + AR(list.length) + '…');
     try{
+      const u = await upPayload(f, 'المواد الإعلامية');
       const d = await post({action:'file_upload', org: ORG, code: p.code, slot: 'المواد الإعلامية', variant: v, pageId: p.id,
-        file: {name: f.name, mime: f.type || '', project: p.name || '', data: await b64(f)}});
+        file: Object.assign(u.file, {project: p.name || ''})});
       if(d.files){ FILES[p.code] = d.files; Object.assign(p, {docsDone: d.files.done, docsChecked: d.files.checked, folder: d.files.folder, drive: d.files.url}); }
       ok++;
     }catch(err){ fail.push(f.name + ': ' + (err.message || 'تعذّر')); }
