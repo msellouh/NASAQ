@@ -39,8 +39,6 @@ svg.ic{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px
   outline:2px solid transparent; background-color:var(--surface); border-color:var(--focus); box-shadow:0 0 0 3px var(--ring);
 }
 :root[data-field="box"] :is(input,textarea)::placeholder{color:var(--muted);opacity:.8}
-/* الحقول المسطّرة (كلاسيكي): النص الإرشادي بلون --text-3 كاملًا، فيبلغ تباين AA على الورق الدافئ (D1) */
-:root:not([data-field="box"]) :is(input,textarea)::placeholder{color:var(--text-3);opacity:1}
 :root[data-field="box"] :is(.add select,.pull select,.exp-add select){
   appearance:none; -webkit-appearance:none; padding-left:var(--sp-6);
   background-image:var(--select-chevron);
