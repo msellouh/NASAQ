@@ -245,9 +245,6 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 /* «رجوع إلى المشاريع»: للجوال وحده (880px أو أقل)، حيث تُعرض التفاصيل بدل القائمة */
 .m-back{justify-self:start;align-items:center;gap:var(--sp-1);min-block-size:44px;margin-bottom:var(--sp-3)}
 .m-back svg{width:18px;height:18px}
-.file-jpg{min-width:24px;min-height:24px;padding:0 var(--sp-2);border:1px solid var(--rule);border-radius:var(--r-md);background:var(--paper);color:var(--ink-2);font:inherit;font-size:var(--fs-xs);font-weight:600;cursor:pointer}
-.file-jpg:hover{color:var(--ink);border-color:var(--field-line)}
-@media (pointer:coarse){ .file-jpg{min-width:44px;min-height:44px} }
 .keep-lbl{display:inline-flex;align-items:center;gap:var(--sp-1);min-height:24px;font-size:var(--fs-xs);color:var(--muted);cursor:pointer}
 /* نص الزر الذي يُختصر على الجوال: على الحاسوب يذوب في الزر (contents) فيبقى عنصرًا واحدًا مع ما قبله كما كان */
 .ph-t{display:contents}
@@ -1763,40 +1760,6 @@ function gateStats(){
   else if(c && !can.money()) c.querySelectorAll('.kpi').forEach(k => { if(MONEY_KPIS.includes(((k.querySelector('span') || {}).textContent || '').trim())) k.remove(); });
 }
 /* فتح ملف لغير المالك: عبر الجسر (يتحقق من الخانة والنوع)، دون رابط درايف */
-/* ---------- PDF ← صور JPG (U2) ----------
-   يجلب الملف بـ file_get القائم، ويرسم صفحاته بـ PDF.js (vendor/pdfjs، Apache-2.0، يُحمَّل عند أول ضغطة فقط)
-   بمقياس 2.5 (≈180 DPI) وجودة 0.9، صورة لكل صفحة. على اللمس: «حفظ في الصور» عبر المشاركة إن توفّرت، وإلا تنزيل.
-   لا حفظ في درايف ولا تخزين على الجهاز؛ وروابط الكائنات تُحرَّر بعد الاستعمال */
-const PDF_JPG_MAX_PAGES = 30;
-let pdfjsP = null;
-const pdfjsLoad = () => pdfjsP || (pdfjsP = import('./vendor/pdfjs/pdf.min.mjs').then(m => { m.GlobalWorkerOptions.workerSrc = new URL('vendor/pdfjs/pdf.worker.min.mjs', location.href).href; return m; })
-  .catch(e => { pdfjsP = null; throw e; }));
-async function pdfToJpg(p, id, base){
-  if(SOURCE !== 'live'){ toast('يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true); return; }
-  toast('جارٍ تجهيز الصور…');
-  let doc = null;
-  try{
-    const [d, pdfjs] = await Promise.all([post({action: 'file_get', org: ORG, code: p.code, id}), pdfjsLoad()]);
-    const bin = atob(d.data), arr = new Uint8Array(bin.length);
-    for(let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-    doc = await pdfjs.getDocument({data: arr, isEvalSupported: false}).promise;
-    const n = Math.min(doc.numPages, PDF_JPG_MAX_PAGES), files = [];
-    base = String(base || d.name || 'ملف').replace(/\.pdf$/i, '');
-    for(let i = 1; i <= n; i++){
-      const pg = await doc.getPage(i), vp = pg.getViewport({scale: 2.5});   /* ≈180 DPI لصفحة A4 */
-      const c = document.createElement('canvas'); c.width = Math.ceil(vp.width); c.height = Math.ceil(vp.height);
-      const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
-      await pg.render({canvasContext: x, viewport: vp}).promise;
-      const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.9)); c.width = c.height = 0; pg.cleanup();
-      files.push(new File([blob], base + (doc.numPages > 1 ? '-صفحة-' + i : '') + '.jpg', {type: 'image/jpeg'}));
-    }
-    const share = matchMedia('(pointer:coarse)').matches && navigator.canShare && navigator.canShare({files});
-    if(share){ try{ await navigator.share({files, title: base}); }catch(e){ if(e && e.name === 'AbortError') return; throw e; } }
-    else files.forEach(f => { const url = URL.createObjectURL(f), a = document.createElement('a'); a.href = url; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 10000); });
-    toast((files.length === 1 ? 'جُهّزت صورة واحدة' : 'جُهّزت ' + cnt(files.length, W_FILE) + ' (صورة لكل صفحة)') + (doc.numPages > n ? '، وأول ' + AR(n) + ' صفحة فقط' : ''));
-  }catch(err){ toast('تعذّر تحويل الملف: ' + (err.message || err), true); }
-  finally{ if(doc) doc.destroy(); }
-}
 async function openViaBridge(p, id){
   toast('جارٍ فتح الملف…');
   try{
@@ -3139,12 +3102,10 @@ function fileKind(name){
 function fileChip(f){
   const [cls, lbl] = fileKind(f.name);
   const base = String(f.name).replace(/\.[^.]+$/, '');
-  /* U2: «تحميل كصورة» لملفات PDF — بجوار الشريحة، لمن يفتح الملف (file_get نفسه) */
-  const jpg = cls === 'pdf' && f.id ? '<button type="button" class="file-jpg" data-act="pdf-jpg" data-id="' + esc(f.id) + '" data-name="' + esc(base) + '" title="تحميل «' + esc(base) + '» كصورة JPG" aria-label="تحميل «' + esc(base) + '» كصورة JPG">JPG</button>' : '';
   if(!f.url && f.id) return '<button type="button" class="file ' + cls + '" data-act="fget" data-id="' + esc(f.id) + '" title="' +
-    esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' | ' + dayLbl(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></button>' + jpg;
+    esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' | ' + dayLbl(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></button>';
   return '<a class="file ' + cls + '" href="' + esc(safeUrl(f.url)) + '" target="_blank" rel="noopener" title="' +
-    esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' | ' + dayLbl(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></a>' + jpg;
+    esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' | ' + dayLbl(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></a>';
 }
 /* رفع ملف إلى خانة: يُحفظ في مجلد الخانة داخل مجلد المشروع باسم موحّد «الكود- نوع المستند- اسم المشروع» */
 const UP_MAX = 25 * 1024 * 1024;
@@ -4119,7 +4080,6 @@ $('detail').addEventListener('click', e => {
   }
   if(((act === 'gantt-dur' || act === 'proj-edit') && !can.edit()) || (act === 'money-edit' && !can.moneyEdit()) || (act === 'delete' && !ACC.owner)) return;
   if(act === 'fget'){ openViaBridge(p, b.dataset.id); return; }
-  if(act === 'pdf-jpg'){ pdfToJpg(p, b.dataset.id, b.dataset.name); return; }
   if(act === 'toggle') toggleItem(b.dataset.id);
   else if(act === 'edit') openPlanDlg(p, DATA.plan.find(x => x.id === b.dataset.id));
   else if(act === 'add') openPlanDlg(p, null, b.dataset.stage);
