@@ -1479,39 +1479,6 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   ol.tasks li.task:nth-child(4n+1),.imp.a,.check[aria-checked="true"],.fill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 }
-/* ---------- شاشة التركيز (W1): أهم المهام في بطاقة واحدة بملء الشاشة، وإضافة سريعة أسفلها ---------- */
-@layer utilities{
-  .fv{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:calc(env(safe-area-inset-top,0px) + var(--sp-3)) var(--sp-3) calc(env(safe-area-inset-bottom,0px) + var(--sp-3));
-    background:var(--bg,var(--paper));overflow:auto}
-  .fv[hidden]{display:none}
-  .fv-card{width:min(520px,100%);min-height:min(100%,calc(100dvh - 2 * var(--sp-3) - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));display:grid;grid-template-rows:auto 1fr auto;gap:var(--sp-3);
-    background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:var(--sp-4)}
-  .fv-head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2)}
-  .fv-head h2{font-size:var(--fs-xl);color:var(--ink);margin:0}
-  .fv-head small{display:block;font-size:var(--fs-sm);color:var(--muted)}
-  .fv-x{display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--rule);border-radius:var(--r-md);background:transparent;color:var(--ink-2);cursor:pointer}
-  .fv-x svg{width:20px;height:20px}
-  .fv-list{list-style:none;margin:0;padding:0;display:grid;align-content:start;gap:var(--sp-2)}
-  .fv-item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:var(--sp-3);align-items:center;padding:var(--sp-2) var(--sp-2);border:1px solid var(--rule);border-radius:var(--r-md)}
-  .fv-chk{width:44px;height:44px;border-radius:50%;border:2px solid var(--field-line,var(--rule));background:transparent;display:grid;place-items:center;cursor:pointer;color:transparent}
-  .fv-chk svg{width:22px;height:22px}
-  .fv-chk:hover{border-color:var(--done);color:var(--done)}
-  .fv-t{min-width:0}
-  .fv-t b{display:block;font-weight:600;line-height:1.45;color:var(--ink);overflow-wrap:anywhere}
-  .fv-t small{display:flex;flex-wrap:wrap;gap:var(--sp-1) var(--sp-2);font-size:var(--fs-sm);color:var(--muted);margin-top:2px}
-  .fv-t .late{color:var(--urgent);font-weight:600}
-  .fv-imp{font-weight:700} .fv-imp.a{color:var(--urgent)}
-  .fv-more{justify-self:start;min-height:44px}
-  .fv-empty{color:var(--muted);text-align:center;padding:var(--sp-6) 0}
-  .fv-add{display:grid;grid-template-columns:minmax(0,1fr) 52px;gap:var(--sp-2);position:sticky;bottom:0;background:var(--paper);padding-top:var(--sp-2)}
-  .fv-add input{min-height:52px;padding:0 var(--sp-3);border:1px solid var(--field-line,var(--rule));border-radius:var(--r-md);background:var(--field-bg,var(--paper));color:var(--ink);font:inherit;font-size:16px}
-  .fv-add button{min-height:52px;border:0;border-radius:var(--r-md);background:var(--cta);color:var(--on-cta);font-size:26px;line-height:1;cursor:pointer}
-  .fv-open{min-height:44px}
-  html.fv-on{overflow:hidden}
-  .fv .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-  @media (prefers-reduced-motion:no-preference){ .fv:not([hidden]) .fv-card{animation:fv-in calc(var(--dur-3,240ms) * var(--motion-scale,1)) var(--ease-out,ease-out)} }
-  @keyframes fv-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-}
 </style>
 <link rel="stylesheet" href="nasaq-theme.css?v=20261007b">
 <link rel="stylesheet" href="layouts/nav-side.css?v=20261001a">
@@ -1790,18 +1757,6 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </div>
 </aside>
 
-<!-- شاشة التركيز (W1): index.html#focus، و#focus-add يفتحها والمؤشر في خانة الإضافة -->
-<div class="fv" id="focusView" role="dialog" aria-modal="true" aria-labelledby="fvTitle" hidden>
-  <div class="fv-card">
-    <div class="fv-head"><div><h2 id="fvTitle">تركيز</h2><small id="fvSub"></small></div>
-      <button type="button" class="fv-x" id="fvClose" aria-label="إغلاق شاشة التركيز"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-    <div><ul class="fv-list" id="fvList" aria-label="أهم المهام الآن"></ul></div>
-    <form class="fv-add" id="fvAdd" autocomplete="off"><label class="sr" for="fvText">مهمة جديدة</label>
-      <input id="fvText" enterkeyhint="done" placeholder="مهمة جديدة… (!أ للأهمية، #مشروع، تاريخ)" maxlength="300">
-      <button type="submit" aria-label="أضف المهمة">＋</button></form>
-    <p class="sr" id="fvLive" aria-live="polite"></p>
-  </div>
-</div>
 <div class="content" id="mainContent" role="main" tabindex="-1">
 <!-- بطاقة الترحيب: التحية والشعار اللفظي والتاريخ، وصورتك إن وُجدت -->
 <section class="greet-card" id="heroBanner">
@@ -1870,7 +1825,6 @@ li.exp-row:nth-child(even){background:var(--stripe)}
       <div class="card-head">
         <h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8 12 3 3 5-6"/></svg>مهام اليوم</h2>
         <div class="meter"><span id="doneCount">0</span> من <span id="totalCount">0</span> منجزة | <b id="load">—</b></div>
-        <a class="btn soft sm fv-open" href="#focus" id="focusBtn">تركيز</a>
       </div>
       <div class="progress" aria-hidden="true"><div class="fill" id="fill"></div></div>
       <div class="cap-warn" id="capWarn" role="status" hidden></div>
@@ -2491,7 +2445,7 @@ function showTab(name){
   /* لحظة مميزة: تلاشٍ في --dur-3 مع إزاحة 8px (بلا إزاحة في كلاسيكي) */
   const pnl = $('tab' + name[0].toUpperCase() + name.slice(1)); if(pnl){ pnl.classList.remove('tab-in'); void pnl.offsetWidth; pnl.classList.add('tab-in'); }
   try{ localStorage.setItem(TABKEY, name); }catch(e){}
-  if(location.hash.replace('#','') !== TAB_HASH[name] && !/^#focus/.test(location.hash)) history.pushState(null, '', '#' + TAB_HASH[name]);   /* #focus يبقى (W1) */
+  if(location.hash.replace('#','') !== TAB_HASH[name]) history.pushState(null, '', '#' + TAB_HASH[name]);
   if(name==='projects') loadProjectsTab();
   if(name==='expenses') loadExpenseTab();
   if(name==='tasks') renderTasksPage();
@@ -3191,7 +3145,6 @@ function render(){
   try{ updatePomoLive(); }catch(e){}   /* قد يُرسم اللوح قبل تهيئة المؤقّت */
   try{ updateCardArts(); }catch(e){}
   try{ renderNow(); updateFoldCounts(); renderClosing(); }catch(e){}
-  if(FV.open) renderFocus();
 }
 
 /* ---------- ساعات العمل (سعة اليوم) — افتراضيًا 8 ساعات، محفوظة على الجهاز ---------- */
@@ -5084,7 +5037,7 @@ $('paletteOverlay').addEventListener('mousedown', e=>{ if(e.target === $('palett
 /* ---------- Enter ينقلك إلى الحقل التالي — في كل المنصة ----------
    داخل البطاقة أو النافذة نفسها؛ وفي آخر حقل يُغلق الإدخال (فيُحفظ). الحقول التي لـEnter فيها
    عمل خاص (إضافة مهمة، دخول، إضافة عادة…) تبقى كما هي. Shift+Enter وحقول النص الطويل لا تتأثر. */
-const ENTER_OWN = '#fvText,#tText,#tProj,#tMins,.mini-add,#amInput,#pmInput,#expAmount,#expText,#loginPass,.sub-add,#palInput,.edit-input,[data-enter="own"]';
+const ENTER_OWN = '#tText,#tProj,#tMins,.mini-add,#amInput,#pmInput,#expAmount,#expText,#loginPass,.sub-add,#palInput,.edit-input,[data-enter="own"]';
 const ENTER_SKIP_TYPES = /^(checkbox|radio|button|submit|reset|file|range|color|hidden|image)$/;
 const ENTER_SCOPE = '.modal,.auth-form,.settings-panel section,.settings-panel,li.details,.pri,.card,section,.tabpanel';
 function enterFields(scope){
@@ -5556,58 +5509,6 @@ function addTask(){
   $('tText').focus(); sync();
 }
 $('addBtn').onclick = addTask;
-/* ---------- شاشة التركيز (W1) ----------
-   تقرأ من حالة اللوح المحلية نفسها (tasks)، والإنجاز بـ completeTask (الحالة والمزامنة والتراجع كما في اللوح)،
-   والإضافة كإضافة اللوح (parseQuickAdd ثم sync)؛ لا طلبات جسر جديدة ولا بيانات مالية */
-const FV = {open: false, pushed: false};
-const fvToday = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
-function focusTasks(){
-  const td = fvToday(), rank = t => t.due && t.due < td ? 0 : 1, imp = t => ({'أ': 0, 'ب': 1, 'ج': 2})[t.imp] ?? 1;
-  return tasks.filter(t => !t.done && (!t.due || t.due <= td))
-    .sort((a, b) => rank(a) - rank(b) || imp(a) - imp(b) || String(a.due || '9').localeCompare(String(b.due || '9')) || String(a.createdAt || '').localeCompare(String(b.createdAt || '')));
-}
-function renderFocus(){
-  const all = focusTasks(), top = all.slice(0, 5), td = fvToday();
-  $('fvSub').textContent = all.length ? all.length + ' مهمة مفتوحة لليوم' : 'لا مهام مفتوحة لليوم';
-  $('fvList').innerHTML = top.length ? top.map(t => '<li class="fv-item" data-id="' + t.id + '"><button type="button" class="fv-chk" data-fv-done="' + t.id + '" aria-label="أنجز: ' + esc(t.text) + '">' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></button>' +
-      '<div class="fv-t"><b>' + esc(t.text) + '</b><small>' + (t.imp ? '<span class="fv-imp' + (t.imp === 'أ' ? ' a' : '') + '">' + esc(t.imp) + ' ' + esc(PRIO[t.imp] || '') + '</span>' : '') +
-      (t.proj ? '<span>' + esc(t.proj) + '</span>' : '') + (t.due && t.due < td ? '<span class="late">متأخرة</span>' : '') + '</small></div></li>').join('') +
-      (all.length > 5 ? '<li><button type="button" class="btn soft fv-more" data-fv-more>+' + (all.length - 5) + ' أخرى في اليوم</button></li>' : '')
-    : '<li class="fv-empty">لا شيء عاجل الآن. أضف مهمة من الخانة أدناه.</li>';
-}
-function openFocus(add){
-  FV.open = true; $('focusView').hidden = false; document.documentElement.classList.add('fv-on'); renderFocus();
-  setTimeout(() => (add ? $('fvText') : ($('fvList').querySelector('.fv-chk') || $('fvText'))).focus({preventScroll: true}), 30);
-}
-function closeFocus(fromPop){
-  if(!FV.open) return;
-  FV.open = false; $('focusView').hidden = true; document.documentElement.classList.remove('fv-on');
-  if(!fromPop){ if(FV.pushed){ FV.pushed = false; history.back(); } else history.replaceState(null, '', '#' + TAB_HASH.board); }
-  const b = $('focusBtn'); if(b && !fromPop) b.focus({preventScroll: true});
-}
-const fvHash = () => (location.hash || '').replace('#', '');
-function focusFromHash(){ const h = fvHash(); if(h === 'focus' || h === 'focus-add') openFocus(h === 'focus-add'); else closeFocus(true); }
-$('focusBtn').addEventListener('click', e => { e.preventDefault(); history.pushState(null, '', '#focus'); FV.pushed = true; openFocus(false); });
-$('fvClose').addEventListener('click', () => closeFocus());
-$('focusView').addEventListener('keydown', e => { if(e.key === 'Escape'){ e.preventDefault(); closeFocus(); } });
-$('fvList').addEventListener('click', e => {
-  const d = e.target.closest('[data-fv-done]');
-  if(d){ const t = tasks.find(x => String(x.id) === d.dataset.fvDone); if(t){ completeTask(t, null); $('fvLive').textContent = 'أُنجزت: ' + t.text;
-    renderFocus(); const n = $('fvList').querySelector('.fv-chk') || $('fvText'); n.focus({preventScroll: true}); } return; }
-  if(e.target.closest('[data-fv-more]')){ closeFocus(); showTab('board'); }
-});
-$('fvAdd').addEventListener('submit', e => {
-  e.preventDefault();
-  const raw = $('fvText').value.trim(); if(!raw) return;
-  const x = /[#@]|![أبج]|\d{4}-\d{2}-\d{2}/.test(raw) ? parseQuickAdd(raw) : {};
-  tasks.push({id: Date.now() + Math.random(), text: x.text || raw, proj: x.proj || '', donor: x.donor || '', imp: x.imp || 'ب', due: x.due || '', mins: x.mins || '', actual: '', notes: '',
-    done: false, state: 0, createdAt: new Date().toISOString(), dirty: true});
-  $('fvText').value = ''; sync(); $('fvLive').textContent = 'أُضيفت: ' + (x.text || raw); $('fvText').focus({preventScroll: true});
-});
-window.addEventListener('popstate', focusFromHash);
-focusFromHash();
-
 
 /* ---------- صندوق الوارد من «نبض المشاريع» ----------
    «حوّل إلى مهمة» في صفحة النبض: داخل اللوح تستدعي addTaskFromPulse مباشرة، ومن صفحة مستقلة
