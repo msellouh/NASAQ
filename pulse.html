@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده؛ وخط الطابع الافتراضي «نَسَق» يُحمَّل مسبقًا -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
-<script src="nasaq-core.js?v=20261020a"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
+<script src="nasaq-core.js?v=20261001a"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
 <script src="nasaq-icons.js?v=20261001a"></script>
 <style>
 @layer tokens, base, layouts, components, theme, utilities;
@@ -167,7 +167,6 @@ dialog[open]{animation:dlgIn calc(var(--dur-3) * var(--motion-scale,1)) var(--ea
   :where(button,a):active{scale:none}
 }
 }
-.keep-lbl{display:inline-flex;align-items:center;gap:4px;min-height:24px;font-size:12px;cursor:pointer}
 </style>
 <link rel="stylesheet" href="nasaq-theme.css?v=20261007a">
 <link rel="stylesheet" href="layouts/nav-side.css?v=20261001a">
@@ -188,8 +187,7 @@ dialog[open]{animation:dlgIn calc(var(--dur-3) * var(--motion-scale,1)) var(--ea
   </a>
   <span class="src" id="src" hidden><i></i><span></span></span>
   <nav id="orgs" aria-label="المؤسسة"></nav>
-  <nav><button type="button" class="act" id="weeklyBtn">الملخص الأسبوعي</button><a href="projects.html" id="toProjects">كل المشاريع</a>
-    <label class="keep-lbl" title="تُضغط الصور الكبيرة قبل رفع التقرير افتراضيًا"><input type="checkbox" class="keep-orig">اترك الصور بلا ضغط</label></nav>
+  <nav><button type="button" class="act" id="weeklyBtn">الملخص الأسبوعي</button><a href="projects.html" id="toProjects">كل المشاريع</a></nav>
 </header>
 
 <main class="wrap" id="main">
@@ -400,14 +398,12 @@ let upTarget = null;
 const b64 = file=>new Promise((res, rej)=>{ const r = new FileReader(); r.onload = ()=>res(String(r.result).split(',')[1] || ''); r.onerror = ()=>rej(new Error('تعذّرت قراءة الملف')); r.readAsDataURL(file); });
 $('upFile').onchange = async e=>{
   const file = e.target.files[0], x = upTarget; e.target.value = ''; if(!file || !x) return;
+  if(file.size > 25 * 1024 * 1024){ toast('حجم الملف أكبر من 25 ميجابايت', true); return; }
   const p = projOf(x), slot = /ختامي/.test(x.kind || '') ? 'تقرير ختامي' : 'تقرير مرحلي';
-  /* U1: الصور تُضغط في المتصفح قبل الرفع، والحدّ 25MB على الناتج */
-  const r = await NasaqFiles.prepare(file, {slot}), f = r.file;
-  if(f.size > NasaqFiles.UPLOAD_MAX){ toast('حجم الملف أكبر من 25 ميجابايت', true); return; }
   toast('جارٍ رفع «' + file.name + '»…');
   try{
-    await post({action: 'file_upload', org: ORG, code: p.code, slot, pageId: p.id, file: {name: f.name, mime: f.type || '', project: p.name || '', data: await b64(f)}});
-    await saveDel(x.id, {status: 'صدر'}, 'رُفع التقرير إلى درايف وصارت حالته «صدر»' + (r.compressed ? ' — ' + NasaqFiles.note(r) : ''));
+    await post({action: 'file_upload', org: ORG, code: p.code, slot, pageId: p.id, file: {name: file.name, mime: file.type || '', project: p.name || '', data: await b64(file)}});
+    await saveDel(x.id, {status: 'صدر'}, 'رُفع التقرير إلى درايف وصارت حالته «صدر»');
   }catch(err){ toast(err.message || 'تعذّر الرفع', true); }
 };
 /* 5. إغلاق مشروع تجاوز مدته — بتأكيد كتابة كوده */
