@@ -115,6 +115,12 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .src i{width:7px;height:7px;border-radius:50%;background:var(--muted)}
 .src.live i{background:var(--done)}
 .src.local i{background:var(--hold)}
+.src.cache i{background:var(--hold)} .src.offline i{background:var(--urgent)}
+/* هياكل التحميل (A8): مكان البيانات محجوز بمقاسها قبل وصولها، فلا تقفز الصفحة */
+.sk :is(span,b,small),.item.sk > div,.kpi-line.sk{color:transparent;background:var(--rule);border-radius:var(--r-sm)}
+.item.sk{pointer-events:none} .item.sk > div{margin-top:var(--sp-1)} .kpi.sk b{inline-size:60%} .kpi.sk small{inline-size:80%}
+#yearSeg:empty::before{content:"كل السنوات  2026  2025";visibility:hidden;display:inline-block;padding:var(--sp-1) var(--sp-3);font-size:var(--fs-sm);white-space:pre}
+@media (pointer:coarse){ #yearSeg:empty::before{min-height:44px;line-height:36px} }
 
 /* ---------- الصفحة ---------- */
 .wrap{max-width:1560px;margin:0 auto;padding:var(--sp-5) var(--gut) var(--sp-8)}
@@ -997,7 +1003,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     <button type="button" data-view="stats">الإحصائيات</button>
   </nav>
   <div class="tb-end">
-    <span class="src" id="src" hidden><i></i><span></span></span>
+    <span class="src" id="src" role="status"><i></i><span>جارٍ الاتصال…</span></span>
     <button class="icon-btn" id="driveBtn" type="button" title="أرشيف المشاريع في درايف" aria-label="أرشيف المشاريع في درايف">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z"/><path d="M12 11.5v4M10 13.5h4"/></svg>
     </button>
@@ -1053,7 +1059,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
   <section class="stats" id="stats" aria-label="إحصائيات المشاريع المعروضة" hidden></section>
 
   <div id="listView">
-    <section class="kpis" id="kpis" aria-label="ملخص المشاريع المعروضة"></section>
+    <section class="kpis" id="kpis" aria-label="ملخص المشاريع المعروضة" aria-busy="true"><button type="button" class="kpi-line sk" disabled>&nbsp;</button><div class="kpi sk"><span>&nbsp;</span><b>&nbsp;</b><small>&nbsp;</small></div><div class="kpi sk"><span>&nbsp;</span><b>&nbsp;</b><small>&nbsp;</small></div><div class="kpi sk"><span>&nbsp;</span><b>&nbsp;</b><small>&nbsp;</small></div><div class="kpi sk"><span>&nbsp;</span><b>&nbsp;</b><small>&nbsp;</small></div></section>
     <div class="split">
       <nav class="list" aria-label="قائمة المشاريع">
         <div class="list-head"><span id="count"></span>
@@ -1067,7 +1073,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
             </select>
           </label>
         </div>
-        <div class="items" id="items" tabindex="-1"><div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div></div>
+        <div class="items" id="items" tabindex="-1" aria-busy="true"><p class="sr">جارٍ تحميل المشاريع…</p><div class="item sk"><div class="row1">&nbsp;</div><div class="nm">&nbsp;<br>&nbsp;</div><div class="meta">&nbsp;</div></div><div class="item sk"><div class="row1">&nbsp;</div><div class="nm">&nbsp;<br>&nbsp;</div><div class="meta">&nbsp;</div></div><div class="item sk"><div class="row1">&nbsp;</div><div class="nm">&nbsp;<br>&nbsp;</div><div class="meta">&nbsp;</div></div><div class="item sk"><div class="row1">&nbsp;</div><div class="nm">&nbsp;<br>&nbsp;</div><div class="meta">&nbsp;</div></div></div>
       </nav>
       <section class="detail" id="detail" aria-live="polite" tabindex="-1"></section>
     </div>
@@ -1307,7 +1313,10 @@ const RCOL = NASAQ_ART.report;
 const $ = id => document.getElementById(id);
 /* esc() — تهريب النصوص قبل HTML — مشتركة في nasaq-core.js */
 const AR = n => fmtNum(n);   /* الأرقام إنجليزية — fmtNum وأخواتها في nasaq-core.js */
-const money = n => (n == null || n === '') ? '—' : fmtMoney(Math.round(Number(n)), '$');
+/* الصفر شرطة (القرار 8): «0 $» لا يميّز بين «لا شيء» و«لم يُسجَّل». money0 للحقول التي يحمل فيها الصفر معنى:
+   المستلم من المانح، والنسبة الإدارية، والمصاريف التشغيلية، والمتبقي، و«الباقي» في الموازنة، وفروق المعادلة، والتقرير المنسوخ للمانح */
+const money0 = n => (n == null || n === '') ? '—' : fmtMoney(Math.round(Number(n)), '$');
+const money = n => Math.round(Number(n)) === 0 ? '—' : money0(n);
 const pct = x => (x == null || !isFinite(x)) ? '—' : AR(Math.round(x * 1000) / 10) + '%';
 const DAY = 86400000;
 const today = (()=>{ const d = new Date(); d.setHours(0,0,0,0); return d; })();
@@ -1341,6 +1350,8 @@ const ORGS = {
 const ORG = new URLSearchParams(location.search).get('org') === 'humera' ? 'humera' : 'medics';
 /* تُفتح داخل تبويب «المشاريع» في لوح نَسَق: نخفي العلامة، ونُبقي روابط المؤسسة داخل الإطار */
 const EMBED = new URLSearchParams(location.search).get('embed') === '1';
+/* الجوال: رابط مشروع مباشر يُعرض بعرض التفاصيل من أول لحظة، لا القائمة ثم قفزة إلى التفاصيل حين تصل البيانات (A8) */
+document.documentElement.dataset.mv = /^#(?!stats$|report=)./.test(location.hash) ? 'detail' : 'list';
 if(EMBED){
   document.documentElement.classList.add('embed');
   /* داخل تبويب اللوح: نعلن ارتفاع المحتوى ليأخذه الإطار (شريط تمرير واحد للصفحة)، ونقرأ ارتفاع نافذة اللوح للقائمة */
@@ -1485,20 +1496,35 @@ function post(body){
 }
 
 /* نوشن أولًا لصاحب اللوح؛ وإن لم يُنشر الجسر الجديد بعد، فالملف المحلي (خارج المستودع) */
+/* مؤشر المصدر بصدق (A8): «مباشر» بعد ردّ الجسر فقط؛ وما يُعرض من ذاكرة المتصفح «آخر نسخة محفوظة» بوقتها؛
+   و«غير متصل» حين ينقطع الاتصال. الحالة في data-src والنص الكامل في title لقارئ الشاشة والجوال (النص مخفي على الضيق) */
+let SRC_NOW = {src: '', note: '', stale: false, at: 0};
+function srcShow(src, note, stale, at){
+  if(src) SRC_NOW = {src, note: note || '', stale: !!stale, at: at || 0};
+  const s = SRC_NOW, el = $('src'); if(!s.src) return;
+  const off = navigator.onLine === false;
+  const k = off ? 'offline' : s.src === 'local' ? 'local' : s.stale ? 'cache' : 'live';
+  const txt = {live: 'مباشر من نوشن', cache: 'آخر نسخة محفوظة' + (s.at ? ' (' + new Date(s.at).toLocaleString('ar', {day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'}) + ')' : ''), local: 'نسخة محلية للتطوير', offline: 'غير متصل — المعروض آخر نسخة'}[k];
+  el.hidden = false; el.className = 'src ' + k; el.dataset.src = k;
+  el.querySelector('span').textContent = txt;
+  el.title = txt + (s.note ? ' | الجسر لم يستجب: ' + s.note : '');
+  el.setAttribute('aria-label', el.title);
+}
+addEventListener('online', () => srcShow()); addEventListener('offline', () => srcShow());
 async function load(){
-  $('items').innerHTML = '<div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div>';
+  if(!$('items').querySelector('.item')) $('items').innerHTML = '<div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div>';   /* الهيكل الأول يبقى حتى تصل البيانات */
   let bridgeErr = '';
   if(bridge && auth && auth.token){
     /* آخر نسخة من نوشن تُعرض فورًا من هذا المتصفح، ثم تُستبدل بالجديدة حين يردّ الجسر */
     const CK = 'daily-board-projects-cache-' + ORG;
     let shown = false;
-    try{ const c = JSON.parse(localStorage.getItem(CK) || 'null'); if(c && c.ok){ use(c, 'live'); shown = true; } }catch(e){}
+    try{ const c = JSON.parse(localStorage.getItem(CK) || 'null'); if(c && c.ok){ use(c, 'live', '', true); shown = true; } }catch(e){}
     try{
       const d = await post({action:'projects_list', org: ORG});
-      try{ localStorage.setItem(CK, JSON.stringify(d)); }catch(e){}
+      try{ localStorage.setItem(CK, JSON.stringify(Object.assign({}, d, {savedAt: Date.now()}))); }catch(e){}
       return use(d, 'live');
     }catch(e){
-      if(shown){ toast('تعذّر التحديث من نوشن، والمعروض آخر نسخة محفوظة: ' + e.message, true); return; }
+      if(shown){ srcShow('live', e.message, true, SRC_NOW.at); toast('تعذّر التحديث من نوشن، والمعروض آخر نسخة محفوظة: ' + e.message, true); return; }
       bridgeErr = e.message;
     }
   }
@@ -1746,7 +1772,7 @@ async function openViaBridge(p, id){
     toast('فُتح «' + (d.name || 'الملف') + '»');
   }catch(err){ toast(err.message || 'تعذّر فتح الملف', true); }
 }
-function use(d, src, note){
+function use(d, src, note, stale){
   ACC = (src === 'live' && d.access) || {owner: true}; applyAcc();
   if(src === 'live') ovApply(d.plan || []);
   DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [], options: d.options || {}, donorCountries: d.donorCountries || {}, donors: d.donors || [] };
@@ -1758,9 +1784,7 @@ function use(d, src, note){
     /* أول مرة في نسخة التطوير: القائمة من منسقي المشاريع ومسؤولي البنود، كما يبنيها الجسر */
     DATA.people = localPeopleRead() || uniqNames(DATA.projects.map(p => p.coordinator).concat(DATA.plan.map(x => x.owner)));
   }
-  const el = $('src'); el.hidden = false; el.className = 'src ' + src;
-  el.querySelector('span').textContent = src === 'live' ? 'مباشر من نوشن' : 'نسخة محلية للتطوير';
-  el.title = note ? 'الجسر لم يستجب: ' + note : '';
+  srcShow(src, note, stale, d.savedAt);
   const first = !use.done; use.done = true;
   if(first){ $('q').value = S.q; $('sort').value = S.sort; }
   buildFilters(); readHash(first); render();
@@ -1914,7 +1938,7 @@ function renderKpis(rows){
   const recv = withRecv.reduce((t, p) => t + num(p.received), 0), recvOf = withRecv.reduce((t, p) => t + num(p.approved), 0);
   const nBen = rows.filter(p => num(p.benef) > 0).length;
   /* بطاقات بتشريح واحد: العنوان، الرقم، سطر سياق صريح، وشريط عند الحاجة (Stephen Few: كل رقم بسياقه) */
-  const k = $('kpis'); k.classList.toggle('open', !!S.kopen);
+  const k = $('kpis'); k.classList.toggle('open', !!S.kopen); k.removeAttribute('aria-busy');
   k.innerHTML =
     '<button type="button" class="kpi-line" aria-expanded="' + !!S.kopen + '"><span>' + cnt(rows.length, W_PROJ) + '</span>' +
       (approved ? '<span>| <b><bdi>' + moneyShort(approved) + '</bdi></b> معتمد</span>' : '') + (late ? '<span class="alert">| ' + AR(late) + ' تحتاج متابعة</span>' : '') +
@@ -1925,7 +1949,7 @@ function renderKpis(rows){
     kpiBox('المستفيدون', AR(Math.round(benef)), nBen ? 'من <b>' + AR(nBen) + '</b> ' + (nBen === 1 ? 'مشروع' : 'مشروعًا') + ' سُجّل فيه العدد' : 'لم يُسجّل عدد بعد');
 }
 function renderList(rows){
-  const box = $('items'), top = box.scrollTop;
+  const box = $('items'), top = box.scrollTop; box.removeAttribute('aria-busy');
   $('count').textContent = cnt(rows.length, W_PROJ);
   if(!rows.length){ box.innerHTML = '<div class="empty">لا توجد مشاريع تطابق هذه الفلاتر.</div>'; return; }
   box.innerHTML = rows.map(p => {
@@ -2284,7 +2308,7 @@ function reportHTML(p, kind){
     ['اسم المشروع', esc(p.name)], ['رقم المشروع', esc(p.code || '—')], ['الجهة المانحة', esc(p.donor || '—') + (p.donorCountry && !/غير مصن/.test(p.donorCountry) ? ' — ' + esc(p.donorCountry) : '')],
     ['مكان التنفيذ', esc(p.country || 'قطاع غزة')], ['الجهات الشريكة', esc([].concat(p.entities || []).join('، ') || '—')],
     ['تاريخ البدء', d(s)], ['تاريخ الانتهاء', d(p.end)], ['مدة المشروع', weeks ? AR(weeks) + ' أسبوعًا' : '—'],
-    ['قيمة المشروع', money(f.A || null)], ['منسق المشروع', esc(p.coordinator || '—')],
+    ['قيمة المشروع', money0(f.A || null)], ['منسق المشروع', esc(p.coordinator || '—')],
     ['نسبة الإنجاز حتى ' + d(asIso), total == null ? '—' : pct(total)],
     ['عدد المستفيدين', manual('يُكتب يدويًا')]
   ];
@@ -2299,8 +2323,8 @@ function reportHTML(p, kind){
     : '<p class="hint">لا بنود مخططة في الثلاثين يومًا القادمة.</p>';
   const budRows = [['المبلغ الكلي حسب الاعتماد', f.A], ['النسبة الإدارية', f.ADM], ['مبلغ التنفيذ حسب الاعتماد', f.E], ['المصاريف التشغيلية', f.OPS],
     ['مبلغ التنفيذ الفعلي', f.F], ['حسب الترسية أو التعاقد', f.C], ['المستلم من المانح', p.received]].filter(([, v]) => v != null && v !== '' && Number(v));
-  const budT = '<table class="t-bud"><tr><th>#</th><th>البند</th><th>المبلغ</th></tr>' + budRows.map(([k, v], i) => '<tr><th>' + AR(i + 1) + '</th><td>' + k + '</td><td>' + money(v) + '</td></tr>').join('') +
-    (p.received != null && f.A ? '<tr class="tot"><th></th><td>المتبقي من المانح</td><td>' + money(f.A - num(p.received)) + '</td></tr>' : '') + '</table>';
+  const budT = '<table class="t-bud"><tr><th>#</th><th>البند</th><th>المبلغ</th></tr>' + budRows.map(([k, v], i) => '<tr><th>' + AR(i + 1) + '</th><td>' + k + '</td><td>' + money0(v) + '</td></tr>').join('') +
+    (p.received != null && f.A ? '<tr class="tot"><th></th><td>المتبقي من المانح</td><td>' + money0(f.A - num(p.received)) + '</td></tr>' : '') + '</table>';
   const photos = '<div class="photos">' + [1, 2, 3, 4].map(i => '<figure><div>صورة ' + AR(i) + '</div><figcaption contenteditable="true">وصف الصورة</figcaption></figure>').join('') + '</div>' +
     (p.drive || p.folder ? '<p class="link">رابط المرفقات: <a href="' + esc(safeUrl(p.drive || p.folder)) + '">مجلد المشروع في درايف</a></p>' : '');
   const H = fin_
@@ -2982,9 +3006,9 @@ function fin(p){
   const C = hasVal(p.contract) ? num(p.contract) : null;
   const issues = [];
   if(A && E && hasVal(p.admin) && Math.abs(A - ADM - E) >= 1)
-    issues.push('الكلي − الإدارية = ' + money(A - ADM) + '، ومبلغ التنفيذ حسب الاعتماد ' + money(E));
+    issues.push('الكلي − الإدارية = ' + money0(A - ADM) + '، ومبلغ التنفيذ حسب الاعتماد ' + money0(E));
   if(E && hasVal(p.net) && Math.abs(E - F - OPS) >= 1)
-    issues.push('الفعلي + التشغيلية = ' + money(F + OPS) + '، ومبلغ التنفيذ حسب الاعتماد ' + money(E));
+    issues.push('الفعلي + التشغيلية = ' + money0(F + OPS) + '، ومبلغ التنفيذ حسب الاعتماد ' + money0(E));
   return {A, ADM, E, OPS, F, C, issues};
 }
 /* سطر المقارنة الواحد: «مستلم 2.39M من 3.80M | منفَّذ 4.78M (96.4% من المعتمد)» — الرقم الكامل في title، والشرح في ⓘ.
@@ -2992,7 +3016,7 @@ function fin(p){
 function moneyLine(p){
   const {A, F} = fin(p);
   const mS = n => { n = Number(n) || 0; const a = Math.abs(n); return a >= 1e6 ? AR(Math.round(n / 1e4) / 100) + 'M' : a >= 1e3 ? AR(Math.round(n / 100) / 10) + 'K' : AR(Math.round(n)); };
-  const nb = n => '<bdi title="' + esc(money(n)) + '">' + mS(n) + '</bdi>';
+  const nb = n => '<bdi title="' + esc(money0(n)) + '">' + mS(n) + '</bdi>';
   const R0 = p.received != null && p.received !== '' ? num(p.received) : null;
   return A ? '<p class="money-line">' + (R0 != null ? 'مستلم ' + nb(R0) + ' من ' + nb(A) : 'المعتمد ' + nb(A)) +
       (F ? ' | منفَّذ ' + nb(F) + ' (' + pct(F / A) + ' من المعتمد)' : '') +
@@ -3014,8 +3038,8 @@ function moneyCard(p){
   let recv = '';
   if(p.received != null && A){
     const R = num(p.received), left = A - R;
-    recv = '<div class="recv"><div class="recv-head"><span>المستلم من المانح <b>' + money(R) + '</b></span>' +
-        '<span>' + (left > 0 ? 'المتبقي <b class="due">' + money(left) + '</b>' : left < 0 ? 'زيادة <b>' + money(-left) + '</b>' : '<b class="ok">مُستلم بالكامل</b>') + '</span></div>' +
+    recv = '<div class="recv"><div class="recv-head"><span>المستلم من المانح <b>' + money0(R) + '</b></span>' +
+        '<span>' + (left > 0 ? 'المتبقي <b class="due">' + money0(left) + '</b>' : left < 0 ? 'زيادة <b>' + money0(-left) + '</b>' : '<b class="ok">مُستلم بالكامل</b>') + '</span></div>' +
       '<div class="sbar thin" aria-hidden="true"><i class="b-recv" style="width:' + Math.min(100, R / A * 100) + '%"></i></div>' +
       '<small>' + pct(R / A) + ' من المبلغ الكلي</small></div>';
   }
@@ -3030,9 +3054,9 @@ function moneyCard(p){
       '<button class="btn soft sm" type="button" data-act="money-edit">تعديل المبالغ</button></span></div>' +
     mline + '<div class="money">' +
       m('المبلغ الكلي', money(p.approved), 'حسب الاعتماد') +
-      m('النسبة الإدارية', money(hasVal(p.admin) ? ADM : null), base && hasVal(p.admin) ? pct(ADM / base) + ' من المبلغ الكلي' : '') +
+      m('النسبة الإدارية', money0(hasVal(p.admin) ? ADM : null), base && hasVal(p.admin) ? pct(ADM / base) + ' من المبلغ الكلي' : '') +
       m('مبلغ التنفيذ حسب الاعتماد', money(E || null), 'الكلي − الإدارية' + (A && E ? ' | ' + pct(E / A) : '')) +
-      m('المصاريف التشغيلية', money(hasVal(p.otherOps) ? OPS : null), opsParts.join(' | ')) +
+      m('المصاريف التشغيلية', money0(hasVal(p.otherOps) ? OPS : null), opsParts.join(' | ')) +
       m('مبلغ التنفيذ الفعلي', money(E || hasVal(p.net) ? F : null), 'حسب الاعتماد − التشغيلية') +
       m('حسب الترسية أو التعاقد', money(C), cDiff == null ? 'مبلغ التنفيذ بعد الترسية أو التعاقد' : Math.abs(cDiff) < 1 ? 'مطابق للفعلي' : (cDiff > 0 ? 'وفر ' : 'زيادة ') + money(Math.abs(cDiff)) + ' عن الفعلي', cDiff != null && cDiff <= -1 ? 'warn' : '') +
       (A && E ? m('المعادلة', issues.length ? 'غير متوازنة' : 'متوازنة', issues.length ? issues.join(' | ') : 'الكلي − الإدارية = الفعلي + التشغيلية', issues.length ? 'warn' : '') : '') +
@@ -3202,10 +3226,10 @@ function renderStats(rows){
     kpiBox('المبلغ الكلي', money(t.A), 'مسجّل الاعتماد في ' + cnt(rows.filter(p => num(p.approved)).length, W_PROJ)) +
     kpiBox('التنفيذ حسب الاعتماد', money(t.E), t.A ? pct(t.EA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.EA / t.A : null) +
     kpiBox('مبلغ التنفيذ الفعلي', money(t.F), t.A ? pct(t.FA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.FA / t.A : null) +
-    kpiBox('النسبة الإدارية', money(t.ADM), t.A ? pct(t.ADMA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.ADMA / t.A : null) +
-    kpiBox('المصاريف التشغيلية', money(t.OPS), t.A ? pct(t.OPSA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.OPSA / t.A : null) +
-    kpiBox('المستلم من المانحين', money(t.R), t.RA ? pct(t.R / t.RA) + ' من المعتمد المسجّل تحصيله' : 'لا تحصيل مسجّل', t.RA ? t.R / t.RA : null) +
-    kpiBox('المتبقي تحصيله', money(t.RA - t.R), t.RA ? 'على ' + cnt(rows.filter(p => p.received != null && num(p.approved) > num(p.received)).length, W_PROJ) : '') +
+    kpiBox('النسبة الإدارية', money0(t.ADM), t.A ? pct(t.ADMA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.ADMA / t.A : null) +
+    kpiBox('المصاريف التشغيلية', money0(t.OPS), t.A ? pct(t.OPSA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.OPSA / t.A : null) +
+    kpiBox('المستلم من المانحين', money0(t.R), t.RA ? pct(t.R / t.RA) + ' من المعتمد المسجّل تحصيله' : 'لا تحصيل مسجّل', t.RA ? t.R / t.RA : null) +
+    kpiBox('المتبقي تحصيله', money0(t.RA - t.R), t.RA ? 'على ' + cnt(rows.filter(p => p.received != null && num(p.approved) > num(p.received)).length, W_PROJ) : '') +
     kpiBox('المستفيدون', AR(Math.round(t.benef)), 'من الأعداد المسجّلة رقمًا') +
     kpiBox('اكتمال المستندات', docsAvg == null ? '—' : pct(docsAvg), 'المجلدات المفحوصة: ' + AR(scanned.length), docsAvg) +
     kpiBox('تقدّم خطط التنفيذ', plan.length ? pct(planDone / plan.length) : '—',
@@ -3262,7 +3286,7 @@ function renderStats(rows){
   const coll = donors.filter(g => g.RA).sort((a, b) => (b.RA - b.R) - (a.RA - a.R)).slice(0, 12);
   const collCard = card('التحصيل من المانحين', coll.length ? hbars(coll, {
       filter: 'donor', max: g => g.RA, layers: (g, m) => L('a', g.RA, m) + L('r', g.R, m),
-      value: g => pct(g.R / g.RA) + ' <small>| المتبقي ' + money(g.RA - g.R) + '</small>' }) + legend(['var(--c-soft)', 'المعتمد'], ['var(--c-ops)', 'المستلم'])
+      value: g => pct(g.R / g.RA) + ' <small>| المتبقي ' + money0(g.RA - g.R) + '</small>' }) + legend(['var(--c-soft)', 'المعتمد'], ['var(--c-ops)', 'المستلم'])
     : '<p class="note">لا تحصيل مسجّل ضمن هذه الفلاتر، ويُملأ من ملف «متابعة دفعات المانحين».</p>', coll.length ? 'الأكثر متبقيًا أولًا' : '');
 
   const months = new Map();
@@ -3701,8 +3725,8 @@ function budCalc(){
   const box = $('budSum');
   box.className = 'bud-sum ' + st;
   box.innerHTML = !A ? 'أدخل المبلغ الكلي لتبدأ الحاسبة.' :
-    '<span>التنفيذ الكلي<b>' + money(E) + '</b></span><span>الموزّع (مصاريف + فاتورة)<b>' + money(dist) + '</b></span>' +
-    '<span>الباقي<b class="rem">' + money(rem) + '</b></span>' +
+    '<span>التنفيذ الكلي<b>' + money0(E) + '</b></span><span>الموزّع (مصاريف + فاتورة)<b>' + money0(dist) + '</b></span>' +
+    '<span>الباقي<b class="rem">' + money0(rem) + '</b></span>' +
     '<span class="st">' + (st === 'ok' ? icon('check') + ' تم توزيع كامل قيمة التنفيذ' : ADM > A ? 'الإدارية أكبر من المبلغ الكلي'
       : INV < 0 ? 'المصاريف غير المباشرة أكبر من التنفيذ الكلي' : rem < 0 ? 'المصاريف تجاوزت قيمة التنفيذ' : 'لا يزال هناك مبلغ غير موزّع') + '</span>';
   return {A, ADM, E, IND, INV, rem, ok: st === 'ok', lines};
@@ -3732,9 +3756,9 @@ function moneyVals(){
 function moneyCheck(){
   const v = moneyVals(), el = $('moneyCheck'), n = x => x || 0, msgs = [];
   if(v.approved != null && v.exec != null && Math.abs(v.approved - n(v.admin) - v.exec) >= 1)
-    msgs.push('الكلي − الإدارية = ' + money(v.approved - n(v.admin)) + '، وحسب الاعتماد ' + money(v.exec));
+    msgs.push('الكلي − الإدارية = ' + money0(v.approved - n(v.admin)) + '، وحسب الاعتماد ' + money0(v.exec));
   if(v.exec != null && v.net != null && Math.abs(v.exec - v.net - n(v.otherOps)) >= 1)
-    msgs.push('الفعلي + التشغيلية = ' + money(v.net + n(v.otherOps)) + '، وحسب الاعتماد ' + money(v.exec));
+    msgs.push('الفعلي + التشغيلية = ' + money0(v.net + n(v.otherOps)) + '، وحسب الاعتماد ' + money0(v.exec));
   el.innerHTML = msgs.length ? icon('alert') + ' ' + esc(msgs.join(' | ')) : (v.approved != null && v.exec != null ? icon('check') + ' المعادلة متوازنة' : '');
   el.style.color = msgs.length ? 'var(--urgent)' : 'var(--done)';
 }
