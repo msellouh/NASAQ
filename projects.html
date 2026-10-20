@@ -12,10 +12,9 @@
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده؛ وخط الطابع الافتراضي «نَسَق» يُحمَّل مسبقًا -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
+<!-- الخطوط: nasaq-core.js (NasaqTheme) يحمّل خطوط الطابع النشط وحده (كما في index.html منذ P1؛ preload المسبق صار غير مستعمل مع هياكل التحميل) -->
 <script>(function(){ var h = new Date().getHours(); document.documentElement.dataset.period = h < 5 ? 'night' : h < 7 ? 'fajr' : h < 11 ? 'morning' : h < 14 ? 'noon' : h < 17 ? 'afternoon' : h < 19 ? 'maghrib' : h < 21 ? 'evening' : 'night'; })();</script>
-<script src="nasaq-core.js?v=20261001a"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
+<script src="nasaq-core.js?v=20261020a"></script>   <!-- يطبّق الطابع والوضع المحفوظين قبل الرسم (NasaqTheme) -->
 <script src="nasaq-art.js?v=20261007b"></script>
 <script src="nasaq-icons.js?v=20261001a"></script>
 <style>
@@ -115,6 +114,12 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .src i{width:7px;height:7px;border-radius:50%;background:var(--muted)}
 .src.live i{background:var(--done)}
 .src.local i{background:var(--hold)}
+.src.cache i{background:var(--hold)} .src.offline i{background:var(--urgent)}
+/* هياكل التحميل (A8): مكان البيانات محجوز بمقاسها قبل وصولها، فلا تقفز الصفحة */
+.sk :is(span,b,small),.item.sk > div,.kpi-line.sk{color:transparent;background:var(--rule);border-radius:var(--r-sm)}
+.item.sk{pointer-events:none} .item.sk > div{margin-top:var(--sp-1)} .kpi.sk b{inline-size:60%} .kpi.sk small{inline-size:80%}
+#yearSeg:empty::before{content:"كل السنوات  2026  2025";visibility:hidden;display:inline-block;padding:var(--sp-1) var(--sp-3);font-size:var(--fs-sm);white-space:pre}
+@media (pointer:coarse){ #yearSeg:empty::before{min-height:44px;line-height:36px} }
 
 /* ---------- الصفحة ---------- */
 .wrap{max-width:1560px;margin:0 auto;padding:var(--sp-5) var(--gut) var(--sp-8)}
@@ -214,6 +219,12 @@ html:not(.is-owner) #driveMenuBtn{display:none}
 .kpi :is(b,small) span{display:inline;font-size:inherit;color:inherit}
 .kpi small span.alert{display:block;color:var(--urgent);font-weight:600;cursor:help}
 .kpi b .v-s{display:none}
+/* سطر المؤشرات المختصر للجوال (640px أو أقل): يفتح البطاقات الأربع */
+.kpi-line{align-items:center;gap:var(--sp-2);width:100%;min-height:44px;padding:var(--sp-2) var(--sp-3);background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--shadow);font-size:var(--fs-sm);color:var(--ink-2);text-align:right}
+.kpi-line b{color:var(--ink);font-variant-numeric:tabular-nums}
+.kpi-line .alert{color:var(--urgent);font-weight:600}
+.kpi-line svg{width:16px;height:16px;margin-inline-start:auto;flex-shrink:0;transition:rotate calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
+.kpis.open .kpi-line svg{rotate:180deg}
 @media (max-width:560px){ .kpi b .v-f{display:none} .kpi b .v-s{display:inline} }
 .meter{height:5px;border-radius:var(--r-pill);background:var(--rule);margin-top:var(--sp-2);overflow:hidden}
 .meter i{display:block;height:100%;border-radius:var(--r-pill);background:var(--grad-line)}
@@ -231,6 +242,15 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .list-head select{border:0;background:transparent;font-size:var(--fs-sm);color:var(--ink-2);padding:2px}
 .item .meta .late-t{color:var(--urgent)}
 .items{overflow:auto;padding:var(--sp-2);flex:1}
+/* «رجوع إلى المشاريع»: للجوال وحده (880px أو أقل)، حيث تُعرض التفاصيل بدل القائمة */
+.m-back{justify-self:start;align-items:center;gap:var(--sp-1);min-block-size:44px;margin-bottom:var(--sp-3)}
+.m-back svg{width:18px;height:18px}
+.file-jpg{min-width:24px;min-height:24px;padding:0 var(--sp-2);border:1px solid var(--rule);border-radius:var(--r-md);background:var(--paper);color:var(--ink-2);font:inherit;font-size:var(--fs-xs);font-weight:600;cursor:pointer}
+.file-jpg:hover{color:var(--ink);border-color:var(--field-line)}
+@media (pointer:coarse){ .file-jpg{min-width:44px;min-height:44px} }
+.keep-lbl{display:inline-flex;align-items:center;gap:var(--sp-1);min-height:24px;font-size:var(--fs-xs);color:var(--muted);cursor:pointer}
+/* نص الزر الذي يُختصر على الجوال: على الحاسوب يذوب في الزر (contents) فيبقى عنصرًا واحدًا مع ما قبله كما كان */
+.ph-t{display:contents}
 .item{display:block;width:100%;text-align:right;border:1px solid transparent;background:transparent;border-radius:var(--r-lg);padding:var(--sp-3) var(--sp-3);margin-bottom:2px;transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .item:hover{background:var(--stripe)}
 .item.on{background:var(--focus-bg);border-color:color-mix(in srgb,var(--focus) 30%,transparent)}
@@ -246,7 +266,7 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .spin{width:18px;height:18px;border-radius:50%;border:2px solid var(--rule);border-top-color:var(--cta);animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .err{background:var(--urgent-bg);color:var(--urgent);border-radius:var(--r-md);padding:var(--sp-3) var(--sp-3);font-size:var(--fs-base)}
-.detail{min-width:0;display:grid;gap:var(--sp-4)}
+.detail{min-width:0;display:grid;gap:var(--sp-4);container:detail / inline-size}   /* حاوية مسمّاة: مكان سطر المال حسب عرض التفاصيل */
 
 /* بطاقة المشروع الرئيسية: هالة أثير ومدارات 360 */
 .hero{position:relative;overflow:hidden;padding:var(--sp-5) var(--sp-5)}
@@ -263,6 +283,45 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 .fact span{display:block;font-size:var(--fs-xs);color:var(--muted)}
 .fact b{font-weight:600;font-size:var(--fs-base)}
 .brief{margin-top:var(--sp-3);font-size:var(--fs-base);color:var(--ink-2);background:var(--stripe);border-radius:var(--r-md);padding:var(--sp-3) var(--sp-3)}
+.hero .card-h + .facts{margin-top:0}
+
+/* ---------- ترويسة المشروع والتبويبات (A7a) ---------- */
+/* الترويسة الملخّصة: الكود والحكم الزمني الواحد (projectHealth) وسطر المال، والاسم في سطرين على الأكثر والكامل في title.
+   ≤120px على الحاسوب و≤96px على الجوال؛ والتفاصيل في أربع لوحات دائمة تُخفى بـ hidden (التبديل لا يعيد الرسم) */
+.card.phead{display:grid;gap:var(--sp-1);padding:var(--sp-2) var(--sp-4)}   /* .card.phead: تغلب ‎.card{padding}‎ في وسائط 880px */
+.phead .ph-row{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--sp-2);min-height:28px}
+.phead .ph-row .money-line{margin:0;margin-inline-start:auto}
+.phead h2{margin:0;font-size:var(--fs-lg);font-weight:700;line-height:1.4;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#moneyCard .money-line{display:none}   /* على الحاسوب في الترويسة؛ وعلى 880px أو أقل هنا (طبقة utilities) */
+.ptabs{display:flex;gap:var(--sp-1);border-bottom:1px solid var(--rule);overflow-x:auto;scrollbar-width:none;margin-bottom:calc(-1 * var(--sp-2))}
+.ptabs::-webkit-scrollbar{display:none}
+.ptabs [role="tab"]{flex:0 0 auto;min-height:44px;padding:var(--sp-2) var(--sp-3);border:0;border-bottom:2px solid transparent;background:none;color:var(--muted);font:inherit;font-size:var(--fs-base);font-weight:600;white-space:nowrap;cursor:pointer}
+.ptabs [role="tab"]:hover{color:var(--ink)}
+.ptabs [role="tab"][aria-selected="true"]{color:var(--ink);border-bottom-color:var(--cta)}
+.ptabs [role="tab"]:focus-visible{outline-offset:-2px}
+.ppanel{display:grid;gap:var(--sp-4);min-width:0}
+.ppanel[hidden],.ppanel .card[hidden]{display:none}   /* display:grid يغلب [hidden] */
+.ppanel:focus-visible{outline-offset:4px;border-radius:var(--r-lg)}
+#ovCard{container-type:inline-size}   /* قواعد شريط الموقف (@container) تسري هنا كما في بطاقات المخطط */
+.ov-rows{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--sp-2)}
+.ov-row{display:grid;align-content:start;gap:2px;min-height:44px;padding:var(--sp-3);border:1px solid var(--rule);border-radius:var(--r-lg);background:var(--stripe);color:var(--ink);font:inherit;text-align:start;cursor:pointer}
+.ov-row:hover{border-color:var(--field-line)}
+.ov-row .lbl{font-size:var(--fs-xs);font-weight:600;color:var(--muted)}
+.ov-row.late .lbl{color:var(--urgent)}
+.ov-row b{font-weight:600;line-height:1.4}
+.ov-row small{font-size:var(--fs-xs);color:var(--muted)}
+.sched-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--sp-2);margin-bottom:calc(-1 * var(--sp-2));padding-inline:var(--sp-2)}
+.sched-bar > span{font-size:var(--fs-sm);font-weight:600;color:var(--muted)}
+/* زر «تحرير المشروع» في زاوية الترويسة (A9a): خارج التدفق فلا يزيد ارتفاعها، والنص يفسح له */
+.phead{position:relative}
+.ph-edit{position:absolute;top:var(--sp-2);inset-inline-end:var(--sp-2);display:grid;place-items:center;width:32px;height:32px;padding:0;border:1px solid var(--rule);border-radius:var(--r-md);background:var(--paper);color:var(--ink-2);cursor:pointer}
+.ph-edit:hover{color:var(--ink);border-color:var(--field-line)}
+.ph-edit svg{width:16px;height:16px}
+html.can-edit .phead :is(.ph-row,h2){padding-inline-end:40px}
+@media (pointer:coarse){ .ph-edit{width:44px;height:44px;top:var(--sp-1);inset-inline-end:var(--sp-1)} html.can-edit .phead :is(.ph-row,h2){padding-inline-end:48px} }
+.edit-warn{padding:var(--sp-3);border-radius:var(--r-md);background:var(--urgent-bg);color:var(--urgent);font-size:var(--fs-sm);font-weight:600}
+.edit-ack{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-sm);font-weight:600;min-height:24px}
+.edit-go{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--sp-2);font-size:var(--fs-sm);color:var(--muted)}
 
 /* ---------- خطة التنفيذ ---------- */
 /* مطوية: الملخّص والشريط الزمني والتالي ظاهرة، والبطاقة كلها تُوسَّع بضغطة؛ موسّعة: البنود والتعديل */
@@ -608,6 +667,7 @@ dialog.sheet[open]{animation:sheet-in calc(var(--dur-3) * var(--motion-scale,1))
 
 /* ---------- الإحصائيات ---------- */
 .stats{display:grid;gap:var(--sp-4)}
+.stats[hidden]{display:none}   /* display:grid يغلب [hidden]: بعد زيارة «الإحصائيات» كانت تبقى فوق القائمة */
 .counters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--sp-3)}
 .sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-4)}
 .donut-wrap{display:flex;align-items:center;gap:var(--sp-5);flex-wrap:wrap}
@@ -792,8 +852,12 @@ dialog .dlg-acts{position:sticky;bottom:calc(-1 * var(--sp-5));z-index:2;margin:
   :root{--tb-h:58px}
   .split{grid-template-columns:1fr}
   .list{position:static;max-height:none}
-  .items{max-height:48vh}
-  html.embed .items{max-height:calc(var(--host-vh,100vh) * .48)}
+  /* عرضان متتاليان بدل التمرير الداخلي: القائمة بطول الصفحة، والنقر يفتح التفاصيل وحدها مع «رجوع» (data-mv من render) */
+  html.embed .list{max-height:none}
+  .items{overflow:visible}
+  html[data-mv="list"] #detail,html[data-mv="detail"] :is(.page-head .ph-acts,#pageSub,.filters,.flt-chips,#kpis,.list){display:none}
+  html[data-mv="detail"] .page-head{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  html[data-mv="list"] .skip-link[href="#detail"],html[data-mv="detail"] .skip-link[href="#items"]{display:none}
   .steps{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));row-gap:var(--sp-3)}
   .steps::before,.steps .fill{display:none}
   .counters{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -849,6 +913,7 @@ html:not(.can-plan) #planCard :is([data-act="tpl"],[data-act="works"],[data-act=
 html:not(.can-plan) #planCard :is(.pi-main,.pi-st,.chk){pointer-events:none}
 html:not(.can-plan) #planCard [data-act="toggle"]{pointer-events:none}
 html:not(.can-edit) [data-act="gantt-dur"],html:not(.can-money-edit) [data-act="money-edit"]{display:none}
+html:not(.can-edit) .ph-edit{display:none}
 html:not(.can-money) :is(#moneyCard,.money-line){display:none}
 button.file{font:inherit;cursor:pointer;text-align:start}
 
@@ -872,6 +937,45 @@ button.file{font:inherit;cursor:pointer;text-align:start}
   #detail .tlx .tlx-ms::after{content:"";position:absolute;inset:-7px;rotate:-45deg}   /* مربع نقر 24px مستقيم حول المعيّن */
   /* تحت اللمس: مساحة مربع الإنجاز 44×44 (كانت 40×30 لأن الإزاحة تُحسب من داخل الحد 2px)، وتمتد 11px خارج حده فلا تتجاوز الفجوة 12px إلى عنوان البند */
   @media (pointer:coarse){ #detail .pi .chk::after{inset:-13px} }
+  /* A5: زر «رجوع» للجوال وحده (‎.btn‎ في components تغلب base، فالإظهار هنا) */
+  .m-back,.kpi-line{display:none}
+  @media (max-width:880px){ .m-back{display:inline-flex} }
+  /* ترويسة الجوال المضغوطة: أول مشروع قبل 320px على 390 (معيار القبول 11).
+     العنوان والإجراءان في سطر، والبحث والسنة والتصفية في سطر، والمؤشرات الأربعة سطر واحد يتوسع */
+  @media (max-width:640px){
+    .wrap{padding-top:var(--sp-3)}
+    .page-head{flex-wrap:nowrap;align-items:center;padding-block:0;margin-bottom:var(--sp-3)}
+    :root[data-art="ink"] .page-head{padding-bottom:16px;margin-bottom:var(--sp-2)}   /* فاصل ◆ الكلاسيكي يكفي فاصلًا */
+    .page-head > div{min-width:0}
+    .page-head h1{font-size:var(--fs-xl);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #pageSub{display:none}
+    .ph-acts{flex-shrink:0}
+    .ph-t{display:block;position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    #fltBtn{padding-inline:var(--sp-2);min-width:44px;justify-content:center}
+    .filters{flex-wrap:nowrap;margin-bottom:var(--sp-3)}
+    .filters .search{flex:1 1 0;min-width:0}
+    .seg{padding:1px;flex-shrink:0}
+    .kpis{margin-bottom:var(--sp-3)}
+    .kpis:not(.open) .kpi{display:none}
+    .kpi-line{display:flex;grid-column:1/-1}
+    .list-head{padding-block:var(--sp-1)}
+  }
+  /* 400px أو أقل: المؤسسة ظاهرة مختارةً في الشريط العلوي، فيكتفي العنوان المرئي بالقسم (والاسم كاملًا لقارئ الشاشة) */
+  /* تفاصيل أضيق من 760px: سطر المال في بطاقة المالية لا في الترويسة (يلتف سطرًا ثالثًا فتتجاوز الترويسة حدها) */
+  @container detail (max-width:760px){ .phead .money-line{display:none} #moneyCard .money-line{display:block} }
+  @media (max-width:640px){
+    .phead{padding:var(--sp-2) var(--sp-3)}
+    .phead h2{font-size:var(--fs-base);line-height:1.35}
+    .tab-x{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    .ptabs [role="tab"]{padding-inline:var(--sp-2)}
+  }
+  @media (max-width:400px){ .page-head h1{font-size:var(--fs-lg)} .ph-org{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap} }
+  /* أضيق الشاشات (320): العنوان المرئي في الشريط العلوي (القسم والمؤسسة)، فيُخفى هنا بصريًا ويبقى لقارئ الشاشة، والبحث في سطر وحده */
+  @media (max-width:340px){
+    .page-head > div{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+    .ph-acts{margin-inline-start:auto}
+    .filters{flex-wrap:wrap} .filters .search{flex-basis:100%}
+  }
 }
 </style>
 <link rel="stylesheet" href="nasaq-theme.css?v=20261007b">
@@ -902,7 +1006,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     <button type="button" data-view="stats">الإحصائيات</button>
   </nav>
   <div class="tb-end">
-    <span class="src" id="src" hidden><i></i><span></span></span>
+    <span class="src" id="src" role="status"><i></i><span>جارٍ الاتصال…</span></span>
     <button class="icon-btn" id="driveBtn" type="button" title="أرشيف المشاريع في درايف" aria-label="أرشيف المشاريع في درايف">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z"/><path d="M12 11.5v4M10 13.5h4"/></svg>
     </button>
@@ -918,7 +1022,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     <div class="ph-acts">
       <!-- أدوات الإدارة النادرة في قائمة، و«مشروع جديد» الزر الأساسي الوحيد -->
       <details class="admin-menu" id="adminMenu">
-        <summary class="btn">⋯ إدارة</summary>
+        <summary class="btn">⋯<span class="ph-t"> إدارة</span></summary>
         <div class="am-list">
           <button type="button" id="namesBtn"><b>مراجعة الأسماء</b><small>توحيد أسماء المشاريع المتشابهة</small></button>
           <button type="button" id="donorsBtn"><b>المانحون</b><small>أسماء المانحين ودولهم للإحصائيات</small></button>
@@ -936,7 +1040,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     </label>
     <div class="seg" id="yearSeg" role="group" aria-label="السنة"></div>
     <button class="btn flt-btn" type="button" id="fltBtn" aria-expanded="false" aria-controls="fltDlg">
-      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>تصفية<span class="fcount" id="fltCount" hidden></span>
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg><span class="ph-t">تصفية</span><span class="fcount" id="fltCount" hidden></span>
     </button>
   </div>
   <!-- الفلاتر: لوحة تحت الأدوات على الحاسوب، ولوحة سفلية على الجوال (Shopify/eBay: الفلاتر في درج على الجوال) -->
@@ -958,7 +1062,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
   <section class="stats" id="stats" aria-label="إحصائيات المشاريع المعروضة" hidden></section>
 
   <div id="listView">
-    <section class="kpis" id="kpis" aria-label="ملخص المشاريع المعروضة"></section>
+    <section class="kpis" id="kpis" aria-label="ملخص المشاريع المعروضة" aria-busy="true"><button type="button" class="kpi-line sk" disabled>&nbsp;</button><div class="kpi sk"><span>&nbsp;</span><b>&nbsp;</b><small>&nbsp;</small></div><div class="kpi sk"><span>&nbsp;</span><b>&nbsp;</b><small>&nbsp;</small></div><div class="kpi sk"><span>&nbsp;</span><b>&nbsp;</b><small>&nbsp;</small></div><div class="kpi sk"><span>&nbsp;</span><b>&nbsp;</b><small>&nbsp;</small></div></section>
     <div class="split">
       <nav class="list" aria-label="قائمة المشاريع">
         <div class="list-head"><span id="count"></span>
@@ -972,7 +1076,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
             </select>
           </label>
         </div>
-        <div class="items" id="items" tabindex="-1"><div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div></div>
+        <div class="items" id="items" tabindex="-1" aria-busy="true"><p class="sr">جارٍ تحميل المشاريع…</p><div class="item sk"><div class="row1">&nbsp;</div><div class="nm">&nbsp;<br>&nbsp;</div><div class="meta">&nbsp;</div></div><div class="item sk"><div class="row1">&nbsp;</div><div class="nm">&nbsp;<br>&nbsp;</div><div class="meta">&nbsp;</div></div><div class="item sk"><div class="row1">&nbsp;</div><div class="nm">&nbsp;<br>&nbsp;</div><div class="meta">&nbsp;</div></div><div class="item sk"><div class="row1">&nbsp;</div><div class="nm">&nbsp;<br>&nbsp;</div><div class="meta">&nbsp;</div></div></div>
       </nav>
       <section class="detail" id="detail" aria-live="polite" tabindex="-1"></section>
     </div>
@@ -1059,6 +1163,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
         <span class="appr-name" data-media-name="org">لا ملفات</span>
         <button class="btn ghost sm" type="button" data-media-clear="org" hidden>إزالة</button>
       </div>
+      <label class="keep-lbl"><input type="checkbox" class="keep-orig">اترك الصور بلا ضغط (تُضغط الصور الكبيرة قبل الرفع افتراضيًا)</label>
       <p class="note" id="mediaNote"></p>
     </section>
     <p class="note" id="projTitlePrev" style="margin:0"></p>
@@ -1084,6 +1189,26 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     <div class="donors-list" id="donorsList"></div>
     <div class="dlg-acts"><button class="btn ghost" type="button" data-close>إغلاق</button></div>
   </div>
+</dialog>
+<!-- تحرير المشروع (A9a): الحالة والتواريخ بإجراءي الجسر القائمين؛ الاسم والكود والجهة الممولة لاحقًا (A9b) -->
+<dialog id="editDlg" aria-labelledby="editDlgTitle">
+  <form id="editForm" method="dialog">
+    <h2 id="editDlgTitle">تحرير المشروع</h2>
+    <p class="sub" id="editDlgSub"></p>
+    <label class="fld">الحالة<select name="status"></select></label>
+    <div class="fld-row">
+      <label class="fld">تاريخ البداية<input name="start" type="date"></label>
+      <label class="fld">تاريخ النهاية<input name="end" type="date"></label>
+    </div>
+    <p class="edit-warn" id="editWarn" role="alert" hidden></p>
+    <label class="edit-ack" id="editAckRow" hidden><input type="checkbox" name="ack">أغلق المشروع مع ذلك</label>
+    <p class="note" style="margin:0">الاسم والكود والجهة الممولة تُعدَّل من هذه اللوحة لاحقًا (تحتاج تحديثًا في الجسر).</p>
+    <div class="edit-go"><span>وفي التبويبات:</span><button class="btn ghost sm" type="button" data-edit-go="plan">المراحل والبنود</button><button class="btn ghost sm" type="button" data-edit-go="money">المبالغ</button><button class="btn ghost sm" type="button" data-edit-go="docs">الملفات</button></div>
+    <div class="dlg-acts">
+      <button class="btn cta" type="submit" value="save">حفظ</button>
+      <button class="btn ghost" type="button" data-close>إلغاء</button>
+    </div>
+  </form>
 </dialog>
 <dialog id="moneyDlg" aria-labelledby="moneyDlgTitle">
   <form id="moneyForm" method="dialog">
@@ -1192,7 +1317,10 @@ const RCOL = NASAQ_ART.report;
 const $ = id => document.getElementById(id);
 /* esc() — تهريب النصوص قبل HTML — مشتركة في nasaq-core.js */
 const AR = n => fmtNum(n);   /* الأرقام إنجليزية — fmtNum وأخواتها في nasaq-core.js */
-const money = n => (n == null || n === '') ? '—' : fmtMoney(Math.round(Number(n)), '$');
+/* الصفر شرطة (القرار 8): «0 $» لا يميّز بين «لا شيء» و«لم يُسجَّل». money0 للحقول التي يحمل فيها الصفر معنى:
+   المستلم من المانح، والنسبة الإدارية، والمصاريف التشغيلية، والمتبقي، و«الباقي» في الموازنة، وفروق المعادلة، والتقرير المنسوخ للمانح */
+const money0 = n => (n == null || n === '') ? '—' : fmtMoney(Math.round(Number(n)), '$');
+const money = n => Math.round(Number(n)) === 0 ? '—' : money0(n);
 const pct = x => (x == null || !isFinite(x)) ? '—' : AR(Math.round(x * 1000) / 10) + '%';
 const DAY = 86400000;
 const today = (()=>{ const d = new Date(); d.setHours(0,0,0,0); return d; })();
@@ -1226,6 +1354,8 @@ const ORGS = {
 const ORG = new URLSearchParams(location.search).get('org') === 'humera' ? 'humera' : 'medics';
 /* تُفتح داخل تبويب «المشاريع» في لوح نَسَق: نخفي العلامة، ونُبقي روابط المؤسسة داخل الإطار */
 const EMBED = new URLSearchParams(location.search).get('embed') === '1';
+/* الجوال: رابط مشروع مباشر يُعرض بعرض التفاصيل من أول لحظة، لا القائمة ثم قفزة إلى التفاصيل حين تصل البيانات (A8) */
+document.documentElement.dataset.mv = /^#(?!stats$|report=)./.test(location.hash) ? 'detail' : 'list';
 if(EMBED){
   document.documentElement.classList.add('embed');
   /* داخل تبويب اللوح: نعلن ارتفاع المحتوى ليأخذه الإطار (شريط تمرير واحد للصفحة)، ونقرأ ارتفاع نافذة اللوح للقائمة */
@@ -1335,10 +1465,10 @@ let SOURCE = '';
 const FILES = {};                 /* قوائم الملفات المقروءة من الجسر، حسب الكود */
 const filesLoading = new Set();
 const EXPANDED = new Set();       /* خانات مستندات فُتحت كل ملفاتها */
-const S = { q:'', year:'2026', status:'', donor:'', type:'', std:'', coord:'', sort:'smart', sel:null, view:'list', tsort:'approved', tdir:-1 };
+const S = { q:'', year:'2026', status:'', donor:'', type:'', std:'', coord:'', sort:'smart', sel:null, view:'list', tsort:'approved', tdir:-1, mv:'list', tab:'overview', sched:'' };   /* mv: عرض الجوال (القائمة أو التفاصيل)، لا يُحفظ */
 /* حالة العرض محفوظة لكل مؤسسة: الفلاتر والبحث والترتيب والمشروع المفتوح والتبويب ومكان التمرير،
    فتعود الصفحة كما تُركت بعد الانتقال إلى صفحة أخرى أو إعادة الفتح */
-const VIEW_KEY = 'daily-board-projects-view-' + ORG, VIEW_KEYS = ['q', 'year', 'status', 'donor', 'type', 'std', 'coord', 'sort', 'sel', 'view', 'tsort', 'tdir', 'fopen'];
+const VIEW_KEY = 'daily-board-projects-view-' + ORG, VIEW_KEYS = ['q', 'year', 'status', 'donor', 'type', 'std', 'coord', 'sort', 'sel', 'view', 'tsort', 'tdir', 'fopen', 'tab', 'sched'];
 let VIEW0 = null;
 try{ VIEW0 = JSON.parse(localStorage.getItem(VIEW_KEY) || 'null'); if(VIEW0) VIEW_KEYS.forEach(k => { if(k in VIEW0) S[k] = VIEW0[k]; }); }catch(e){}
 function saveView(){ try{ const v = {y: EMBED ? 0 : scrollY}; VIEW_KEYS.forEach(k => v[k] = S[k]); localStorage.setItem(VIEW_KEY, JSON.stringify(v)); }catch(e){} }
@@ -1370,20 +1500,35 @@ function post(body){
 }
 
 /* نوشن أولًا لصاحب اللوح؛ وإن لم يُنشر الجسر الجديد بعد، فالملف المحلي (خارج المستودع) */
+/* مؤشر المصدر بصدق (A8): «مباشر» بعد ردّ الجسر فقط؛ وما يُعرض من ذاكرة المتصفح «آخر نسخة محفوظة» بوقتها؛
+   و«غير متصل» حين ينقطع الاتصال. الحالة في data-src والنص الكامل في title لقارئ الشاشة والجوال (النص مخفي على الضيق) */
+let SRC_NOW = {src: '', note: '', stale: false, at: 0};
+function srcShow(src, note, stale, at){
+  if(src) SRC_NOW = {src, note: note || '', stale: !!stale, at: at || 0};
+  const s = SRC_NOW, el = $('src'); if(!s.src) return;
+  const off = navigator.onLine === false;
+  const k = off ? 'offline' : s.src === 'local' ? 'local' : s.stale ? 'cache' : 'live';
+  const txt = {live: 'مباشر من نوشن', cache: 'آخر نسخة محفوظة' + (s.at ? ' (' + new Date(s.at).toLocaleString('ar', {day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'}) + ')' : ''), local: 'نسخة محلية للتطوير', offline: 'غير متصل — المعروض آخر نسخة'}[k];
+  el.hidden = false; el.className = 'src ' + k; el.dataset.src = k;
+  el.querySelector('span').textContent = txt;
+  el.title = txt + (s.note ? ' | الجسر لم يستجب: ' + s.note : '');
+  el.setAttribute('aria-label', el.title);
+}
+addEventListener('online', () => srcShow()); addEventListener('offline', () => srcShow());
 async function load(){
-  $('items').innerHTML = '<div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div>';
+  if(!$('items').querySelector('.item')) $('items').innerHTML = '<div class="loading"><span class="spin"></span>جارٍ تحميل المشاريع…</div>';   /* الهيكل الأول يبقى حتى تصل البيانات */
   let bridgeErr = '';
   if(bridge && auth && auth.token){
     /* آخر نسخة من نوشن تُعرض فورًا من هذا المتصفح، ثم تُستبدل بالجديدة حين يردّ الجسر */
     const CK = 'daily-board-projects-cache-' + ORG;
     let shown = false;
-    try{ const c = JSON.parse(localStorage.getItem(CK) || 'null'); if(c && c.ok){ use(c, 'live'); shown = true; } }catch(e){}
+    try{ const c = JSON.parse(localStorage.getItem(CK) || 'null'); if(c && c.ok){ use(c, 'live', '', true); shown = true; } }catch(e){}
     try{
       const d = await post({action:'projects_list', org: ORG});
-      try{ localStorage.setItem(CK, JSON.stringify(d)); }catch(e){}
+      try{ localStorage.setItem(CK, JSON.stringify(Object.assign({}, d, {savedAt: Date.now()}))); }catch(e){}
       return use(d, 'live');
     }catch(e){
-      if(shown){ toast('تعذّر التحديث من نوشن، والمعروض آخر نسخة محفوظة: ' + e.message, true); return; }
+      if(shown){ srcShow('live', e.message, true, SRC_NOW.at); toast('تعذّر التحديث من نوشن، والمعروض آخر نسخة محفوظة: ' + e.message, true); return; }
       bridgeErr = e.message;
     }
   }
@@ -1465,7 +1610,7 @@ function openNamesReview(){
       'يصير العنوان «مشروع الموحّد - المخصص - المانح» في نوشن، ويُعاد تسمية مجلد المشروع في درايف، ويمكن التراجع.' : 'لا مجموعات متشابهة.') +
     (live ? '' : ' <b>للعرض فقط — الاعتماد يحتاج الاتصال بنوشن.</b>') + '</p>' +
     '<datalist id="dlStd">' + opts.map(o => '<option value="' + esc(o) + '">').join('') + '</datalist>' +
-    G.map((g, k) => '<section class="ngroup" data-g="' + k + '"><div class="nhead"><input class="nstd" list="dlStd" value="' + esc(g.sug) + '" placeholder="اكتب الاسم الموحّد" aria-label="الاسم الموحّد"><button type="button" class="btn cta" data-approve="' + k + '"' + (live ? '' : ' disabled') + '>اعتمد</button></div><ul>' +
+    G.map((g, k) => '<section class="ngroup" data-g="' + k + '"><div class="nhead"><input class="nstd" list="dlStd" value="' + esc(g.sug) + '" placeholder="اكتب الاسم الموحّد" aria-label="الاسم الموحّد"><button type="button" class="btn soft" data-approve="' + k + '"' + (live ? '' : ' disabled') + '>اعتمد</button></div><ul>' +
       g.members.map(p => '<li data-id="' + esc(p.id) + '"><label class="nsel"><input type="checkbox" checked aria-label="اختيار ' + esc(p.code || p.name) + '"><code>' + esc(p.code || '') + '</code></label>' +
         '<div class="nrow"><span class="nold">' + esc(p.name) + (p.stdName ? ' <small class="' + (p.stdName !== g.sug ? 'diff' : '') + '">' + esc(p.stdName) + '</small>' : ' <small class="diff">بلا اسم موحّد</small>') + '</span>' +
         '<input class="ncustom" value="' + esc(nmCustom(p, g.sug)) + '" placeholder="الاسم المخصص" aria-label="الاسم المخصص لـ' + esc(p.code || p.name) + '">' +
@@ -1618,6 +1763,40 @@ function gateStats(){
   else if(c && !can.money()) c.querySelectorAll('.kpi').forEach(k => { if(MONEY_KPIS.includes(((k.querySelector('span') || {}).textContent || '').trim())) k.remove(); });
 }
 /* فتح ملف لغير المالك: عبر الجسر (يتحقق من الخانة والنوع)، دون رابط درايف */
+/* ---------- PDF ← صور JPG (U2) ----------
+   يجلب الملف بـ file_get القائم، ويرسم صفحاته بـ PDF.js (vendor/pdfjs، Apache-2.0، يُحمَّل عند أول ضغطة فقط)
+   بمقياس 2.5 (≈180 DPI) وجودة 0.9، صورة لكل صفحة. على اللمس: «حفظ في الصور» عبر المشاركة إن توفّرت، وإلا تنزيل.
+   لا حفظ في درايف ولا تخزين على الجهاز؛ وروابط الكائنات تُحرَّر بعد الاستعمال */
+const PDF_JPG_MAX_PAGES = 30;
+let pdfjsP = null;
+const pdfjsLoad = () => pdfjsP || (pdfjsP = import('./vendor/pdfjs/pdf.min.mjs').then(m => { m.GlobalWorkerOptions.workerSrc = new URL('vendor/pdfjs/pdf.worker.min.mjs', location.href).href; return m; })
+  .catch(e => { pdfjsP = null; throw e; }));
+async function pdfToJpg(p, id, base){
+  if(SOURCE !== 'live'){ toast('يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true); return; }
+  toast('جارٍ تجهيز الصور…');
+  let doc = null;
+  try{
+    const [d, pdfjs] = await Promise.all([post({action: 'file_get', org: ORG, code: p.code, id}), pdfjsLoad()]);
+    const bin = atob(d.data), arr = new Uint8Array(bin.length);
+    for(let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    doc = await pdfjs.getDocument({data: arr, isEvalSupported: false}).promise;
+    const n = Math.min(doc.numPages, PDF_JPG_MAX_PAGES), files = [];
+    base = String(base || d.name || 'ملف').replace(/\.pdf$/i, '');
+    for(let i = 1; i <= n; i++){
+      const pg = await doc.getPage(i), vp = pg.getViewport({scale: 2.5});   /* ≈180 DPI لصفحة A4 */
+      const c = document.createElement('canvas'); c.width = Math.ceil(vp.width); c.height = Math.ceil(vp.height);
+      const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+      await pg.render({canvasContext: x, viewport: vp}).promise;
+      const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.9)); c.width = c.height = 0; pg.cleanup();
+      files.push(new File([blob], base + (doc.numPages > 1 ? '-صفحة-' + i : '') + '.jpg', {type: 'image/jpeg'}));
+    }
+    const share = matchMedia('(pointer:coarse)').matches && navigator.canShare && navigator.canShare({files});
+    if(share){ try{ await navigator.share({files, title: base}); }catch(e){ if(e && e.name === 'AbortError') return; throw e; } }
+    else files.forEach(f => { const url = URL.createObjectURL(f), a = document.createElement('a'); a.href = url; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 10000); });
+    toast((files.length === 1 ? 'جُهّزت صورة واحدة' : 'جُهّزت ' + cnt(files.length, W_FILE) + ' (صورة لكل صفحة)') + (doc.numPages > n ? '، وأول ' + AR(n) + ' صفحة فقط' : ''));
+  }catch(err){ toast('تعذّر تحويل الملف: ' + (err.message || err), true); }
+  finally{ if(doc) doc.destroy(); }
+}
 async function openViaBridge(p, id){
   toast('جارٍ فتح الملف…');
   try{
@@ -1631,7 +1810,7 @@ async function openViaBridge(p, id){
     toast('فُتح «' + (d.name || 'الملف') + '»');
   }catch(err){ toast(err.message || 'تعذّر فتح الملف', true); }
 }
-function use(d, src, note){
+function use(d, src, note, stale){
   ACC = (src === 'live' && d.access) || {owner: true}; applyAcc();
   if(src === 'live') ovApply(d.plan || []);
   DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [], options: d.options || {}, donorCountries: d.donorCountries || {}, donors: d.donors || [] };
@@ -1643,9 +1822,7 @@ function use(d, src, note){
     /* أول مرة في نسخة التطوير: القائمة من منسقي المشاريع ومسؤولي البنود، كما يبنيها الجسر */
     DATA.people = localPeopleRead() || uniqNames(DATA.projects.map(p => p.coordinator).concat(DATA.plan.map(x => x.owner)));
   }
-  const el = $('src'); el.hidden = false; el.className = 'src ' + src;
-  el.querySelector('span').textContent = src === 'live' ? 'مباشر من نوشن' : 'نسخة محلية للتطوير';
-  el.title = note ? 'الجسر لم يستجب: ' + note : '';
+  srcShow(src, note, stale, d.savedAt);
   const first = !use.done; use.done = true;
   if(first){ $('q').value = S.q; $('sort').value = S.sort; }
   buildFilters(); readHash(first); render();
@@ -1739,8 +1916,7 @@ function render(){
   document.querySelectorAll('#views button').forEach(b => {
     const on = b.dataset.view === S.view; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on);
   });
-  $('pageTitle').textContent = (st ? 'إحصائيات ' : 'مشاريع ') + ORG_INFO.name;
-  document.title = 'نَسَق — ' + $('pageTitle').textContent;
+  pageTitle();
   const scope = [ORG_INFO.full, S.year ? 'سنة ' + AR(S.year).replace(/[٬,]/g, '') : 'كل السنوات'].join(' | ');
   $('pageSub').textContent = scope + (st ? ' | الأرقام تتبع الفلاتر' : '');
   renderChips(rows.length);
@@ -1750,10 +1926,42 @@ function render(){
     const qs = [a.dataset.org === 'humera' ? 'org=humera' : '', EMBED ? 'embed=1' : ''].filter(Boolean).join('&');
     a.href = 'projects.html' + (qs ? '?' + qs : '') + (st ? '#stats' : '');
   });
-  if(st){ renderStats(rows); return; }
+  if(st){ renderStats(rows); mvApply(); return; }
   if(S.sel && !rows.some(p => p.id === S.sel)) S.sel = null;
   if(!S.sel && rows.length) S.sel = rows[0].id;
   renderKpis(rows); renderList(rows); renderDetail();
+  mvApply();
+}
+/* العنوان نص واحد كما كان؛ وعلى 400px أو أقل يُفصل اسم المؤسسة في عنصر يُخفى بصريًا (ظاهر مختارًا في الشريط العلوي) ويبقى لقارئ الشاشة */
+const TITLE_NARROW = matchMedia('(max-width:400px)');
+function pageTitle(){
+  const w = S.view === 'stats' ? 'إحصائيات ' : 'مشاريع ', h = $('pageTitle');
+  if(TITLE_NARROW.matches){ h.textContent = w; const o = document.createElement('span'); o.className = 'ph-org'; o.textContent = ORG_INFO.name; h.append(o); }
+  else h.textContent = w + ORG_INFO.name;
+  document.title = 'نَسَق — ' + w + ORG_INFO.name;
+}
+TITLE_NARROW.addEventListener('change', pageTitle);
+/* الجوال (880px أو أقل): القائمة والتفاصيل عرضان متتاليان. فتح مشروع يضيف خطوة في السجل (pushState) فيعيد زر الرجوع إلى القائمة،
+   والرابط #الكود يفتح التفاصيل مباشرة. على الحاسوب العرضان متجاوران ولا أثر لـ mv */
+const splitPhone = () => matchMedia('(max-width:880px)').matches;
+function mvApply(){
+  const root = document.documentElement, prev = root.dataset.mv, mv = S.view === 'stats' ? 'stats' : S.mv;
+  root.dataset.mv = mv;
+  if(!prev || prev === mv || !splitPhone()) return;
+  /* التركيز ينتقل مع العرض: العنصر المنقور يختفي، فيضيع التركيز إن بقي عليه (لوحة المفاتيح وقارئ الشاشة) */
+  if(mv === 'detail'){ EMBED ? $('detail').scrollIntoView({block: 'start'}) : scrollTo({top: 0}); $('detail').focus({preventScroll: true}); }
+  else if(mv === 'list'){ const on = document.querySelector('#items .item.on'); if(on){ on.scrollIntoView({block: 'center'}); on.focus({preventScroll: true}); } }
+}
+/* رابط المشروع: #الكود لنظرة عامة، و#الكود/plan أو money أو docs للتبويبات الأخرى */
+function selHash(p){ return '#' + encodeURIComponent(p.code || p.id) + (S.tab && S.tab !== 'overview' ? '/' + S.tab : ''); }
+/* فتح مشروع: على الجوال خطوة جديدة في السجل، وعلى الحاسوب يُستبدل الرابط كما كان */
+function showProject(p){
+  S.sel = p.id; S.view = 'list'; S.mv = 'detail';
+  if(splitPhone()) history.pushState({mv: 'detail'}, '', selHash(p)); else history.replaceState(null, '', selHash(p));
+}
+function mBack(){
+  if(history.state && history.state.mv === 'detail') return history.back();   /* hashchange يعيد الرسم */
+  S.mv = 'list'; history.replaceState(null, '', location.pathname + location.search); render();
 }
 /* مبلغ مختصر للجوال: $2.4M و$636K، والكامل في title */
 const moneyShort = n => { const v = Math.abs(Number(n) || 0); return '$' + (v >= 1e6 ? AR(Math.round(n / 1e5) / 10) + 'M' : v >= 1e4 ? AR(Math.round(n / 1e3)) + 'K' : AR(Math.round(n))); };
@@ -1768,38 +1976,67 @@ function renderKpis(rows){
   const recv = withRecv.reduce((t, p) => t + num(p.received), 0), recvOf = withRecv.reduce((t, p) => t + num(p.approved), 0);
   const nBen = rows.filter(p => num(p.benef) > 0).length;
   /* بطاقات بتشريح واحد: العنوان، الرقم، سطر سياق صريح، وشريط عند الحاجة (Stephen Few: كل رقم بسياقه) */
-  $('kpis').innerHTML =
+  const k = $('kpis'); k.classList.toggle('open', !!S.kopen); k.removeAttribute('aria-busy');
+  k.innerHTML =
+    '<button type="button" class="kpi-line" aria-expanded="' + !!S.kopen + '"><span>' + cnt(rows.length, W_PROJ) + '</span>' +
+      (approved ? '<span>| <b><bdi>' + moneyShort(approved) + '</bdi></b> معتمد</span>' : '') + (late ? '<span class="alert">| ' + AR(late) + ' تحتاج متابعة</span>' : '') +
+      '<span class="sr">، عرض المؤشرات</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>' +
     kpiBox('المشاريع', AR(rows.length), '<b>' + AR(active) + '</b> جارية' + (late ? '<span class="alert" title="تحتاج متابعة: تجاوز موعد نهايته، أو له استحقاق للمانح أو بند في الخطة تجاوز موعده">' + AR(late) + ' تحتاج متابعة</span>' : '')) +
     kpiBox('المبلغ المعتمد', moneyFS(approved), recvOf ? '<span title="المستلم من المانحين، من معتمد المشاريع المسجّل فيها الاستلام">مستلم <b>' + pct(recv / recvOf) + '</b>: <bdi>' + moneyShort(recv) + '</bdi> من <bdi>' + moneyShort(recvOf) + '</bdi></span>' : 'للمشاريع المسجّل لها اعتماد', recvOf ? recv / recvOf : null) +
     kpiBox('مبلغ التنفيذ', moneyFS(exec), approved ? 'صُرف <b>' + pct(exec / approved) + '</b> من المعتمد' : '', approved ? exec / approved : null) +
     kpiBox('المستفيدون', AR(Math.round(benef)), nBen ? 'من <b>' + AR(nBen) + '</b> ' + (nBen === 1 ? 'مشروع' : 'مشروعًا') + ' سُجّل فيه العدد' : 'لم يُسجّل عدد بعد');
 }
 function renderList(rows){
-  const box = $('items'), top = box.scrollTop;
+  const box = $('items'), top = box.scrollTop; box.removeAttribute('aria-busy');
   $('count').textContent = cnt(rows.length, W_PROJ);
   if(!rows.length){ box.innerHTML = '<div class="empty">لا توجد مشاريع تطابق هذه الفلاتر.</div>'; return; }
   box.innerHTML = rows.map(p => {
     /* الأحمر لما يحتاج إجراءً الآن فقط: استحقاق للمانح تجاوز موعده؛ وانتهاء المدة سطر نصي هادئ (إرهاق التنبيهات) */
+    /* شارة واحدة بالأولوية (الكشف التدريجي): استحقاق متأخر، وإلا الحالة. انتهاء المدة سطر نصي أحمر في البيانات */
     const ld = lateDels(p).length;
-    const flag = ld ? '<span class="badge b-danger">' + icon('alert') + 'استحقاق متأخر' + (ld > 1 ? ' (' + AR(ld) + ')' : '') + '</span>' : '';
+    const flag = ld ? '<span class="badge b-danger">' + icon('alert') + 'استحقاق متأخر' + (ld > 1 ? ' (' + AR(ld) + ')' : '') + '</span>' : statusPill(p.status);
     const pr = progressOf(p);
     return '<button type="button" class="item' + (p.id === S.sel ? ' on' : '') + '" data-id="' + esc(p.id) + '" aria-label="' + esc((p.code ? p.code + ' ' : '') + (p.name || '')) + '" aria-describedby="r1-' + esc(p.id) + ' mt-' + esc(p.id) + '"' + (p.id === S.sel ? ' aria-current="true"' : '') + '>' +
-      '<div class="row1" id="r1-' + esc(p.id) + '">' + codeChip(p) + statusPill(p.status) + flag + '</div>' +
+      '<div class="row1" id="r1-' + esc(p.id) + '">' + codeChip(p) + flag + '</div>' +
       '<div class="nm">' + esc(p.name) + '</div>' +
-      '<div class="meta" id="mt-' + esc(p.id) + '"><span>' + esc(p.donor || 'بلا جهة ممولة') + '</span>' +
+      '<div class="meta" id="mt-' + esc(p.id) + '">' + (ld ? '<span>' + esc(p.status || 'حالة غير محددة') + '</span>' : '') + '<span>' + esc(p.donor || 'بلا جهة ممولة') + '</span>' +
         (p.end ? (isLate(p) ? '<span class="late-t">انتهى قبل ' + cnt(days(toDate(p.end), today), W_DAY) + '</span>' : '<span>ينتهي ' + dayLbl(p.end, false) + '</span>') : p.approvalDate ? '<span>اعتماد ' + dayLbl(p.approvalDate, false) + '</span>' : '') +
-        ((p.approved || p.exec) ? '<span class="num">' + money(p.approved || p.exec) + '</span>' : '') +
-        (p.docsChecked ? '<span title="المستندات المرفقة">مستندات ' + AR((p.docsDone || []).length) + '/' + AR(DOCS_N) + '</span>' : '') + '</div>' +
+        ((p.approved || p.exec) ? '<span class="num">' + money(p.approved || p.exec) + '</span>' : '') + '</div>' +
       (pr != null ? '<div class="mini" aria-hidden="true"><i style="width:' + Math.round(pr * 100) + '%"></i></div>' : '') +
     '</button>';
   }).join('');
   box.scrollTop = top;
 }
+/* التفاصيل: ترويسة ملخّصة ثابتة، وأربعة تبويبات (نمط ARIA Tabs)، ولوحات دائمة تُنشأ مرة لكل مشروع وتُخفى بـ hidden.
+   «المهام» مدمجة في «الخطة» (القرار 19): الجسر لا يعطي إلا عددها. إعادة الرسم تجدد محتوى اللوحات ولا تمس التبويب ولا مكان التمرير */
+const TABS = [['overview', 'نظرة عامة'], ['plan', 'الخطة<span class="tab-x"> والجدول</span>'], ['money', 'المالية'], ['docs', 'المستندات<span class="tab-x"> والتقارير</span>']];
+const TAB_KEYS = TABS.map(x => x[0]);
+const PANELS = {
+  overview: p => overviewCard(p) + heroCard(p) + dangerCard(p),
+  plan: p => planCard(p) + schedBar() + ganttCard(p) + timelineCard(p),
+  money: p => moneyCard(p),
+  docs: p => reportsCard(p) + delsCard(p) + docsCard(p)
+};
+function renderPanel(k, p){ const el = $('pnl-' + k); if(el) el.innerHTML = PANELS[k](p); }
 function renderDetail(){
-  const p = DATA.projects.find(x => x.id === S.sel);
-  if(!p){ $('detail').innerHTML = '<div class="card empty">اختر مشروعًا من القائمة لعرض تفاصيله.</div>'; return; }
-  $('detail').innerHTML = heroCard(p) + planCard(p) + ganttCard(p) + timelineCard(p) + moneyCard(p) + docsCard(p) + dangerCard(p);
-  $('detail').querySelectorAll('.card').forEach((c, i) => { c.classList.add('rise'); c.style.animationDelay = (i * 50) + 'ms'; });
+  const p = DATA.projects.find(x => x.id === S.sel), d = $('detail');
+  if(!p){ delete d.dataset.pid; d.innerHTML = '<div class="card empty">اختر مشروعًا من القائمة لعرض تفاصيله.</div>'; return; }
+  if(!TAB_KEYS.includes(S.tab)) S.tab = 'overview';
+  const fresh = d.dataset.pid !== p.id || !$('projTabs');
+  if(fresh){
+    d.dataset.pid = p.id;
+    d.innerHTML = '<button type="button" class="btn soft m-back" data-mback><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>رجوع إلى المشاريع</button>' +
+      '<section class="card phead" id="projHead" aria-label="ملخص المشروع"></section>' +
+      '<div class="ptabs" role="tablist" id="projTabs" aria-label="أقسام المشروع">' +
+        TABS.map(([k, l]) => '<button type="button" role="tab" id="tab-' + k + '" data-tab="' + k + '" aria-controls="pnl-' + k + '">' + l + '</button>').join('') + '</div>' +
+      TABS.map(([k]) => '<div class="ppanel" role="tabpanel" id="pnl-' + k + '" aria-labelledby="tab-' + k + '" tabindex="0"></div>').join('');
+  }
+  const keep = fresh ? null : draftsGrab(d);   /* المشروع نفسه: ما يُكتب في النماذج يبقى (A7b) */
+  $('projHead').innerHTML = projHead(p);
+  TAB_KEYS.forEach(k => renderPanel(k, p));
+  tabsSync(); schedSync(); draftsPut(keep);
+  /* الحركة عند فتح مشروع فقط، وللوحة الظاهرة وحدها */
+  if(fresh) [$('projHead'), ...$('pnl-' + S.tab).querySelectorAll('.card')].forEach((c, i) => { c.classList.add('rise'); c.style.animationDelay = (i * 50) + 'ms'; });
   if(SOURCE === 'live' && DATA.driveRoot && p.code && (!FILES[p.code] || FILES_STALE.has(p.code)) && !filesLoading.has(p.code)) fetchFiles(p);
 }
 
@@ -1826,19 +2063,23 @@ const itemProg = (it, asOf) => itemDoneAt(it, asOf || today) ? 1
   : hasPct(it) ? Math.max(0, Math.min(.99, Number(it.pct) / 100)) : it.status === 'منجز' ? 1 : .5;
 const avgProg = (items, asOf) => items.length ? items.reduce((a, it) => a + itemProg(it, asOf), 0) / items.length : 0;
 const ST_CLS = {'منجز': 'ok', 'جارٍ': 'run', 'متأخر': 'late', 'تأخر بدؤه': 'late', 'متوقف': 'late', 'لم يبدأ': ''};
-/* الموقف الزمني في تاريخ: الوقت المنقضي مقابل الإنجاز وحكمٌ واحد (صورة مبسطة لمؤشر SPI) */
-function schedHealth(p, M, asOf){
-  const s = p.start || p.approvalDate, items = M ? M.stages.flatMap(g => g.items) : [];
-  const done = p.status === 'مكتمل';
-  const el = s && p.end ? Math.max(0, Math.min(1, (asOf - toDate(s)) / Math.max(DAY, toDate(p.end) - toDate(s)))) : null;
-  const work = done ? 1 : items.length ? items.reduce((a, it) => a + itemProg(it, asOf), 0) / items.length : null;
-  const over = !done && p.end && asOf > toDate(p.end) ? days(toDate(p.end), asOf) : 0;
+/* الموقف الزمني في تاريخ: حكمٌ واحد للمشروع (صورة مبسطة لمؤشر SPI) يستعمله الجدول الأسبوعي والمخطط الزمني والتقرير.
+   المدة من spanOf، والإنجاز من الخطة في ذلك التاريخ وإلا «نسبة الإنجاز» في نوشن (كما في progressOf) */
+function projectHealth(p, asOf){
+  asOf = asOf || today;
+  const { s, e } = spanOf(p), done = p.status === 'مكتمل';
+  const S0 = s && e && toDate(e) > toDate(s) ? toDate(s) : null, E0 = S0 ? toDate(e) : null;
+  const el = S0 ? Math.max(0, Math.min(1, (asOf - S0) / Math.max(DAY, E0 - S0))) : null;
+  const items = planOf(p).filter(x => !x._draft);
+  const work = done ? 1 : items.length ? avgProg(items, asOf) : p.progress != null ? num(p.progress) : null;
+  const left = E0 ? days(asOf, E0) : null, over = !done && left != null && left < 0 ? -left : 0;
   const ratio = work == null || !el ? null : work / el;
-  const v = done ? {c: 'good', b: 'مكتمل'} : over ? {c: 'bad', b: 'متأخر عن الخطة'} : el === 0 ? {c: 'warn', b: 'لم يبدأ بعد'}
-    : ratio == null ? {c: 'warn', b: 'لا بيانات إنجاز'} : ratio < .85 ? {c: 'warn', b: 'الإنجاز أبطأ من الوقت'} : {c: 'good', b: 'في موعده'};
-  v.t = over ? 'تجاوز نهاية المدة بـ ' + cnt(over, W_DAY) + (work != null ? '، والإنجاز ' + pct(work) : '') + '.'
-    : el != null && work != null ? 'انقضى ' + pct(el) + ' من المدة، وأُنجز ' + pct(work) + '.' : '';
-  return {el, work, over, v};
+  const v = done ? {c: 'good', b: 'مكتمل', t: 'أُغلق المشروع.'}
+    : over ? {c: 'bad', b: 'متأخر عن الخطة', t: 'تجاوز نهاية المدة بـ ' + cnt(over, W_DAY) + (work != null ? '، والإنجاز ' + pct(work) : '') + '.'}
+    : el === 0 ? {c: 'warn', b: 'لم يبدأ بعد', t: 'يبدأ ' + dayLbl(s) + (asOf < S0 ? '، بعد ' + cnt(days(asOf, S0), W_DAY) : '') + '.'}
+    : ratio == null ? {c: 'warn', b: 'لا بيانات إنجاز', t: 'أنشئ خطة التنفيذ ليُقارن الإنجاز بالوقت.'}
+    : {c: ratio < .85 ? 'warn' : 'good', b: ratio < .85 ? 'الإنجاز أبطأ من الوقت' : 'في موعده', t: 'انقضى ' + pct(el) + ' من المدة، وأُنجز ' + pct(work) + '.'};
+  return {el, work, over, left, done, v};
 }
 function healthStrip(h){
   if(h.el == null) return '';
@@ -1922,20 +2163,16 @@ function ganttCard(p){
       (s ? '<p class="note" style="margin:0 0 10px">يُرسم الجدول من مدة المشروع. البداية ' + dayLbl(s) + (p.start ? '' : ' (تاريخ الاعتماد)') + ' — أدخل المدة لتُحسب النهاية وتُحفظ في نوشن.</p>' +
         '<div class="g-tools g-dur"><label>مدة المشروع <input type="number" min="1" max="120" id="gDurN" inputmode="numeric" placeholder="6"></label>' +
         '<select id="gDurU" aria-label="وحدة المدة"><option value="m">أشهر</option><option value="w">أسابيع</option><option value="d">أيام</option></select>' +
-        '<span class="note" id="gDurOut" style="margin:0"></span><button class="btn cta" type="button" data-act="gantt-dur">احفظ المدة وارسم الجدول</button></div>'
+        '<span class="note" id="gDurOut" style="margin:0"></span><button class="btn soft" type="button" data-act="gantt-dur">احفظ المدة وارسم الجدول</button></div>'
         : '<p class="note" style="margin:0">لا تاريخ بداية ولا تاريخ اعتماد لهذا المشروع — أضفهما في نوشن ليُرسم الجدول.</p>') + '</article>';
   }
-  const H = schedHealth(p, M, asOf), nOut = M.weeks.filter(w => w.out).length, uL = {1: 'أسبوعًا', 2: 'نصف شهر', 4: 'شهرًا'}[M.unit];
+  const nOut = M.weeks.filter(w => w.out).length, uL = {1: 'أسبوعًا', 2: 'نصف شهر', 4: 'شهرًا'}[M.unit];
   return '<article class="card tlx" id="ganttCard"><div class="card-h"><h3>الجدول الزمني' + (M.unit === 1 ? ' الأسبوعي' : '') + '</h3><small>بنمط التقارير المرحلية المعتمدة — ' + AR(M.weeks.length - nOut) + ' ' + uL + (nOut ? ' + ' + AR(nOut) + ' خارج المدة' : '') + (M.unit > 1 ? ' (مشروع طويل: كل عمود ' + (M.unit === 2 ? 'نصف شهر' : 'شهر') + ')' : '') + '</small>' +
     (M.preview ? '<span class="g-prev">مقترح من قالب «' + esc(M.preview.label) + '»</span>' : '') + '</div>' +
     (M.preview ? '<p class="note" style="margin:0 0 10px">لا خطة تنفيذ لهذا المشروع بعد، فهذا جدول مقترح من مدته ونوعه. أنشئ الخطة من بطاقة «خطة التنفيذ» لتعتمده وتتابع إنجاز بنوده.</p>' : '') +
-    '<div class="g-tools"><label>حالة الجدول في تاريخ <input type="date" data-gasof="' + esc(p.id) + '" value="' + iso(asOf) + '"></label>' +
-    '<span class="g-btns"><button class="btn" type="button" data-act="gantt-copy" title="نسخة المانح: الإنجاز الفعلي والمرحلي فقط، بلا مؤشرات تأخر">انسخ الجدول للتقرير</button>' +
-      '<button class="btn soft" type="button" data-act="report" data-kind="final">مسودة تقرير ختامي</button>' +
-      '<button class="btn cta" type="button" data-act="report" data-kind="interim">مسودة تقرير مرحلي</button></span></div>' +
-    healthStrip(H) +
+    '<div class="g-tools"><label>حالة الجدول في تاريخ <input type="date" data-gasof="' + esc(p.id) + '" value="' + iso(asOf) + '"></label></div>' +
     '<div class="g-wrap" tabindex="0" role="region" aria-label="الجدول الزمني الأسبوعي">' + ganttTable(p, M, asOf) + '</div>' + ganttLegend(M) +
-    '<p class="note">هذا العرض للمتابعة الداخلية ويُظهر التأخر. ما يُنسخ للتقرير ومسودتا التقريرين تُظهر الإنجاز الفعلي والمرحلي فقط: منجز، جارٍ، مخطط. عدّل التواريخ والحالات من بطاقة «خطة التنفيذ».</p></article>';
+    '<p class="note">هذا العرض للمتابعة الداخلية ويُظهر التأخر. نسخة التقرير ومسودتاه (في «المستندات والتقارير») تُظهر الإنجاز الفعلي والمرحلي فقط: منجز، جارٍ، مخطط. عدّل التواريخ والحالات من بطاقة «خطة التنفيذ».</p></article>';
 }
 /* الجدول نفسه للبطاقة والتقرير ونسخة Word (الدمج 1): صف المرحلة شريط متصل على امتداد أسابيعها، أخضر بقدر إنجازها
    والباقي رمادي والنسبة داخله، وتحته بنودها مرقمة 1.1 بخانات الأسابيع؛ عمود «الإنجاز» واحد (✓ أو النسبة)،
@@ -2068,7 +2305,7 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => {
   const inp = e.target.closest('input[data-gasof]'); if(!inp) return;
   GANTT_ASOF[inp.dataset.gasof] = inp.value || '';
-  const p = DATA.projects.find(x => x.id === inp.dataset.gasof); if(p) refreshCard('ganttCard', ganttCard(p));
+  const p = DATA.projects.find(x => x.id === inp.dataset.gasof); if(p){ refreshCard('ganttCard', ganttCard(p)); refreshCard('repCard', reportsCard(p)); schedSync(); }
 });
 
 /* ---------- مسودة التقرير المرحلي — على هيكل تقرير Al-Cela المعتمد ----------
@@ -2083,7 +2320,7 @@ function reportHTML(p, kind){
   const items = M ? M.stages.flatMap(g => g.items) : [];
   const doneAt = it => itemDoneAt(it, asOf);
   const prog = it => itemProg(it, asOf);
-  const HL = schedHealth(p, M, asOf);
+  const HL = projectHealth(p, asOf);
   const total = HL.work, timeP = HL.el;
   const d = x => x ? fmtDate(toDate(x)) : '—';
   const weeks = M ? M.nWeeks : 0;
@@ -2109,7 +2346,7 @@ function reportHTML(p, kind){
     ['اسم المشروع', esc(p.name)], ['رقم المشروع', esc(p.code || '—')], ['الجهة المانحة', esc(p.donor || '—') + (p.donorCountry && !/غير مصن/.test(p.donorCountry) ? ' — ' + esc(p.donorCountry) : '')],
     ['مكان التنفيذ', esc(p.country || 'قطاع غزة')], ['الجهات الشريكة', esc([].concat(p.entities || []).join('، ') || '—')],
     ['تاريخ البدء', d(s)], ['تاريخ الانتهاء', d(p.end)], ['مدة المشروع', weeks ? AR(weeks) + ' أسبوعًا' : '—'],
-    ['قيمة المشروع', money(f.A || null)], ['منسق المشروع', esc(p.coordinator || '—')],
+    ['قيمة المشروع', money0(f.A || null)], ['منسق المشروع', esc(p.coordinator || '—')],
     ['نسبة الإنجاز حتى ' + d(asIso), total == null ? '—' : pct(total)],
     ['عدد المستفيدين', manual('يُكتب يدويًا')]
   ];
@@ -2124,8 +2361,8 @@ function reportHTML(p, kind){
     : '<p class="hint">لا بنود مخططة في الثلاثين يومًا القادمة.</p>';
   const budRows = [['المبلغ الكلي حسب الاعتماد', f.A], ['النسبة الإدارية', f.ADM], ['مبلغ التنفيذ حسب الاعتماد', f.E], ['المصاريف التشغيلية', f.OPS],
     ['مبلغ التنفيذ الفعلي', f.F], ['حسب الترسية أو التعاقد', f.C], ['المستلم من المانح', p.received]].filter(([, v]) => v != null && v !== '' && Number(v));
-  const budT = '<table class="t-bud"><tr><th>#</th><th>البند</th><th>المبلغ</th></tr>' + budRows.map(([k, v], i) => '<tr><th>' + AR(i + 1) + '</th><td>' + k + '</td><td>' + money(v) + '</td></tr>').join('') +
-    (p.received != null && f.A ? '<tr class="tot"><th></th><td>المتبقي من المانح</td><td>' + money(f.A - num(p.received)) + '</td></tr>' : '') + '</table>';
+  const budT = '<table class="t-bud"><tr><th>#</th><th>البند</th><th>المبلغ</th></tr>' + budRows.map(([k, v], i) => '<tr><th>' + AR(i + 1) + '</th><td>' + k + '</td><td>' + money0(v) + '</td></tr>').join('') +
+    (p.received != null && f.A ? '<tr class="tot"><th></th><td>المتبقي من المانح</td><td>' + money0(f.A - num(p.received)) + '</td></tr>' : '') + '</table>';
   const photos = '<div class="photos">' + [1, 2, 3, 4].map(i => '<figure><div>صورة ' + AR(i) + '</div><figcaption contenteditable="true">وصف الصورة</figcaption></figure>').join('') + '</div>' +
     (p.drive || p.folder ? '<p class="link">رابط المرفقات: <a href="' + esc(safeUrl(p.drive || p.folder)) + '">مجلد المشروع في درايف</a></p>' : '');
   const H = fin_
@@ -2258,7 +2495,7 @@ function deleteProject(p){
       DATA.plan = DATA.plan.filter(x => x.project !== p.id);
       delete FILES[p.code]; saveFilesCache();
       try{ const k = 'daily-board-projects-cache-' + ORG, c = JSON.parse(localStorage.getItem(k) || 'null'); if(c){ c.projects = DATA.projects; c.deliverables = DATA.deliverables; c.plan = DATA.plan; localStorage.setItem(k, JSON.stringify(c)); } }catch(e){}
-      S.sel = null; history.replaceState(null, '', location.pathname + location.search); render();
+      S.sel = null; S.mv = 'list'; history.replaceState(null, '', location.pathname + location.search); render();
       toast('حُذف ' + p.code + ' — أُرشفت صفحته' + (r.archived ? ' و' + (r.archived.deliverables || 0) + ' استحقاقات و' + (r.archived.plan || 0) + ' بنود خطة' : '') + (r.archived && r.archived.folder ? '، ومجلده في المهملات' : ''));
     }catch(err){ b.disabled = false; b.textContent = 'احذف نهائيًا من المنصة'; toast(err.message || 'تعذّر الحذف', true); }
   };
@@ -2266,18 +2503,114 @@ function deleteProject(p){
 }
 function refreshCard(id, html){
   const el = $(id); if(!el) return;
+  const keep = draftsGrab(el);
   const t = document.createElement('div'); t.innerHTML = html; el.replaceWith(t.firstElementChild);
+  draftsPut(keep);
+}
+/* المسودات (A7b): ما يُكتب في نموذج بند (form.pq) أو تسمية مرحلة (stg-form) أو مدة المشروع (#gDurN) لا يضيع حين
+   تعيد الرسمَ عمليةٌ أخرى (اكتمال حفظ سابق ينتهي دائمًا بـ rerender، أو «تراجع»، أو تحديث الملفات). تُلتقط القيم والتركيز
+   قبل الرسم وتُعاد بعده إلى النموذج نفسه إن بقي؛ والحفظ والإلغاء يزيلان النموذج، فلا يعود ما حُفظ أو أُلغي */
+const draftKey = f => f.matches('form.pq') ? 'pq:' + f.dataset.qform : f.matches('form.stg-form') ? 'stg:' + f.dataset.stage : '';
+const draftForm = k => document.querySelector(k.startsWith('pq:') ? '#detail form.pq[data-qform="' + CSS.escape(k.slice(3)) + '"]'
+  : '#detail form.stg-form[data-stage="' + CSS.escape(k.slice(4)) + '"]');
+function draftsGrab(root){
+  const d = {forms: {}, focus: null}; if(!root) return d;
+  root.querySelectorAll('form.pq, form.stg-form').forEach(f => { const v = {}; [...f.elements].forEach(e => { if(e.name) v[e.name] = e.value; }); d.forms[draftKey(f)] = v; });
+  const n = root.querySelector('#gDurN'); if(n) d.forms.gdur = {n: n.value, u: ($('gDurU') || {}).value};
+  const a = document.activeElement;
+  if(a && root.contains(a) && (a.form ? draftKey(a.form) : /^gDur[NU]$/.test(a.id)))
+    d.focus = {k: a.form ? draftKey(a.form) : 'gdur', name: a.form ? a.name : a.id, s: a.selectionStart, e: a.selectionEnd};
+  return d;
+}
+function draftsPut(d){
+  if(!d) return;
+  Object.entries(d.forms).forEach(([k, v]) => {
+    if(k === 'gdur'){ const n = $('gDurN'), u = $('gDurU'); if(n && v.n){ n.value = v.n; if(u && v.u) u.value = v.u; n.dispatchEvent(new Event('input', {bubbles: true})); } return; }
+    const f = draftForm(k); if(f) Object.entries(v).forEach(([name, val]) => { const e = f.elements[name]; if(e && 'value' in e) e.value = val; });
+  });
+  const fo = d.focus; if(!fo) return;
+  const f = fo.k === 'gdur' ? null : draftForm(fo.k), el = fo.k === 'gdur' ? $(fo.name) : f && f.elements[fo.name];
+  if(el && el !== document.activeElement){ el.focus({preventScroll: true}); try{ if(fo.s != null) el.setSelectionRange(fo.s, fo.e); }catch(e){} }
 }
 
+function tabsSync(){
+  TABS.forEach(([k]) => { const b = $('tab-' + k), pn = $('pnl-' + k); if(!b || !pn) return;
+    const on = k === S.tab; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; pn.hidden = !on; });
+}
+function setTab(k, focus){
+  if(!TAB_KEYS.includes(k)) k = 'overview';
+  S.tab = k; tabsSync(); schedSync();
+  const p = DATA.projects.find(x => x.id === S.sel);
+  if(p && S.view === 'list') history.replaceState(history.state, '', selHash(p));   /* state يبقى: «رجوع» الجوال يعتمد عليه */
+  if(focus){ const b = $('tab-' + k); if(b) b.focus(); }
+  saveView();
+}
+/* الجدولان في «الخطة والجدول» بمبدّل عرض: المخطط المختصر افتراضي الجوال، والجدول الأسبوعي للتقرير افتراضي الحاسوب */
+const schedView = () => S.sched === 'tl' || S.sched === 'gantt' ? S.sched : splitPhone() ? 'tl' : 'gantt';
+function schedBar(){
+  return '<div class="sched-bar"><span id="schedLbl">الجدول الزمني</span><div class="seg" role="group" aria-labelledby="schedLbl">' +
+    '<button type="button" data-sched="tl">مخطط مختصر</button><button type="button" data-sched="gantt">جدول أسبوعي للتقرير</button></div></div>';
+}
+function schedSync(){
+  const v = schedView();
+  document.querySelectorAll('#pnl-plan [data-sched]').forEach(b => { const on = b.dataset.sched === v; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
+  const g = $('ganttCard'), tl = $('tlCard');
+  if(g) g.hidden = v !== 'gantt';
+  if(tl) tl.hidden = v !== 'tl';
+}
+/* الترويسة: شارة حالة واحدة من projectHealth (القسم 3.2)، وسطر المال الواحد */
+function projHead(p){
+  const H = projectHealth(p, today), v = H.el == null && !H.done ? {c: '', b: 'بلا مدة مسجّلة', t: 'حدّد مدة المشروع ليُقارن الإنجاز بالوقت.'} : H.v;
+  const cls = {good: 'st-done', warn: 'st-plan', bad: 'st-late'}[v.c] || '';
+  return '<div class="ph-row">' + codeChip(p) + '<span class="pill ' + cls + '" title="' + esc(v.t) + '">' + (v.c === 'bad' ? icon('alert') : '') + esc(v.b) + '</span>' + moneyLine(p) + '</div>' +
+    '<h2 title="' + esc(p.name) + '">' + esc(p.name) + '</h2>' +
+    '<button type="button" class="ph-edit" data-act="proj-edit" aria-label="تحرير المشروع" title="تحرير المشروع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/></svg></button>';
+}
+/* المستندات المرفقة من الخانات المتاحة لهذا المستخدم، كما تعدّها بطاقة المستندات */
+function docsDone(p){
+  const fl = filesOf(p), done = new Set(fl && fl.done ? fl.done : (p.docsDone || []));
+  let n = 0; DOC_GROUPS.forEach(([, all]) => all.forEach(([d]) => { if(can.slot(d) !== 'none' && done.has(d)) n++; }));
+  return {n, known: !!((fl && fl.checked) || p.docsChecked)};
+}
+/* نظرة عامة: الموقف الزمني بالتفصيل (مرة واحدة في التفاصيل)، والبند التالي أو المتأخر، والاستحقاق القادم، واكتمال المستندات.
+   كل سطر زر ينقل إلى تبويبه */
+function overviewCard(p){
+  const H = projectHealth(p, today), nx = nextItem(p);
+  const dl = delsOf(p).find(d => d.status !== 'صدر'), dk = dl && delState(dl), dd = docsDone(p);
+  const row = (go, act, lbl, main, sub, late, attrs) => '<button type="button" class="ov-row' + (late ? ' late' : '') + '" data-go="' + go + '"' + (act ? ' data-act="' + act + '"' : '') + (attrs || '') + '>' +
+    '<span class="lbl">' + lbl + '</span><b>' + main + '</b>' + (sub ? '<small>' + sub + '</small>' : '') + '</button>';
+  const health = H.el != null ? healthStrip(H) : '<p class="note" style="margin:0 0 var(--sp-3)">' + (H.done ? 'أُغلق المشروع.' : 'لا مدة مسجّلة لهذا المشروع: حدّدها من «الخطة والجدول» ليُقارن الإنجاز بالوقت.') + '</p>';
+  return '<article class="card" id="ovCard"><div class="card-h"><h3>الموقف الآن</h3></div>' + health + '<div class="ov-rows">' +
+    (nx ? row('plan', 'plan-focus', itemLate(nx) ? 'بند متأخر' : 'البند التالي', esc(nx.title),
+        [nx.stage, nx.owner, nx.end ? (itemLate(nx) ? 'منذ ' + cnt(days(toDate(nx.end), today), W_DAY) : 'حتى ' + dayLbl(nx.end, false)) : ''].filter(Boolean).map(esc).join(' | '), itemLate(nx), ' data-id="' + esc(nx.id) + '"')
+      : row('plan', '', 'الخطة', planOf(p).length ? 'أُنجزت كل البنود' : 'لا خطة تنفيذ بعد', '', false)) +
+    (dl ? row('docs', 'go-dels', dk === 'late' ? 'استحقاق متأخر' : 'الاستحقاق القادم', esc(delName(dl)),
+        (dl.due ? dayLbl(dl.due) + ' | ' : '') + (dk === 'late' ? 'متأخر منذ ' + cnt(days(toDate(dl.due), today), W_DAY) : DEL_LBL[dk]), dk === 'late') : '') +
+    row('docs', '', 'المستندات', dd.known ? AR(dd.n) + ' من ' + AR(DOCS_N) + ' مرفقة' : 'لم يُفحص المجلد بعد', '', false) +
+  '</div></article>';
+}
+/* التقارير في «المستندات والتقارير»: مسودتا التقرير ونسخة الجدول للمانح، بتاريخ «حالة الجدول» نفسه */
+function reportsCard(p){
+  const asOf = GANTT_ASOF[p.id] ? toDate(GANTT_ASOF[p.id]) : today, M = ganttModel(p, asOf);
+  return '<article class="card" id="repCard"><div class="card-h"><h3>التقارير</h3><small>مسودتا التقرير المرحلي والختامي، ونسخة الجدول للمانح</small></div>' +
+    (M ? '<div class="g-tools"><label>حالة الجدول في تاريخ <input type="date" data-gasof="' + esc(p.id) + '" value="' + iso(asOf) + '"></label>' +
+        '<span class="g-btns"><button class="btn" type="button" data-act="gantt-copy" title="نسخة المانح: الإنجاز الفعلي والمرحلي فقط، بلا مؤشرات تأخر">انسخ الجدول للتقرير</button>' +
+        '<button class="btn soft" type="button" data-act="report" data-kind="final">مسودة تقرير ختامي</button>' +
+        '<button class="btn cta" type="button" data-act="report" data-kind="interim">مسودة تقرير مرحلي</button></span></div>' +
+        '<p class="note" style="margin:0">ما يُنسخ للتقرير ومسودتا التقريرين تُظهر الإنجاز الفعلي والمرحلي فقط: منجز، جارٍ، مخطط. والجدول الداخلي في «الخطة والجدول» يُظهر التأخر للمتابعة.</p>'
+      : '<p class="note" style="margin:0">تُتاح المسودتان ونسخة الجدول بعد تحديد مدة المشروع من «الخطة والجدول».</p>') + '</article>';
+}
+function delsCard(p){
+  return '<article class="card" id="delsCard"><div class="card-h"><h3>الاستحقاقات</h3><small>من قاعدة «استحقاقات المشاريع»</small></div>' + delsTable(delsOf(p)) + '</article>';
+}
 function heroCard(p){
   const f = (k, v) => v ? '<div class="fact"><span>' + k + '</span><b>' + esc(v) + '</b></div>' : '';
   const benef = p.benef ? AR(Math.round(p.benef)) + (p.benefText ? '، ' + p.benefText : '') : p.benefText;
   const drive = (filesOf(p) || {}).url || p.drive;
   return '<article class="card hero">' +
-    '<div class="tags">' + codeChip(p) + statusPill(p.status) +
-      (p.type ? '<span class="pill">' + esc(p.type) + '</span>' : '') + (p.year ? '<span class="pill">' + esc(p.year) + '</span>' : '') + '</div>' +
-    '<h2>' + esc(p.name) + '</h2>' +
+    '<div class="card-h"><h3>بيانات المشروع</h3></div>' +
     '<div class="facts">' +
+      f('الحالة في نوشن', p.status) + f('نوع المشروع', p.type) + f('السنة', p.year) +
       f('الجهة الممولة', p.donor) + f('المنسق', p.coordinator) + f('مكان التنفيذ', p.place || p.country) +
       f('الجهات المستفيدة', p.entities) + f('المستفيدون', benef) + f('جهة التعاقد', p.contractor) +
       f('المسوق', p.marketer) + f('المهام المرتبطة', p.tasks ? cnt(p.tasks, W_TASK) : '') +
@@ -2285,7 +2618,7 @@ function heroCard(p){
     (p.brief ? '<div class="brief">' + esc(p.brief) + '</div>' : '') +
     (p.notes ? '<div class="brief">ملاحظة: ' + esc(p.notes) + '</div>' : '') +
     '<div class="acts">' +
-      (drive ? '<a class="btn cta sm" href="' + esc(safeUrl(drive)) + '" target="_blank" rel="noopener">مجلد المشروع في درايف</a>' : '') +
+      (drive ? '<a class="btn soft sm" href="' + esc(safeUrl(drive)) + '" target="_blank" rel="noopener">مجلد المشروع في درايف</a>' : '') +
       (p.url ? '<a class="btn soft sm" href="' + esc(safeUrl(p.url)) + '" target="_blank" rel="noopener">فتح في نوشن</a>' : '') +
     '</div>' +
   '</article>';
@@ -2588,27 +2921,13 @@ function timelineCard(p){
   const st = stagesOf(p), stg = st.filter(x => x.start || x.end);
   const { s, e } = spanOf(p);
   if(!(s && e && toDate(e) > toDate(s))){
-    return '<article class="card"><div class="card-h"><h3>المخطط الزمني</h3></div><p class="note" style="margin:0">لا يكفي ما هو مسجّل لرسم المخطط: يحتاج تاريخ بداية ونهاية' +
-      (p.approvalDate ? ' (المسجّل تاريخ الاعتماد ' + dayLbl(p.approvalDate) + ' فقط)' : '') + '. أضف تواريخ لبنود الخطة ليُرسم منها.</p>' + delsTable(dels) + '</article>';
+    return '<article class="card" id="tlCard"><div class="card-h"><h3>المخطط الزمني</h3></div><p class="note" style="margin:0">لا يكفي ما هو مسجّل لرسم المخطط: يحتاج تاريخ بداية ونهاية' +
+      (p.approvalDate ? ' (المسجّل تاريخ الاعتماد ' + dayLbl(p.approvalDate) + ' فقط)' : '') + '. أضف تواريخ لبنود الخطة ليُرسم منها.</p></article>';
   }
   const S0 = toDate(s), E0 = toDate(e), dur = days(S0, E0);
-  const done = p.status === 'مكتمل';
-  const left = days(today, E0), over = !done && left < 0 ? -left : 0;
-  const el = Math.min(1, Math.max(0, days(S0, today) / dur));
-  const work = done ? 1 : progressOf(p);
-  /* الحكم: متأخر إن انقضت المدة ولم يكتمل، وأبطأ من الوقت إن قلّ الإنجاز عن 85% من الوقت المنقضي */
-  const ratio = work == null || !el ? null : work / el;
-  const v = done ? {c: 'good', b: 'مكتمل', t: 'أُغلق المشروع.'}
-    : over ? {c: 'bad', b: 'متأخر عن الخطة', t: 'انقضت المدة كلها' + (work != null ? ' وأُنجز ' + pct(work) + ' فقط.' : '.')}
-    : today < S0 ? {c: 'warn', b: 'لم يبدأ بعد', t: 'يبدأ ' + dayLbl(s) + '، بعد ' + cnt(days(today, S0), W_DAY) + '.'}
-    : ratio == null ? {c: 'warn', b: 'لا بيانات إنجاز', t: 'أنشئ خطة التنفيذ ليُقارن الإنجاز بالوقت.'}
-    : ratio < .85 ? {c: 'warn', b: 'الإنجاز أبطأ من الوقت', t: 'انقضى ' + pct(el) + ' من المدة وأُنجز ' + pct(work) + '.'}
-    : {c: 'good', b: 'في موعده', t: 'الإنجاز يواكب الوقت المنقضي.'};
+  /* الموقف الزمني وشريطه في بطاقة الجدول الأسبوعي وحدها (projectHealth)؛ هنا ما يلزم المحور فقط */
+  const { done, left, over } = projectHealth(p, today);
   const tail = done ? 'مكتمل' : left === 0 ? 'ينتهي اليوم' : left > 0 ? 'باقي ' + cnt(left, W_DAY) : 'تجاوز النهاية بـ ' + cnt(-left, W_DAY);
-  const health = '<div class="tlx-health"><div class="tlx-hb">' +
-      '<div class="tlx-hr"><span>الوقت المنقضي</span><span class="tlx-track"><i class="t-time" style="width:' + Math.round(el * 100) + '%"></i></span><b>' + pct(el) + '</b></div>' +
-      (work != null ? '<div class="tlx-hr"><span>الإنجاز</span><span class="tlx-track"><i class="t-work" style="width:' + Math.round(work * 100) + '%"></i></span><b>' + pct(work) + '</b></div>' : '') +
-    '</div><div class="tlx-verdict ' + v.c + '"><b>' + v.b + '</b><small>' + v.t + '</small></div></div>';
 
   /* المحور: من أول الشهر الأول إلى أول الشهر بعد آخر تاريخ؛ و«اليوم» يدخل إن قرُب */
   const pts = [S0, E0, ...msd.map(d => toDate(d.due)), ...stg.flatMap(x => [x.start, x.end]).filter(Boolean).map(toDate)];
@@ -2678,11 +2997,10 @@ function timelineCard(p){
   const plotLbl = 'المخطط الزمني من ' + dayLbl(s) + ' إلى ' + dayLbl(e) + '، ' + tail;
   return '<article class="card tlx" id="tlCard"><div class="card-h"><h3>المخطط الزمني</h3><small>' + dayLbl(s, false) + ' – ' + dayLbl(e) + (p.start ? '' : ' | البداية تقديرية من الاعتماد') + '</small>' +
       '<span class="end"><span class="pill ' + (over ? 'st-late' : done ? 'st-done' : 'st-run') + '">' + (over ? icon('alert') : icon('clock')) + tail + '</span></span></div>' +
-    health +
     '<div class="tlx-g" role="group" aria-label="' + esc(plotLbl) + '">' + names + '<div class="tlx-plot"><div class="tlx-axis" aria-hidden="true">' + ticks + '</div>' + grid + overBox +
       '<div class="tlx-rows">' + rowSpan + rowsSt + rowMs + '</div>' + todayEl + '</div></div>' + legend +
     '<ol class="tlx-v" aria-label="المراحل والمحطات بالترتيب الزمني">' + vt + '</ol>' +
-    '<details class="tlx-more"><summary>' + icon('chevron-down') + 'عرض كجدول' + (dels.length ? ' (الاستحقاقات ' + AR(dels.length) + ')' : '') + '</summary>' + stTable + delsTable(dels) + '</details>' +
+    (stTable ? '<details class="tlx-more"><summary>' + icon('chevron-down') + 'عرض المراحل كجدول</summary>' + stTable + '</details>' : '') +
   '</article>';
 }
 /* تلميح المخطط: نصّ عادي (من نوشن) يُدرج بـ textContent، ويظهر بالمرور أو التركيز أو اللمس */
@@ -2726,10 +3044,21 @@ function fin(p){
   const C = hasVal(p.contract) ? num(p.contract) : null;
   const issues = [];
   if(A && E && hasVal(p.admin) && Math.abs(A - ADM - E) >= 1)
-    issues.push('الكلي − الإدارية = ' + money(A - ADM) + '، ومبلغ التنفيذ حسب الاعتماد ' + money(E));
+    issues.push('الكلي − الإدارية = ' + money0(A - ADM) + '، ومبلغ التنفيذ حسب الاعتماد ' + money0(E));
   if(E && hasVal(p.net) && Math.abs(E - F - OPS) >= 1)
-    issues.push('الفعلي + التشغيلية = ' + money(F + OPS) + '، ومبلغ التنفيذ حسب الاعتماد ' + money(E));
+    issues.push('الفعلي + التشغيلية = ' + money0(F + OPS) + '، ومبلغ التنفيذ حسب الاعتماد ' + money0(E));
   return {A, ADM, E, OPS, F, C, issues};
+}
+/* سطر المقارنة الواحد: «مستلم 2.39M من 3.80M | منفَّذ 4.78M (96.4% من المعتمد)» — الرقم الكامل في title، والشرح في ⓘ.
+   في ترويسة المشروع على الحاسوب، وفي بطاقة المالية على الجوال */
+function moneyLine(p){
+  const {A, F} = fin(p);
+  const mS = n => { n = Number(n) || 0; const a = Math.abs(n); return a >= 1e6 ? AR(Math.round(n / 1e4) / 100) + 'M' : a >= 1e3 ? AR(Math.round(n / 100) / 10) + 'K' : AR(Math.round(n)); };
+  const nb = n => '<bdi title="' + esc(money0(n)) + '">' + mS(n) + '</bdi>';
+  const R0 = p.received != null && p.received !== '' ? num(p.received) : null;
+  return A ? '<p class="money-line">' + (R0 != null ? 'مستلم ' + nb(R0) + ' من ' + nb(A) : 'المعتمد ' + nb(A)) +
+      (F ? ' | منفَّذ ' + nb(F) + ' (' + pct(F / A) + ' من المعتمد)' : '') +
+      ' <button type="button" class="info-tip" aria-label="شرح الأرقام" title="المستلم: ما وصل من المانح حتى الآن.&#10;المعتمد: المبلغ الكلي حسب الاعتماد.&#10;المنفَّذ: مبلغ التنفيذ الفعلي (حسب الاعتماد − التشغيلية)، ونسبته من المعتمد.">' + icon('info') + '</button></p>' : '';
 }
 function moneyCard(p){
   const {A, ADM, E, OPS, F, C, issues} = fin(p);
@@ -2747,8 +3076,8 @@ function moneyCard(p){
   let recv = '';
   if(p.received != null && A){
     const R = num(p.received), left = A - R;
-    recv = '<div class="recv"><div class="recv-head"><span>المستلم من المانح <b>' + money(R) + '</b></span>' +
-        '<span>' + (left > 0 ? 'المتبقي <b class="due">' + money(left) + '</b>' : left < 0 ? 'زيادة <b>' + money(-left) + '</b>' : '<b class="ok">مُستلم بالكامل</b>') + '</span></div>' +
+    recv = '<div class="recv"><div class="recv-head"><span>المستلم من المانح <b>' + money0(R) + '</b></span>' +
+        '<span>' + (left > 0 ? 'المتبقي <b class="due">' + money0(left) + '</b>' : left < 0 ? 'زيادة <b>' + money0(-left) + '</b>' : '<b class="ok">مُستلم بالكامل</b>') + '</span></div>' +
       '<div class="sbar thin" aria-hidden="true"><i class="b-recv" style="width:' + Math.min(100, R / A * 100) + '%"></i></div>' +
       '<small>' + pct(R / A) + ' من المبلغ الكلي</small></div>';
   }
@@ -2758,20 +3087,14 @@ function moneyCard(p){
     .concat(p.indirectTypes || []).filter(Boolean);
   if(p.inBudget) opsParts.push(p.inBudget === 'نعم' ? 'ضمن ميزانية المانح' : 'خارج ميزانية المانح');
   const cDiff = C != null && F ? F - C : null;
-  /* سطر المقارنة الواحد: «مستلم 2.39M من 3.80M | منفَّذ 4.78M (96.4% من المعتمد)» — الرقم الكامل في title، والشرح في ⓘ */
-  const mS = n => { n = Number(n) || 0; const a = Math.abs(n); return a >= 1e6 ? AR(Math.round(n / 1e4) / 100) + 'M' : a >= 1e3 ? AR(Math.round(n / 100) / 10) + 'K' : AR(Math.round(n)); };
-  const nb = n => '<bdi title="' + esc(money(n)) + '">' + mS(n) + '</bdi>';
-  const R0 = p.received != null && p.received !== '' ? num(p.received) : null;
-  const mline = A ? '<p class="money-line">' + (R0 != null ? 'مستلم ' + nb(R0) + ' من ' + nb(A) : 'المعتمد ' + nb(A)) +
-      (F ? ' | منفَّذ ' + nb(F) + ' (' + pct(F / A) + ' من المعتمد)' : '') +
-      ' <button type="button" class="info-tip" aria-label="شرح الأرقام" title="المستلم: ما وصل من المانح حتى الآن.&#10;المعتمد: المبلغ الكلي حسب الاعتماد.&#10;المنفَّذ: مبلغ التنفيذ الفعلي (حسب الاعتماد − التشغيلية)، ونسبته من المعتمد.">' + icon('info') + '</button></p>' : '';
+  const mline = moneyLine(p);
   return '<article class="card" id="moneyCard"><div class="card-h"><h3>المالية</h3><span class="end">' + payPill + (p.payStatus ? '<span class="pill">' + esc(p.payStatus) + '</span>' : '') +
       '<button class="btn soft sm" type="button" data-act="money-edit">تعديل المبالغ</button></span></div>' +
     mline + '<div class="money">' +
       m('المبلغ الكلي', money(p.approved), 'حسب الاعتماد') +
-      m('النسبة الإدارية', money(hasVal(p.admin) ? ADM : null), base && hasVal(p.admin) ? pct(ADM / base) + ' من المبلغ الكلي' : '') +
+      m('النسبة الإدارية', money0(hasVal(p.admin) ? ADM : null), base && hasVal(p.admin) ? pct(ADM / base) + ' من المبلغ الكلي' : '') +
       m('مبلغ التنفيذ حسب الاعتماد', money(E || null), 'الكلي − الإدارية' + (A && E ? ' | ' + pct(E / A) : '')) +
-      m('المصاريف التشغيلية', money(hasVal(p.otherOps) ? OPS : null), opsParts.join(' | ')) +
+      m('المصاريف التشغيلية', money0(hasVal(p.otherOps) ? OPS : null), opsParts.join(' | ')) +
       m('مبلغ التنفيذ الفعلي', money(E || hasVal(p.net) ? F : null), 'حسب الاعتماد − التشغيلية') +
       m('حسب الترسية أو التعاقد', money(C), cDiff == null ? 'مبلغ التنفيذ بعد الترسية أو التعاقد' : Math.abs(cDiff) < 1 ? 'مطابق للفعلي' : (cDiff > 0 ? 'وفر ' : 'زيادة ') + money(Math.abs(cDiff)) + ' عن الفعلي', cDiff != null && cDiff <= -1 ? 'warn' : '') +
       (A && E ? m('المعادلة', issues.length ? 'غير متوازنة' : 'متوازنة', issues.length ? issues.join(' | ') : 'الكلي − الإدارية = الفعلي + التشغيلية', issues.length ? 'warn' : '') : '') +
@@ -2801,7 +3124,7 @@ async function fetchFiles(p, fresh){
     if(d.files){ Object.assign(p, {docsDone: d.files.done, docsChecked: d.files.checked, folder: d.files.folder, drive: d.files.url}); }
   }catch(e){ FILES[p.code] = {error: e.message}; }
   filesLoading.delete(p.code);
-  if(S.sel === p.id && S.view === 'list'){ refreshCard('docsCard', docsCard(p)); }
+  if(S.sel === p.id && S.view === 'list'){ refreshCard('docsCard', docsCard(p)); refreshCard('ovCard', overviewCard(p)); }
 }
 function docsPhase(p){ const i = PHASES.indexOf(p.phase); return i >= 0 ? i : PHASES.length - 1; }
 function fileKind(name){
@@ -2816,10 +3139,12 @@ function fileKind(name){
 function fileChip(f){
   const [cls, lbl] = fileKind(f.name);
   const base = String(f.name).replace(/\.[^.]+$/, '');
+  /* U2: «تحميل كصورة» لملفات PDF — بجوار الشريحة، لمن يفتح الملف (file_get نفسه) */
+  const jpg = cls === 'pdf' && f.id ? '<button type="button" class="file-jpg" data-act="pdf-jpg" data-id="' + esc(f.id) + '" data-name="' + esc(base) + '" title="تحميل «' + esc(base) + '» كصورة JPG" aria-label="تحميل «' + esc(base) + '» كصورة JPG">JPG</button>' : '';
   if(!f.url && f.id) return '<button type="button" class="file ' + cls + '" data-act="fget" data-id="' + esc(f.id) + '" title="' +
-    esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' | ' + dayLbl(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></button>';
+    esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' | ' + dayLbl(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></button>' + jpg;
   return '<a class="file ' + cls + '" href="' + esc(safeUrl(f.url)) + '" target="_blank" rel="noopener" title="' +
-    esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' | ' + dayLbl(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></a>';
+    esc(f.name + (f.path ? ' — ' + f.path : '') + (f.modified ? ' | ' + dayLbl(f.modified) : '')) + '"><b>' + lbl + '</b><span>' + esc(base) + '</span></a>' + jpg;
 }
 /* رفع ملف إلى خانة: يُحفظ في مجلد الخانة داخل مجلد المشروع باسم موحّد «الكود- نوع المستند- اسم المشروع» */
 const UP_MAX = 25 * 1024 * 1024;
@@ -2830,30 +3155,38 @@ const b64 = file => new Promise((res, rej) => {
   r.onerror = () => rej(new Error('تعذّرت قراءة الملف'));
   r.readAsDataURL(file);
 });
+/* الملف كما يُرسل إلى الجسر بعد تجهيزه (U1: ضغط الصور في المتصفح)؛ حدّ 25MB على الناتج */
+async function upPayload(file, slot){
+  const r = window.NasaqFiles ? await NasaqFiles.prepare(file, {slot}) : {file, compressed: false}, f = r.file;
+  if(f.size > UP_MAX) throw new Error('حجم «' + file.name + '» أكبر من 25 ميجابايت');
+  return {r, file: {name: f.name, mime: f.type || '', data: await b64(f)}};
+}
+const upNote = rs => { const c = rs.filter(r => r.compressed); if(!c.length) return '';
+  return ' — ضُغطت ' + (c.length === 1 ? 'الصورة ' : cnt(c.length, W_FILE) + ' ') + NasaqFiles.note({compressed: true, before: c.reduce((t, r) => t + r.before, 0), after: c.reduce((t, r) => t + r.after, 0)}); };
 async function uploadToSlot(p, slot, files){
   const list = [...files].filter(Boolean);
   if(!list.length) return;
   if(SOURCE !== 'live'){ toast('الرفع يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true); return; }
   const key = p.code + '|' + slot;
   uploading.add(key); refreshCard('docsCard', docsCard(p));
-  let ok = 0;
+  let ok = 0; const rs = [];
   for(const file of list){
     try{
-      if(file.size > UP_MAX) throw new Error('حجم «' + file.name + '» أكبر من 25 ميجابايت');
+      const u = await upPayload(file, slot); rs.push(u.r);
       const d = await post({action:'file_upload', org: ORG, code: p.code, slot, pageId: p.id,
-        file: {name: file.name, mime: file.type || '', project: p.name || '', data: await b64(file)}});
+        file: Object.assign(u.file, {project: p.name || ''})});
       if(d.files){ FILES[p.code] = d.files; Object.assign(p, {docsDone: d.files.done, docsChecked: d.files.checked, folder: d.files.folder, drive: d.files.url}); }
       ok++;
     }catch(err){ toast(err.message || 'تعذّر رفع الملف', true); break; }
   }
   uploading.delete(key);
   refreshCard('docsCard', docsCard(p));
-  if(ok) toast(ok === 1 ? 'رُفع الملف إلى «' + slot + '»' : 'رُفعت ' + cnt(ok, W_FILE) + ' إلى «' + slot + '»');
+  if(ok) toast((ok === 1 ? 'رُفع الملف إلى «' + slot + '»' : 'رُفعت ' + cnt(ok, W_FILE) + ' إلى «' + slot + '»') + upNote(rs));
 }
 function pickFiles(p, slot){
   const inp = $('upInput');
   inp.value = '';
-  inp.onchange = () => { const f = inp.files; inp.value = ''; uploadToSlot(p, slot, f); };
+  inp.onchange = () => { const f = [...inp.files]; inp.value = ''; uploadToSlot(p, slot, f); };   /* نسخة أولًا: تفريغ value يفرّغ FileList نفسها فلا يُرفع شيء */
   inp.click();
 }
 function docsCard(p){
@@ -2885,7 +3218,8 @@ function docsCard(p){
   const head = '<article class="card" id="docsCard"><div class="card-h"><span class="dring" style="--p:' + Math.round(ratio * 100) + '" aria-hidden="true"><b>' + AR(Math.round(ratio * 100)) + '%</b></span>' +
       '<div><h3>مستندات المشروع</h3><small>' + (!checked && !f ? (DATA.driveRoot ? 'لم يُفحص المجلد بعد' : 'الأرشيف غير مربوط') :
         AR(nDone) + ' من ' + AR(DOCS_N) + ' مرفقة' + (nMissing ? ' | ' + AR(nMissing) + ' ناقصة حتى هذه المرحلة' : '')) + '</small></div>' +
-      '<span class="end">' + (driveUrl ? '<a class="btn soft sm" href="' + esc(safeUrl(driveUrl)) + '" target="_blank" rel="noopener">المجلد في درايف</a>' : '') +
+      '<span class="end">' + (canUpload ? '<label class="keep-lbl"><input type="checkbox" class="keep-orig"' + (NasaqFiles.keepOriginal() ? ' checked' : '') + '>اترك الصور بلا ضغط</label>' : '') +
+        (driveUrl ? '<a class="btn soft sm" href="' + esc(safeUrl(driveUrl)) + '" target="_blank" rel="noopener">المجلد في درايف</a>' : '') +
         (SOURCE === 'live' ? '<button class="btn ghost sm" type="button" data-act="files-refresh">' + (loading ? 'جارٍ القراءة…' : 'قراءة الملفات من درايف') + '</button>' : '') + '</span></div>';
   if(!checked && !f && !DATA.driveRoot) return head + '<p class="note" style="margin:0">لم يُربط أرشيف درايف لمؤسسة ' + ORG_INFO.name +
     ' بعد. اربطه من زر الأرشيف أعلى الصفحة، فتُقرأ مجلدات مشاريعها (المسماة بالكود مثل ' + (ORG === 'humera' ? 'H001-' : 'G050-') + ') ملفًا ملفًا.</p></article>';
@@ -2941,10 +3275,10 @@ function renderStats(rows){
     kpiBox('المبلغ الكلي', money(t.A), 'مسجّل الاعتماد في ' + cnt(rows.filter(p => num(p.approved)).length, W_PROJ)) +
     kpiBox('التنفيذ حسب الاعتماد', money(t.E), t.A ? pct(t.EA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.EA / t.A : null) +
     kpiBox('مبلغ التنفيذ الفعلي', money(t.F), t.A ? pct(t.FA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.FA / t.A : null) +
-    kpiBox('النسبة الإدارية', money(t.ADM), t.A ? pct(t.ADMA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.ADMA / t.A : null) +
-    kpiBox('المصاريف التشغيلية', money(t.OPS), t.A ? pct(t.OPSA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.OPSA / t.A : null) +
-    kpiBox('المستلم من المانحين', money(t.R), t.RA ? pct(t.R / t.RA) + ' من المعتمد المسجّل تحصيله' : 'لا تحصيل مسجّل', t.RA ? t.R / t.RA : null) +
-    kpiBox('المتبقي تحصيله', money(t.RA - t.R), t.RA ? 'على ' + cnt(rows.filter(p => p.received != null && num(p.approved) > num(p.received)).length, W_PROJ) : '') +
+    kpiBox('النسبة الإدارية', money0(t.ADM), t.A ? pct(t.ADMA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.ADMA / t.A : null) +
+    kpiBox('المصاريف التشغيلية', money0(t.OPS), t.A ? pct(t.OPSA / t.A) + ' من المبلغ الكلي' : '', t.A ? t.OPSA / t.A : null) +
+    kpiBox('المستلم من المانحين', money0(t.R), t.RA ? pct(t.R / t.RA) + ' من المعتمد المسجّل تحصيله' : 'لا تحصيل مسجّل', t.RA ? t.R / t.RA : null) +
+    kpiBox('المتبقي تحصيله', money0(t.RA - t.R), t.RA ? 'على ' + cnt(rows.filter(p => p.received != null && num(p.approved) > num(p.received)).length, W_PROJ) : '') +
     kpiBox('المستفيدون', AR(Math.round(t.benef)), 'من الأعداد المسجّلة رقمًا') +
     kpiBox('اكتمال المستندات', docsAvg == null ? '—' : pct(docsAvg), 'المجلدات المفحوصة: ' + AR(scanned.length), docsAvg) +
     kpiBox('تقدّم خطط التنفيذ', plan.length ? pct(planDone / plan.length) : '—',
@@ -3001,7 +3335,7 @@ function renderStats(rows){
   const coll = donors.filter(g => g.RA).sort((a, b) => (b.RA - b.R) - (a.RA - a.R)).slice(0, 12);
   const collCard = card('التحصيل من المانحين', coll.length ? hbars(coll, {
       filter: 'donor', max: g => g.RA, layers: (g, m) => L('a', g.RA, m) + L('r', g.R, m),
-      value: g => pct(g.R / g.RA) + ' <small>| المتبقي ' + money(g.RA - g.R) + '</small>' }) + legend(['var(--c-soft)', 'المعتمد'], ['var(--c-ops)', 'المستلم'])
+      value: g => pct(g.R / g.RA) + ' <small>| المتبقي ' + money0(g.RA - g.R) + '</small>' }) + legend(['var(--c-soft)', 'المعتمد'], ['var(--c-ops)', 'المستلم'])
     : '<p class="note">لا تحصيل مسجّل ضمن هذه الفلاتر، ويُملأ من ملف «متابعة دفعات المانحين».</p>', coll.length ? 'الأكثر متبقيًا أولًا' : '');
 
   const months = new Map();
@@ -3328,7 +3662,7 @@ $('projForm').addEventListener('submit', async e => {
   const btn = f.querySelector('[type=submit]'); btn.disabled = true; btn.setAttribute('aria-busy', 'true');
   try{
     const af = $('apprFile').files[0];
-    const approvalFile = af ? {name: af.name, mime: af.type || '', data: await b64(af)} : null;
+    const approvalFile = af ? (await upPayload(af, 'اعتماد التنفيذ')).file : null;
     const media = [...mediaInp('donor').files].map(f => ['donor', f]).concat([...mediaInp('org').files].map(f => ['org', f]));
     const d = await post({action:'project_create', org: ORG, project: pr, approvalFile});
     DATA.projects.unshift(d.project);
@@ -3338,7 +3672,7 @@ $('projForm').addEventListener('submit', async e => {
     try{ localStorage.removeItem('daily-board-projects-cache-' + ORG); }catch(err){}
     $('projDlg').close();
     S.q = ''; $('q').value = ''; if(d.project.year && S.year && S.year !== d.project.year) S.year = d.project.year;
-    S.sel = d.project.id; S.view = 'list';
+    S.sel = d.project.id; S.view = 'list'; S.mv = 'detail'; S.tab = 'overview';
     history.replaceState(null, '', '#' + encodeURIComponent(d.project.code || d.project.id));
     buildFilters(); render();
     toast(d.folderError ? 'أُنشئ المشروع في نوشن، وتعذّر إنشاء مجلده في درايف: ' + d.folderError
@@ -3360,7 +3694,7 @@ function apprShow(){
 $('apprPick').addEventListener('click', () => $('apprFile').click());
 $('apprFile').addEventListener('change', () => {
   const f = $('apprFile').files[0];
-  if(f && f.size > UP_MAX){ toast('حجم الملف أكبر من 25 ميجابايت', true); $('apprFile').value = ''; }
+  if(f && f.size > UP_MAX && !/^image\//.test(f.type)){ toast('حجم الملف أكبر من 25 ميجابايت', true); $('apprFile').value = ''; }   /* الصور تُفحص بعد ضغطها */
   apprShow();
 });
 $('apprClear').addEventListener('click', () => { $('apprFile').value = ''; apprShow(); $('apprPick').focus(); });
@@ -3378,7 +3712,7 @@ function mediaShow(v){
 ['donor', 'org'].forEach(v => {
   document.querySelector('#projDlg [data-media-pick="' + v + '"]').addEventListener('click', () => mediaInp(v).click());
   mediaInp(v).addEventListener('change', () => {
-    const big = [...mediaInp(v).files].filter(f => f.size > UP_MAX);
+    const big = [...mediaInp(v).files].filter(f => f.size > UP_MAX && !/^image\//.test(f.type));
     if(big.length){ toast('أكبر من 25 ميجابايت: ' + big.map(f => f.name).join('، ') + ' — اختر الملفات من جديد بدونها', true); mediaInp(v).value = ''; }
     mediaShow(v);
   });
@@ -3392,8 +3726,9 @@ async function uploadProjectMedia(p, list){
   for(const [v, f] of list){
     toast('جارٍ رفع الإعلاميات ' + AR(ok + fail.length + 1) + ' من ' + AR(list.length) + '…');
     try{
+      const u = await upPayload(f, 'المواد الإعلامية');
       const d = await post({action:'file_upload', org: ORG, code: p.code, slot: 'المواد الإعلامية', variant: v, pageId: p.id,
-        file: {name: f.name, mime: f.type || '', project: p.name || '', data: await b64(f)}});
+        file: Object.assign(u.file, {project: p.name || ''})});
       if(d.files){ FILES[p.code] = d.files; Object.assign(p, {docsDone: d.files.done, docsChecked: d.files.checked, folder: d.files.folder, drive: d.files.url}); }
       ok++;
     }catch(err){ fail.push(f.name + ': ' + (err.message || 'تعذّر')); }
@@ -3440,8 +3775,8 @@ function budCalc(){
   const box = $('budSum');
   box.className = 'bud-sum ' + st;
   box.innerHTML = !A ? 'أدخل المبلغ الكلي لتبدأ الحاسبة.' :
-    '<span>التنفيذ الكلي<b>' + money(E) + '</b></span><span>الموزّع (مصاريف + فاتورة)<b>' + money(dist) + '</b></span>' +
-    '<span>الباقي<b class="rem">' + money(rem) + '</b></span>' +
+    '<span>التنفيذ الكلي<b>' + money0(E) + '</b></span><span>الموزّع (مصاريف + فاتورة)<b>' + money0(dist) + '</b></span>' +
+    '<span>الباقي<b class="rem">' + money0(rem) + '</b></span>' +
     '<span class="st">' + (st === 'ok' ? icon('check') + ' تم توزيع كامل قيمة التنفيذ' : ADM > A ? 'الإدارية أكبر من المبلغ الكلي'
       : INV < 0 ? 'المصاريف غير المباشرة أكبر من التنفيذ الكلي' : rem < 0 ? 'المصاريف تجاوزت قيمة التنفيذ' : 'لا يزال هناك مبلغ غير موزّع') + '</span>';
   return {A, ADM, E, IND, INV, rem, ok: st === 'ok', lines};
@@ -3471,9 +3806,9 @@ function moneyVals(){
 function moneyCheck(){
   const v = moneyVals(), el = $('moneyCheck'), n = x => x || 0, msgs = [];
   if(v.approved != null && v.exec != null && Math.abs(v.approved - n(v.admin) - v.exec) >= 1)
-    msgs.push('الكلي − الإدارية = ' + money(v.approved - n(v.admin)) + '، وحسب الاعتماد ' + money(v.exec));
+    msgs.push('الكلي − الإدارية = ' + money0(v.approved - n(v.admin)) + '، وحسب الاعتماد ' + money0(v.exec));
   if(v.exec != null && v.net != null && Math.abs(v.exec - v.net - n(v.otherOps)) >= 1)
-    msgs.push('الفعلي + التشغيلية = ' + money(v.net + n(v.otherOps)) + '، وحسب الاعتماد ' + money(v.exec));
+    msgs.push('الفعلي + التشغيلية = ' + money0(v.net + n(v.otherOps)) + '، وحسب الاعتماد ' + money0(v.exec));
   el.innerHTML = msgs.length ? icon('alert') + ' ' + esc(msgs.join(' | ')) : (v.approved != null && v.exec != null ? icon('check') + ' المعادلة متوازنة' : '');
   el.style.color = msgs.length ? 'var(--urgent)' : 'var(--done)';
 }
@@ -3512,6 +3847,60 @@ $('moneyForm').addEventListener('submit', async e => {
     $('moneyDlg').close(); rerender(); toast('حُفظت المبالغ في نوشن');
   }catch(err){ toast(err.message || 'تعذّر الحفظ', true); }
   finally{ btn.disabled = false; }
+});
+
+/* ---------- تحرير المشروع (A9a) ----------
+   الحالة بإجراء project_status والتواريخ بإجراء project_dates القائمين في الجسر (صلاحية edit على المؤسسة، والجسر يفحص النطاق).
+   إغلاق مشروع فيه بنود لم تُنجز أو مبلغ لم يُستلم يحتاج تأكيدًا صريحًا (القرار 23)، والأثر الكامل للإغلاق في الدورة المالية.
+   لا يُدمج من ردّ الجسر إلا الحقل المحفوظ: الرد صف المشروع كاملًا دون تشكيله حسب الصلاحية */
+const PROJ_STATUSES = ['مخطط له', 'قيد التنفيذ', 'نشط', 'مكتمل', 'متوقف'];
+let editP = null;
+function closeRisks(p){
+  const open = planOf(p).filter(x => !x._draft && x.status !== 'منجز').length;
+  const A = num(p.approved), R = p.received == null || p.received === '' ? null : num(p.received);
+  return {open, due: A && R != null && A - R >= 1 ? A - R : 0};
+}
+function editWarn(){
+  const f = $('editForm'), p = editP; if(!p) return;
+  const r = closeRisks(p), risky = f.elements.status.value === 'مكتمل' && p.status !== 'مكتمل' && !!(r.open || r.due);
+  $('editWarn').hidden = !risky; $('editAckRow').hidden = !risky;
+  if(risky) $('editWarn').textContent = 'سيُغلق المشروع وفيه ' + [r.open ? cnt(r.open, W_ITEM) + ' في الخطة لم تُنجز' : '', r.due ? 'مبلغ لم يُستلم من المانح بعد (' + money(r.due) + ')' : ''].filter(Boolean).join('، و') +
+    '. تبقى كما هي، ولا يقفل الإغلاق التعديل ولا يوقف التنبيهات بعد.';
+  else f.elements.ack.checked = false;
+}
+function openEditDlg(p){
+  editP = p; const f = $('editForm');
+  $('editDlgSub').textContent = (p.code ? p.code + ' | ' : '') + p.name;
+  f.elements.status.innerHTML = (PROJ_STATUSES.includes(p.status) ? '' : '<option value="">' + esc(p.status || '— غير محددة —') + '</option>') +
+    PROJ_STATUSES.map(s => '<option' + (s === p.status ? ' selected' : '') + '>' + s + '</option>').join('');
+  f.elements.start.value = p.start || ''; f.elements.end.value = p.end || ''; f.elements.ack.checked = false;
+  editWarn(); $('editDlg').showModal();
+}
+$('editForm').addEventListener('change', editWarn);
+$('editDlg').addEventListener('click', e => { const g = e.target.closest('[data-edit-go]'); if(!g) return; $('editDlg').close(); setTab(g.dataset.editGo, true); });
+$('editForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const p = editP; if(!p) return;
+  const f = $('editForm'), status = f.elements.status.value, start = f.elements.start.value, end = f.elements.end.value;
+  const sCh = !!status && status !== (p.status || ''), aCh = start !== (p.start || ''), bCh = end !== (p.end || '');
+  if(!sCh && !aCh && !bCh){ $('editDlg').close(); return; }
+  if(start && end && end < start){ toast('النهاية قبل البداية', true); f.elements.end.focus(); return; }
+  if(!$('editAckRow').hidden && !f.elements.ack.checked){ toast('أكّد الإغلاق أولًا: في المشروع ما لم يكتمل', true); f.elements.ack.focus(); return; }
+  if(SOURCE !== 'live'){ toast('الحفظ يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true); return; }
+  const btn = e.submitter || f.querySelector('[type=submit]'); btn.disabled = true;
+  const done = [], fin = () => { try{ localStorage.removeItem('daily-board-projects-cache-' + ORG); }catch(err){} render();
+    const eb = document.querySelector('#projHead .ph-edit'); if(eb) eb.focus({preventScroll: true}); };
+  try{
+    if(sCh){ const d = await post({action: 'project_status', org: ORG, id: p.id, status}); p.status = (d.project && d.project.status) || status; done.push('الحالة'); }
+    if(aCh || bCh){
+      const d = await post(Object.assign({action: 'project_dates', org: ORG, id: p.id}, aCh ? {start: start || null} : {}, bCh ? {end: end || null} : {}));
+      const r = d.project || {}; if(aCh) p.start = r.start !== undefined ? r.start : start || null; if(bCh) p.end = r.end !== undefined ? r.end : end || null; done.push('التواريخ');
+    }
+    $('editDlg').close(); fin(); toast('حُفظت ' + done.join(' و') + ' في نوشن');
+  }catch(err){
+    if(done.length) fin();
+    toast((done.length ? 'حُفظت ' + done.join(' و') + '، وتعذّر الباقي: ' : 'تعذّر الحفظ: ') + (err.message || ''), true);
+  }finally{ btn.disabled = false; }
 });
 
 function openPlanDlg(p, it, stage, newStage){
@@ -3660,28 +4049,34 @@ function readHash(first){
   const rm = h.match(/^report=([^@~]+)(?:@(\d{4}-\d{2}-\d{2}))?(~final)?$/);
   if(rm){ const rp = DATA.projects.find(x => x.code === rm[1] || x.id === rm[1]);
     if(rp){ if(rm[2]) GANTT_ASOF[rp.id] = rm[2]; setTimeout(() => { document.open(); document.write(reportHTML(rp, rm[3] ? 'final' : 'interim')); document.close(); }, 0); } return; }
-  S.view = 'list';
+  S.view = 'list'; S.mv = 'list';
   if(!h) return;
-  const p = DATA.projects.find(x => x.code === h || x.id === h);
-  if(p){ S.sel = p.id; if(S.year && p.year !== S.year) S.year = p.year || '';
+  /* #G040/plan: التبويب بعد آخر «/» إن كان من التبويبات، وإلا فالرابط كله كود (#G040 يفتح نظرة عامة) */
+  const tm = h.match(/^(.+)\/(overview|plan|money|docs)$/), code = tm ? tm[1] : h;
+  const p = DATA.projects.find(x => x.code === code || x.id === code);
+  if(p){ S.sel = p.id; S.mv = 'detail'; S.tab = tm ? tm[2] : 'overview'; if(S.year && p.year !== S.year) S.year = p.year || '';
     /* فلتر محفوظ يخفي المشروع المطلوب بالرابط: يُفرَّغ ليظهر */
     if(!filtered().some(x => x.id === p.id)){ S.q = S.status = S.donor = S.type = S.std = S.coord = ''; $('q').value = ''; buildFilters(); } }
 }
 function openProject(id){
   const p = DATA.projects.find(x => x.id === id); if(!p) return;
-  S.sel = id; S.view = 'list';
-  history.replaceState(null, '', '#' + encodeURIComponent(p.code || id));
+  showProject(p);
   render(); scrollTo({top: 0});
 }
 $('items').addEventListener('click', e => {
   const b = e.target.closest('.item'); if(!b) return;
-  qDrop(); S.sel = b.dataset.id;
-  const p = DATA.projects.find(x => x.id === S.sel);
-  history.replaceState(null, '', '#' + encodeURIComponent((p && p.code) || S.sel));
-  renderList(filtered()); renderDetail();
-  if(matchMedia('(max-width:880px)').matches) $('detail').scrollIntoView({behavior: 'smooth', block: 'start'});
+  const p = DATA.projects.find(x => x.id === b.dataset.id); if(!p) return;
+  qDrop(); showProject(p);
+  renderList(filtered()); renderDetail(); mvApply();
 });
 $('detail').addEventListener('click', e => {
+  /* التبويبات، ومبدّل عرض الجدول، وأسطر «نظرة عامة» التي تنقل إلى تبويبها ثم تكمل إجراءها */
+  const tb = e.target.closest('[role="tab"][data-tab]');
+  if(tb){ setTab(tb.dataset.tab); return; }
+  const sw = e.target.closest('[data-sched]');
+  if(sw){ S.sched = sw.dataset.sched; schedSync(); saveView(); return; }
+  const go = e.target.closest('[data-go]');
+  if(go) setTab(go.dataset.go);
   /* البطاقة المطوية كلها زر توسيع (عدا عناصرها التفاعلية) */
   if(e.target.closest('#planCard.collapsed') && !e.target.closest('[data-act],a,button,input,select,textarea,label')){
     const pp = DATA.projects.find(x => x.id === S.sel); if(pp){ planOpen(pp); const t = document.querySelector('#planCard .plan-tgl'); if(t) t.focus({preventScroll: true}); }
@@ -3707,6 +4102,7 @@ $('detail').addEventListener('click', e => {
     else planOpen(p, () => { const li = document.querySelector('#planCard li[data-id="' + CSS.escape(b.dataset.id) + '"]'); if(li) li.scrollIntoView({block: 'center'}); });
     return;
   }
+  if(act === 'go-dels'){ const c = $('delsCard'); if(c) c.scrollIntoView({block: 'start', behavior: planReduced() ? 'auto' : 'smooth'}); return; }
   if(act === 'qedit'){ qStart(p, b.dataset.id); return; }
   if(act === 'cycle'){ cycleItem(b.dataset.id); return; }
   if(act === 'qcancel'){ qDrop(); planRefresh(p); return; }
@@ -3721,8 +4117,9 @@ $('detail').addEventListener('click', e => {
     else if(act === 'stg-del') stgDelete(p, k);
     return;
   }
-  if((act === 'gantt-dur' && !can.edit()) || (act === 'money-edit' && !can.moneyEdit()) || (act === 'delete' && !ACC.owner)) return;
+  if(((act === 'gantt-dur' || act === 'proj-edit') && !can.edit()) || (act === 'money-edit' && !can.moneyEdit()) || (act === 'delete' && !ACC.owner)) return;
   if(act === 'fget'){ openViaBridge(p, b.dataset.id); return; }
+  if(act === 'pdf-jpg'){ pdfToJpg(p, b.dataset.id, b.dataset.name); return; }
   if(act === 'toggle') toggleItem(b.dataset.id);
   else if(act === 'edit') openPlanDlg(p, DATA.plan.find(x => x.id === b.dataset.id));
   else if(act === 'add') openPlanDlg(p, null, b.dataset.stage);
@@ -3737,6 +4134,7 @@ $('detail').addEventListener('click', e => {
   else if(act === 'report') openReport(p, b.dataset.kind);
   else if(act === 'up') pickFiles(p, b.dataset.slot);
   else if(act === 'money-edit') openMoneyDlg(p);
+  else if(act === 'proj-edit') openEditDlg(p);
 });
 /* السحب والإفلات على الخانة نفسها */
 function slotOf(e){ return e.target.closest('#docsCard .slot'); }
@@ -3768,6 +4166,15 @@ $('detail').addEventListener('submit', e => {
   if(sf){ e.preventDefault(); const p = DATA.projects.find(x => x.id === S.sel); if(p) stgRename(p, +sf.dataset.stage, sf.elements.name.value); return; }
   const f = e.target.closest('form.pq'); if(!f) return; e.preventDefault(); qSave(f);
 });
+/* نمط ARIA Tabs: الأسهم تنقل وتفعّل، معكوسة في RTL (السهم الأيسر للتالي)، وHome وEnd للأول والأخير */
+$('detail').addEventListener('keydown', e => {
+  const tb = e.target.closest('[role="tab"][data-tab]'); if(!tb) return;
+  const i = TAB_KEYS.indexOf(tb.dataset.tab), rtl = getComputedStyle(tb).direction === 'rtl', n = TAB_KEYS.length;
+  const j = e.key === (rtl ? 'ArrowLeft' : 'ArrowRight') ? (i + 1) % n : e.key === (rtl ? 'ArrowRight' : 'ArrowLeft') ? (i - 1 + n) % n
+    : e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : -1;
+  if(j < 0) return;
+  e.preventDefault(); setTab(TAB_KEYS[j], true);
+});
 $('detail').addEventListener('keydown', e => {
   if(e.key === 'Escape' && e.target.closest('form.stg-form')){ e.preventDefault(); STG_EDIT = -1; const p = DATA.projects.find(x => x.id === S.sel); if(p) planRefresh(p); return; }
   if(e.key !== 'Escape' || !e.target.closest('form.pq')) return;
@@ -3778,9 +4185,9 @@ $('detail').addEventListener('keydown', e => {
 });
 $('views').addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b || b.dataset.view === S.view) return;
-  S.view = b.dataset.view;
+  S.view = b.dataset.view; S.mv = 'list';   /* «المشاريع» على الجوال تفتح القائمة، فلا #كود في الرابط */
   const p = DATA.projects.find(x => x.id === S.sel);
-  history.replaceState(null, '', S.view === 'stats' ? '#stats' : p ? '#' + encodeURIComponent(p.code || p.id) : location.pathname + location.search);
+  history.replaceState(null, '', S.view === 'stats' ? '#stats' : p && !splitPhone() ? selHash(p) : location.pathname + location.search);
   render(); scrollTo({top: 0});
 });
 $('stats').addEventListener('click', e => {
@@ -3830,6 +4237,11 @@ document.addEventListener('click', e => {
   document.querySelectorAll('.stg-menu[open]').forEach(d => { if(!d.contains(e.target)) d.open = false; });
 });
 window.addEventListener('hashchange', () => { readHash(); render(); });
+document.addEventListener('click', e => { if(e.target.closest('[data-mback]')) mBack(); });
+$('kpis').addEventListener('click', e => {
+  const b = e.target.closest('.kpi-line'); if(!b) return;
+  S.kopen = !S.kopen; $('kpis').classList.toggle('open', S.kopen); b.setAttribute('aria-expanded', String(S.kopen));
+});
 /* رابطا التخطي: ينقلان التركيز دون تغيير الرابط، فيبقى #كود المشروع كما هو (التنقل إلى #detail كان سيُطلق hashchange ويُعيد الرسم) */
 document.querySelectorAll('.skip-link').forEach(a => a.addEventListener('click', e => { const t = $(a.getAttribute('href').slice(1)); if(t){ e.preventDefault(); t.focus(); } }));
 
