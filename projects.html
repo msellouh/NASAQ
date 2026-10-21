@@ -320,6 +320,16 @@ html.embed .names-body{max-height:calc(var(--host-vh,100vh) - 80px)}
 html.can-edit .phead :is(.ph-row,h2){padding-inline-end:40px}
 @media (pointer:coarse){ .ph-edit{width:44px;height:44px;top:var(--sp-1);inset-inline-end:var(--sp-1)} html.can-edit .phead :is(.ph-row,h2){padding-inline-end:48px} }
 .edit-warn{padding:var(--sp-3);border-radius:var(--r-md);background:var(--urgent-bg);color:var(--urgent);font-size:var(--fs-sm);font-weight:600}
+.edit-warn[hidden]{display:none}
+/* A9b والمستفيدون: مجموعتان بعنوان، والمعطَّلة بانتظار الجسر بملاحظة واضحة لا بحقول باهتة بلا تفسير */
+:is(.edit-ids,.edit-benef){display:grid;gap:var(--sp-2);margin:0;padding:var(--sp-3);border:1px solid var(--rule);border-radius:var(--r-md);min-width:0}
+:is(.edit-ids,.edit-benef) legend{padding:0 var(--sp-1);font-size:var(--fs-sm);font-weight:700;color:var(--ink)}
+.edit-benef[hidden]{display:none}
+.edit-bridge{margin:0;padding:var(--sp-2) var(--sp-3);border-radius:var(--r-md);background:var(--hold-bg,var(--stripe));color:var(--hold-ink,var(--ink-2));font-size:var(--fs-sm);font-weight:600}
+.edit-bridge[hidden]{display:none}
+.edit-ids.off :is(select,input):disabled{cursor:not-allowed}
+#editDlg .fld[hidden]{display:none}
+.dlg-msg.ok{background:var(--done-bg);color:var(--ink)}
 .edit-ack{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-sm);font-weight:600;min-height:24px}
 .edit-go{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--sp-2);font-size:var(--fs-sm);color:var(--muted)}
 
@@ -331,57 +341,39 @@ html.can-edit .phead :is(.ph-row,h2){padding-inline-end:40px}
 .plan-tgl[aria-expanded="true"] .ic{transform:rotate(180deg)}
 .plan-counts{margin:calc(-1 * var(--sp-2)) 0 var(--sp-4)}
 .plan-counts .late-n{color:var(--urgent);font-weight:600}
-.ss{margin:var(--sp-2) 0 var(--sp-1)}
-.ss-lanes{position:relative;margin-top:var(--sp-5);height:calc(var(--lanes,1) * 32px - 4px)}
-.ss-seg{position:absolute;top:calc(var(--ln,0) * 32px);height:28px;display:flex;align-items:center;padding:0 var(--sp-2);border:1px solid var(--rule);border-radius:var(--r-md);background:var(--stripe);
-  color:var(--ink-2);font:inherit;font-size:var(--fs-xs);font-weight:600;overflow:hidden;cursor:pointer;text-align:start;
-  transition:transform calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
-.ss{container-type:inline-size}
-.ss-seg span{position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.ss-cap{display:none;margin:var(--sp-2) 0 0;font-size:var(--fs-sm);color:var(--ink-2)}
 .plan-card{container-type:inline-size}
-.sl{display:none;list-style:none;margin:var(--sp-2) 0 0;padding:0;position:relative}
-.sl::before{content:"";position:absolute;inset-block:22px;inset-inline-start:17px;width:2px;background:var(--rule)}
-.sl-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:2px var(--sp-3);align-items:center;width:100%;padding:var(--sp-2) var(--sp-1) var(--sp-2) var(--sp-2);
-  border:0;border-radius:var(--r-md);background:none;color:var(--ink);font:inherit;text-align:start;cursor:pointer}
-.sl-row:hover{background:var(--stripe)}
-.sl-n{grid-row:span 3;position:relative;z-index:1;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:var(--fs-xs);font-weight:700;
-  background:var(--paper);border:2px solid var(--field-line);color:var(--ink-2)}
-.sl-n .ic{width:14px;height:14px}
-.sl-row.done .sl-n{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
-.sl-row.now{background:var(--stripe)}
-.sl-row.now .sl-n{border-color:var(--cta);color:var(--focus-ink);box-shadow:0 0 0 4px var(--ring)}
-.sl-row b{font-size:var(--fs-base);font-weight:600;min-width:0}
-.sl-row b em{font-style:normal;font-size:11px;font-weight:700;color:var(--focus-ink);background:var(--focus-bg);border-radius:var(--r-sm);padding:1px 6px;margin-inline-start:var(--sp-2);vertical-align:1px}
-.sl-row:not(.done):not(.now) b{font-weight:400;color:var(--ink-2)}
-.sl-tag{grid-row:span 3;align-self:center;font-size:11px;font-weight:700;border-radius:var(--r-sm);padding:2px var(--sp-2);white-space:nowrap;background:var(--stripe);color:var(--muted)}
-.sl-tag.ok{background:var(--done-bg);color:var(--done)} .sl-tag.run{background:var(--focus-bg);color:var(--focus-ink)}
-.sl-row small{grid-column:2;font-size:var(--fs-xs);color:var(--muted)}
-.sl-row small .late-n{color:var(--urgent);font-weight:600}
-.sl-bar{grid-column:2;height:4px;max-width:180px;border-radius:var(--r-pill);background:var(--rule);overflow:hidden}
-.sl-bar i{display:block;height:100%;background:var(--cta)}
-@container (max-width:520px){ .plan-card :is(.ss,.steps,.plan-next){display:none} .plan-card .sl{display:block} }
-.ss-cap .late-n{color:var(--urgent);font-weight:600}
-/* على الشاشة الضيقة: خط زمني رفيع بلا أزرار (الألوان تدل على حال كل مرحلة)، وسطر الحال تحته */
-@container (max-width:520px){
-  .ss-lanes{height:calc(var(--lanes,1) * 14px - 4px);margin-top:var(--sp-5)}
-  .ss-seg{top:calc(var(--ln,0) * 14px);height:10px;padding:0;border-radius:var(--r-pill);pointer-events:none;box-shadow:none}
-  .ss-seg.now{box-shadow:none;border-width:1.5px}
-  .ss-seg span,.ss-seg.late::after{display:none}
-  .ss-seg i{height:100%;border-radius:inherit}
-  .ss-today{top:-16px;bottom:-4px}
-  .ss-cap{display:block}
-}
-.ss-seg i{position:absolute;inset-block-end:0;inset-inline-start:0;height:3px;background:var(--cta)}
-.ss-seg:hover{border-color:var(--focus);transform:translateY(-1px)}
-.ss-seg.done{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
-.ss-seg.done i{display:none}
-.ss-seg.now{border-color:var(--cta);box-shadow:0 0 0 3px var(--ring);color:var(--ink)}
-.ss-seg.late{border-color:var(--urgent)}
-.ss-seg.late::after{content:"";position:relative;z-index:1;flex:none;width:6px;height:6px;margin-inline-start:var(--sp-1);border-radius:50%;background:var(--urgent)}
-.ss-today{position:absolute;top:-18px;bottom:-4px;width:2px;background:var(--urgent);transform:translateX(50%);pointer-events:none;z-index:2}
-.ss-today b{position:absolute;top:0;inset-inline-start:4px;font-size:var(--fs-xs);font-weight:600;color:var(--urgent);white-space:nowrap;line-height:1}
-.ss-ends{display:flex;justify-content:space-between;margin-top:var(--sp-1);font-size:var(--fs-xs);color:var(--muted)}
+/* ---------- مقسِّم خطوات المراحل (D2) ----------
+   خطوات متصلة بالترتيب: أيقونة الحالة في دائرة، والاسم، ووسم الحالة بنص وعدد البنود المنجزة؛ والخط الواصل يمتلئ بقدر إنجاز
+   المرحلة. زوايا موحّدة (دوائر وأوسمة --r-sm وزر --r-md)، وكل خطوة زر ≥44px، وعلى الضيق تُمرَّر أفقيًا بلا قص */
+.stp-wrap{margin:var(--sp-2) 0 var(--sp-1)}
+.stp{list-style:none;margin:0;padding:2px 2px var(--sp-1);display:grid;grid-auto-flow:column;grid-auto-columns:minmax(128px,1fr);overflow-x:auto;
+  scroll-snap-type:x proximity;overscroll-behavior-x:contain;scrollbar-width:thin}
+.stp-i{position:relative;min-width:0;scroll-snap-align:start}
+.stp-i:not(:last-child)::before{content:"";position:absolute;z-index:0;top:calc(var(--sp-2) + 16px - 1.5px);height:3px;border-radius:var(--r-pill);
+  inset-inline-start:calc(50% + 20px);inset-inline-end:calc(-50% + 20px);background:linear-gradient(to left,var(--cta) var(--p,0%),var(--rule) var(--p,0%))}
+:root[dir="ltr"] .stp-i:not(:last-child)::before{background:linear-gradient(to right,var(--cta) var(--p,0%),var(--rule) var(--p,0%))}
+.stp-s{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:var(--sp-1);width:100%;min-height:44px;padding:var(--sp-2) var(--sp-1);
+  border:0;border-radius:var(--r-md);background:none;color:var(--ink);font:inherit;text-align:center;cursor:pointer}
+.stp-s:hover{background:var(--stripe)}
+.stp-s:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.stp-s[aria-current="step"]{background:var(--stripe)}
+.stp-ic{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:2px solid var(--field-line);background:var(--paper);color:var(--ink-2);font-size:var(--fs-sm)}
+.stp-ic b{font-weight:700;font-variant-numeric:tabular-nums}
+.stp-ic .ic{width:16px;height:16px}
+.stp-tx{display:grid;gap:2px;justify-items:center;min-width:0;max-width:100%}
+.stp-n{font-size:var(--fs-sm);font-weight:700;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.stp-m{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2px 6px;font-size:var(--fs-xs);color:var(--ink-2)}
+.stp-st{padding:1px 6px;border-radius:var(--r-sm);font-weight:700;background:var(--stripe);color:var(--ink-2)}
+.stp-i.done .stp-ic{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
+.stp-i.done .stp-st{background:var(--done-bg);color:var(--ink)}
+.stp-i.run .stp-ic{border-color:var(--cta);color:var(--focus-ink);box-shadow:0 0 0 4px var(--ring)}
+.stp-i.run .stp-st{background:var(--focus-bg);color:var(--focus-ink)}
+.stp-i.late .stp-ic{background:var(--urgent);border-color:var(--urgent);color:#fff}
+.stp-i.late .stp-st{background:var(--urgent-bg);color:var(--urgent)}
+.stp-i.todo .stp-n{font-weight:600;color:var(--ink-2)}
+.stp-cap{margin:var(--sp-2) 0 0;font-size:var(--fs-sm);color:var(--ink-2)}
+.stp-cap .late-n{color:var(--urgent);font-weight:600}
+@container (max-width:520px){ .stp{grid-auto-columns:minmax(118px,1fr)} }
 .plan-next{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 var(--sp-3);align-items:center;width:100%;margin-top:var(--sp-4);padding:var(--sp-3) var(--sp-4);
   border:1px solid var(--rule);border-radius:var(--r-lg);background:var(--paper);color:var(--ink);font:inherit;text-align:start;cursor:pointer}
 .plan-next:hover{border-color:var(--focus)}
@@ -424,6 +416,20 @@ html:not(.can-plan) #planCard .stg-menu{display:none}
 .pq{display:grid;gap:var(--sp-3);padding:var(--sp-4);border:1px solid var(--focus);border-radius:var(--r-lg);background:var(--paper);box-shadow:0 0 0 3px var(--ring);
   animation:plan-in calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .pq-acts{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center}
+.pq-main{display:grid;grid-template-columns:minmax(0,2.2fr) repeat(3,minmax(0,1fr));gap:var(--sp-3);align-items:start}
+.pq :is(.pq-main,.pq-more) :is(input,select){height:44px;box-sizing:border-box}   /* خانات الصف بارتفاع واحد فتتحاذى العناوين والحواف */
+@container (max-width:640px){ .pq-main{grid-template-columns:repeat(3,minmax(0,1fr))} .pq-main .pq-title{grid-column:1 / -1} }
+@container (max-width:380px){ .pq-main{grid-template-columns:1fr 1fr} }
+.pq-more{border-top:1px solid var(--rule);padding-top:var(--sp-2)}
+.pq-more summary{display:inline-flex;align-items:center;gap:6px;min-height:44px;cursor:pointer;font-size:var(--fs-sm);font-weight:600;color:var(--ink-2);list-style:none}
+.pq-more summary::-webkit-details-marker{display:none}
+.pq-more summary .ic{width:15px;height:15px;transition:transform calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
+.pq-more[open] summary .ic{transform:rotate(180deg)}
+.pq-more .fld-row{margin-top:var(--sp-2);align-items:end}
+.pq-ro{display:grid;gap:2px;margin:0;font-size:var(--fs-sm)}
+.pq-ro span{color:var(--ink-2);font-weight:600}
+.pq-ro b{font-weight:600}
+.pq-ro small{font-size:var(--fs-xs);color:var(--muted)}
 .pq-acts .push{margin-inline-start:auto}
 .pq-acts .ic{width:15px;height:15px}
 /* تفاصيل البند: لوحة جانبية على الحاسوب وسفلية على الجوال (Material 3) */
@@ -670,6 +676,75 @@ dialog.sheet[open]{animation:sheet-in calc(var(--dur-3) * var(--motion-scale,1))
 .stats[hidden]{display:none}   /* display:grid يغلب [hidden]: بعد زيارة «الإحصائيات» كانت تبقى فوق القائمة */
 .counters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--sp-3)}
 .sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-4)}
+/* ---------- ST1: ملخص المحاور الخمسة وأقسامها ---------- */
+.st-flt{display:flex;flex-wrap:wrap;align-items:end;gap:var(--sp-3);padding:var(--sp-3);border:1px solid var(--rule);border-radius:var(--r-lg);background:var(--paper)}
+.st-flt .fld{min-width:180px}
+.st-flt select{min-height:44px}
+.st-flt .btn{min-height:44px;margin-inline-start:auto;display:inline-flex;align-items:center;gap:var(--sp-1)}
+.st-flt .btn .ic{width:16px;height:16px}
+.st-org{display:inline-flex;gap:2px;padding:2px;border:1px solid var(--rule);border-radius:var(--r-md);background:var(--field-bg)}
+.st-org a{display:inline-flex;align-items:center;min-height:44px;padding:0 var(--sp-3);border-radius:var(--r-md);text-decoration:none;font-weight:600;color:var(--ink-2)}
+.st-org a.on{background:var(--cta);color:var(--on-cta)}
+.st-sum{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--sp-3)}
+@media (max-width:1100px){ .st-sum{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:640px){ .st-sum{grid-template-columns:repeat(2,minmax(0,1fr))} .st-flt .btn{margin-inline-start:0} .st-flt .fld{min-width:0;flex:1 1 140px} }
+.st-card{display:grid;align-content:start;gap:var(--sp-1);min-width:0;padding:var(--sp-3) var(--sp-4);border:1px solid var(--rule);border-top:4px solid var(--st-c,var(--rule));border-radius:var(--r-lg);
+  background:var(--paper);color:var(--ink);font:inherit;text-align:start;cursor:pointer}
+.st-card:hover{border-color:var(--field-hover);border-top-color:var(--st-c,var(--rule))}
+.st-card:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.st-card .st-h{font-size:var(--fs-sm);font-weight:700;color:var(--ink-2)}
+.st-card b{font-size:var(--fs-xl);font-weight:700;font-variant-numeric:tabular-nums;line-height:1.25;overflow-wrap:anywhere}
+.st-card small{font-size:var(--fs-xs);color:var(--ink-2);line-height:1.5}
+.st-card.ok{--st-c:var(--done)} .st-card.warn{--st-c:var(--hold)} .st-card.bad{--st-c:var(--urgent)} .st-card.na{--st-c:var(--rule)}
+.st-badge{display:inline-flex;align-items:center;gap:4px;justify-self:start;padding:2px var(--sp-2);border-radius:var(--r-sm);font-size:var(--fs-xs);font-weight:700;white-space:nowrap}
+.st-badge .ic{width:13px;height:13px}
+.st-badge.ok{background:var(--done-bg);color:var(--ink)} .st-badge.warn{background:var(--hold-bg);color:var(--ink)} .st-badge.bad{background:var(--urgent-bg);color:var(--urgent)} .st-badge.na{background:var(--stripe);color:var(--ink-2)}
+.st-badge.ok .ic{color:var(--done)} .st-badge.warn .ic{color:var(--hold-ink)}
+.st-ax{border:1px solid var(--rule);border-radius:var(--r-lg);background:var(--paper)}
+.st-ax > summary{display:flex;align-items:center;gap:var(--sp-3);min-height:56px;padding:var(--sp-2) var(--sp-4);cursor:pointer;list-style:none}
+.st-ax > summary::-webkit-details-marker{display:none}
+.st-ax > summary h2{font-size:var(--fs-lg);margin:0}
+.st-ax > summary > .ic{margin-inline-start:auto;width:18px;height:18px;transition:transform calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
+.st-ax[open] > summary > .ic{transform:rotate(180deg)}
+.st-ax > summary:focus-visible{outline:2px solid var(--focus);outline-offset:-2px;border-radius:var(--r-lg)}
+.st-axb{display:grid;gap:var(--sp-4);padding:0 var(--sp-4) var(--sp-4)}
+.st-def{display:flex;align-items:center;gap:var(--sp-1);font-size:var(--fs-xs);color:var(--ink-2)}
+.st-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--sp-3)}
+.st-box{display:grid;align-content:start;gap:var(--sp-1);padding:var(--sp-3);border:1px solid var(--rule);border-radius:var(--r-md);min-width:0}
+.st-box.st-wide{grid-column:1 / -1}
+.st-box h3{font-size:var(--fs-sm);font-weight:700;margin:0 0 var(--sp-1)}
+.st-box h4{font-size:var(--fs-xs);font-weight:700;color:var(--ink-2);margin:var(--sp-2) 0 0}
+.mrow{display:flex;justify-content:space-between;align-items:baseline;gap:var(--sp-2);padding:var(--sp-1) 0;border-bottom:1px dashed var(--rule);font-size:var(--fs-sm)}
+.mrow:last-child{border-bottom:0}
+.mrow > span{display:inline-flex;align-items:center;gap:4px;color:var(--ink-2);min-width:0}
+.mrow > b{font-weight:700;text-align:end;font-variant-numeric:tabular-nums}
+.mrow.bad > b{color:var(--urgent)}
+.st-na{font-weight:700;color:var(--ink-2)}
+.na-why{display:block;font-size:var(--fs-xs);font-weight:400;color:var(--muted)}
+.inf{display:inline-block;position:relative}
+.inf > summary{display:inline-grid;place-items:center;min-width:24px;min-height:24px;border-radius:50%;cursor:pointer;list-style:none;font-size:var(--fs-sm);color:var(--focus-ink)}
+.inf > summary::-webkit-details-marker{display:none}
+.inf > summary:focus-visible{outline:2px solid var(--focus)}
+.inf[open] > p{position:absolute;z-index:5;inset-inline-start:0;top:calc(100% + 4px);width:min(320px,80vw);margin:0;padding:var(--sp-2) var(--sp-3);border-radius:var(--r-md);background:var(--ink);color:var(--paper);font-size:var(--fs-xs);font-weight:400;line-height:1.6;box-shadow:var(--shadow)}
+.st-list{list-style:none;margin:0;padding:0;display:grid;gap:var(--sp-1);font-size:var(--fs-sm)}
+.st-list li{display:grid;gap:2px;padding:var(--sp-1) 0;border-bottom:1px dashed var(--rule)}
+.st-list li:last-child{border-bottom:0}
+.st-list li small{font-size:var(--fs-xs);color:var(--ink-2)}
+.st-list li.more{color:var(--muted);font-size:var(--fs-xs)}
+.st-list li > a{min-height:24px;padding-block:2px;color:var(--focus-ink);font-weight:600}
+.st-list.ind li{grid-template-columns:minmax(0,1fr) 120px 48px;align-items:center;gap:var(--sp-2)}
+.st-list .ach{height:8px;border-radius:var(--r-pill);background:var(--rule);overflow:hidden}
+.st-list .ach i{display:block;height:100%;background:var(--cta)}
+.st-bridge{display:flex;align-items:center;gap:var(--sp-2);margin:0;padding:var(--sp-3);border-radius:var(--r-md);background:var(--hold-bg);color:var(--ink);font-weight:600;font-size:var(--fs-sm)}
+.st-bridge .ic{width:16px;height:16px;flex:none}
+.st-table th[aria-sort] button{min-height:32px;min-width:44px}
+.hb{min-height:28px}   /* صفوف الأشرطة القابلة للنقر (تصفية): هدف ≥24px */
+.dc-edit > summary{min-height:28px;display:flex;align-items:center;gap:var(--sp-1)}
+.st-table td.nm a{display:inline-block;padding-block:3px;min-height:24px}
+.st-list.ind li{grid-template-columns:minmax(0,1fr) 120px 48px auto}
+.ind-t{display:grid;gap:2px;min-width:0}
+.ind-acts{display:inline-flex;gap:2px}
+#indCard .card-h{align-items:center}
 .donut-wrap{display:flex;align-items:center;gap:var(--sp-5);flex-wrap:wrap}
 .donut{width:176px;height:176px;border-radius:50%;flex:none;position:relative}
 .donut::after{content:"";position:absolute;inset:26px;border-radius:50%;background:var(--paper)}
@@ -771,7 +846,8 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 .gantt td.dn2,.g-legend .dn2{background:var(--rep-done2)}
 .gantt td.dn3,.g-legend .dn3{background:var(--rep-done3)}
 .gantt td.pl,.g-legend .pl{background:var(--rep-planned)}
-.gantt .now{box-shadow:inset 0 0 0 2px var(--rep-now)}
+/* عمود الأسبوع المختار شريط متصل من أعلى الجدول إلى أسفله، لا مربعًا حول كل خانة (D2) */
+.gantt .now{box-shadow:inset 2px 0 0 var(--rep-now),inset -2px 0 0 var(--rep-now)}
 .gantt th.now{box-shadow:inset 0 -3px 0 var(--rep-now)}
 .g-prev{font-size:var(--fs-xs);font-weight:600;color:var(--rep-teal);background:var(--rep-soft);border:1px dashed var(--rep-cyan);border-radius:var(--r-pill);padding:2px var(--sp-2)}
 .g-dur{justify-content:flex-start}
@@ -842,6 +918,8 @@ dialog .dlg-acts{position:sticky;bottom:calc(-1 * var(--sp-5));z-index:2;margin:
 .toast.act{pointer-events:auto}
 .toast button{margin-inline-start:var(--sp-3);border:0;background:none;color:inherit;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:0}
 .toast.bad{background:var(--urgent);color:#fff}
+/* الإشعار في الطبقة العليا (popover) فيظهر فوق النوافذ المفتوحة لا خلف خلفيتها المموّهة (D2) */
+.toast[popover]{top:auto;right:auto;margin:0;border:0;overflow:visible;width:auto;height:auto}
 
 @media (max-width:1280px){ .counters{grid-template-columns:repeat(3,minmax(0,1fr))} }
 @media (max-width:1100px){ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} .sgrid{grid-template-columns:1fr} }
@@ -892,6 +970,8 @@ dialog .dlg-acts{position:sticky;bottom:calc(-1 * var(--sp-5));z-index:2;margin:
 :root.embed .brand{display:none}
 :root.embed .tb{padding-inline-start:var(--sp-4)}
 :root.embed .wrap{padding-top:var(--sp-4)}
+/* سطر الحقوق يعرضه اللوح أسفل الإطار؛ داخل الإطار يُخفى بصريًا فلا يتكرر، ويبقى في الملف وعند فتح الصفحة مستقلة (D2) */
+:root.embed .nasaq-copy{display:none}
 
 @media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
 
@@ -920,7 +1000,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
 /* علامات الرسم ليست أزرار لمس: تُستثنى من الحد الأدنى 44px للمس (طبقة utilities في nasaq-ui.css)،
    وإلا تضخمت على الآيفون. في الطبقة نفسها وبانتقاء أدق ليتقدّم عليها */
 @layer utilities{
-  #detail :is(.ss .ss-seg,.tlx .tlx-bar,.tlx .tlx-ms){min-height:0;min-width:0}
+  #detail :is(.tlx .tlx-bar,.tlx .tlx-ms){min-height:0;min-width:0}
   /* مربع الإنجاز ورقاقة الحالة: حجمهما المرئي كما هو، ومساحة لمس 44px حولهما بطبقة شفافة */
   #detail .pi :is(.chk,.pi-st){min-height:0;position:relative}
   #detail .pi :is(.chk,.pi-st)::after{content:"";position:absolute;inset:-11px -6px}
@@ -976,6 +1056,42 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     .ph-acts{margin-inline-start:auto}
     .filters{flex-wrap:wrap} .filters .search{flex-basis:100%}
   }
+  /* ---------- D2: الشريط العلوي وشريط البحث والتصفية ----------
+     ارتفاع مريح (64px على الحاسوب و56px على الجوال)، ومجموعات مفصولة: المؤسسة | الأقسام | المصدر والأدوات،
+     وكل هدف ≥44px، وحالة المصدر شارة مقروءة بلون حالتها، والأيقونتان بنص ظاهر على الشاشات الواسعة. الوظائف كما هي */
+  .tb{height:auto;min-height:64px}   /* ارتفاع الشريط وحده؛ --tb-h يبقى كما هو فلا يتغير سلوك القائمة الجانبية */
+  .tb .orgs{padding:2px;gap:2px}
+  .tb .orgs a{min-height:44px}
+  @media (min-width:961px){ .tb .orgs a{padding-inline:var(--sp-3)} }
+  .tb-nav{align-self:stretch;align-items:center;padding-inline-start:clamp(8px,1.6vw,24px);border-inline-start:1px solid var(--rule)}
+  .tb-nav button{min-height:44px}
+  @media (min-width:881px){ .tb-nav button{padding-inline:var(--sp-4)} }
+  .tb-nav button.on::after{bottom:2px}
+  .tb-end{gap:var(--sp-2)}
+  .tb-end .src{min-height:32px;padding:0 var(--sp-3);border-radius:var(--r-pill);font-size:var(--fs-sm);font-weight:600;color:var(--ink);border-color:transparent}
+  .tb-end .src i{width:8px;height:8px}
+  .tb-end .src.live{background:var(--done-bg);color:var(--done-ink,var(--ink))}
+  .tb-end :is(.src.local,.src.cache){background:var(--hold-bg);color:var(--hold-ink)}
+  .tb-end .src.offline{background:var(--urgent-bg);color:var(--urgent)}
+  .tb .tb-end .icon-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-1);width:auto;min-width:44px;height:44px;padding-inline:var(--sp-2);border:1px solid var(--rule);background:var(--paper);color:var(--ink-2);font:inherit;font-size:var(--fs-sm);font-weight:600}
+  .tb .tb-end .icon-btn:hover{color:var(--ink);border-color:var(--field-hover)}
+  .tb .ib-t{display:none}
+  @media (min-width:1100px){ .tb .ib-t{display:inline} .tb .tb-end .icon-btn{padding-inline:var(--sp-3)} }
+  @media (max-width:880px){ .tb{min-height:56px} .tb-nav{border-inline-start:0;padding-inline-start:0} }
+  @media (max-width:560px){ .tb .tb-end .icon-btn{min-width:40px;height:40px;padding:0} }
+  @media (pointer:coarse){ .tb .tb-end .icon-btn{min-width:44px;height:44px} }
+  /* شريط البحث والتصفية: بطاقة واحدة بمجموعات واضحة، وكل عنصر بارتفاع 44px، و«مسح المرشحات» يظهر حين يُطبَّق شيء */
+  .filters{padding:var(--sp-2);border:1px solid var(--rule);border-radius:var(--r-lg);background:var(--paper);box-shadow:var(--shadow-sm,0 1px 2px rgba(0,0,0,.04))}
+  .filters .search input{min-height:44px}
+  .filters .seg{padding:0;gap:0;overflow:hidden;align-items:stretch}
+  .filters .seg button{min-height:44px;padding-inline:var(--sp-3);border-radius:0}
+  .filters :is(.flt-btn,.flt-clear){min-height:44px}
+  .flt-clear[hidden]{display:none}
+  .flt-clear{display:inline-flex;align-items:center;gap:var(--sp-1)}
+  .flt-clear .ic{width:16px;height:16px}
+  /* الحاسوب: المسح في الشريط، فلا يتكرر «مسح الكل» تحت الرقائق؛ الجوال: الشريط سطر واحد، والمسح بين الرقائق */
+  @media (min-width:641px){ .flt-chips .fclear{display:none} }
+  @media (max-width:640px){ .filters{padding:var(--sp-1)} .filters .flt-clear{display:none} .flt-chips .fclear{min-height:44px} }
 }
 </style>
 <link rel="stylesheet" href="nasaq-theme.css?v=20261007b">
@@ -1009,10 +1125,10 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     <span class="src" id="src" role="status"><i></i><span>جارٍ الاتصال…</span></span>
     <button class="icon-btn" id="driveBtn" type="button" title="أرشيف المشاريع في درايف" aria-label="أرشيف المشاريع في درايف">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z"/><path d="M12 11.5v4M10 13.5h4"/></svg>
-    </button>
+    <span class="ib-t" aria-hidden="true">الأرشيف</span></button>
     <button class="icon-btn" id="reloadBtn" type="button" title="تحديث البيانات" aria-label="تحديث البيانات">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 5v6h-6"/></svg>
-    </button>
+    <span class="ib-t" aria-hidden="true">تحديث</span></button>
   </div>
 </header>
 
@@ -1042,6 +1158,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     <button class="btn flt-btn" type="button" id="fltBtn" aria-expanded="false" aria-controls="fltDlg">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg><span class="ph-t">تصفية</span><span class="fcount" id="fltCount" hidden></span>
     </button>
+    <button class="btn flt-clear" type="button" id="fltClear" data-fclear hidden><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>مسح المرشحات</button>
   </div>
   <!-- الفلاتر: لوحة تحت الأدوات على الحاسوب، ولوحة سفلية على الجوال (Shopify/eBay: الفلاتر في درج على الجوال) -->
   <dialog class="sheet flt-dlg" id="fltDlg" aria-labelledby="fltTitle">
@@ -1190,7 +1307,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     <div class="dlg-acts"><button class="btn ghost" type="button" data-close>إغلاق</button></div>
   </div>
 </dialog>
-<!-- تحرير المشروع (A9a): الحالة والتواريخ بإجراءي الجسر القائمين؛ الاسم والكود والجهة الممولة لاحقًا (A9b) -->
+<!-- تحرير المشروع (A9a وA9b): الحالة والتواريخ بإجراءي الجسر القائمين، والأسماء والكود والمانح بإجراء project_update، والمستفيدون مع المبالغ (project_money) -->
 <dialog id="editDlg" aria-labelledby="editDlgTitle">
   <form id="editForm" method="dialog">
     <h2 id="editDlgTitle">تحرير المشروع</h2>
@@ -1202,12 +1319,59 @@ button.file{font:inherit;cursor:pointer;text-align:start}
     </div>
     <p class="edit-warn" id="editWarn" role="alert" hidden></p>
     <label class="edit-ack" id="editAckRow" hidden><input type="checkbox" name="ack">أغلق المشروع مع ذلك</label>
-    <p class="note" style="margin:0">الاسم والكود والجهة الممولة تُعدَّل من هذه اللوحة لاحقًا (تحتاج تحديثًا في الجسر).</p>
+    <!-- A9b: الأسماء الثلاثة والكود والجهة الممولة بإجراء project_update؛ تُعطَّل بملاحظة واضحة ما دام الجسر لا يعرفه، وتُفعَّل تلقائيًا حين يستجيب -->
+    <fieldset class="edit-ids" id="editIds">
+      <legend>الاسم والكود والجهة الممولة</legend>
+      <p class="edit-bridge" id="editBridge" role="status"></p>
+      <div class="fld-row">
+        <label class="fld">المشروع الموحّد<select name="stdName"></select></label>
+        <label class="fld" id="eStdNewWrap" hidden>الاسم الموحّد الجديد<input name="stdNew" maxlength="120"></label>
+      </div>
+      <label class="fld">الاسم المخصص<input name="custom" maxlength="120"></label>
+      <div class="fld-row">
+        <label class="fld">الجهة الممولة (المانح)<select name="donor"></select></label>
+        <label class="fld" id="eDonorNewWrap" hidden>مانح جديد<input name="donorNew" maxlength="120"></label>
+        <label class="fld">الكود<input name="code" maxlength="12" dir="ltr" autocomplete="off" spellcheck="false"></label>
+      </div>
+      <p class="note" id="editTitlePrev" aria-live="polite"></p>
+      <p class="edit-warn" id="editIdWarn" role="alert" hidden></p>
+    </fieldset>
+    <fieldset class="edit-benef" id="editBenef">
+      <legend>المستفيدون</legend>
+      <div class="fld-row">
+        <label class="fld">عدد المستفيدين<input name="benef" type="number" min="0" step="1" inputmode="numeric"></label>
+        <label class="fld">بيان المستفيدين<input name="benefText" maxlength="300"></label>
+      </div>
+    </fieldset>
+    <p class="edit-warn dlg-msg" id="editMsg" role="alert" hidden></p>
     <div class="edit-go"><span>وفي التبويبات:</span><button class="btn ghost sm" type="button" data-edit-go="plan">المراحل والبنود</button><button class="btn ghost sm" type="button" data-edit-go="money">المبالغ</button><button class="btn ghost sm" type="button" data-edit-go="docs">الملفات</button></div>
     <div class="dlg-acts">
       <button class="btn cta" type="submit" value="save">حفظ</button>
       <button class="btn ghost" type="button" data-close>إلغاء</button>
     </div>
+  </form>
+</dialog>
+<!-- ST1: مؤشر نتائج (SMART) لمشروع — بإجراءي indicator_save وindicator_delete؛ معطّل حتى يدعمهما الجسر -->
+<dialog id="indDlg" aria-labelledby="indDlgTitle">
+  <form id="indForm" method="dialog">
+    <h2 id="indDlgTitle">مؤشر نتائج</h2>
+    <p class="sub" id="indDlgSub"></p>
+    <label class="fld">اسم المؤشر<input name="name" required maxlength="200" placeholder="مثال: عدد الأسر التي تلقت سلالًا غذائية"></label>
+    <div class="fld-row">
+      <label class="fld">المستوى<select name="level" required><option>مخرج</option><option>نتيجة</option><option>أثر</option></select></label>
+      <label class="fld">الوحدة<input name="unit" required maxlength="40" placeholder="أسرة، %، طفل…"></label>
+      <label class="fld">دورية القياس<select name="freq"><option>شهري</option><option>ربع سنوي</option><option>نصف سنوي</option><option>سنوي</option><option>عند الإغلاق</option></select></label>
+    </div>
+    <div class="fld-row">
+      <label class="fld">خط الأساس<input name="baseline" type="number" step="any" inputmode="decimal"></label>
+      <label class="fld">الهدف<input name="target" type="number" step="any" inputmode="decimal"></label>
+      <label class="fld">القيمة الحالية<input name="current" type="number" step="any" inputmode="decimal"></label>
+      <label class="fld">تاريخ القياس<input name="measuredAt" type="date"></label>
+    </div>
+    <label class="fld">مصدر التحقق<input name="source" maxlength="200" placeholder="كشوف التوزيع، تقرير المسح…"></label>
+    <p class="note" id="indPrev" aria-live="polite"></p>
+    <p class="edit-warn dlg-msg" id="indMsg" role="alert" hidden></p>
+    <div class="dlg-acts"><button class="btn cta" type="submit">حفظ</button><button class="btn ghost" type="button" data-close>إلغاء</button></div>
   </form>
 </dialog>
 <dialog id="moneyDlg" aria-labelledby="moneyDlgTitle">
@@ -1308,7 +1472,7 @@ button.file{font:inherit;cursor:pointer;text-align:start}
 </dialog>
 
 <input type="file" id="upInput" multiple hidden aria-hidden="true" tabindex="-1">
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="toast" id="toast" role="status" aria-live="polite" popover="manual"></div>
 
 <script>
 /* ألوان تقرير Medics المعتمد — مواصفة المستند، لا تتبع الطابع (nasaq-art.js) */
@@ -1361,7 +1525,9 @@ if(EMBED){
   /* داخل تبويب اللوح: نعلن ارتفاع المحتوى ليأخذه الإطار (شريط تمرير واحد للصفحة)، ونقرأ ارتفاع نافذة اللوح للقائمة */
   if(window.parent !== window){
     let lastH = 0;
-    const sendH = () => { const hh = Math.ceil(document.documentElement.scrollHeight); if(Math.abs(hh - lastH) < 2) return; lastH = hh;
+    /* ارتفاع المحتوى نفسه (أسفل body) لا scrollHeight: هذا لا يقل عن ارتفاع الإطار، فيبقى الإطار بأطول ما بلغ ويترك فراغًا تحت المحتوى (D2) */
+    const sendH = () => { const bs = getComputedStyle(document.body), hh = Math.ceil(document.body.getBoundingClientRect().bottom + scrollY + parseFloat(bs.marginBottom || 0));
+      if(Math.abs(hh - lastH) < 2) return; lastH = hh;
       try{ parent.postMessage({type:'nasaq-frame-h', h: hh}, location.origin); }catch(e){} };
     addEventListener('load', sendH);
     document.addEventListener('DOMContentLoaded', () => { try{ const ro = new ResizeObserver(sendH); ro.observe(document.body); ro.observe(document.documentElement); }catch(e){} sendH(); });
@@ -1813,7 +1979,7 @@ async function openViaBridge(p, id){
 function use(d, src, note, stale){
   ACC = (src === 'live' && d.access) || {owner: true}; applyAcc();
   if(src === 'live') ovApply(d.plan || []);
-  DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [], options: d.options || {}, donorCountries: d.donorCountries || {}, donors: d.donors || [] };
+  DATA = { projects: d.projects || [], deliverables: d.deliverables || [], plan: d.plan || [], files: d.files || {}, driveRoot: d.driveRoot || '', people: d.people || [], options: d.options || {}, donorCountries: d.donorCountries || {}, donors: d.donors || [], aliases: d.aliases || [] };
   applyDonorCountries();
   if(src === 'live') loadFilesCache();
   SOURCE = src;
@@ -2012,7 +2178,7 @@ function renderList(rows){
 const TABS = [['overview', 'نظرة عامة'], ['plan', 'الخطة<span class="tab-x"> والجدول</span>'], ['money', 'المالية'], ['docs', 'المستندات<span class="tab-x"> والتقارير</span>']];
 const TAB_KEYS = TABS.map(x => x[0]);
 const PANELS = {
-  overview: p => overviewCard(p) + heroCard(p) + dangerCard(p),
+  overview: p => overviewCard(p) + indCard(p) + heroCard(p) + dangerCard(p),
   plan: p => planCard(p) + schedBar() + ganttCard(p) + timelineCard(p),
   money: p => moneyCard(p),
   docs: p => reportsCard(p) + delsCard(p) + docsCard(p)
@@ -2557,6 +2723,7 @@ function schedSync(){
   const g = $('ganttCard'), tl = $('tlCard');
   if(g) g.hidden = v !== 'gantt';
   if(tl) tl.hidden = v !== 'tl';
+  if(tl && !tl.hidden) requestAnimationFrame(tlxSnap);   /* كان مخفيًا فلم تُحسب خطوطه */
 }
 /* الترويسة: شارة حالة واحدة من projectHealth (القسم 3.2)، وسطر المال الواحد */
 function projHead(p){
@@ -2660,31 +2827,27 @@ function nextItem(p){
   return open.sort((a, b) => rank(a) - rank(b) || String(a.end || '9').localeCompare(String(b.end || '9')))[0] || null;
 }
 /* الشريط الزمني للمراحل: كل مرحلة شريحة على محور مدة المشروع، بمسارات إن تداخلت، وبداخلها شريط إنجازها */
-function stageStrip(p, st){
-  const { s, e } = spanOf(p);
-  if(!(s && e && toDate(e) > toDate(s)) || !st.some(x => x.start || x.end)) return '';
-  const lo = toDate(s).getTime(), span = toDate(e).getTime() - lo;
-  const pos = d => Math.min(100, Math.max(0, (toDate(d).getTime() - lo) / span * 100));
-  const lanes = [];
-  const segs = st.map((x, i) => {
-    let a = pos(x.start || x.end), b = Math.max(pos(x.end || x.start), a + 6);
-    if(b > 100){ a = Math.max(0, a - (b - 100)); b = 100; }
-    let ln = lanes.findIndex(end => end <= a + .5); if(ln < 0){ ln = lanes.length; lanes.push(0); } lanes[ln] = b;
-    const late = x.items.some(itemLate);
-    return '<button type="button" class="ss-seg ' + x.state + (late ? ' late' : '') + '" data-act="plan-stage" data-stage="' + i + '" style="inset-inline-start:' + a + '%;width:' + (b - a) + '%;--ln:' + ln + '"' +
-      ' title="' + esc(x.name + ' | ' + x.done + ' من ' + x.total + (x.start ? ' | ' + dayLbl(x.start, false) + ' – ' + dayLbl(x.end || x.start, false) : '') + (late ? ' | فيها متأخر' : '')) + '">' +
-      '<span class="ss-t">' + esc(x.name) + '</span><i style="width:' + Math.round(x.pct * 100) + '%"></i></button>';
+/* مراحل الخطة كمقسِّم خطوات (D2): بالترتيب لا بالزمن (المخطط الزمني في بطاقته)، لكل خطوة أيقونة ولون ونص حالتها
+   (منجزة، جارية، متأخرة، لم تبدأ) وعدد بنودها المنجزة وتقدّم مدمج في الخط الواصل؛ زر كامل ≥44px يفتح بنودها،
+   ونص الحالة نفسه في الاسم المسموع (WCAG 2.5.3). على الضيق تُمرَّر أفقيًا وتبقى الحالية ظاهرة */
+function stageStepper(p, st){
+  if(!st.length) return '';
+  const ci = st.findIndex(x => x.state === 'now');
+  const steps = st.map((x, i) => {
+    const late = x.state !== 'done' && x.items.some(itemLate);
+    const k = x.state === 'done' ? 'done' : late ? 'late' : x.state === 'now' || x.done ? 'run' : 'todo';
+    const txt = {done: 'منجزة', late: 'متأخرة', run: 'جارية', todo: 'لم تبدأ'}[k];
+    const ic = k === 'done' ? icon('check') : k === 'late' ? icon('alert') : '<b>' + AR(i + 1) + '</b>';
+    const range = x.start || x.end ? (x.start && x.end && x.start !== x.end ? dayLbl(x.start, false) + ' – ' + dayLbl(x.end, false) : dayLbl(x.end || x.start, false)) : '';
+    return '<li class="stp-i ' + k + '" style="--p:' + Math.round(x.pct * 100) + '%"><button type="button" class="stp-s" data-act="plan-stage" data-stage="' + i + '"' + (i === ci ? ' aria-current="step"' : '') +
+      ' title="' + esc(x.name + (range ? ' | ' + range : '')) + '" aria-label="' + esc(x.name + '، ' + txt + '، أُنجز ' + x.done + ' من ' + x.total + (i === ci ? '، المرحلة الحالية' : '') + '، اضغط لفتح بنودها') + '">' +
+      '<span class="stp-ic" aria-hidden="true">' + ic + '</span><span class="stp-tx"><span class="stp-n">' + esc(x.name) + '</span>' +
+      '<span class="stp-m"><span class="stp-st">' + txt + '</span><bdi>' + AR(x.done) + ' من ' + AR(x.total) + '</bdi></span></span></button></li>';
   }).join('');
-  const tp = (today.getTime() - lo) / span * 100;
-  const now = tp >= 0 && tp <= 100 ? '<span class="ss-today" style="inset-inline-start:' + tp + '%" aria-hidden="true"><b>اليوم</b></span>' : '';
-  /* سطر الحال للشاشة الضيقة: الشريط هناك خط ملوّن بلا أزرار، والمرحلة الحالية مكتوبة تحته */
-  const ci = st.findIndex(x => x.state === 'now'), cur = st[ci];
-  const over = today > toDate(e) ? days(toDate(e), today) : 0;
-  const cap = (cur ? 'الآن: <b>' + esc(cur.name) + '</b> | المرحلة <bdi>' + AR(ci + 1) + ' من ' + AR(st.length) + '</bdi>' : '<b>أُنجزت كل المراحل</b>') +
+  const { e } = spanOf(p), over = e && today > toDate(e) ? days(toDate(e), today) : 0, cur = st[ci];
+  const cap = (cur ? 'الآن: <b>' + esc(cur.name) + '</b> | المرحلة <bdi>' + AR(ci + 1) + ' من ' + AR(st.length) + '</bdi>' : st.every(x => x.state === 'done') ? '<b>أُنجزت كل المراحل</b>' : '') +
     (over ? ' | <span class="late-n">تجاوز النهاية بـ ' + cnt(over, W_DAY) + '</span>' : '');
-  return '<div class="ss"><div class="ss-lanes" style="--lanes:' + lanes.length + '">' + segs + now + '</div>' +
-    '<div class="ss-ends"><span><bdi>' + dayLbl(s, false) + '</bdi></span><span><bdi>' + dayLbl(e) + '</bdi></span></div>' +
-    '<p class="ss-cap">' + cap + '</p></div>';
+  return '<div class="stp-wrap"><ol class="stp" aria-label="مراحل الخطة">' + steps + '</ol>' + (cap ? '<p class="stp-cap">' + cap + '</p>' : '') + '</div>';
 }
 function planCard(p){
   const items = planOf(p);
@@ -2706,12 +2869,8 @@ function planCard(p){
   const real = items.filter(x => !x._draft);
   const done = real.filter(x => x.status === 'منجز').length, late = real.filter(itemLate).length;
   const nx = nextItem(p);
-  const strip = stageStrip(p, st);
   const nowIdx = st.findIndex(s => s.state === 'now');
-  const fillW = st.length > 1 ? ((nowIdx < 0 ? st.length - 1 : nowIdx) / (st.length - 1)) * 88 : 0;
-  const stepper = strip || '<div class="steps"><span class="fill" style="width:' + fillW + '%"></span>' + st.map((s, i) =>
-    '<div class="step ' + (s.state === 'todo' ? '' : s.state) + '"' + (s.state === 'now' ? ' aria-current="step"' : '') + '><div class="dot">' +
-      (s.state === 'done' ? icon('check') : AR(i + 1)) + '</div>' + esc(s.name) + '<small><bdi>' + AR(s.done) + ' من ' + AR(s.total) + '</bdi></small></div>').join('') + '</div>';
+  const stepper = stageStepper(p, st);
   const next = nx ? '<button type="button" class="plan-next' + (itemLate(nx) ? ' late' : '') + '" data-act="plan-focus" data-id="' + esc(nx.id) + '">' +
       '<span class="lbl">' + (itemLate(nx) ? 'متأخر' : 'التالي') + '</span><b>' + esc(nx.title) + '</b>' +
       '<small>' + [nx.stage, nx.owner, nx.end ? (itemLate(nx) ? 'منذ ' + cnt(days(toDate(nx.end), today), W_DAY) : 'حتى ' + dayLbl(nx.end, false)) : ''].filter(Boolean).map(esc).join(' | ') + '</small></button>'
@@ -2745,32 +2904,7 @@ function planCard(p){
     '<div class="prog" title="الإنجاز: المنجز 100%، والجاري بنسبته المدخلة أو 50% إن لم تُدخل"><div class="bar" aria-hidden="true"><i style="width:' + Math.round(avgProg(real) * 100) + '%"></i></div>' +
       '<b>' + pct(avgProg(real)) + '</b></div>' +
     '<p class="note plan-counts">منجز ' + AR(done) + ' | المتبقي ' + AR(real.length - done) + (late ? ' | <span class="late-n">متأخر ' + AR(late) + '</span>' : '') + '</p>' +
-    stepper + stageList(st) + next + groups + devNote() + '</article>';
-}
-/* المراحل على الشاشة الضيقة بنمط «قائمة المهام» (GOV.UK) ومؤشر الخطوات الرأسي (Carbon):
-   كل مرحلة سطر برقمها واسمها وتاريخها وما أُنجز منها ووسم حالتها مكتوبًا، والحالية مميزة،
-   والضغط يفتح بنودها؛ وإن زادت على 6 تُطوى المكتملة في سطر واحد */
-function stageList(st){
-  if(!st.length) return '';
-  const range = s => s.start || s.end ? (s.start && s.end && s.start !== s.end ? dayLbl(s.start, false) + ' – ' + dayLbl(s.end, false) : dayLbl(s.end || s.start, false)) : '';
-  const fold = st.length > 6 ? st.filter(s => s.state === 'done').length : 0;
-  const row = (s, i) => {
-    const late = s.items.filter(itemLate), cls = s.state === 'done' ? 'done' : s.state === 'now' ? 'now' : '';
-    /* نص الحالة واحد للوسم المرئي وللاسم المسموع (WCAG 2.5.3): كان الوسم «جارية» والاسم «لم تبدأ» لمرحلة أُنجز بعض بنودها */
-    const stTxt = s.state === 'done' ? 'مكتملة' : s.state === 'now' || s.done ? 'جارية' : 'لم تبدأ';
-    const tag = '<span class="sl-tag' + (s.state === 'done' ? ' ok' : stTxt === 'جارية' ? ' run' : '') + '">' + stTxt + '</span>';
-    const lateTxt = late.length === 1 ? '«' + late[0].title + '» متأخر ' + cnt(days(toDate(late[0].end), today), W_DAY) : late.length ? AR(late.length) + ' بنود متأخرة' : '';
-    return '<li><button type="button" class="sl-row ' + cls + '" data-act="plan-stage" data-stage="' + i + '" aria-label="' + esc(s.name + '، ' + (s.state === 'now' ? 'المرحلة الحالية، ' : '') + stTxt + '، أُنجز ' + s.done + ' من ' + s.total + '، اضغط لفتح بنودها') + '">' +
-      '<span class="sl-n">' + (s.state === 'done' ? icon('check') : AR(i + 1)) + '</span>' +
-      '<b>' + esc(s.name) + (s.state === 'now' ? '<em>الحالية</em>' : '') + '</b>' + tag +
-      '<small>' + [range(s), AR(s.done) + ' من ' + AR(s.total)].filter(Boolean).join(' | ') + (lateTxt ? ' | <span class="late-n">' + esc(lateTxt) + '</span>' : '') + '</small>' +
-      (s.pct > 0 || s.state === 'now' ? '<span class="sl-bar"><i style="width:' + Math.round(s.pct * 100) + '%"></i></span>' : '') + '</button></li>';
-  };
-  const firstOpen = st.findIndex(s => s.state !== 'done');
-  return '<ol class="sl" aria-label="مراحل المشروع">' +
-    (fold > 1 ? '<li><button type="button" class="sl-row done" data-act="plan-stage" data-stage="0"><span class="sl-n">' + icon('check') + '</span><b>' + AR(fold) + ' مراحل مكتملة</b><span class="sl-tag ok">مكتملة</span>' +
-      '<small>' + st.filter(s => s.state === 'done').map(s => esc(s.name)).join('، ') + '</small></button></li>' + st.map((s, i) => s.state === 'done' ? '' : row(s, i)).join('')
-      : st.map(row).join('')) + '</ol>';
+    stepper + next + groups + devNote() + '</article>';
 }
 function planRow(it){
   if(QE && QE.id === it.id) return planQuick(it);
@@ -2794,13 +2928,17 @@ function planQuick(it){
   const people = DATA.people.slice(); if(it.owner && !people.includes(it.owner)) people.unshift(it.owner);
   const o = (list, v, blank) => (blank ? '<option value="">' + blank + '</option>' : '') + list.map(x => '<option' + (x === v ? ' selected' : '') + '>' + esc(x) + '</option>').join('');
   return '<li class="pi-q"><form class="pq" data-qform="' + esc(it.id) + '" aria-label="' + (it._draft ? 'بند جديد' : 'تعديل البند') + '">' +
-    '<label class="fld">البند<input name="title" required maxlength="300" value="' + esc(it.title) + '" placeholder="مثال: التعاقد مع المورد"></label>' +
-    '<div class="fld-row"><label class="fld">الحالة<select name="status">' + o(PLAN_ST, it.status || 'لم يبدأ') + '</select></label>' +
-      '<label class="fld">البداية<input name="start" type="date" value="' + esc(it.start || '') + '"></label>' +
-      '<label class="fld">النهاية<input name="end" type="date" value="' + esc(it.end || '') + '"></label>' +
-      '<label class="fld">المسؤول<select name="owner">' + o(people, it.owner || '', '— بلا مسؤول —') + '</select></label>' +
+    /* D2: الصف الأول للأساسي فقط (البند والحالة والنهاية والمسؤول)، والبداية المخططة والنسبة في «تفاصيل إضافية» مطوية؛
+       والبداية الفعلية تلقائية (autoStart) تُعرض للقراءة، وتُصحَّح من «التفاصيل والملاحظات» فقط */
+    '<div class="pq-main"><label class="fld pq-title">البند<input name="title" required maxlength="300" value="' + esc(it.title) + '" placeholder="مثال: التعاقد مع المورد"></label>' +
+      '<label class="fld">الحالة<select name="status">' + o(PLAN_ST, it.status || 'لم يبدأ') + '</select></label>' +
+      '<label class="fld">النهاية المخططة<input name="end" type="date" value="' + esc(it.end || '') + '"></label>' +
+      '<label class="fld">المسؤول<select name="owner">' + o(people, it.owner || '', '— بلا مسؤول —') + '</select></label></div>' +
+    '<details class="pq-more"' + (QE && QE.more ? ' open' : '') + '><summary>' + icon('chevron-down') + 'تفاصيل إضافية</summary><div class="fld-row">' +
+      '<label class="fld">البداية المخططة<input name="start" type="date" value="' + esc(it.start || '') + '"></label>' +
       '<label class="fld">نسبة الإنجاز<input name="pct" type="number" min="0" max="100" step="5" inputmode="numeric" placeholder="50 إن تُركت" value="' + (hasPct(it) ? esc(it.pct) : '') + '"></label>' +
-      '<label class="fld">البداية الفعلية<input name="started" type="date" value="' + esc(it.started || '') + '"></label></div>' +
+      '<p class="pq-ro"><span>البداية الفعلية</span><b>' + (it.started ? dayLbl(it.started) : 'تُسجَّل تلقائيًا عند البدء') + '</b>' +
+        (it._draft ? '' : '<small>تُصحَّح من «التفاصيل والملاحظات»</small>') + '</p></div></details>' +
     '<div class="pq-acts"><button class="btn cta sm" type="submit">' + (it._draft ? 'إضافة' : 'حفظ') + '</button>' +
       '<button class="btn ghost sm" type="button" data-act="qcancel">إلغاء</button>' +
       (it._draft ? '' : '<button class="btn ghost sm" type="button" data-act="edit" data-id="' + esc(it.id) + '">التفاصيل والملاحظات</button>' +
@@ -2858,6 +2996,8 @@ function planOpen(p, then){
   const b = document.querySelector('#planCard .plan-body'); if(b) b.classList.add('plan-in');
   if(then) then();
 }
+/* «تفاصيل إضافية» في المحرر السريع تبقى مفتوحة إن فُتحت، حتى بعد إعادة الرسم */
+document.addEventListener('toggle', e => { if(QE && e.target.matches && e.target.matches('#planCard .pq-more')) QE.more = e.target.open; }, true);
 function qStart(p, id){
   qDrop();
   QE = {id};
@@ -2875,7 +3015,7 @@ function qSave(f){
   const it = DATA.plan.find(x => x.id === f.dataset.qform); if(!it) return;
   const pv = f.elements.pct.value.trim();
   const vals = { title: f.elements.title.value.trim(), status: f.elements.status.value, start: f.elements.start.value, end: f.elements.end.value, owner: f.elements.owner.value,
-    pct: pv === '' ? '' : Math.max(0, Math.min(100, Math.round(Number(pv)))), started: f.elements.started.value };
+    pct: pv === '' ? '' : Math.max(0, Math.min(100, Math.round(Number(pv)))), started: it.started || '' };   /* البداية الفعلية لا تُحرَّر هنا (D2) */
   if(vals.status === 'منجز') vals.pct = 100;
   if(!vals.title){ f.elements.title.focus(); return; }
   if(vals.end && vals.start && vals.end < vals.start){ toast('النهاية قبل البداية', true); f.elements.end.focus(); return; }
@@ -2939,7 +3079,7 @@ function timelineCard(p){
   const months = Math.round(span / (30 * DAY)), step = months > 14 ? 3 : months > 8 ? 2 : 1;
   let ticks = '', grid = '';
   for(const m = new Date(lo); m < hi; m.setMonth(m.getMonth() + 1)){
-    const gx = x(m); if(gx > 0) grid += '<span class="tlx-grid" style="inset-inline-start:' + gx + '%"></span>';
+    const gx = x(m); if(gx > 0) grid += '<span class="tlx-grid" data-x="' + gx + '" style="inset-inline-start:' + gx + '%"></span>';
     if((m.getMonth() - lo.getMonth() + 12) % step) continue;
     const mid = new Date(m.getFullYear(), m.getMonth(), 15);
     ticks += '<span class="tlx-tick" style="inset-inline-start:' + x(mid) + '%">' + fmtDate(m, m.getMonth() === 0 ? {month: 'short', year: 'numeric'} : {month: 'short'}) + '</span>';
@@ -2952,7 +3092,7 @@ function timelineCard(p){
     (msd.length ? '<div class="sub"><span>المحطات والتقارير</span><small>' + AR(msd.filter(d => d.status === 'صدر').length) + '/' + AR(msd.length) + '</small></div>' : '') + '</div>';
   const xs = x(S0), xe = x(E0);
   const rowSpan = '<div class="tlx-row"><span class="tlx-span" style="inset-inline-start:' + xs + '%;width:' + (xe - xs) + '%"></span>' +
-    '<span class="tlx-flag" style="inset-inline-start:' + xs + '%"></span><span class="tlx-flag" style="inset-inline-start:' + xe + '%"></span>' +
+    '<span class="tlx-flag" data-x="' + xs + '" style="inset-inline-start:' + xs + '%"></span><span class="tlx-flag" data-x="' + xe + '" style="inset-inline-start:' + xe + '%"></span>' +
     '<span class="tlx-lbl" style="inset-inline-start:calc(' + xs + '% + 8px)">' + dayLbl(s, false) + (p.start ? '' : ' (تقديرية)') + '</span>' +
     '<span class="tlx-lbl" style="inset-inline-end:calc(' + (100 - xe) + '% + 8px)">' + dayLbl(e) + '</span></div>';
   const rowsSt = stg.map(z => {
@@ -2967,8 +3107,8 @@ function timelineCard(p){
   }).join('');
   const rowMs = msd.length ? '<div class="tlx-row">' + msd.map(d => { const k = delState(d);
     const tip = delName(d) + '\n' + dayLbl(d.due) + ' | ' + DEL_LBL[k] + (k === 'late' ? ' منذ ' + cnt(days(toDate(d.due), today), W_DAY) : '') + (d.issued ? '\nصدر ' + dayLbl(d.issued) : '');
-    return '<button type="button" class="tlx-ms ' + k + '" style="inset-inline-start:' + x(toDate(d.due)) + '%" data-tip="' + esc(tip) + '" aria-label="' + esc(tip.replace(/\n/g, '، ')) + '"></button>'; }).join('') + '</div>' : '';
-  const todayEl = inAxis ? '<span class="tlx-today' + (tX > 82 ? ' edge' : '') + '" style="inset-inline-start:' + tX + '%"><b>اليوم ' + dayLbl(iso(today), false) + '</b></span>' : '';
+    return '<button type="button" class="tlx-ms ' + k + '" style="inset-inline-start:clamp(11px,' + x(toDate(d.due)) + '%,calc(100% - 11px))" data-tip="' + esc(tip) + '" aria-label="' + esc(tip.replace(/\n/g, '، ')) + '"></button>'; }).join('') + '</div>' : '';
+  const todayEl = inAxis ? '<span class="tlx-today' + (tX > 82 ? ' edge' : '') + '" data-x="' + tX + '" style="inset-inline-start:' + tX + '%"><b>اليوم ' + dayLbl(iso(today), false) + '</b></span>' : '';
   const legend = '<div class="tlx-legend">' + (stg.length ? '<span><i class="lb"></i>مرحلة: الغامق ما أُنجز</span>' : '') +
     (msd.length ? '<span><i class="lm" style="background:var(--done)"></i>صدر</span><span><i class="lm" style="background:var(--hold)"></i>قيد الإعداد</span>' +
       '<span><i class="lm" style="box-shadow:inset 0 0 0 2px var(--muted)"></i>لم يبدأ</span><span><i class="lm" style="background:var(--urgent)"></i>متأخر</span>' : '') +
@@ -3003,6 +3143,29 @@ function timelineCard(p){
     (stTable ? '<details class="tlx-more"><summary>' + icon('chevron-down') + 'عرض المراحل كجدول</summary>' + stTable + '</details>' : '') +
   '</article>';
 }
+/* D2: خطوط المخطط (الشبكة والعلمان وخط «اليوم») على بكسل كامل لا كسري فلا تبدو باهتة أو مزدوجة؛
+   الموضع النسبي في data-x، ويُحوَّل إلى بكسل مقرّب بعد كل رسم وعند تغيّر العرض */
+function tlxSnap(){
+  const dpr = devicePixelRatio || 1;
+  document.querySelectorAll('#tlCard .tlx-plot').forEach(plot => {
+    const P = plot.getBoundingClientRect(), bw = parseFloat(getComputedStyle(plot).borderInlineStartWidth) || 0, W = plot.clientWidth; if(!W) return;
+    const rtl = getComputedStyle(plot).direction === 'rtl', edge = rtl ? P.right - bw : P.left + bw;
+    plot.querySelectorAll('[data-x]').forEach(el => {
+      const w = el.offsetWidth, half = getComputedStyle(el).translate !== 'none' ? w / 2 : 0, xPx = parseFloat(el.dataset.x) / 100 * W;
+      const left = rtl ? edge - xPx - w + half : edge + xPx - half, L = Math.round(left * dpr) / dpr;
+      el.style.insetInlineStart = (rtl ? edge - L - w + half : L - edge + half) + 'px';
+    });
+  });
+}
+/* مقسِّم الخطوات حين يُمرَّر أفقيًا: المرحلة الحالية في الوسط دون تحريك الصفحة */
+function stpCenter(){
+  document.querySelectorAll('#detail .stp').forEach(ol => { if(ol.scrollWidth <= ol.clientWidth + 1 || ol.dataset.centered) return;
+    const cur = ol.querySelector('[aria-current="step"]'); if(!cur) return; ol.dataset.centered = '1';
+    const O = ol.getBoundingClientRect(), C = cur.getBoundingClientRect(); ol.scrollLeft += (C.left + C.width / 2) - (O.left + O.width / 2); });
+}
+(() => { let q = 0; const run = () => { cancelAnimationFrame(q); q = requestAnimationFrame(() => { tlxSnap(); stpCenter(); }); };
+  try{ new MutationObserver(run).observe(document.getElementById('detail'), {childList: true, subtree: true}); }catch(e){}
+  addEventListener('resize', run); })();
 /* تلميح المخطط: نصّ عادي (من نوشن) يُدرج بـ textContent، ويظهر بالمرور أو التركيز أو اللمس */
 (() => {
   let tip = null;
@@ -3260,6 +3423,310 @@ const card = (title, body, sub, extra) => '<article class="card' + (extra ? ' ' 
 const kpiBox = (k, v, sub, meter) => '<div class="kpi"><span>' + k + '</span><b>' + v + '</b>' + (sub ? '<small>' + sub + '</small>' : '') +
   (meter != null && isFinite(meter) ? '<div class="meter" aria-hidden="true"><i style="width:' + Math.min(100, Math.max(0, meter * 100)) + '%"></i></div>' : '') + '</div>';
 
+/* ================= ST1: الإحصائيات بخمسة محاور =================
+   المبدأ: كل رقم له تعريف مكتوب (ⓘ يشرح الصيغة)، ولا يُعرض رقم ناقص البيانات: «غير متاح» مع السبب، ولا تُخترع قيم.
+   المصادر: PMI/EVM (SPI وCPI)، وCASRAI وجامعة نيفادا (معدل الصرف burn rate)، وWFP وDarwin Initiative (الإطار المنطقي وSMART)،
+   ومعايير OECD DAC للتقييم. «التسليم في الموعد» و«معدل الاستيعاب» تعريفان داخليان، وحدود الألوان داخلية مذكورة في ⓘ. */
+const clamp01 = x => Math.max(0, Math.min(1, x));
+const NA = why => ({na: true, why});
+/* ⓘ: زر يفتح شرح الصيغة (عنصر details مقروء بلوحة المفاتيح وقارئ الشاشة) */
+const inf = txt => '<details class="inf"><summary aria-label="كيف يُحسب؟">ⓘ</summary><p>' + txt + '</p></details>';
+const naTxt = v => '<span class="st-na">غير متاح</span><small class="na-why">' + esc(v.why) + '</small>';
+/* مقاييس مشروع واحد في تاريخ اليوم */
+function stMetrics(p){
+  const {A, E, F, ADM} = fin(p), {s, e} = spanOf(p);
+  const S0 = s && toDate(s), E0 = e && toDate(e);
+  const time = S0 && E0 && E0 > S0 ? clamp01((today - S0) / (E0 - S0)) : null;
+  const spent = A ? F / A : null;
+  const items = planOf(p).filter(x => !x._draft), dated = items.filter(x => x.start && x.end);
+  let pv = 0, ev = 0;
+  dated.forEach(it => { const a = toDate(it.start), b = toDate(it.end); pv += clamp01((today - a) / Math.max(DAY, b - a + DAY)); ev += itemProg(it, today); });
+  const lateIt = items.filter(itemLate), ages = lateIt.map(it => days(toDate(it.end), today));
+  const in30 = new Date(today.getTime() + 30 * DAY);
+  const upStages = stagesOf(p).filter(g => g.start && toDate(g.start) >= today && toDate(g.start) <= in30 && g.state !== 'done');
+  const dels = delsOf(p), dueNow = dels.filter(d => d.due && toDate(d.due) <= today);
+  const onTime = dueNow.filter(d => d.status === 'صدر' && (!d.issued || d.issued <= d.due)).length;
+  const lateD = dels.filter(d => d.status !== 'صدر' && d.due && toDate(d.due) < today), upD = dels.filter(d => d.status !== 'صدر' && d.due && toDate(d.due) >= today && toDate(d.due) <= in30);
+  /* آخر تعديل للبنود: يُستعمل إن أرسله الجسر (edited أو lastEdited)، وإلا لا يُقدَّر */
+  const eds = items.map(it => it.edited || it.lastEdited).filter(Boolean).sort();
+  return {p, A, E, F, ADM, time, spent, gap: spent != null && time != null ? (spent - time) * 100 : null,
+    n: dated.length, pv, ev, spi: pv > 0 ? ev / pv : null, items: items.length, lateIt: lateIt.length, maxAge: ages.length ? Math.max(...ages) : 0,
+    upStages, dueNow: dueNow.length, onTime, lateD, upD, lastEdit: eds.length ? eds[eds.length - 1] : null, hasEdits: items.some(it => 'edited' in it || 'lastEdited' in it),
+    over: isLate(p), benef: hasVal(p.benef) ? num(p.benef) : null};
+}
+/* حال المحور: لون وأيقونة وكلمة (ليس باللون وحده) */
+const ST_WORD = {ok: ['ok', 'check'], warn: ['warn', 'alert'], bad: ['bad', 'alert'], na: ['na', 'clock']};
+const stBadge = (k, word) => '<span class="st-badge ' + k + '">' + icon(ST_WORD[k][1]) + word + '</span>';
+/* المؤشرات (المحور 5): من الجسر بإجراء indicator_list؛ قبل تحديثه «يتطلب تحديث الجسر» */
+let IND = {state: null, list: []};
+async function indLoad(force){
+  if(SOURCE !== 'live'){ IND = {state: 'local', list: []}; return IND; }
+  if(IND.state !== null && !force) return IND;
+  try{ const d = await post({action: 'indicator_list', org: ORG}); IND = {state: true, list: d.indicators || []}; }
+  catch(err){ IND = {state: /غير معروف|unknown|not found|لا يوجد إجراء/i.test(err.message || '') ? false : 'error', list: [], err: err.message}; }
+  return IND;
+}
+const indOf = p => IND.list.filter(x => x.project === p.id);
+/* الإنجاز = (الحالي − الأساس) ÷ (الهدف − الأساس)، مقصوصًا بين 0 و100%؛ بلا أساس أو هدف لا يُحسب */
+function indAch(x){
+  const b = hasVal(x.baseline) ? Number(x.baseline) : null, t = hasVal(x.target) ? Number(x.target) : null, c = hasVal(x.current) ? Number(x.current) : null;
+  if(b == null || t == null || t === b) return null;
+  return c == null ? 0 : clamp01((c - b) / (t - b));
+}
+function stAxes(rows){
+  const M = rows.map(stMetrics), mOK = can.money();
+  const sum = (k, f) => M.filter(f || (() => true)).reduce((s, m) => s + (m[k] || 0), 0);
+  /* 1) المحفظة */
+  const t = agg(rows), byStatus = groupBy(rows, 'status').sort((a, b) => b.n - a.n);
+  const noA = M.filter(m => !m.A).length, overSpend = M.filter(m => m.A && m.F > m.A + .5).length;
+  const ax1 = {k: noA === rows.length ? 'na' : t.bad || overSpend ? 'bad' : noA ? 'warn' : 'ok'};
+  ax1.word = {ok: 'سليمة', warn: 'بيانات ناقصة', bad: 'مخالفات في المبالغ', na: 'غير متاح'}[ax1.k];
+  ax1.main = mOK ? (t.A ? moneyOf(t.A) : '—') : AR(t.n);
+  ax1.sub = cnt(t.n, W_PROJ) + (noA ? ' | ' + AR(noA) + ' بلا مبلغ معتمد' : '') + (t.bad ? ' | ' + AR(t.bad) + ' تخالف المعادلة' : '');
+  /* 2) الجدول (EVM مبسّط على بنود الخطة المؤرّخة) */
+  const PV = sum('pv'), EV = sum('ev'), N = sum('n'), spi = PV > 0 ? EV / PV : null;
+  const lateN = sum('lateIt'), overN = M.filter(m => m.over).length;
+  const ax2 = {k: spi == null ? 'na' : spi >= .95 ? 'ok' : spi >= .8 ? 'warn' : 'bad'};
+  ax2.word = {ok: 'في الموعد', warn: 'تأخر طفيف', bad: 'متأخر', na: 'غير متاح'}[ax2.k];
+  ax2.main = spi == null ? 'غير متاح' : 'SPI ' + stNum(spi, 2);
+  ax2.sub = spi == null ? (N ? 'لم يحن موعد أي بند مؤرّخ بعد' : 'لا بنود خطة بتاريخي بداية ونهاية') : 'المخطط ' + pct(PV / N) + ' | الفعلي ' + pct(EV / N) + (lateN ? ' | ' + AR(lateN) + ' بنود متأخرة' : '');
+  /* 3) المال: معدل الصرف مقابل الوقت المنقضي */
+  const MB = M.filter(m => m.spent != null && m.time != null), AB = MB.reduce((s, m) => s + m.A, 0);
+  const sp = AB ? MB.reduce((s, m) => s + m.F, 0) / AB : null, tm = AB ? MB.reduce((s, m) => s + m.A * m.time, 0) / AB : null;
+  const gaps = MB.filter(m => Math.abs(m.gap) > 20);
+  const ax3 = {k: !mOK ? 'na' : sp == null ? 'na' : gaps.length ? 'bad' : MB.some(m => Math.abs(m.gap) > 10) ? 'warn' : 'ok'};
+  ax3.word = !mOK ? 'المبالغ مخفية' : {ok: 'متوازن', warn: 'يحتاج متابعة', bad: 'فجوة صرف', na: 'غير متاح'}[ax3.k];
+  ax3.main = !mOK || sp == null ? 'غير متاح' : fmtGap((sp - tm) * 100);
+  ax3.sub = !mOK ? 'لا صلاحية لعرض المبالغ' : sp == null ? 'لا مشروع بمبلغ معتمد ومدة معروفة' : 'صرف ' + pct(sp) + ' مقابل وقت منقضٍ ' + pct(tm) + (gaps.length ? ' | ' + AR(gaps.length) + ' فوق 20 نقطة' : '');
+  /* 4) الالتزام */
+  const due = sum('dueNow'), ot = sum('onTime'), lateD = M.reduce((s, m) => s + m.lateD.length, 0), upD = M.reduce((s, m) => s + m.upD.length, 0);
+  const rate = due ? ot / due : null;
+  const ax4 = {k: rate == null ? (lateD ? 'warn' : 'na') : rate >= .9 && !lateD ? 'ok' : rate >= .7 ? 'warn' : 'bad'};
+  ax4.word = {ok: 'ملتزم', warn: 'يحتاج متابعة', bad: 'تأخر في التسليم', na: 'غير متاح'}[ax4.k];
+  ax4.main = rate == null ? 'غير متاح' : pct(rate);
+  ax4.sub = (rate == null ? 'لم يحن موعد أي مستحق بعد' : 'التسليم في الموعد: ' + AR(ot) + ' من ' + AR(due)) + (lateD ? ' | ' + AR(lateD) + ' متأخرة' : '') + (upD ? ' | ' + AR(upD) + ' خلال 30 يومًا' : '');
+  /* 5) مؤشرات النتائج */
+  const ids = new Set(rows.map(p => p.id)), inds = IND.state === true ? IND.list.filter(x => ids.has(x.project)) : [];
+  const achs = inds.map(indAch).filter(x => x != null), avg = achs.length ? achs.reduce((a, b) => a + b, 0) / achs.length : null;
+  const ax5 = {k: IND.state !== true || avg == null ? 'na' : avg >= .7 ? 'ok' : avg >= .4 ? 'warn' : 'bad'};
+  ax5.word = IND.state === false ? 'يتطلب تحديث الجسر' : IND.state === 'local' ? 'يتطلب الاتصال بالجسر' : IND.state === null ? 'جارٍ التحميل' : IND.state === 'error' ? 'تعذّر التحميل' :
+    avg == null ? (inds.length ? 'بلا أساس أو هدف' : 'لا مؤشرات بعد') : {ok: 'على المسار', warn: 'دون المتوقع', bad: 'بعيد عن الهدف'}[ax5.k];
+  ax5.main = avg == null ? 'غير متاح' : pct(avg);
+  ax5.sub = IND.state === true ? AR(inds.length) + ' مؤشرًا | ' + AR(achs.length) + ' قابلة للحساب' : ax5.word;
+  return {M, t, byStatus, noA, overSpend, PV, EV, N, spi, lateN, overN, MB, sp, tm, gaps, due, ot, rate, lateD, upD, inds, achs, avg, ax: [ax1, ax2, ax3, ax4, ax5]};
+}
+const moneyOf = v => money(v);
+const stNum = (x, d) => AR(Number(x).toFixed(d)).replace(/[٬,]/g, '');
+const fmtGap = g => (g > 0 ? '+' : g < 0 ? '−' : '') + stNum(Math.abs(g), 0) + ' نقطة';
+const AX_INFO = [
+  'مجموع المبلغ المعتمد للمشاريع المعروضة (حقل «المبلغ الكلي» في نوشن). الحال: «مخالفات» إن خالف مشروع معادلة المبالغ (الكلي − الإدارية = التنفيذ حسب الاعتماد) أو تجاوز المنفَّذ المعتمد، و«بيانات ناقصة» إن خلا مشروع من المبلغ المعتمد. الحدود داخلية.',
+  'مؤشر الجدول SPI = القيمة المكتسبة EV ÷ القيمة المخططة PV (منهج PMI لإدارة القيمة المكتسبة)، ويُحسب هنا على بنود الخطة التي لها تاريخا بداية ونهاية بوزن متساوٍ: المخطط = ما انقضى من مدة البند حتى اليوم، والفعلي = إنجاز البند (منجز 100%، وإلا نسبته المسجّلة، وإلا 50% للجاري). أكبر من 1 أسرع من الخطة. الحدود (داخلية): 0.95 فأكثر في الموعد، و0.8 فأكثر تأخر طفيف، وأقل متأخر.',
+  'معدل الصرف (burn rate، كما في إرشادات CASRAI وجامعة نيفادا): نسبة المنفَّذ (حقل «مبلغ التنفيذ الفعلي») من المبلغ المعتمد مقابل نسبة الوقت المنقضي من مدة المشروع، مرجّحتين بالمبلغ المعتمد. الفجوة بالنقاط = الصرف − الوقت؛ تنبيه عند فرق أكبر من 20 نقطة في أي مشروع، و«يحتاج متابعة» بين 10 و20. ليس سجل صرف يومي.',
+  'التسليم في الموعد (تعريف داخلي) = المستحقات والتقارير الصادرة في موعدها أو قبله ÷ كل ما حلّ موعده حتى اليوم. الحدود (داخلية): 90% فأكثر بلا متأخر ملتزم، و70% فأكثر يحتاج متابعة، وأقل تأخر في التسليم.',
+  'متوسط إنجاز مؤشرات النتائج (الإطار المنطقي وSMART كما عند WFP وDarwin Initiative): لكل مؤشر الإنجاز = (الحالي − الأساس) ÷ (الهدف − الأساس) مقصوصًا بين 0 و100%، والمؤشر بلا أساس أو هدف لا يُحسب. الحدود (داخلية): 70% فأكثر على المسار، و40% فأكثر دون المتوقع.'
+];
+const AX_T = ['المحفظة', 'الجدول الزمني', 'المال', 'الالتزام', 'مؤشرات النتائج'];
+function stSummary(X){
+  return '<section class="st-sum" aria-label="ملخص المحاور الخمسة">' + X.ax.map((a, i) =>
+    '<button type="button" class="st-card ' + a.k + '" data-stax="' + (i + 1) + '" aria-label="' + esc(AX_T[i] + ': ' + a.main + '، ' + a.word + '. ' + a.sub + '. انتقل إلى القسم') + '"><span class="st-h">' + AX_T[i] + '</span><b>' + esc(a.main) + '</b>' +
+      stBadge(a.k, a.word) + '<small>' + esc(a.sub) + '</small></button>').join('') + '</section>';
+}
+/* قسم محور قابل للطي: عنوان وحال وⓘ ثم المحتوى */
+/* الأقسام مفتوحة على الحاسوب ومطوية على الجوال (الملخص فوقها ينقل إلى أي منها)، ويُحفظ ما فتحه المستخدم أثناء الجلسة */
+const ST_OPEN = {};
+document.addEventListener('toggle', e => { if(e.target.matches && e.target.matches('details.st-ax')) ST_OPEN[e.target.id] = e.target.open; }, true);
+const stSection = (i, X, body) => '<details class="st-ax" id="st-ax' + i + '"' + ((ST_OPEN['st-ax' + i] ?? !matchMedia('(max-width:640px)').matches) ? ' open' : '') + '><summary><h2>' + AX_T[i - 1] + '</h2>' + stBadge(X.ax[i - 1].k, X.ax[i - 1].word) + icon('chevron-down') + '</summary>' +
+  '<div class="st-axb"><div class="st-def">' + inf(AX_INFO[i - 1]) + '<span>طريقة الحساب</span></div>' + body + '</div></details>';
+const mrow = (k, v, info, cls) => '<div class="mrow' + (cls ? ' ' + cls : '') + '"><span>' + k + (info ? inf(info) : '') + '</span><b>' + v + '</b></div>';
+/* محتوى المحاور: يُركَّب من المقاييس، ومن بطاقات الإحصائيات القائمة في مواضعها (تبقى بعناوينها لتصفية الصلاحيات gateStats) */
+function stBodies(X, rows, cards){
+  const mOK = can.money(), MV = v => mOK ? money0(v) : '<span class="st-na">مخفي</span>';
+  const list = (arr, f, empty) => arr.length ? '<ul class="st-list">' + arr.slice(0, 8).map(f).join('') + (arr.length > 8 ? '<li class="more">و' + AR(arr.length - 8) + ' أخرى</li>' : '') + '</ul>' : '<p class="note">' + empty + '</p>';
+  const pl = m => '<a href="#' + encodeURIComponent(m.p.code || m.p.id) + '">' + esc((m.p.code ? m.p.code + ' | ' : '') + m.p.name) + '</a>';
+  const t = X.t;
+  /* 1) المحفظة */
+  const orgName = (ORGS[ORG] || {}).name || ORG;
+  const benefNo = X.M.filter(m => m.benef == null);
+  const b1 = '<div class="st-grid">' +
+    '<div class="st-box"><h3>حسب الحالة</h3>' + X.byStatus.map(g => mrow(esc(g.key), AR(g.n))).join('') + '</div>' +
+    '<div class="st-box"><h3>المبالغ</h3>' +
+      mrow('قيمة المنح المعتمدة', t.A ? MV(t.A) : naTxt(NA('لا مبالغ معتمدة مسجّلة')), 'مجموع حقل «المبلغ الكلي» في نوشن للمشاريع المعروضة.') +
+      mrow('المصروف الفعلي (المنفَّذ)', t.F ? MV(t.F) : naTxt(NA('لا مبلغ تنفيذ فعلي مسجّل')), 'مجموع حقل «مبلغ التنفيذ الفعلي»، وإن خلا فالتنفيذ حسب الاعتماد ناقص المصاريف التشغيلية (كما في بطاقة المشروع).') +
+      mrow('المتبقي', t.A ? MV(t.A - t.F) : naTxt(NA('لا مبالغ معتمدة')), 'المبلغ المعتمد − المصروف الفعلي.') + '</div>' +
+    '<div class="st-box"><h3>حسب المؤسسة</h3>' + mrow(esc(orgName), AR(t.n) + (mOK && t.A ? ' | ' + money(t.A) : '')) +
+      '<p class="note">لكل مؤسسة صفحتها وبياناتها؛ اختر المؤسسة الأخرى من أعلى الصفحة.' + inf('المشاريع المحمّلة في هذه الصفحة لمؤسسة واحدة، فالمقارنة بين مديكس وهيوميرا تتم بالتبديل بينهما، ولا يُجمع رقم لم يُحمَّل.') + '</p></div>' +
+    '<div class="st-box"><h3>المستفيدون</h3>' + mrow('المجموع المسجّل', AR(Math.round(t.benef)), 'مجموع حقل «عدد المستفيدين» للمشاريع التي سُجّل لها عدد، ولا يُقدَّر الباقي.') +
+      mrow('مشاريع سُجّل لها عدد', AR(X.M.length - benefNo.length) + ' من ' + AR(X.M.length)) +
+      '<h4>غير مسجّل</h4>' + list(benefNo, m => '<li>' + pl(m) + '</li>', 'سُجّل العدد لكل المشاريع المعروضة.') + '</div></div>' +
+    (cards.counters || '') + '<div class="sgrid">' + (cards.donut || '') + (cards.donor || '') + (cards.country || '') + (cards.type || '') + (cards.coord || '') + (cards.phase || '') + (cards.month || '') + '</div>';
+  /* 2) الجدول الزمني */
+  const ageB = [['≤ 7 أيام', 0, 7], ['8–30 يومًا', 8, 30], ['31–90 يومًا', 31, 90], ['أكثر من 90', 91, 1e9]];
+  const lateItems = X.M.flatMap(m => planOf(m.p).filter(x => !x._draft && itemLate(x)).map(it => ({m, it, age: days(toDate(it.end), today)})));
+  const ups = X.M.flatMap(m => m.upStages.map(g => ({m, g}))).sort((a, b) => a.g.start < b.g.start ? -1 : 1);
+  const b2 = '<div class="st-grid">' +
+    '<div class="st-box"><h3>المخطط مقابل الفعلي</h3>' +
+      mrow('الإنجاز المخطط حتى اليوم (PV)', X.N ? pct(X.PV / X.N) : naTxt(NA('لا بنود خطة مؤرّخة')), 'متوسط ما انقضى من مدة كل بند مؤرّخ حتى اليوم.') +
+      mrow('الإنجاز الفعلي (EV)', X.N ? pct(X.EV / X.N) : naTxt(NA('لا بنود خطة مؤرّخة')), 'متوسط إنجاز البنود نفسها.') +
+      mrow('مؤشر الجدول SPI', X.spi == null ? naTxt(NA(X.N ? 'لم يحن موعد أي بند بعد' : 'لا بنود خطة مؤرّخة')) : stNum(X.spi, 2) + ' ' + stBadge(X.ax[1].k, X.ax[1].word), 'EV ÷ PV؛ أكبر من 1 أسرع من الخطة.') +
+      mrow('بنود قابلة للقياس', AR(X.N) + ' من ' + AR(X.M.reduce((s, m) => s + m.items, 0)), 'البنود التي لها تاريخا بداية ونهاية؛ غيرها لا يدخل الحساب.') + '</div>' +
+    '<div class="st-box"><h3>البنود المتأخرة وأعمارها</h3>' + mrow('المجموع', AR(lateItems.length), 'بنود لم تُنجز وتجاوزت تاريخ نهايتها.', lateItems.length ? 'bad' : '') +
+      ageB.map(([l, a, b]) => mrow(l, AR(lateItems.filter(x => x.age >= a && x.age <= b).length))).join('') + '</div>' +
+    '<div class="st-box"><h3>مراحل تبدأ خلال 30 يومًا</h3>' + list(ups, x => '<li>' + pl(x.m) + '<small>' + esc(x.g.name) + ' | ' + dayLbl(x.g.start, false) + '</small></li>', 'لا مراحل تبدأ خلال 30 يومًا.') + '</div>' +
+    '<div class="st-box"><h3>مشاريع تجاوزت نهايتها</h3>' + list(X.M.filter(m => m.over), m => '<li>' + pl(m) + '<small>منذ ' + cnt(days(toDate(m.p.end), today), W_DAY) + '</small></li>', 'لا مشروع جارٍ تجاوز نهايته.') + '</div></div>';
+  /* 3) المال */
+  const E = X.M.reduce((s, m) => s + m.E, 0), F = X.M.reduce((s, m) => s + m.F, 0), ADM = X.M.reduce((s, m) => s + m.ADM, 0);
+  const b3 = !mOK ? '<p class="note">لا صلاحية لعرض المبالغ لهذا الحساب، فلا تُعرض مؤشرات المال.</p>' : '<div class="st-grid">' +
+    '<div class="st-box"><h3>معدل الصرف</h3>' +
+      mrow('نسبة الصرف', X.sp == null ? naTxt(NA('لا مشروع بمبلغ معتمد ومدة معروفة')) : pct(X.sp), 'المنفَّذ ÷ المعتمد، مرجّحة بالمبلغ المعتمد.') +
+      mrow('نسبة الوقت المنقضي', X.tm == null ? naTxt(NA('لا مدة معروفة')) : pct(X.tm), 'ما انقضى من مدة كل مشروع، مرجّحًا بمبلغه المعتمد.') +
+      mrow('الفجوة', X.sp == null ? naTxt(NA('لا بيانات')) : fmtGap((X.sp - X.tm) * 100), 'الصرف − الوقت بالنقاط؛ الموجب صرف أسرع من الوقت.') + '</div>' +
+    '<div class="st-box"><h3>فجوة أكبر من 20 نقطة</h3>' + list(X.gaps.sort((a, b) => Math.abs(b.gap) - Math.abs(a.gap)), m => '<li>' + pl(m) + '<small>صرف ' + pct(m.spent) + ' مقابل وقت ' + pct(m.time) + ' | ' + fmtGap(m.gap) + '</small></li>', 'لا مشروع بفجوة أكبر من 20 نقطة.') + '</div>' +
+    '<div class="st-box"><h3>النسبة الإدارية</h3>' + mrow('المعتمدة', t.A ? pct(ADM / t.A) : naTxt(NA('لا مبالغ معتمدة')), 'مجموع حقل «النسبة الإدارية» ÷ المبلغ المعتمد.') +
+      mrow('الفعلية', naTxt(NA('لا سجل صرف إداري في بيانات المشاريع')), 'تحتاج سجل المصروف الإداري الفعلي لكل مشروع، ولا يُقدَّر.') + '</div>' +
+    '<div class="st-box"><h3>مؤشر التكلفة CPI</h3>' + mrow('CPI = EV ÷ AC', naTxt(NA('لا ميزانية موزّعة على المراحل')), 'يُحسب فقط إن وُزّعت الميزانية على مراحل الخطة (القيمة المكتسبة بالمال)، وهذا غير مسجّل بعد.') +
+      mrow('المتبقي للتنفيذ', E ? money0(E - F) : naTxt(NA('لا مبلغ تنفيذ معتمد')), 'التنفيذ حسب الاعتماد − المنفَّذ.') + '</div></div>' + '<div class="sgrid">' + (cards.coll || '') + '</div>';
+  /* 4) الالتزام */
+  const lateDs = X.M.flatMap(m => m.lateD.map(d => ({m, d}))), upDs = X.M.flatMap(m => m.upD.map(d => ({m, d}))).sort((a, b) => a.d.due < b.d.due ? -1 : 1);
+  const anyEd = X.M.some(m => m.hasEdits), stale = X.M.filter(m => m.items && m.lastEdit && days(toDate(m.lastEdit.slice(0, 10)), today) > 30);
+  const b4 = '<div class="st-grid">' +
+    '<div class="st-box"><h3>التسليم في الموعد</h3>' + mrow('النسبة', X.rate == null ? naTxt(NA('لم يحن موعد أي مستحق بعد')) : pct(X.rate), 'تعريف داخلي: الصادر في موعده أو قبله ÷ كل ما حلّ موعده حتى اليوم.') +
+      mrow('حلّ موعده', AR(X.due)) + mrow('صدر في موعده', AR(X.ot)) + '</div>' +
+    '<div class="st-box"><h3>متأخرة</h3>' + list(lateDs, x => '<li>' + pl(x.m) + '<small>' + esc(delName(x.d)) + ' | منذ ' + cnt(days(toDate(x.d.due), today), W_DAY) + '</small></li>', 'لا مستحقات ولا تقارير متأخرة.') + '</div>' +
+    '<div class="st-box"><h3>قادمة خلال 30 يومًا</h3>' + list(upDs, x => '<li>' + pl(x.m) + '<small>' + esc(delName(x.d)) + ' | ' + dayLbl(x.d.due, false) + '</small></li>', 'لا مستحقات خلال 30 يومًا.') + '</div>' +
+    '<div class="st-box"><h3>بلا تحديث منذ 30 يومًا</h3>' + (anyEd ? list(stale, m => '<li>' + pl(m) + '<small>آخر تعديل ' + dayLbl(m.lastEdit.slice(0, 10), false) + '</small></li>', 'كل المشاريع حُدّثت بنودها خلال 30 يومًا.')
+      : mrow('المشاريع', naTxt(NA('الجسر لا يرسل تاريخ آخر تعديل للبند')), 'يحتاج تاريخ آخر تعديل لكل بند (edited) من نوشن، ولا يُقدَّر من غيره.')) + '</div></div>' +
+    '<div class="sgrid">' + (cards.miss || '') + '</div>';
+  /* 5) مؤشرات النتائج */
+  let b5;
+  if(IND.state !== true) b5 = '<p class="st-bridge">' + icon('clock') + (IND.state === false ? 'يتطلب تحديث الجسر: تظهر هنا مؤشرات النتائج (مخرج/نتيجة/أثر) حين يدعم الجسر قاعدة المؤشرات، وتُضاف من بطاقة كل مشروع.' :
+    IND.state === 'local' ? 'يتطلب الاتصال بالجسر — النسخة المحلية لا تحمل مؤشرات.' : IND.state === 'error' ? 'تعذّر تحميل المؤشرات: ' + esc(IND.err || '') : 'جارٍ تحميل المؤشرات…') + '</p>';
+  else {
+    const lv = ['مخرج', 'نتيجة', 'أثر'].map(l => { const xs = X.inds.filter(x => x.level === l), a = xs.map(indAch).filter(v => v != null); return {l, n: xs.length, avg: a.length ? a.reduce((s, v) => s + v, 0) / a.length : null}; });
+    const uncomp = X.inds.filter(x => indAch(x) == null);
+    b5 = '<div class="st-grid"><div class="st-box"><h3>حسب المستوى</h3>' + lv.map(o => mrow(o.l + ' (' + AR(o.n) + ')', o.avg == null ? naTxt(NA(o.n ? 'بلا أساس أو هدف' : 'لا مؤشرات')) : pct(o.avg))).join('') + '</div>' +
+      '<div class="st-box st-wide"><h3>المؤشرات</h3>' + (X.inds.length ? '<ul class="st-list ind">' + X.inds.map(x => { const a = indAch(x), p = DATA.projects.find(y => y.id === x.project);
+        return '<li><span><b>' + esc(x.name) + '</b><small>' + esc([p && p.code, x.level, x.unit].filter(Boolean).join(' | ')) + '</small></span>' + (a == null ? '<span class="st-na">غير متاح</span>' :
+          '<span class="ach"><i style="width:' + Math.round(a * 100) + '%"></i></span><b>' + pct(a) + '</b>') + '</li>'; }).join('') + '</ul>' : '<p class="note">لا مؤشرات للمشاريع المعروضة بعد — أضفها من بطاقة المشروع.</p>') + '</div>' +
+      (uncomp.length ? '<div class="st-box"><h3>لا تُحسب</h3>' + list(uncomp, x => '<li>' + esc(x.name) + '<small>ينقصه ' + [hasVal(x.baseline) ? '' : 'الأساس', hasVal(x.target) ? '' : 'الهدف'].filter(Boolean).join(' و') + '</small></li>', '') + '</div>' : '') + '</div>';
+  }
+  return [b1, b2, b3, b4, b5];
+}
+/* شريط تصفية الإحصائيات: المؤسسة والمانح والفترة — المرشحات نفسها في الصفحة (S.donor وS.year) */
+function stFilters(){
+  const donors = uniq('donor'), years = uniq('year').sort().reverse();
+  return '<section class="st-flt" aria-label="تصفية الإحصائيات">' +
+    '<div class="st-org" role="group" aria-label="المؤسسة">' + Object.keys(ORGS).map(o => '<a href="projects.html' + (o === 'medics' ? '' : '?org=' + o) + (EMBED ? (o === 'medics' ? '?' : '&') + 'embed=1' : '') + '#stats"' + (o === ORG ? ' aria-current="page" class="on"' : '') + '>' + esc(ORGS[o].name || o) + '</a>').join('') + '</div>' +
+    '<label class="fld">المانح<select data-stf="donor"><option value="">كل المانحين</option>' + donors.map(d => '<option' + (d === S.donor ? ' selected' : '') + '>' + esc(d) + '</option>').join('') + '</select></label>' +
+    '<label class="fld">الفترة (سنة الاعتماد)<select data-stf="year"><option value="">كل السنوات</option>' + years.map(y => '<option value="' + esc(y) + '"' + (y === S.year ? ' selected' : '') + '>' + AR(y).replace(/[٬,]/g, '') + '</option>').join('') + '</select></label>' +
+    '<button type="button" class="btn" data-st-csv>' + icon('save') + 'تصدير CSV</button></section>';
+}
+document.addEventListener('change', e => { const s = e.target.closest('[data-stf]'); if(!s) return; S[s.dataset.stf] = s.value; buildFilters(); render(); });
+/* تصدير CSV للجدول كما هو معروض (الأعمدة المسموحة فقط)، بترميز UTF-8 مع BOM ليفتحه Excel بالعربية */
+function stCSV(rows){
+  const cols = stCols(), q = v => { const s = v == null ? '' : String(v); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const csvVal = (c, p) => { const v = c[2](p); return typeof v === 'number' ? (v < 0 || !isFinite(v) ? '' : c[3] === '%' ? (Math.round(v * 1000) / 10) : Math.round(v * 100) / 100) : v; };
+  const lines = [cols.map(c => q(c[1] + (c[3] === '%' ? ' (%)' : ''))).join(',')].concat(rows.map(p => cols.map(c => q(csvVal(c, p))).join(',')));
+  const blob = new Blob(['﻿' + lines.join('\r\n')], {type: 'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'nasaq-stats-' + ORG + '-' + iso(today) + '.csv';
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+}
+/* أعمدة الجدول: الأعمدة القائمة ومقاييس ST1، وأعمدة المال لا تظهر لمن مبالغه مخفية */
+let ST_M = new Map();
+const stm = p => ST_M.get(p.id) || stMetrics(p);
+const ST_EXTRA = [
+  ['spi', 'SPI', p => { const m = stm(p); return m.spi == null ? -1 : m.spi; }],
+  ['gap', 'فجوة الصرف', p => { const m = stm(p); return m.gap == null ? -1e9 : m.gap; }],
+  ['lateN', 'بنود متأخرة', p => stm(p).lateIt],
+  ['ontime', 'التسليم في الموعد', p => { const m = stm(p); return m.dueNow ? m.onTime / m.dueNow : -1; }],
+  ['benef', 'المستفيدون', p => hasVal(p.benef) ? num(p.benef) : -1]
+];
+const MONEY_COLS = ['approved', 'exec', 'net', 'spend', 'adminP', 'recv', 'gap'], PCT_COLS = ['spend', 'adminP', 'recv', 'plan', 'ontime'];
+const stCols = () => TCOLS.concat(ST_EXTRA).filter(c => can.money() || !MONEY_COLS.includes(c[0])).map(c => c.length > 3 ? c : c.concat(PCT_COLS.includes(c[0]) ? '%' : ''));
+/* جدول المشاريع — يُرتَّب بالنقر على العنوان (aria-sort)، والنقر على الصف يفتح المشروع */
+function projTable(rows){
+  const cols = stCols(), col = cols.find(c => c[0] === S.tsort) || cols.find(c => c[0] === 'approved') || cols[0];
+  const sorted = rows.slice().sort((a, b) => { const x = col[2](a), y = col[2](b);
+    return (typeof x === 'string' ? x.localeCompare(y, 'ar', {numeric: true}) : x - y) * S.tdir; });
+  const P = x => x < 0 ? '—' : pct(x);
+  const FMT = {
+    code: p => codeChip(p), name: p => '<a href="#' + encodeURIComponent(p.code || p.id) + '" title="فتح بطاقة المشروع">' + esc(p.name) + '</a>',
+    donor: p => esc(p.donor || '—'), coord: p => esc(p.coordinator || '—'), end: p => p.end ? dayLbl(p.end, false) : '—', status: p => statusPill(p.status),
+    approved: p => money(p.approved), exec: p => money(p.exec),
+    net: p => { const f = fin(p); return (f.F ? money(f.F) : '—') + (f.issues.length ? ' ' + icon('alert') : ''); },
+    spend: p => P(TCOLS.find(c => c[0] === 'spend')[2](p)), adminP: p => P(TCOLS.find(c => c[0] === 'adminP')[2](p)), recv: p => P(TCOLS.find(c => c[0] === 'recv')[2](p)),
+    docs: p => p.docsChecked ? AR((p.docsDone || []).length) + '/' + AR(DOCS_N) : '—', plan: p => P(TCOLS.find(c => c[0] === 'plan')[2](p)),
+    spi: p => { const m = stm(p); return m.spi == null ? '—' : stNum(m.spi, 2); }, gap: p => { const m = stm(p); return m.gap == null ? '—' : fmtGap(m.gap); },
+    lateN: p => { const n = stm(p).lateIt; return n ? AR(n) : '—'; }, ontime: p => { const m = stm(p); return m.dueNow ? pct(m.onTime / m.dueNow) : '—'; },
+    benef: p => hasVal(p.benef) ? AR(Math.round(num(p.benef))) : '<span class="st-na">غير مسجّل</span>'
+  };
+  const CLS = {
+    net: p => fin(p).issues.length ? 'hi' : '', spend: p => TCOLS.find(c => c[0] === 'spend')[2](p) > 1.0001 ? 'hi' : '', recv: p => TCOLS.find(c => c[0] === 'recv')[2](p) >= .9999 ? 'ok' : '',
+    spi: p => { const v = stm(p).spi; return v == null ? '' : v < .8 ? 'hi' : v >= .95 ? 'ok' : ''; }, gap: p => { const g = stm(p).gap; return g != null && Math.abs(g) > 20 ? 'hi' : ''; },
+    lateN: p => stm(p).lateIt ? 'hi' : '', name: () => 'nm'
+  };
+  const body = sorted.map(p => '<tr data-id="' + esc(p.id) + '">' + cols.map(c => { const cl = CLS[c[0]] ? CLS[c[0]](p) : '', ti = c[0] === 'net' && fin(p).issues.length ? ' title="' + esc(fin(p).issues.join(' | ')) + '"' : '';
+    return '<td' + (cl ? ' class="' + cl + '"' : '') + ti + '>' + FMT[c[0]](p) + '</td>'; }).join('') + '</tr>').join('');
+  const head = cols.map(c => '<th aria-sort="' + (c[0] === col[0] ? (S.tdir < 0 ? 'descending' : 'ascending') : 'none') + '"><button type="button" data-sort="' + c[0] + '" class="' + (c[0] === col[0] ? 'on' : '') + '">' + c[1] +
+    (c[0] === col[0] ? (S.tdir < 0 ? ' ' + icon('arrow-down') : ' ' + icon('arrow-up')) : '') + '</button></th>').join('');
+  return card('جدول المشاريع', '<div class="st-scroll" tabindex="0" role="region" aria-label="جدول المشاريع"><table class="st-table"><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table></div>',
+    cnt(rows.length, W_PROJ) + ' | انقر عنوان العمود للترتيب، والصف أو اسم المشروع لفتح بطاقته');
+}
+let ST_ROWS = [];
+document.addEventListener('click', e => {
+  if(e.target.closest('[data-st-csv]')) return stCSV(ST_ROWS);
+  const c = e.target.closest('[data-stax]'); if(!c) return;
+  const sec = document.getElementById('st-ax' + c.dataset.stax); if(!sec) return; sec.open = true;
+  sec.scrollIntoView({block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); sec.querySelector('summary').focus({preventScroll: true});
+});
+
+/* بطاقة «مؤشرات النتائج» في نظرة المشروع العامة: قائمة المؤشرات بإنجازها، وإضافة وتعديل وحذف لمن يحرّر الخطة */
+function indCard(p){
+  if(IND.state === null && SOURCE === 'live') indLoad().then(() => { if(S.sel === p.id) refreshCard('indCard', indCard(p)); });
+  const ok = IND.state === true, xs = ok ? indOf(p) : [], ed = ok && can.plan();
+  const msg = IND.state === false ? 'يتطلب تحديث الجسر: تُضاف المؤشرات وتُحفظ في نوشن حين يدعم الجسر قاعدة المؤشرات.' : IND.state === 'local' || SOURCE !== 'live' ? 'يتطلب الاتصال بالجسر — النسخة المحلية لا تحمل مؤشرات.' :
+    IND.state === 'error' ? 'تعذّر تحميل المؤشرات: ' + esc(IND.err || '') : IND.state === null ? 'جارٍ تحميل المؤشرات…' : '';
+  const rows = xs.map(x => { const a = indAch(x);
+    return '<li><span class="ind-t"><b>' + esc(x.name) + '</b><small>' + esc([x.level, x.unit, x.freq].filter(Boolean).join(' | ')) + (x.measuredAt ? ' | قيس ' + dayLbl(x.measuredAt, false) : '') + '</small>' +
+      '<small>الأساس ' + (hasVal(x.baseline) ? AR(x.baseline) : '—') + ' ← الحالي ' + (hasVal(x.current) ? AR(x.current) : '—') + ' ← الهدف ' + (hasVal(x.target) ? AR(x.target) : '—') + (x.source ? ' | ' + esc(x.source) : '') + '</small></span>' +
+      (a == null ? '<span class="st-na" title="بلا أساس أو هدف">غير متاح</span>' : '<span class="ach" role="img" aria-label="الإنجاز ' + pct(a) + '"><i style="width:' + Math.round(a * 100) + '%"></i></span><b>' + pct(a) + '</b>') +
+      (ed ? '<span class="ind-acts"><button type="button" class="icon-btn sm" data-ind-edit="' + esc(x.id) + '" aria-label="تعديل ' + esc(x.name) + '">' + icon('pencil') + '</button><button type="button" class="icon-btn sm" data-ind-del="' + esc(x.id) + '" aria-label="حذف ' + esc(x.name) + '">' + icon('trash') + '</button></span>' : '') + '</li>'; }).join('');
+  return '<article class="card" id="indCard"><div class="card-h"><h3>مؤشرات النتائج</h3><small>' + (ok ? AR(xs.length) + ' مؤشرًا' : 'SMART: مخرج ونتيجة وأثر') + '</small>' + inf(AX_INFO[4]) +
+    '<span class="end"><button type="button" class="btn soft sm" data-ind-add' + (ed ? '' : ' disabled aria-disabled="true"') + '>' + ICON_PLUS + 'مؤشر</button></span></div>' +
+    (msg ? '<p class="st-bridge">' + icon('clock') + msg + '</p>' : '') + (ok ? (xs.length ? '<ul class="st-list ind">' + rows + '</ul>' : '<p class="note">لا مؤشرات لهذا المشروع بعد.</p>') : '') + '</article>';
+}
+let indEdit = null;
+function indOpen(p, x){
+  indEdit = {p, x}; const f = $('indForm'); f.reset();
+  $('indDlgTitle').textContent = x ? 'تعديل مؤشر' : 'مؤشر نتائج جديد'; $('indDlgSub').textContent = (p.code ? p.code + ' | ' : '') + p.name; $('indMsg').hidden = true;
+  if(x) ['name', 'level', 'unit', 'freq', 'baseline', 'target', 'current', 'measuredAt', 'source'].forEach(k => { if(f.elements[k] && x[k] != null) f.elements[k].value = x[k]; });
+  indPrev(); $('indDlg').showModal();
+}
+function indVals(){ const f = $('indForm'), n = k => f.elements[k].value === '' ? null : Number(f.elements[k].value);
+  return {name: f.elements.name.value.trim(), level: f.elements.level.value, unit: f.elements.unit.value.trim(), freq: f.elements.freq.value, baseline: n('baseline'), target: n('target'), current: n('current'),
+    measuredAt: f.elements.measuredAt.value || null, source: f.elements.source.value.trim()}; }
+function indPrev(){ const v = indVals(), a = indAch(v); $('indPrev').textContent = a == null ? 'الإنجاز لا يُحسب حتى يُدخل خط الأساس والهدف (مختلفين).' : 'الإنجاز المحسوب: ' + pct(a) + ' = (الحالي − الأساس) ÷ (الهدف − الأساس)'; }
+$('indForm').addEventListener('input', indPrev);
+$('indForm').addEventListener('submit', async e => {
+  e.preventDefault(); const E = indEdit; if(!E) return; const v = indVals(), btn = e.submitter || $('indForm').querySelector('[type=submit]');
+  if(!v.name || !v.unit){ toast('اسم المؤشر ووحدته مطلوبان', true); return; }
+  btn.disabled = true; const lbl = btn.textContent; btn.textContent = 'جارٍ الحفظ…';
+  try{
+    const d = await post({action: 'indicator_save', org: ORG, project: E.p.id, indicator: Object.assign(E.x ? {id: E.x.id} : {}, v)});
+    const saved = Object.assign({project: E.p.id}, E.x || {}, v, d.indicator || {});
+    const i = IND.list.findIndex(x => x.id === saved.id); if(i >= 0) IND.list[i] = saved; else IND.list.push(saved);
+    $('indDlg').close(); refreshCard('indCard', indCard(E.p)); toast('حُفظ المؤشر في نوشن');
+  }catch(err){ toast('تعذّر حفظ المؤشر: ' + (err.message || ''), true); }
+  finally{ btn.disabled = false; btn.textContent = lbl; }
+});
+document.addEventListener('click', async e => {
+  const p = DATA.projects.find(x => x.id === S.sel); if(!p) return;
+  if(e.target.closest('[data-ind-add]')) return indOpen(p, null);
+  const ed = e.target.closest('[data-ind-edit]'); if(ed) return indOpen(p, IND.list.find(x => x.id === ed.dataset.indEdit));
+  const dl = e.target.closest('[data-ind-del]'); if(!dl) return;
+  const x = IND.list.find(y => y.id === dl.dataset.indDel); if(!x || !confirm('حذف المؤشر «' + x.name + '»؟')) return;
+  try{ await post({action: 'indicator_delete', org: ORG, id: x.id}); IND.list = IND.list.filter(y => y !== x); refreshCard('indCard', indCard(p)); toast('حُذف المؤشر'); }
+  catch(err){ toast('تعذّر الحذف: ' + (err.message || ''), true); }
+});
 function renderStats(rows){
   if(!rows.length){ $('stats').innerHTML = '<div class="card empty">لا توجد مشاريع تطابق هذه الفلاتر.</div>'; return; }
   const t = agg(rows);
@@ -3362,11 +3829,14 @@ function renderStats(rows){
   const phaseCard = card('مراحل المشاريع الجارية', act.length ? hbars(phases, {
     max: g => g.n, layers: (g, m) => L('e', g.n, m), value: g => AR(g.n) }) : '<p class="note">لا مشاريع جارية.</p>', 'الجارية: ' + AR(act.length));
 
-  $('stats').innerHTML = counters + projTable(rows) +
-    '<div class="sgrid">' + card('تركيبة المبلغ الكلي', donut, 'على المشاريع المسجّل لها اعتماد') + monthCard +
-      donorCard + countryCard + collCard + typeCard + coordCard + missCard + phaseCard + '</div>';
-  $('stats').querySelectorAll(':scope > *, .sgrid > *').forEach((c, i) => { c.classList.add('rise'); c.style.animationDelay = Math.min(i, 10) * 40 + 'ms'; });
+  /* ST1: شريط التصفية، وملخص المحاور الخمسة، ثم قسم قابل للطي لكل محور (فيه بطاقاته)، ثم جدول المشاريع */
+  ST_ROWS = rows; const X = stAxes(rows); ST_M = new Map(X.M.map(m => [m.p.id, m]));
+  const B = stBodies(X, rows, {counters, donut: card('تركيبة المبلغ الكلي', donut, 'على المشاريع المسجّل لها اعتماد'), month: monthCard, donor: donorCard, country: countryCard,
+    coll: collCard, type: typeCard, coord: coordCard, miss: missCard, phase: phaseCard});
+  $('stats').innerHTML = stFilters() + stSummary(X) + B.map((b, i) => stSection(i + 1, X, b)).join('') + projTable(rows);
+  $('stats').querySelectorAll(':scope > *').forEach((c, i) => { c.classList.add('rise'); c.style.animationDelay = Math.min(i, 10) * 40 + 'ms'; });
   gateStats();
+  if(IND.state === null) indLoad().then(() => { if(S.view === 'stats') renderStats(ST_ROWS); });
 }
 
 /* جدول المشاريع — يُرتَّب بالنقر على العنوان، والنقر على الصف يفتح المشروع */
@@ -3381,28 +3851,6 @@ const TCOLS = [
   ['plan', 'الخطة', p => { const pr = planOf(p); return pr.length ? pr.filter(x => x.status === 'منجز').length / pr.length : -1; }]
 ];
 const TEXT_COLS = ['code', 'name', 'donor', 'coord', 'end', 'status'];
-function projTable(rows){
-  const col = TCOLS.find(c => c[0] === S.tsort) || TCOLS[6];
-  const sorted = rows.slice().sort((a, b) => { const x = col[2](a), y = col[2](b);
-    return (typeof x === 'string' ? x.localeCompare(y, 'ar', {numeric: true}) : x - y) * S.tdir; });
-  const P = x => x < 0 ? '—' : pct(x);
-  const V = k => TCOLS.find(c => c[0] === k)[2];
-  const body = sorted.map(p => {
-    const sp = V('spend')(p), rc = V('recv')(p), pl = V('plan')(p);
-    return '<tr data-id="' + esc(p.id) + '"><td>' + codeChip(p) + '</td>' +
-      '<td class="nm"><a href="#' + encodeURIComponent(p.code || p.id) + '" title="فتح بطاقة المشروع">' + esc(p.name) + '</a></td>' +
-      '<td>' + esc(p.donor || '—') + '</td><td>' + esc(p.coordinator || '—') + '</td><td>' + (p.end ? dayLbl(p.end, false) : '—') + '</td><td>' + statusPill(p.status) + '</td>' +
-      '<td>' + money(p.approved) + '</td><td>' + money(p.exec) + '</td>' +
-      (f => '<td class="' + (f.issues.length ? 'hi' : '') + '"' + (f.issues.length ? ' title="' + esc(f.issues.join(' | ')) + '"' : '') + '>' + (f.F ? money(f.F) : '—') + (f.issues.length ? ' ' + icon('alert') : '') + '</td>')(fin(p)) +
-      '<td class="' + (sp > 1.0001 ? 'hi' : '') + '">' + P(sp) + '</td><td>' + P(V('adminP')(p)) + '</td>' +
-      '<td class="' + (rc >= 0.9999 ? 'ok' : '') + '">' + P(rc) + '</td>' +
-      '<td>' + (p.docsChecked ? AR((p.docsDone || []).length) + '/' + AR(DOCS_N) : '—') + '</td><td>' + P(pl) + '</td></tr>';
-  }).join('');
-  const head = TCOLS.map(c => '<th><button type="button" data-sort="' + c[0] + '" class="' + (c[0] === S.tsort ? 'on' : '') + '">' + c[1] +
-    (c[0] === S.tsort ? (S.tdir < 0 ? ' ' + icon('arrow-down') : ' ' + icon('arrow-up')) : '') + '</button></th>').join('');
-  return card('جدول المشاريع', '<div class="st-scroll"><table class="st-table"><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table></div>',
-    cnt(rows.length, W_PROJ) + ' | انقر عنوان العمود للترتيب، والصف أو اسم المشروع لفتح بطاقته');
-}
 
 /* ================= خطة التنفيذ: الحفظ ================= */
 const isTmp = id => /^(tmp|lp)-/.test(String(id || ''));
@@ -3434,6 +3882,10 @@ function autoStart(it){
 let toastT;
 function toast(msg, bad, action){
   const t = $('toast'); t.textContent = msg; t.className = 'toast on' + (bad ? ' bad' : '') + (action ? ' act' : '');
+  /* يُعاد إلى أعلى الطبقة العليا في كل مرة، فيعلو أي نافذة فُتحت بعده (D2: كان يختفي خلف النافذة فيبدو الحفظ معطّلًا) */
+  if(t.showPopover) try{ if(t.matches(':popover-open')) t.hidePopover(); t.showPopover(); }catch(e){}
+  /* وفي النافذة المفتوحة سطر تنبيه داخلها أيضًا لمن لا يرى الإشعار */
+  const dm = document.querySelector('dialog[open] .dlg-msg'); if(dm && bad){ dm.textContent = msg; dm.classList.remove('ok'); dm.hidden = false; }
   if(action){ const b = document.createElement('button'); b.type = 'button'; b.textContent = action.label;
     b.onclick = () => { action.fn(); t.className = 'toast'; }; t.append(' ', b); }
   /* داخل اللوح: أسفل الجزء الظاهر من الإطار لا أسفل الإطار كله */
@@ -3868,39 +4320,153 @@ function editWarn(){
     '. تبقى كما هي، ولا يقفل الإغلاق التعديل ولا يوقف التنبيهات بعد.';
   else f.elements.ack.checked = false;
 }
+/* A9b: الاسم المخصص من الحقل إن ردّه الجسر، وإلا من العنوان المركّب «مشروع <الموحد> - <المخصص> - <المانح>» */
+function customOf(p){
+  if(p.custom != null) return p.custom;
+  const std = String(p.stdName || '').replace(/^مشروع\s+/, ''), parts = String(p.name || '').split(' - ');
+  if(std && parts.length >= 2 && parts[0].replace(/^مشروع\s+/, '') === std){ if(p.donor && parts[parts.length - 1] === p.donor) parts.pop(); return parts.slice(1).join(' - '); }
+  return '';
+}
+const unifiedTitle = (std, custom, donor) => std ? ['مشروع ' + std.replace(/^مشروع\s+/, ''), custom, donor].filter(Boolean).join(' - ') : '';
+/* صلاحية كل حقل (القرار 25: كتلة pedit من الجسر)؛ المالك كل شيء */
+const pedit = k => ACC.owner || !!(ACC.pedit && ACC.pedit[k]);
+/* هل يعرف الجسر project_update؟ يُسأل مرة بنداء تجريبي بلا تغييرات: null لم يُسأل، true يعرفه، false لا */
+let A9B = null;
+async function a9bProbe(p){
+  if(SOURCE !== 'live') return 'local';
+  if(A9B !== null) return A9B;
+  try{ await post({action: 'project_update', org: ORG, id: p.id, code: p.code, dryRun: true, changes: {}}); A9B = true; }
+  catch(err){ A9B = /غير معروف|unknown|not found|لا يوجد إجراء/i.test(err.message || '') ? false : true; }
+  return A9B;
+}
+function editIdsState(state){
+  const f = $('editForm'), on = state === true;
+  const keys = {stdName: 'std', stdNew: 'stdAdd', custom: 'custom', donor: 'donor', donorNew: 'donorAdd', code: 'code'};
+  Object.entries(keys).forEach(([n, k]) => { f.elements[n].disabled = !on || !pedit(k); });
+  $('editIds').classList.toggle('off', !on);
+  $('editBridge').textContent = state === true ? '' : state === 'local' ? 'يتطلب الاتصال بالجسر — النسخة المحلية للعرض فقط.' :
+    state === false ? 'يتطلب تحديث الجسر: تُفعَّل هذه الحقول تلقائيًا حين يدعم الجسر تعديل الاسم والكود والمانح.' : 'جارٍ التحقق من الجسر…';
+  $('editBridge').hidden = state === true;
+}
+function editIdsPreview(){
+  const f = $('editForm'), p = editP; if(!p) return;
+  $('eStdNewWrap').hidden = f.elements.stdName.value !== NEW_OPT; $('eDonorNewWrap').hidden = f.elements.donor.value !== NEW_OPT;
+  const v = editIdsVals(), t = unifiedTitle(v.std, v.custom, v.donor);
+  $('editTitlePrev').textContent = t ? 'الاسم: ' + t + ' | مجلد درايف: ' + (v.code ? v.code + '- ' : '') + t : '';
+}
+function editIdsVals(){
+  const f = $('editForm');
+  const std = f.elements.stdName.value === NEW_OPT ? f.elements.stdNew.value.trim() : f.elements.stdName.value;
+  const donor = f.elements.donor.value === NEW_OPT ? f.elements.donorNew.value.trim() : f.elements.donor.value;
+  return {std, custom: f.elements.custom.value.trim(), donor, code: f.elements.code.value.trim().toUpperCase(), stdAdd: f.elements.stdName.value === NEW_OPT, donorAdd: f.elements.donor.value === NEW_OPT};
+}
 function openEditDlg(p){
   editP = p; const f = $('editForm');
   $('editDlgSub').textContent = (p.code ? p.code + ' | ' : '') + p.name;
   f.elements.status.innerHTML = (PROJ_STATUSES.includes(p.status) ? '' : '<option value="">' + esc(p.status || '— غير محددة —') + '</option>') +
     PROJ_STATUSES.map(s => '<option' + (s === p.status ? ' selected' : '') + '>' + s + '</option>').join('');
   f.elements.start.value = p.start || ''; f.elements.end.value = p.end || ''; f.elements.ack.checked = false;
+  /* الأسماء والكود والمانح (A9b) */
+  const O = DATA.options || {};
+  fillPick(f.elements.stdName, (O.names || []).concat(DATA.projects.map(x => x.stdName)), 'اختر من القائمة'); f.elements.stdName.value = p.stdName || '';
+  fillPick(f.elements.donor, (O.donors || []).concat(DATA.projects.map(x => x.donor)), 'بلا مانح محدد'); f.elements.donor.value = p.donor || '';
+  f.elements.stdNew.value = f.elements.donorNew.value = ''; f.elements.custom.value = customOf(p); f.elements.code.value = p.code || '';
+  delete f.dataset.idsOk; $('editIdWarn').hidden = true; $('editMsg').hidden = true;
+  /* المستفيدون: بصلاحية المبالغ نفسها */
+  $('editBenef').hidden = !can.moneyEdit();
+  f.elements.benef.value = p.benef == null || p.benef === '' ? '' : p.benef; f.elements.benefText.value = p.benefText || '';
+  editIdsPreview(); editIdsState(A9B === null && SOURCE === 'live' ? null : SOURCE !== 'live' ? 'local' : A9B);
   editWarn(); $('editDlg').showModal();
+  if(A9B === null && SOURCE === 'live') a9bProbe(p).then(st => { if(editP === p) editIdsState(st); });
 }
 $('editForm').addEventListener('change', editWarn);
+$('editForm').addEventListener('input', e => { if(e.target.closest('#editIds')){ editIdsPreview(); delete $('editForm').dataset.idsOk; $('editIdWarn').hidden = true; } });
+$('editForm').addEventListener('change', e => { if(e.target.closest('#editIds')) editIdsPreview(); });
 $('editDlg').addEventListener('click', e => { const g = e.target.closest('[data-edit-go]'); if(!g) return; $('editDlg').close(); setTab(g.dataset.editGo, true); });
 $('editForm').addEventListener('submit', async e => {
   e.preventDefault();
   const p = editP; if(!p) return;
   const f = $('editForm'), status = f.elements.status.value, start = f.elements.start.value, end = f.elements.end.value;
+  $('editMsg').hidden = true;
   const sCh = !!status && status !== (p.status || ''), aCh = start !== (p.start || ''), bCh = end !== (p.end || '');
-  if(!sCh && !aCh && !bCh){ $('editDlg').close(); return; }
+  /* المستفيدون (بصلاحية المبالغ): عدد ≥0 أو فارغ، وبيان ≤300 */
+  const bnRaw = f.elements.benef.value.trim(), bn = bnRaw === '' ? null : Math.round(Number(bnRaw)), bt = f.elements.benefText.value.trim();
+  const bnOld = p.benef == null || p.benef === '' ? null : Number(p.benef);
+  const mCh = can.moneyEdit() && (bn !== bnOld || bt !== (p.benefText || ''));
+  /* الأسماء والكود والمانح (A9b): فقط ما تغيّر، وحين يعرف الجسر الإجراء */
+  const v = editIdsVals(), ch = {};
+  if(A9B === true){
+    if(v.std !== (p.stdName || '')) ch.std = v.std;
+    if(v.custom !== customOf(p)) ch.custom = v.custom;
+    if(v.donor !== (p.donor || '')) ch.donor = v.donor;
+    if(v.code && v.code !== (p.code || '')) ch.code = v.code;
+  }
+  const iCh = Object.keys(ch).length > 0;
+  if(!sCh && !aCh && !bCh && !mCh && !iCh){ $('editDlg').close(); return; }
   if(start && end && end < start){ toast('النهاية قبل البداية', true); f.elements.end.focus(); return; }
+  if(bn != null && !(bn >= 0)){ toast('عدد المستفيدين رقم صفر فأكثر', true); f.elements.benef.focus(); return; }
+  if(iCh){
+    if(!v.std){ toast('اختر الاسم الموحّد', true); f.elements.stdName.focus(); return; }
+    if(/[\/\\:*?"<>|]/.test(v.custom + v.std + v.donor)){ toast('الأسماء لا تقبل / \\ : * ? " < > | لأنها تصير اسم مجلد في درايف', true); f.elements.custom.focus(); return; }
+    if(ch.code){
+      const pre = ORG === 'humera' ? /^H\d{3,4}$/ : /^[GE]\d{3,4}$/;
+      if(!pre.test(ch.code)){ toast('الكود بصيغة ' + (ORG === 'humera' ? 'H012' : 'G040 أو E012'), true); f.elements.code.focus(); return; }
+      if(DATA.projects.some(x => x !== p && x.code === ch.code)){ toast('الكود ' + ch.code + ' مستعمل لمشروع آخر', true); f.elements.code.focus(); return; }
+    }
+  }
   if(!$('editAckRow').hidden && !f.elements.ack.checked){ toast('أكّد الإغلاق أولًا: في المشروع ما لم يكتمل', true); f.elements.ack.focus(); return; }
   if(SOURCE !== 'live'){ toast('الحفظ يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true); return; }
-  const btn = e.submitter || f.querySelector('[type=submit]'); btn.disabled = true;
-  const done = [], fin = () => { try{ localStorage.removeItem('daily-board-projects-cache-' + ORG); }catch(err){} render();
+  /* «جارٍ الحفظ…» على الزر ومعطّل حتى يرد الجسر، فلا يُضغط مرتين ولا يبدو بلا استجابة (D2) */
+  const btn = f.querySelector('[type=submit]'); if(btn.disabled) return; const lbl0 = btn.textContent;
+  btn.disabled = true; btn.textContent = 'جارٍ الحفظ…'; btn.setAttribute('aria-busy', 'true'); $('editMsg').hidden = true; $('editMsg').classList.remove('ok');
+  const done = [], notes = [], fin = () => { try{ localStorage.removeItem('daily-board-projects-cache-' + ORG); }catch(err){} render();
     const eb = document.querySelector('#projHead .ph-edit'); if(eb) eb.focus({preventScroll: true}); };
+  const idBody = () => Object.assign({action: 'project_update', org: ORG, id: p.id, code: p.code, lastEdited: p.lastEdited || null, changes: ch},
+    v.stdAdd && 'std' in ch ? {stdAdd: true} : {}, v.donorAdd && 'donor' in ch ? {donorAdd: {name: v.donor}} : {});
   try{
+    /* تغيير الاسم أو الكود: معاينة الجسر أولًا (dryRun) وتحذيراته، ثم الحفظ بضغطة ثانية */
+    if(iCh && f.dataset.idsOk !== JSON.stringify(ch)){
+      const d = await post(Object.assign(idBody(), {dryRun: true}));
+      const w = (d.warnings || []).filter(Boolean), pv = d.preview || {};
+      const lines = [pv.title ? 'الاسم الجديد: ' + pv.title : '', pv.folder ? 'مجلد درايف: ' + pv.folder : '', pv.files != null ? 'ملفات تُعاد تسميتها: ' + AR(pv.files) + (pv.skipped ? '، وتبقى ' + AR(pv.skipped) + ' بأسمائها' : '') : ''].concat(w).filter(Boolean);
+      f.dataset.idsOk = JSON.stringify(ch);
+      if(lines.length){ $('editIdWarn').textContent = lines.join(' — ') + '. اضغط «حفظ» مرة أخرى للتأكيد.'; $('editIdWarn').hidden = false; btn.disabled = false; $('editIdWarn').scrollIntoView({block: 'nearest'}); return; }
+    }
     if(sCh){ const d = await post({action: 'project_status', org: ORG, id: p.id, status}); p.status = (d.project && d.project.status) || status; done.push('الحالة'); }
     if(aCh || bCh){
       const d = await post(Object.assign({action: 'project_dates', org: ORG, id: p.id}, aCh ? {start: start || null} : {}, bCh ? {end: end || null} : {}));
       const r = d.project || {}; if(aCh) p.start = r.start !== undefined ? r.start : start || null; if(bCh) p.end = r.end !== undefined ? r.end : end || null; done.push('التواريخ');
     }
-    $('editDlg').close(); fin(); toast('حُفظت ' + done.join(' و') + ' في نوشن');
+    if(mCh){
+      /* جسر قديم يتجاهل المفتاحين: يُتحقق من القيمة المردودة، ولا يُدّعى الحفظ بلا تأكيد */
+      const d = await post({action: 'project_money', org: ORG, pageId: p.id, money: {benef: bn, benefText: bt}});
+      const r = d.project || {}, okB = 'benef' in r && (r.benef == null ? null : Number(r.benef)) === bn && (r.benefText || '') === bt;
+      if(okB){ p.benef = bn; p.benefText = bt; done.push('المستفيدين'); } else notes.push('المستفيدون لم يُحفظوا: يتطلب تحديث الجسر');
+    }
+    if(iCh){
+      const d = await post(idBody()), r = d.project || {}, oldCode = p.code;
+      /* لا يُدمج إلا ما تغيّر من الرد */
+      ['name', 'code', 'stdName', 'donor', 'custom', 'lastEdited'].forEach(k => { if(r[k] !== undefined) p[k] = r[k]; });
+      if(r.name === undefined) p.name = unifiedTitle(v.std, v.custom, v.donor) || p.name;
+      if(r.code === undefined && ch.code) p.code = ch.code;
+      if(r.stdName === undefined && 'std' in ch) p.stdName = v.std;
+      if(r.donor === undefined && 'donor' in ch) p.donor = v.donor;
+      if(r.custom === undefined && 'custom' in ch) p.custom = v.custom;
+      if(p.code !== oldCode) history.replaceState(history.state, '', selHash(p));
+      done.push('الاسم والكود');
+      if(d.pending && d.pending.length) notes.push('بقيت ' + AR(d.pending.length) + ' ملفات تُعاد تسميتها في الخلفية');
+    }
+    delete f.dataset.idsOk;
+    if(notes.length && !done.length){ fin(); toast(notes.join('، '), true); return; }
+    /* النجاح يُكتب داخل النافذة أولًا ثم تُغلق، والإشعار يبقى بعدها */
+    const okMsg = (done.length ? 'حُفظت ' + done.join(' و') + ' في نوشن' : '') + (notes.length ? '، و' + notes.join('، ') : '');
+    $('editMsg').textContent = okMsg; $('editMsg').classList.toggle('ok', !notes.length); $('editMsg').hidden = false;
+    await new Promise(r => setTimeout(r, 700));
+    $('editDlg').close(); fin(); toast(okMsg, !!notes.length);
   }catch(err){
     if(done.length) fin();
     toast((done.length ? 'حُفظت ' + done.join(' و') + '، وتعذّر الباقي: ' : 'تعذّر الحفظ: ') + (err.message || ''), true);
-  }finally{ btn.disabled = false; }
+  }finally{ btn.disabled = false; btn.textContent = lbl0; btn.removeAttribute('aria-busy'); }
 });
 
 function openPlanDlg(p, it, stage, newStage){
@@ -4053,7 +4619,10 @@ function readHash(first){
   if(!h) return;
   /* #G040/plan: التبويب بعد آخر «/» إن كان من التبويبات، وإلا فالرابط كله كود (#G040 يفتح نظرة عامة) */
   const tm = h.match(/^(.+)\/(overview|plan|money|docs)$/), code = tm ? tm[1] : h;
-  const p = DATA.projects.find(x => x.code === code || x.id === code);
+  let p = DATA.projects.find(x => x.code === code || x.id === code);
+  /* A9b: كود قديم بعد تغييره مرادف مؤقت (aliases من الجسر، 90 يومًا): يُحوَّل الرابط إلى الكود الجديد */
+  if(!p){ const al = (DATA.aliases || []).find(a => a && a.old === code); if(al){ p = DATA.projects.find(x => x.code === al.new);
+    if(p){ history.replaceState(history.state, '', '#' + encodeURIComponent(p.code) + (tm ? '/' + tm[2] : '')); setTimeout(() => toast('تغيّر كود المشروع ' + code + ' إلى ' + p.code), 0); } } }
   if(p){ S.sel = p.id; S.mv = 'detail'; S.tab = tm ? tm[2] : 'overview'; if(S.year && p.year !== S.year) S.year = p.year || '';
     /* فلتر محفوظ يخفي المشروع المطلوب بالرابط: يُفرَّغ ليظهر */
     if(!filtered().some(x => x.id === p.id)){ S.q = S.status = S.donor = S.type = S.std = S.coord = ''; $('q').value = ''; buildFilters(); } }
@@ -4212,7 +4781,8 @@ function renderChips(n){
   $('fltShow').textContent = 'عرض ' + cnt(n, W_PROJ);
   const chips = (S.q.trim() ? [['q', 'بحث', S.q.trim()]] : []).concat(on.map(([k, , l]) => [k, l, S[k]]));
   $('fltChips').innerHTML = chips.map(([k, l, v]) => '<button type="button" class="fchip" data-fchip="' + k + '" aria-label="' + esc('حذف فلتر ' + l + ': ' + v) + '">' + esc(l + ': ' + v) + '<i aria-hidden="true">×</i></button>').join('') +
-    (chips.length > 1 ? '<button type="button" class="fclear" data-fclear>مسح الكل</button>' : '');
+    (chips.length ? '<button type="button" class="fclear" data-fclear>مسح الكل</button>' : '');
+  $('fltClear').hidden = !chips.length;   /* D2: «مسح المرشحات» في الشريط حين يُطبَّق بحث أو فلتر */
 }
 function clearFilters(){ FLT.forEach(([k]) => S[k] = ''); S.q = ''; $('q').value = ''; buildFilters(); render(); }
 document.addEventListener('click', e => {
