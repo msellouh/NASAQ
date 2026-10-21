@@ -110,20 +110,6 @@
   color-scheme:dark;
   }
 }
-/* ضوء اليوم (K3): --day و--day-i يكتبهما NasaqDay (nasaq-core.js) على أوقات الصلاة؛ هنا ما يتبعهما فقط:
-   حقل الضوء خلف المحتوى، ووهج «الآن» و«وقفة»، والكلمة المضاءة. الزر الأساسي والعلامة لا يتبعانه */
-:is(:root,.nq-scope)[data-palette="kahraman"]{
-  --mark-highlight:rgb(var(--day));
-  --day-field:rgba(var(--day),calc(.30 * var(--day-i)));
-  --day-glow-now:rgba(var(--day),calc(.42 * var(--day-i)));
-  --day-glow-waqfa:rgba(var(--day),calc(.3 * var(--day-i)));
-}
-:is(:root,.nq-scope)[data-palette="kahraman"][data-theme="dark"]{ --day-field:rgba(var(--day),calc(.10 * var(--day-i))); }
-@media (prefers-color-scheme:dark){ :is(:root,.nq-scope)[data-palette="kahraman"]:not([data-theme="light"]){ --day-field:rgba(var(--day),calc(.10 * var(--day-i))); } }
-:root[data-palette="kahraman"] body{background-image:radial-gradient(1100px 620px at 88% -8%,var(--day-field),transparent 72%);background-attachment:fixed;transition:background-image 1s}
-:root[data-palette="kahraman"] :is(.c-now,#nowCard){box-shadow:var(--elev-1),0 0 40px -6px var(--day-glow-now);transition:box-shadow 1s}
-:root[data-palette="kahraman"] .c-waqfa{box-shadow:var(--elev-1),0 0 34px -8px var(--day-glow-waqfa);transition:box-shadow 1s}
-:root[data-palette="kahraman"] mark{background:var(--mark-highlight);color:var(--on-glow);transition:background 1s}
 /* المفتاح الكهرماني للشريط (اختيار في الإعدادات، K4) */
 :is(:root,.nq-scope)[data-palette="kahraman"][data-rail-key="amber"]{ --rail-key-rgb:255,178,30; --rail-key-alpha:.92; --rail-key-fg:#0F1110; }
 }
