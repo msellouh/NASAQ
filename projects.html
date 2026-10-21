@@ -329,6 +329,7 @@ html.can-edit .phead :is(.ph-row,h2){padding-inline-end:40px}
 .edit-bridge[hidden]{display:none}
 .edit-ids.off :is(select,input):disabled{cursor:not-allowed}
 #editDlg .fld[hidden]{display:none}
+.dlg-msg.ok{background:var(--done-bg);color:var(--ink)}
 .edit-ack{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-sm);font-weight:600;min-height:24px}
 .edit-go{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--sp-2);font-size:var(--fs-sm);color:var(--muted)}
 
@@ -3507,7 +3508,7 @@ function toast(msg, bad, action){
   /* يُعاد إلى أعلى الطبقة العليا في كل مرة، فيعلو أي نافذة فُتحت بعده (D2: كان يختفي خلف النافذة فيبدو الحفظ معطّلًا) */
   if(t.showPopover) try{ if(t.matches(':popover-open')) t.hidePopover(); t.showPopover(); }catch(e){}
   /* وفي النافذة المفتوحة سطر تنبيه داخلها أيضًا لمن لا يرى الإشعار */
-  const dm = document.querySelector('dialog[open] .dlg-msg'); if(dm && bad){ dm.textContent = msg; dm.hidden = false; }
+  const dm = document.querySelector('dialog[open] .dlg-msg'); if(dm && bad){ dm.textContent = msg; dm.classList.remove('ok'); dm.hidden = false; }
   if(action){ const b = document.createElement('button'); b.type = 'button'; b.textContent = action.label;
     b.onclick = () => { action.fn(); t.className = 'toast'; }; t.append(' ', b); }
   /* داخل اللوح: أسفل الجزء الظاهر من الإطار لا أسفل الإطار كله */
@@ -4038,7 +4039,9 @@ $('editForm').addEventListener('submit', async e => {
   }
   if(!$('editAckRow').hidden && !f.elements.ack.checked){ toast('أكّد الإغلاق أولًا: في المشروع ما لم يكتمل', true); f.elements.ack.focus(); return; }
   if(SOURCE !== 'live'){ toast('الحفظ يحتاج الاتصال بالجسر — النسخة المحلية للعرض فقط', true); return; }
-  const btn = e.submitter || f.querySelector('[type=submit]'); btn.disabled = true;
+  /* «جارٍ الحفظ…» على الزر ومعطّل حتى يرد الجسر، فلا يُضغط مرتين ولا يبدو بلا استجابة (D2) */
+  const btn = f.querySelector('[type=submit]'); if(btn.disabled) return; const lbl0 = btn.textContent;
+  btn.disabled = true; btn.textContent = 'جارٍ الحفظ…'; btn.setAttribute('aria-busy', 'true'); $('editMsg').hidden = true; $('editMsg').classList.remove('ok');
   const done = [], notes = [], fin = () => { try{ localStorage.removeItem('daily-board-projects-cache-' + ORG); }catch(err){} render();
     const eb = document.querySelector('#projHead .ph-edit'); if(eb) eb.focus({preventScroll: true}); };
   const idBody = () => Object.assign({action: 'project_update', org: ORG, id: p.id, code: p.code, lastEdited: p.lastEdited || null, changes: ch},
@@ -4078,11 +4081,15 @@ $('editForm').addEventListener('submit', async e => {
     }
     delete f.dataset.idsOk;
     if(notes.length && !done.length){ fin(); toast(notes.join('، '), true); return; }
-    $('editDlg').close(); fin(); toast((done.length ? 'حُفظت ' + done.join(' و') + ' في نوشن' : '') + (notes.length ? '، و' + notes.join('، ') : ''), !!notes.length);
+    /* النجاح يُكتب داخل النافذة أولًا ثم تُغلق، والإشعار يبقى بعدها */
+    const okMsg = (done.length ? 'حُفظت ' + done.join(' و') + ' في نوشن' : '') + (notes.length ? '، و' + notes.join('، ') : '');
+    $('editMsg').textContent = okMsg; $('editMsg').classList.toggle('ok', !notes.length); $('editMsg').hidden = false;
+    await new Promise(r => setTimeout(r, 700));
+    $('editDlg').close(); fin(); toast(okMsg, !!notes.length);
   }catch(err){
     if(done.length) fin();
     toast((done.length ? 'حُفظت ' + done.join(' و') + '، وتعذّر الباقي: ' : 'تعذّر الحفظ: ') + (err.message || ''), true);
-  }finally{ btn.disabled = false; }
+  }finally{ btn.disabled = false; btn.textContent = lbl0; btn.removeAttribute('aria-busy'); }
 });
 
 function openPlanDlg(p, it, stage, newStage){
