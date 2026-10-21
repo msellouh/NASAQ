@@ -11,7 +11,7 @@
 <!-- تثبيت اللوح كتطبيق (الهاتف والحاسوب) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#F7F6F2">
-<script src="nasaq-core.js?v=20261001a"></script>
+<script src="nasaq-core.js?v=20261021a"></script>
 <script src="nasaq-art.js?v=20261007b"></script>
 <script src="nasaq-icons.js?v=20261002a"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
@@ -146,7 +146,7 @@ h1{font-family:var(--font-head);font-size:var(--fs-display);font-weight:700;marg
 .add button:hover{background:var(--ink-2)}
 #addDetailsBtn{background:var(--surface);color:var(--ink-2);border:1px solid var(--rule);font-size:var(--fs-md)}
 #addDetailsBtn:hover{border-color:var(--ink-2);background:var(--surface)}
-#addDetailsBtn[aria-expanded="true"]{color:var(--focus);border-color:var(--focus)}
+#addDetailsBtn[aria-expanded="true"]{color:var(--focus-ink);border-color:var(--focus)}
 
 .add-details{display:grid;grid-template-columns:150px 1fr 2fr;gap:var(--sp-2);margin-bottom:var(--sp-2)}
 .add-details[hidden]{display:none}
@@ -248,7 +248,7 @@ table.arc{width:100%;border-collapse:collapse;font-size:var(--fs-sm)}
 table.arc th{text-align:right;font-weight:600;color:var(--muted);font-size:var(--fs-xs);padding:var(--sp-1) var(--sp-1);border-bottom:1px solid var(--rule)}
 table.arc td{padding:var(--sp-2) var(--sp-1);border-bottom:1px solid var(--rule);vertical-align:middle}
 table.arc tr:nth-child(even) td{background:var(--stripe)}
-.back{border:0;background:transparent;color:var(--focus);cursor:pointer;font:inherit;font-size:var(--fs-base);padding:0}
+.back{border:0;background:transparent;color:var(--focus-ink);cursor:pointer;font:inherit;font-size:var(--fs-base);padding:0}
 .stats{display:flex;gap:var(--sp-4);flex-wrap:wrap;font-size:var(--fs-sm);color:var(--muted);margin-top:var(--sp-3);border-top:1px solid var(--rule);padding-top:var(--sp-2)}
 .stats b{color:var(--ink);font-weight:600}
 
@@ -391,14 +391,14 @@ body{padding:0}
 .pulse-row{display:grid;grid-template-columns:auto 1fr;gap:var(--sp-3);align-items:start;text-align:start;border:1px solid var(--rule);border-inline-start:3px solid var(--urgent);border-radius:var(--r-lg);background:var(--paper);padding:var(--sp-2) var(--sp-3);color:var(--ink);
   transition:background-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out),border-color calc(var(--dur-2) * var(--motion-scale,1)) var(--ease-out)}
 .pulse-row:hover{background:var(--stripe)}
-.pr-code{font:700 var(--fs-xs)/1 var(--font-head);color:var(--focus);letter-spacing:.3px}
+.pr-code{font:700 var(--fs-xs)/1 var(--font-head);color:var(--focus-ink);letter-spacing:.3px}
 .pr-t{min-width:0;display:grid}
 .pr-t b{font-weight:600;font-size:var(--fs-base);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pr-t small{font-size:var(--fs-xs);color:var(--urgent)}
 .card-head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);flex-wrap:wrap;margin:0 0 var(--sp-3)}
 .card-head h2{display:flex;align-items:center;gap:var(--sp-2);font-family:var(--font-head);font-size:var(--fs-card-head,var(--fs-md));font-weight:700;margin:0;color:var(--ink)}
 .card-head .ic{width:19px;height:19px;color:var(--focus);flex:none}
-.card-link{border:0;background:none;color:var(--focus);font:inherit;font-size:var(--fs-xs);cursor:pointer;padding:2px var(--sp-1)}
+.card-link{border:0;background:none;color:var(--focus-ink);font:inherit;font-size:var(--fs-xs);cursor:pointer;padding:2px var(--sp-1)}
 .card-link:hover{text-decoration:underline}
 .card .sub{font-family:var(--font-head);font-size:var(--fs-base);font-weight:700;margin:var(--sp-4) 0 var(--sp-2);color:var(--ink-2)}
 .card .pri{margin-bottom:0}
@@ -776,7 +776,7 @@ body.focus-open{overflow:hidden}
   .tabbar{position:fixed;inset:auto 0 0 0;z-index:70;flex-direction:row;gap:var(--sp-1);padding:var(--sp-1) var(--sp-2) calc(var(--sp-1) + env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid var(--rule);box-shadow:0 -4px 18px rgba(0,0,0,.06)}
   .tab{flex:1;flex-direction:column;gap:3px;justify-content:center;text-align:center;padding:var(--sp-2) var(--sp-1);font-size:var(--fs-xs)}
   .tab .ic{width:22px;height:22px}
-  .tab.active{background:transparent;color:var(--focus)}
+  .tab.active{background:transparent;color:var(--focus-ink)}
   .content{padding:var(--sp-3) var(--sp-3) var(--sp-8)}
   .greet-card{min-height:0}
   .greet-text{padding:var(--sp-4) var(--sp-4)}
@@ -822,8 +822,8 @@ body.focus-open{overflow:hidden}
 .tabbar-sync{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-xs);color:var(--muted);border:1px solid var(--rule);border-radius:var(--r-pill);padding:var(--sp-1) var(--sp-3);background:var(--board)}
 .tabbar-sync #syncMsg{white-space:nowrap}
 .tabbar-sync #syncTime{white-space:nowrap}
-.tabbar-sync #stateNote{white-space:nowrap;color:var(--focus)}
-.tabbar-sync button{border:0;background:transparent;color:var(--focus);font:inherit;font-size:var(--fs-xs);cursor:pointer;padding:0;text-decoration:underline;white-space:nowrap}
+.tabbar-sync #stateNote{white-space:nowrap;color:var(--focus-ink)}
+.tabbar-sync button{border:0;background:transparent;color:var(--focus-ink);font:inherit;font-size:var(--fs-xs);cursor:pointer;padding:0;text-decoration:underline;white-space:nowrap}
 
 /* ---------- hero photo ---------- */
 .hero{max-width:1080px;margin:0 auto var(--sp-4);border-radius:var(--r-lg);overflow:hidden;background:var(--stripe);border:1px solid var(--rule);position:relative;height:48px}
@@ -928,7 +928,7 @@ body.focus-open{overflow:hidden}
 .cal-head button:hover{border-color:var(--ink-2)}
 .cal-head span{font-family:var(--font-head);font-weight:700}
 .cal-status{font-size:var(--fs-xs);color:var(--muted);min-height:15px;margin-top:2px}
-.cal-day-items .from-notion{color:var(--focus);font-size:var(--fs-xs);margin-inline-start:var(--sp-1)}
+.cal-day-items .from-notion{color:var(--focus-ink);font-size:var(--fs-xs);margin-inline-start:var(--sp-1)}
 .cal-day-items .back{margin-inline-start:var(--sp-2);font-size:var(--fs-sm)}
 .cal-day-items .meta{color:var(--muted);font-size:var(--fs-xs);display:block}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:var(--sp-1);margin-top:var(--sp-2)}
@@ -976,7 +976,7 @@ body.focus-open{overflow:hidden}
 .exp-add button{border:0;border-radius:var(--r-md);background:var(--ink);color:var(--paper);font:inherit;font-size:var(--fs-lg);line-height:1;cursor:pointer}
 .exp-add button:hover{background:var(--ink-2)}
 #expAddDetailsBtn{background:var(--surface);color:var(--ink-2);border:1px solid var(--rule);font-size:var(--fs-md)}
-#expAddDetailsBtn[aria-expanded="true"]{color:var(--focus);border-color:var(--focus)}
+#expAddDetailsBtn[aria-expanded="true"]{color:var(--focus-ink);border-color:var(--focus)}
 .exp-add-details{display:grid;grid-template-columns:150px 1fr 2fr;gap:var(--sp-2);margin-bottom:var(--sp-2)}
 .exp-add-details[hidden]{display:none}
 .exp-add-details input,.exp-add-details textarea{border:1px solid var(--rule);border-radius:var(--r-md);background:var(--surface);font:inherit;font-size:var(--fs-sm);padding:var(--sp-2) var(--sp-2);color:inherit;width:100%}
@@ -1100,11 +1100,11 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 .spotify-signedout p{margin:0 0 var(--sp-2);color:var(--ink-2);font-size:var(--fs-sm)}
 .spotify-signedout button,.spotify-signedin button{border:1px solid var(--rule);background:var(--ink);color:var(--paper);border-radius:var(--r-md);font:inherit;font-size:var(--fs-sm);padding:var(--sp-2) var(--sp-4);cursor:pointer}
 .spotify-signedout button:hover,.spotify-signedin button:hover{background:var(--ink-2)}
-.linklike{background:transparent!important;color:var(--focus)!important;border:0!important;text-decoration:underline;padding:0!important;margin-inline-start:var(--sp-2);cursor:pointer;font-size:var(--fs-xs)!important}
+.linklike{background:transparent!important;color:var(--focus-ink)!important;border:0!important;text-decoration:underline;padding:0!important;margin-inline-start:var(--sp-2);cursor:pointer;font-size:var(--fs-xs)!important}
 #spotifyPlaylist{width:100%;border:1px solid var(--rule);border-radius:var(--r-md);background:var(--surface);font:inherit;font-size:var(--fs-sm);padding:var(--sp-2) var(--sp-2);color:inherit;margin-bottom:var(--sp-2)}
 .spotify-embed-wrap{border-radius:var(--r-lg);overflow:hidden}
 .spotify-hint{font-size:var(--fs-xs);color:var(--muted);margin-top:var(--sp-2)}
-.spotify-hint a{color:var(--focus)}
+.spotify-hint a{color:var(--focus-ink)}
 
 @media (max-width:820px){
   .two-col{grid-template-columns:1fr}
@@ -1542,6 +1542,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <link rel="stylesheet" href="themes/classic.css?v=20261001a">
 <link rel="stylesheet" href="themes/nasaq.css?v=20261001a">
 <link rel="stylesheet" href="themes/nasaq360.css?v=20261001a">
+<link rel="stylesheet" href="themes/kahraman.css?v=20261021b">
 </head>
 <body>
 <a class="skip-link" href="#mainContent">تخطَّ إلى المحتوى</a>
@@ -2380,7 +2381,7 @@ if(NasaqTheme.takeNotice() === 'vibrant') setTimeout(()=>{ try{ showToast('تغ�
 /* ---------- اختيار الطابع: بطاقات معاينة حية ----------
    كل بطاقة نموذج مصغّر (عنوان، ومهمة، وزر) مرسوم بمتغيرات الطابع نفسه: .nq-scope مع data-palette و data-theme
    على البطاقة تعيد حساب ألوانه وخطوطه داخلها. تُستعمل في الإعدادات ← المظهر، وفي خطوة «اختر طابعك». */
-const THEME_ORDER = ['classic', 'nasaq', 'nasaq360'];
+const THEME_ORDER = ['classic', 'nasaq', 'nasaq360', 'kahraman'];   /* كهرمان رابعًا (K1)، والافتراضي يبقى نَسَق */
 function themeCardsHTML(){
   const m = NasaqTheme.isDark() ? 'dark' : 'light';
   return THEME_ORDER.map(k=>{ const t = NASAQ_THEMES[k];
@@ -5255,29 +5256,8 @@ function fmtMinAr(m){
 }
 function minutesAr(n){ return n === 1 ? 'دقيقة' : n === 2 ? 'دقيقتين' : AR(n) + (n <= 10 ? ' دقائق' : ' دقيقة'); }
 /* طريقة الهيئة المصرية العامة للمساحة: الفجر 19٫5°، العشاء 17٫5°، العصر شافعي. تحقّقتُ منها مقابل مواقيت القدس المنشورة */
-const PRAYER_CITY = {lat:31.5017, lng:34.4668};
-const prayerCache = {};
-function prayerTimes(date = new Date()){
-  const y = date.getFullYear(), mo = date.getMonth() + 1, d = date.getDate(), key = y + '-' + mo + '-' + d;
-  if(prayerCache[key]) return prayerCache[key];
-  const rad = Math.PI / 180, {lat, lng} = PRAYER_CITY;
-  let Y = y, M = mo; if(M <= 2){ Y -= 1; M += 12; }
-  const A = Math.floor(Y / 100), B = 2 - A + Math.floor(A / 4);
-  const jd = Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + d + B - 1524.5 + .5 - lng / 360;
-  const D = jd - 2451545.0;
-  const g = (357.529 + .98560028 * D) % 360, q = (280.459 + .98564736 * D) % 360;
-  const L = (q + 1.915 * Math.sin(g * rad) + .020 * Math.sin(2 * g * rad)) % 360;
-  const e = 23.439 - .00000036 * D;
-  const RA = Math.atan2(Math.cos(e * rad) * Math.sin(L * rad), Math.cos(L * rad)) / rad / 15;
-  const decl = Math.asin(Math.sin(e * rad) * Math.sin(L * rad)) / rad;
-  const eqt = q / 15 - ((RA % 24) + 24) % 24;
-  const tz = -new Date(y, mo - 1, d, 12).getTimezoneOffset() / 60;
-  const dhuhr = 12 + tz - lng / 15 - eqt;
-  const T = a=>Math.acos((-Math.sin(a * rad) - Math.sin(decl * rad) * Math.sin(lat * rad)) / (Math.cos(decl * rad) * Math.cos(lat * rad))) / rad / 15;
-  const asrA = -Math.atan(1 / (1 + Math.tan(Math.abs(lat - decl) * rad))) / rad;
-  const toMin = h=>Math.round((((h % 24) + 24) % 24) * 60);
-  return prayerCache[key] = {fajr:toMin(dhuhr - T(19.5)), sunrise:toMin(dhuhr - T(.833)), dhuhr:toMin(dhuhr), asr:toMin(dhuhr + T(asrA)), maghrib:toMin(dhuhr + T(.833)), isha:toMin(dhuhr + T(17.5))};
-}
+/* الحساب نفسه انتقل إلى nasaq-core.js (NasaqTime) لتستعمله الصفحات كلها وضوء اليوم في «كهرمان» (K3) */
+const PRAYER_CITY = NasaqTime.PRAYER_CITY, prayerTimes = NasaqTime.prayerTimes;
 const PRAYER_NAMES = {fajr:'الفجر', dhuhr:'الظهر', asr:'العصر', maghrib:'المغرب', isha:'العشاء'};
 function inQuietHours(d = new Date()){
   const f = hmToMin(alive.quietFrom), t = hmToMin(alive.quietTo), n = nowMin(d);

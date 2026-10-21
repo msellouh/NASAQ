@@ -84,7 +84,7 @@ svg.ic{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px
 :root[data-field="box"] .tab:hover:not(.active){background:var(--field-bg)}
 :root[data-field="box"] :is(.task-filters button.active,.pswitch button.active){background:var(--cta);border-color:transparent;color:var(--on-cta)}
 @media (max-width:999px){
-:root[data-field="box"] .tab.active{background:transparent;color:var(--focus)}
+:root[data-field="box"] .tab.active{background:transparent;color:var(--focus-ink)}
 }
 :root[data-field="box"] .state{border-color:transparent;background:var(--field-bg)}
 :root[data-field="box"] .pswitch{background:var(--field-bg);border-color:transparent}
@@ -746,7 +746,7 @@ html.frame-modal{overflow:hidden}   /* نافذة مفتوحة داخل إطار
 :root[data-nav="top"] .sidenav.tb-solid .brand-name{color:var(--ink)}
 :root[data-nav="top"] .sidenav.tb-solid .tab{color:var(--ink-2)}
 :root[data-nav="top"] .sidenav.tb-solid .tab:hover{color:var(--ink)}
-:root[data-nav="top"] .sidenav.tb-solid .tab.active{color:var(--focus)}
+:root[data-nav="top"] .sidenav.tb-solid .tab.active{color:var(--focus-ink)}
 :root[data-nav="top"] .sidenav.tb-solid .icon-btn{color:var(--ink)}
 :root[data-nav="top"] .sidenav.tb-solid .icon-btn:hover{background:var(--stripe)}
 :root[data-nav="top"] .sidenav.tb-solid .tabbar-sync{background:var(--stripe);border-color:var(--rule);color:var(--ink-2)}
@@ -754,7 +754,7 @@ html.frame-modal{overflow:hidden}   /* نافذة مفتوحة داخل إطار
   :root[data-nav="top"] .sidenav .brand-name{font-size:var(--fs-lg)}
   :root[data-nav="top"] .sidenav .tabbar{background:color-mix(in srgb,var(--paper) 88%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
   :root[data-nav="top"] .sidenav .tab{font-size:var(--fs-xs);color:var(--ink-2)}
-  :root[data-nav="top"] .sidenav .tab.active{color:var(--focus);background:var(--grad-line) top / 60% 2px no-repeat}
+  :root[data-nav="top"] .sidenav .tab.active{color:var(--focus-ink);background:var(--grad-line) top / 60% 2px no-repeat}
 }
 @media (prefers-reduced-motion:reduce){ :root[data-nav="top"] .sidenav{transition:none} }
 /* ---------- الطباعة على الشاشة (المرحلة 4) ----------

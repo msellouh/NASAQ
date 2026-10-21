@@ -13,7 +13,7 @@
  *
  * عند تغيير قائمة SHELL أو منطق هذا الملف: ارفع رقم CACHE ليُستبدل القديم.
  */
-const CACHE = 'daily-board-v7';   /* v7: نظام التصميم الجديد (المراحل 5–11) */   /* v4: صفحتا المشاريع والنبض والملفات المشتركة تعمل بلا اتصال */
+const CACHE = 'daily-board-v8';   /* v8: طابع «كهرمان» (K1) */   /* v7: نظام التصميم الجديد (المراحل 5–11) */   /* v4: صفحتا المشاريع والنبض والملفات المشتركة تعمل بلا اتصال */
 const SHELL = [
   './',
   './index.html',
@@ -29,6 +29,7 @@ const SHELL = [
   './themes/classic.css',
   './themes/nasaq.css',
   './themes/nasaq360.css',
+  './themes/kahraman.css',
   './layouts/nav-side.css',
   './layouts/nav-top.css',
   './layouts/hero-page.css',

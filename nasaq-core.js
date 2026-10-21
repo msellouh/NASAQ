@@ -301,7 +301,10 @@ window.NASAQ_THEMES = {
   nasaq:    { name:'نَسَق',     desc:'هوية نَسَق للعمل اليومي',   nav:'side', hero:'brief',     field:'box',       art:'flat', orbit:'off',
               fonts:['IBM Plex Sans Arabic:400;600;700'],                                  themeColor:{light:'#F7F6F2', dark:'#0C1A1B'} },
   nasaq360: { name:'نَسَق 360', desc:'ليلي غامر للتركيز',          nav:'top',  hero:'immersive', field:'box',       art:'glow', orbit:'on',
-              fonts:['Alexandria:700;800','Readex Pro:400;600;700'],                      themeColor:{light:'#EEF1F7', dark:'#14162A'} }
+              fonts:['Alexandria:700;800','Readex Pro:400;600;700'],                      themeColor:{light:'#EEF1F7', dark:'#14162A'} },
+  /* K1: الطابع الرابع، ليس افتراضيًا. K4: زجاج «مخفف» (القرار 11) وواجهة موجزة brief (القرار 17)، بتنقل جانبي */
+  kahraman: { name:'كهرمان',   desc:'عاجي وحبر، والضوء للخطوة التالية', nav:'side', hero:'brief', field:'box', art:'flat', orbit:'off',
+              fonts:['Alexandria:700;800','Readex Pro:400;600'],                           themeColor:{light:'#FCFBF7', dark:'#0A0B0A'} }
 };
 window.NasaqTheme = (function(){
   var PKEY = 'daily-board-palette', TKEY = 'daily-board-theme', NKEY = 'daily-board-theme-notice';
@@ -402,4 +405,86 @@ window.NasaqFiles = (function(){
     keep = t.checked; document.querySelectorAll('input.keep-orig').forEach(function(x){ x.checked = keep; });
   });
   return { prepare: prepare, note: note, UPLOAD_MAX: UPLOAD_MAX, NO_COMPRESS_SLOTS: NO_COMPRESS_SLOTS, keepOriginal: function(){ return keep; } };
+})();
+
+/* ---------- أوقات الصلاة (NasaqTime): مصدر واحد للصفحات كلها ----------
+   انتقل من index.html كما هو (K3). طريقة الهيئة المصرية العامة للمساحة: الفجر 19٫5°، العشاء 17٫5°، العصر شافعي.
+   تحقّقتُ منها مقابل مواقيت القدس المنشورة. الناتج دقائق من منتصف الليل بالتوقيت المحلي */
+window.NasaqTime = (function(){
+  var PRAYER_CITY = {lat:31.5017, lng:34.4668};
+  var prayerCache = {};
+  function prayerTimes(date){
+    date = date || new Date();
+    var y = date.getFullYear(), mo = date.getMonth() + 1, d = date.getDate(), key = y + '-' + mo + '-' + d;
+    if(prayerCache[key]) return prayerCache[key];
+    var rad = Math.PI / 180, lat = PRAYER_CITY.lat, lng = PRAYER_CITY.lng;
+    var Y = y, M = mo; if(M <= 2){ Y -= 1; M += 12; }
+    var A = Math.floor(Y / 100), B = 2 - A + Math.floor(A / 4);
+    var jd = Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + d + B - 1524.5 + .5 - lng / 360;
+    var D = jd - 2451545.0;
+    var g = (357.529 + .98560028 * D) % 360, q = (280.459 + .98564736 * D) % 360;
+    var L = (q + 1.915 * Math.sin(g * rad) + .020 * Math.sin(2 * g * rad)) % 360;
+    var e = 23.439 - .00000036 * D;
+    var RA = Math.atan2(Math.cos(e * rad) * Math.sin(L * rad), Math.cos(L * rad)) / rad / 15;
+    var decl = Math.asin(Math.sin(e * rad) * Math.sin(L * rad)) / rad;
+    var eqt = q / 15 - ((RA % 24) + 24) % 24;
+    var tz = -new Date(y, mo - 1, d, 12).getTimezoneOffset() / 60;
+    var dhuhr = 12 + tz - lng / 15 - eqt;
+    var T = function(a){ return Math.acos((-Math.sin(a * rad) - Math.sin(decl * rad) * Math.sin(lat * rad)) / (Math.cos(decl * rad) * Math.cos(lat * rad))) / rad / 15; };
+    var asrA = -Math.atan(1 / (1 + Math.tan(Math.abs(lat - decl) * rad))) / rad;
+    var toMin = function(h){ return Math.round((((h % 24) + 24) % 24) * 60); };
+    return prayerCache[key] = {fajr:toMin(dhuhr - T(19.5)), sunrise:toMin(dhuhr - T(.833)), dhuhr:toMin(dhuhr), asr:toMin(dhuhr + T(asrA)), maghrib:toMin(dhuhr + T(.833)), isha:toMin(dhuhr + T(17.5))};
+  }
+  return { PRAYER_CITY: PRAYER_CITY, prayerTimes: prayerTimes };
+})();
+
+/* ---------- ضوء اليوم في «كهرمان» (NasaqDay، K3) ----------
+   الكهرماني المحيط يتغير مع اليوم على أوقات الصلاة نفسها (من NasaqTime، والاحتياطية إن تعذّر الحساب):
+   --day (ثلاثية RGB) و--day-i على :root، انتقالًا خطيًا بالدقيقة بين المحطات، ولا تُكتب إلا إن تغيّرت.
+   يعمل في «كهرمان» وحده؛ الزر الأساسي والعلامة ثابتان بلونهما الكهرماني، والوضع الفاتح/الداكن كما اختاره المستخدم.
+   أوقات الصلاة مرجع زمني فقط، بلا رمز ولا زخرفة. */
+window.NasaqDay = (function(){
+  var FALLBACK = {fajr: 300, sunrise: 390, dhuhr: 720, asr: 915, maghrib: 1080, isha: 1170};
+  var COLOR = {   /* [r, g, b, الشدة]؛ أعمق نقطة (العشاء): تباين الحبر عليها 6.25:1 */
+    fajr: [242, 162, 15, .55], sunrise: [255, 201, 77, 1], dhuhr: [255, 178, 30, .9],
+    asr: [255, 178, 30, .85], maghrib: [227, 146, 0, .75], isha: [208, 131, 0, .5]
+  };
+  var GREETING = {fajr: 'فجر هادئ', sunrise: 'صباح هادئ', dhuhr: 'ظهيرة هادئة', asr: 'عصر هادئ', maghrib: 'مساء هادئ', isha: 'ليل هادئ'};
+  var ORDER = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
+  function times(date){
+    try{ var t = window.NasaqTime.prayerTimes(date); if(ORDER.every(function(k){ return isFinite(t[k]); })) return t; }catch(e){}
+    return FALLBACK;
+  }
+  function at(nowMin, t){
+    t = t || FALLBACK;
+    var a = ORDER.map(function(k){ return [k, t[k]]; }), i = a.length - 1;
+    a.forEach(function(x, k){ if(nowMin >= x[1]) i = k; });
+    if(nowMin < a[0][1]) i = a.length - 1;
+    var n0 = a[i][0], m0 = a[i][1], n1 = a[(i + 1) % a.length][0], m1 = a[(i + 1) % a.length][1];
+    var span = (m1 - m0 + 1440) % 1440 || 1440, f = ((nowMin - m0 + 1440) % 1440) / span;
+    var A = COLOR[n0], B = COLOR[n1], v = A.map(function(x, k){ return x + (B[k] - x) * f; });
+    return {period: n0, greeting: GREETING[n0], rgb: v.slice(0, 3).map(Math.round).join(','), intensity: +v[3].toFixed(2)};
+  }
+  var last = '';
+  function apply(date){
+    var root = document.documentElement;
+    if(root.getAttribute('data-palette') !== 'kahraman'){
+      if(last){ root.style.removeProperty('--day'); root.style.removeProperty('--day-i'); last = ''; }
+      return null;
+    }
+    date = date || new Date();
+    var d = at(date.getHours() * 60 + date.getMinutes(), times(date)), key = d.rgb + '|' + d.intensity;
+    if(key !== last){ last = key; root.style.setProperty('--day', d.rgb); root.style.setProperty('--day-i', String(d.intensity)); }
+    root.dataset.dayPeriod = d.period;
+    return d;
+  }
+  /* عند تغيّر الدقيقة، وعند تبديل الطابع */
+  function start(){
+    apply();
+    var tick = function(){ apply(); setTimeout(tick, 60000 - Date.now() % 60000 + 50); };
+    setTimeout(tick, 60000 - Date.now() % 60000 + 50);
+    try{ new MutationObserver(function(){ apply(); }).observe(document.documentElement, {attributes: true, attributeFilter: ['data-palette']}); }catch(e){}
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  return { at: at, apply: apply, times: times, COLOR: COLOR, GREETING: GREETING, FALLBACK: FALLBACK };
 })();
