@@ -11,7 +11,7 @@
 <!-- تثبيت اللوح كتطبيق (الهاتف والحاسوب) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#F7F6F2">
-<script src="nasaq-core.js?v=20261021a"></script>
+<script src="nasaq-core.js?v=20261021c"></script>
 <script src="nasaq-art.js?v=20261007b"></script>
 <script src="nasaq-icons.js?v=20261002a"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
@@ -703,6 +703,8 @@ body.focus-open{overflow:hidden}
 .side-today .st-pri{font-size:var(--fs-xs);color:var(--ink-2);line-height:1.5;border-top:1px solid var(--rule);padding-top:var(--sp-2)}
 .side-today .st-pri b{display:block;font-size:var(--fs-xs);color:var(--muted);font-weight:600;margin-bottom:2px}
 .side-today .st-late{font-size:var(--fs-xs);color:var(--urgent);font-weight:600}
+/* عناصر «كهرمان» (K5): مخفية هنا، ويُظهرها layouts/nav-rail.css في data-nav="rail" وحده */
+.day-col,.greet-phrase,.tabbar .ind{display:none}
 .page-title{font-family:var(--font-head);font-size:var(--fs-xl);font-weight:700;margin:0;color:var(--brand,var(--ink));line-height:1.2}
 .page-sub{margin:var(--sp-1) 0 0;color:var(--muted);font-size:var(--fs-base)}
 .page-date{font-size:var(--fs-sm);color:var(--muted)}
@@ -1535,6 +1537,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <link rel="stylesheet" href="nasaq-theme.css?v=20261007b">
 <link rel="stylesheet" href="layouts/nav-side.css?v=20261001a">
 <link rel="stylesheet" href="layouts/nav-top.css?v=20261001a">
+<link rel="stylesheet" href="layouts/nav-rail.css?v=20261021a">
 <link rel="stylesheet" href="layouts/hero-page.css?v=20261020d">
 <link rel="stylesheet" href="layouts/hero-brief.css?v=20261020d">
 <link rel="stylesheet" href="layouts/hero-immersive.css?v=20261001a">
@@ -1542,7 +1545,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <link rel="stylesheet" href="themes/classic.css?v=20261001a">
 <link rel="stylesheet" href="themes/nasaq.css?v=20261001a">
 <link rel="stylesheet" href="themes/nasaq360.css?v=20261001a">
-<link rel="stylesheet" href="themes/kahraman.css?v=20261021b">
+<link rel="stylesheet" href="themes/kahraman.css?v=20261021c">
 </head>
 <body>
 <a class="skip-link" href="#mainContent">تخطَّ إلى المحتوى</a>
@@ -1765,23 +1768,24 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </a>
 
   <nav class="tabbar" aria-label="الأقسام">
-    <button class="tab active" id="tabBoardBtn" type="button" title="اليوم">
+    <span class="ind" aria-hidden="true"></span><!-- مؤشر الشريط في «كهرمان» (data-nav="rail") -->
+    <button class="tab active" id="tabBoardBtn" type="button" title="اليوم" data-tip="اليوم · 1">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>
       <span>اليوم</span>
     </button>
-    <button class="tab" id="tabTasksBtn" type="button" title="المهام">
+    <button class="tab" id="tabTasksBtn" type="button" title="المهام" data-tip="المهام · 2">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8 12 3 3 5-6"/></svg>
       <span>المهام</span>
     </button>
-    <button class="tab" id="tabFlowBtn" type="button" title="العادات">
+    <button class="tab" id="tabFlowBtn" type="button" title="العادات" data-tip="العادات · 3">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c0-9 5-15 15-16-1 10-7 15-16 15"/><path d="M5 21c3-6 7-9 11-11"/></svg>
       <span>العادات</span>
     </button>
-    <button class="tab" id="tabProjectsBtn" type="button" title="المشاريع">
+    <button class="tab" id="tabProjectsBtn" type="button" title="المشاريع" data-tip="المشاريع · 4">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z"/></svg>
       <span>المشاريع</span>
     </button>
-    <button class="tab" id="tabExpensesBtn" type="button" title="المصروفات">
+    <button class="tab" id="tabExpensesBtn" type="button" title="المصروفات" data-tip="المصروفات · 5">
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M3 10h18"/><circle cx="16.5" cy="15" r="1.2"/></svg>
       <span>المصروفات</span>
     </button>
@@ -1829,6 +1833,7 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   <div class="cal-sheet" id="calSheet" aria-hidden="true"><span class="cs-month" id="csMonth"></span><b class="cs-day" id="csDay"></b><span class="cs-dow" id="csDow"></span><span class="cs-hijri" id="csHijri"></span></div>
   <div class="greet-text">
     <h1 class="greet-title" id="heroGreet">صباح الخير</h1>
+    <p class="greet-phrase" id="heroPhrase"></p><!-- «كهرمان»: العنوان تحية اليوم وعدد المهام، والعبارة المتغيرة هنا -->
     <p class="greet-tagline">لكل شيء مكان، ولكل يوم نَسَق.</p>
     <div class="greet-date"><bdi id="weekday">—</bdi> <bdi id="date">—</bdi><span class="greet-sep" id="hijriSep" hidden> | </span><bdi class="greet-hijri" id="hijriDate" hidden></bdi></div>
     <!-- لمحة اليوم: تظهر في واجهة «360» الكاملة فقط -->
@@ -2262,6 +2267,24 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 </div>
 <footer class="nasaq-copy page-copy" dir="rtl">© 2026 نَسَق · Mohammed S. Ellouh — جميع الحقوق محفوظة</footer>
 </div><!-- /content -->
+<!-- عمود «يومك» (K5): يظهر في «كهرمان» وحده (data-nav="rail") وفي صفحة اليوم فقط؛ يُملأ من renderDayCol -->
+<aside class="day-col" id="dayCol" aria-labelledby="dcTitle">
+  <div class="dc-head"><h2 id="dcTitle">يومك</h2><span class="dc-notif" id="dcNotif"></span></div>
+  <section class="card dc-ring" id="dcRing"></section>
+  <section class="card dc-habits" aria-labelledby="dcHabTitle">
+    <div class="dc-row"><h3 id="dcHabTitle">العادات هذا الأسبوع</h3><span class="dc-streak" id="dcStreak"></span></div>
+    <div class="dc-week" id="dcWeek"></div>
+  </section>
+  <section class="dc-waqfa" id="dcWaqfa" aria-labelledby="dcWaqfaTitle">
+    <span class="dc-label" id="dcWaqfaTitle">وقفة</span>
+    <p>دقيقتان بلا شاشة قبل المهمة التالية.</p>
+    <button type="button" class="dc-ghost" id="dcWaqfaBtn">خذ وقفة</button>
+  </section>
+  <button type="button" class="dc-close" id="dcClose">
+    <span class="dc-mark"><svg class="brand-mark" viewBox="34 36 440 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><use href="#nasaqMark"/></svg></span>
+    <span><b>ختام اليوم · 17:00</b><small>راجع ما أنجزت، وانقل الباقي للغد</small></span>
+  </button>
+</aside>
 </div><!-- /app -->
 
 <div class="toast" id="toastBox" role="status" aria-live="polite"></div>
@@ -2519,6 +2542,7 @@ function showTab(name){
   if(name==='tasks') renderTasksPage();
   window.scrollTo(0, name === prevTab ? window.scrollY : TAB_Y[name] || 0);
   try{ topbarUpdate(); }catch(e){}   /* حالة الشريط العلوي تتبع الصفحة (بواجهة أو بدونها) */
+  try{ railSync(true); }catch(e){}   /* «كهرمان»: المؤشر ينتقل، وزر الإشعارات يتبع عمود «يومك» */
 }
 window.addEventListener('popstate', ()=>{ const t = tabFromHash(); if(t) showTab(t); });
 $('tabBoardBtn').onclick = ()=>showTab('board');
@@ -3408,8 +3432,118 @@ function renderSideToday(){
     if(first){ const p = document.createElement('p'); p.className = 'hm-pri'; const b = document.createElement('b'); b.textContent = 'أولويتك الأولى'; p.append(b, document.createTextNode(first)); hm.appendChild(p); }
   }
   try{ renderRingClock(); }catch(e){}
+  try{ renderDayCol(); dayTitle(); }catch(e){}
 }
 document.querySelectorAll('.pri .field').forEach(f=>f.addEventListener('input', renderSideToday));
+
+/* ---------- «كهرمان» (K5): الشريط، وعمود «يومك»، وعنوان اليوم ----------
+   كلها لا تعمل إلا في data-nav="rail" أو data-palette="kahraman"؛ الطوابع الأخرى لا تتغير. */
+const HW_DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'], HW_LETTERS = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س'];
+const isRail = ()=>document.documentElement.dataset.nav === 'rail';
+const countAr = (n, one, two, few, many)=>n === 1 ? one : n === 2 ? two : AR(n) + ' ' + (n >= 3 && n <= 10 ? few : many);
+/* العنوان: «{تحية اليوم}،<br>وأمامك <mark>{العدد}</mark>.» — التحية من NasaqDay (أوقات الصلاة نفسها)، والعبارة المتغيرة تنزل سطرًا تحته */
+function dayTitle(){
+  const g = $('heroGreet'), ph = $('heroPhrase'); if(!g || !ph) return;
+  if(document.documentElement.dataset.palette !== 'kahraman'){
+    ph.textContent = '';
+    if(g.dataset.k5){ delete g.dataset.k5; g.textContent = greetingNow(); }
+    return;
+  }
+  const d = new Date(), day = NasaqDay.at(d.getHours() * 60 + d.getMinutes(), NasaqDay.times(d));
+  const total = tasks.length, left = tasks.filter(t=>!t.done).length, m = document.createElement('mark');
+  g.dataset.k5 = '1'; g.textContent = day.greeting + '،'; g.appendChild(document.createElement('br'));
+  if(!total){ m.textContent = 'صفحة بيضاء'; g.append('ويومك ', m, '.'); }
+  else if(!left){ m.textContent = 'كل مهامك'; g.append('وأنهيت ', m, '.'); }
+  else { m.textContent = countAr(left, 'مهمة واحدة', 'مهمتان', 'مهام', 'مهمة'); g.append('وأمامك ', m, '.'); }
+  ph.textContent = heroPhrase.text || '';
+}
+function renderDayCol(){
+  const col = $('dayCol'); if(!col || !isRail()) return;
+  const done = tasks.filter(t=>t.done).length, total = tasks.length, f = total ? done / total : 0;
+  const late = tasks.filter(t=>taskMatches(t, 'overdue')).length;
+  /* بطاقة الحلقة */
+  const ring = $('dcRing'), C = 2 * Math.PI * 44;
+  const state = !total ? 'لا مهام بعد' : f === 1 ? 'اكتمل اليوم' : f >= .5 ? 'نصف اليوم أُنجز' : done ? 'بدأ يومك' : 'لم تبدأ بعد';
+  ring.innerHTML = '<div class="dc-dial" role="img"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="dc-track" cx="50" cy="50" r="44"/>' +
+    '<circle class="dc-fill" cx="50" cy="50" r="44" stroke-dasharray="' + (C * f).toFixed(1) + ' ' + C.toFixed(1) + '"/></svg><b></b><small>مهام</small></div><div class="dc-txt"><b></b></div>';
+  ring.querySelector('.dc-dial').setAttribute('aria-label', total ? 'أنجزت ' + AR(done) + ' من ' + AR(total) + ' مهام' : 'لا مهام بعد');
+  ring.querySelector('.dc-dial b').textContent = AR(done) + '/' + AR(total);
+  const tx = ring.querySelector('.dc-txt'); tx.firstChild.textContent = state;
+  const line = t=>{ const s = document.createElement('span'); s.textContent = t; tx.appendChild(s); return s; };
+  if(total && done < total) line('بقي ' + countAr(total - done, 'مهمة واحدة', 'مهمتان', 'مهام', 'مهمة'));
+  if(late) line(countAr(late, 'مهمة تنتظر', 'مهمتان تنتظران', 'مهام تنتظر', 'مهمة تنتظر') + ' قرارك').className = 'dc-late';
+  /* العادات هذا الأسبوع: من الأحد إلى السبت، واليوم بمعيّن، والأيام القادمة متقطعة */
+  const hist = flow.history || {}, wk = $('dcWeek'), now = new Date(); wk.innerHTML = '';
+  for(let i = 0; i < 7; i++){
+    const d = new Date(now); d.setDate(now.getDate() - now.getDay() + i);
+    const off = i - now.getDay(), r = hist[iso(d)], pct = r && r[1] ? Math.round(r[0] / r[1] * 100) : 0;
+    const c = document.createElement('div'); c.className = 'dc-day' + (off === 0 ? ' today' : off > 0 ? ' future' : '');
+    const lbl = HW_DAYS[i] + ': ' + (off > 0 ? 'لم يأتِ بعد' : r && r[1] ? AR(pct) + '% من العادات' : 'لا سجل');
+    c.setAttribute('role', 'img'); c.setAttribute('aria-label', lbl); c.title = lbl;
+    const bar = document.createElement('i'); bar.style.setProperty('--h', (off > 0 ? 0 : pct) + '%');
+    const s = document.createElement('span'); s.textContent = HW_LETTERS[i]; s.setAttribute('aria-hidden', 'true');
+    c.append(bar, s); wk.appendChild(c);
+  }
+  const st = habitStreak(); $('dcStreak').textContent = st ? 'سلسلة ' + countAr(st, 'يوم واحد', 'يومان', 'أيام', 'يومًا') : '';
+  $('dcWaqfa').hidden = !$('waqfaCard') || $('waqfaCard').hidden;
+}
+/* زر الإشعارات يسكن رأس «يومك» حين يظهر العمود بجانب المحتوى، ويعود إلى الشريط في غير ذلك */
+const DC_WIDE = matchMedia('(min-width:1240px)');
+function railSync(anim){
+  const rail = isRail(), side = rail && DC_WIDE.matches && document.documentElement.dataset.tab === 'board';
+  const nb = $('notifBtn'), slot = side ? $('dcNotif') : document.querySelector('.sidenav-actions');
+  if(nb && slot && nb.parentNode !== slot){ if(side) slot.appendChild(nb); else slot.insertBefore(nb, $('paletteBtn')); }
+  /* «يومك» عمود ثالث في الشاشة العريضة، وتحتها ينزل داخل المحتوى قبل سطر الحقوق */
+  const col = $('dayCol'), main = $('mainContent'), foot = main && main.querySelector(':scope > .page-copy');
+  if(col && main){ if(DC_WIDE.matches || !rail){ if(col.previousElementSibling !== main) main.after(col); } else if(foot && col.nextElementSibling !== foot) main.insertBefore(col, foot); }
+  /* في الشريط يظهر تلميح CSS باسم الصفحة ورقم اختصارها، فلا نكرره بتلميح المتصفح */
+  document.querySelectorAll('.sidenav .tab').forEach(b=>{
+    if(rail && b.title){ b.dataset.title = b.title; b.removeAttribute('title'); }
+    else if(!rail && b.dataset.title){ b.title = b.dataset.title; delete b.dataset.title; }
+  });
+  renderDayCol(); dayTitle(); railGo(anim !== true);
+}
+DC_WIDE.addEventListener('change', railSync);
+try{ new MutationObserver(railSync).observe(document.documentElement, {attributes:true, attributeFilter:['data-nav', 'data-palette']}); }catch(e){}
+/* مؤشر الشريط: مفتاح هادئ في الراحة، ينتفخ عدسةً أثناء الانتقال ثم يذوب عائدًا (نابض واحد بخطوة 8ms للموضع والانتفاخ).
+   القياسات مرة واحدة وعند تغيّر المقاس؛ لا قراءة تخطيط داخل الحلقة، وكل الحركة transform. تقليل الحركة: انتقال فوري */
+var RAIL = null;
+function railMeasure(){
+  const bar = document.querySelector('.sidenav .tabbar'), ind = bar && bar.querySelector('.ind'); if(!ind) return null;
+  if(!RAIL){ RAIL = {bar, ind, x:0, v:0, l:0, lv:0, target:0, raf:0, last:0, horiz:false, pos:[]}; try{ new ResizeObserver(()=>railGo(true)).observe(bar); }catch(e){} }
+  RAIL.horiz = getComputedStyle(bar).flexDirection.indexOf('row') === 0;
+  RAIL.pos = [...bar.querySelectorAll('.tab')].map(t=>RAIL.horiz ? t.offsetLeft + t.offsetWidth / 2 : t.offsetTop + t.offsetHeight / 2);
+  return RAIL;
+}
+function railDraw(){
+  const R = RAIL, l = Math.max(0, R.l), sp = Math.min(.2, Math.abs(R.v) / 3000), a = 1 + .4 * l + sp, c = Math.min(1.75, 1 + .05 * l) - sp / 2;
+  R.ind.style.transform = R.horiz ? 'translateX(' + (R.x - 26).toFixed(2) + 'px) scale(' + a.toFixed(3) + ',' + c.toFixed(3) + ')'
+                                  : 'translateY(' + (R.x - 26).toFixed(2) + 'px) scale(' + c.toFixed(3) + ',' + a.toFixed(3) + ')';
+  R.bar.style.setProperty('--l', l.toFixed(3));
+}
+function railStep(dt){
+  const R = RAIL, k = 380, cx = 2 * Math.sqrt(k) * .8;
+  R.v += (-k * (R.x - R.target) - cx * R.v) * dt; R.x += R.v * dt;
+  const lt = Math.abs(R.x - R.target) < 10 && Math.abs(R.v) < 160 ? 0 : 1, up = lt > R.l, kl = up ? 650 : 140, cl = 2 * Math.sqrt(kl) * (up ? .78 : 1);
+  R.lv += (-kl * (R.l - lt) - cl * R.lv) * dt; R.l += R.lv * dt;
+}
+function railFrame(t){
+  const R = RAIL; let dt = Math.min(.05, (t - (R.last || t)) / 1000); R.last = t;
+  while(dt > 1e-6){ const h = Math.min(.008, dt); railStep(h); dt -= h; }
+  if(Math.abs(R.x - R.target) < .3 && Math.abs(R.v) < 2 && R.l < .003 && Math.abs(R.lv) < .02){ R.x = R.target; R.v = R.l = R.lv = 0; R.raf = 0; R.last = 0; railDraw(); return; }
+  railDraw(); R.raf = requestAnimationFrame(railFrame);
+}
+function railGo(snap){
+  if(!isRail() || !railMeasure()) return;
+  const R = RAIL, i = [...R.bar.querySelectorAll('.tab')].findIndex(b=>b.classList.contains('active'));
+  if(i < 0) return;
+  R.target = R.pos[i];
+  if(snap || !R.ind.offsetParent || matchMedia('(prefers-reduced-motion: reduce)').matches){ cancelAnimationFrame(R.raf); R.raf = 0; R.x = R.target; R.v = R.l = R.lv = 0; railDraw(); return; }
+  if(!R.raf){ R.last = 0; R.raf = requestAnimationFrame(railFrame); }
+}
+$('dcWaqfaBtn').onclick = ()=>{ const w = $('waqfaCard'); if(!w) return; w.scrollIntoView({block:'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); const h = w.querySelector('h2'); if(h){ h.tabIndex = -1; h.focus({preventScroll:true}); } };
+$('dcClose').onclick = ()=>$('closingOpen').click();
+try{ railSync(); }catch(e){}
 
 /* ---------- الحلقة ساعة اليوم (طابع «مَدار») ----------
    القوس 330° = ساعات العمل (من نهاية الهدوء إلى بدايته، من الإعدادات)، والفجوة 30° أعلاها = الهدوء.
@@ -6009,6 +6143,8 @@ function renderHabitWeek(){
   const s = habitStreak();
   const st = $('habitStreak');
   if(st) st.innerHTML = s ? icon('flame') + ' ' + AR(s) + (s === 1 ? ' يوم' : ' أيام') + ' متتالية' : '';
+
+  try{ renderDayCol(); }catch(e){}
 }
 function drawHabitWeek(box){
   const hist = flow.history || {};
@@ -6254,6 +6390,7 @@ function applyHeroPhrase(){
   const c = heroContext();
   if(heroPhrase.slot !== c.slot) heroPhrase = {slot:c.slot, text: pickPhrase(c.ctx).replace(/لـ\{name\}/, /^ال/.test(c.name || '') ? 'لل' + c.name.slice(2) : 'لـ{name}').replace('{name}', c.name || '')};   /* لـ + العصر = للعصر */
   $('heroGreet').textContent = heroPhrase.text;
+  try{ dayTitle(); }catch(e){}
   const tag = document.querySelector('.greet-tagline');
   if(tag) tag.textContent = (PHRASE_SPECIAL[c.ctx] && c.sub) ? c.sub : BRAND_TAGLINE;
   $('heroBanner').dataset.ctx = c.ctx;
