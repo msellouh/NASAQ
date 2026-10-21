@@ -2,9 +2,9 @@
    ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر أو التقليد دون إذن كتابي. انظر ملف LICENSE. */
 /* واجهة «موجز اليوم» لنَسَق — data-hero="brief" (المرحلة 3). */
 @layer layouts{
-/* «موجز اليوم»: بطاقة بارتفاع 200–220px. في جهة البداية العبارة (--fs-2xl بوزن 600) وسطر التاريخ وحلقة تقدّم اليوم
+/* «موجز اليوم»: بطاقة بارتفاع 200px على الأقل، وتطول مع محتواها فلا يُقصّ العنوان ولا الزر (D1). في جهة البداية العبارة (--fs-2xl بوزن 600) وسطر التاريخ وحلقة تقدّم اليوم
    (Teal مع نقطة زعفران) وزر «خطّط يومك»، وفي الجهة الأخرى المشهد بنسبة 40% من العرض وبزوايا --r-lg. */
-:root[data-hero="brief"] .greet-card{min-height:200px;max-height:220px;align-items:stretch}
+:root[data-hero="brief"] .greet-card{min-height:200px;align-items:stretch}
 :root[data-hero="brief"] .greet-card.has-photo{min-height:200px}
 :root[data-hero="brief"] .greet-text{padding:var(--sp-4) var(--sp-6);gap:var(--sp-2)}
 :root[data-hero="brief"] .greet-title{font-size:var(--fs-2xl);font-weight:600;line-height:1.3}
