@@ -302,7 +302,7 @@ window.NASAQ_THEMES = {
               fonts:['IBM Plex Sans Arabic:400;600;700'],                                  themeColor:{light:'#F7F6F2', dark:'#0C1A1B'} },
   nasaq360: { name:'نَسَق 360', desc:'ليلي غامر للتركيز',          nav:'top',  hero:'immersive', field:'box',       art:'glow', orbit:'on',
               fonts:['Alexandria:700;800','Readex Pro:400;600;700'],                      themeColor:{light:'#EEF1F7', dark:'#14162A'} },
-  /* K1: الطابع الرابع، ليس افتراضيًا. K4: زجاج «مخفف» (القرار 11) وواجهة موجزة brief (القرار 17)، بتنقل جانبي */
+  /* K1: الطابع الرابع، ليس افتراضيًا. البنية (الشريط والعمود والزجاج) في K4؛ حتى ذلك الحين تنقل جانبي وواجهة موجزة */
   kahraman: { name:'كهرمان',   desc:'عاجي وحبر، والضوء للخطوة التالية', nav:'side', hero:'brief', field:'box', art:'flat', orbit:'off',
               fonts:['Alexandria:700;800','Readex Pro:400;600'],                           themeColor:{light:'#FCFBF7', dark:'#0A0B0A'} }
 };
