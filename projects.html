@@ -107,7 +107,7 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;margin:0;letter-spacing
 .tb-nav{display:flex;gap:var(--sp-1)}
 .tb-nav button{position:relative;border:0;background:transparent;padding:var(--sp-2) var(--sp-3);border-radius:var(--r-md);font-size:var(--fs-base);font-weight:600;color:var(--ink-2)}
 .tb-nav button:hover{color:var(--ink)}
-.tb-nav button.on{color:var(--focus-ink);font-weight:600}
+.tb-nav button.on{color:var(--focus);font-weight:600}
 .tb-nav button.on::after{content:"";position:absolute;inset-inline:14px;bottom:3px;height:2px;border-radius:var(--r-sm);background:var(--grad-line)}
 .tb-end{margin-inline-start:auto;display:flex;align-items:center;gap:var(--sp-2);min-width:0}
 .src{display:inline-flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-xs);color:var(--ink-2);padding:var(--sp-1) var(--sp-3);border-radius:var(--r-md);background:var(--stripe);border:1px solid var(--rule);white-space:nowrap}
@@ -408,7 +408,7 @@ html.can-edit .phead :is(.ph-row,h2){padding-inline-end:40px}
 .wk-grp{margin:var(--sp-2) 0 0;font-size:var(--fs-xs);font-weight:700;color:var(--muted)}
 .wk-row{display:grid;grid-template-columns:auto 1fr auto;gap:var(--sp-3);align-items:center;border:1px solid var(--rule);border-radius:var(--r-md);padding:var(--sp-2) var(--sp-3);cursor:pointer}
 .wk-row b{display:block;font-size:var(--fs-sm)} .wk-row small{display:block;font-size:var(--fs-xs);color:var(--muted)}
-.wk-row em{font-style:normal;font-size:var(--fs-xs);font-weight:700;color:var(--focus-ink);white-space:nowrap}
+.wk-row em{font-style:normal;font-size:var(--fs-xs);font-weight:700;color:var(--focus);white-space:nowrap}
 .wk-row input{width:18px;height:18px;accent-color:var(--focus)}
 .wk-row:has(input:checked){border-color:var(--focus);background:color-mix(in srgb,var(--focus) 6%,var(--paper))}
 .wk-row.dup{opacity:.6;cursor:default}
@@ -729,7 +729,7 @@ dialog .sub{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-sm);color:var(-
 .ngroup li .nrow{display:grid;gap:var(--sp-1);min-width:0}
 .ngroup li .ncustom{padding:var(--sp-1) var(--sp-2);font-size:var(--fs-sm)}
 .ngroup li .nnew{color:var(--ink-2);overflow-wrap:anywhere}
-.ngroup li code{font-size:var(--fs-xs);color:var(--focus-ink)}
+.ngroup li code{font-size:var(--fs-xs);color:var(--focus)}
 .ngroup li small{color:var(--muted);font-size:var(--fs-xs)}
 .ngroup li small.diff{color:var(--hold)}
 /* الجدول الزمني — ألوان تقرير Al-Cela المرجعي */
@@ -831,8 +831,8 @@ dialog .dlg-acts{position:sticky;bottom:calc(-1 * var(--sp-5));z-index:2;margin:
   background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-md);box-shadow:var(--shadow)}
 .cb-pop li{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3);border-radius:var(--r-sm);font-size:var(--fs-sm);color:var(--ink);cursor:pointer}
 .cb-pop li.on{background:var(--stripe)}
-.cb-pop li[aria-selected="true"]{font-weight:600;color:var(--focus-ink)}
-.cb-pop li.add{color:var(--focus-ink)}
+.cb-pop li[aria-selected="true"]{font-weight:600;color:var(--focus)}
+.cb-pop li.add{color:var(--focus)}
 .cb-pop li.add:not(:first-child){border-top:1px solid var(--rule);margin-top:var(--sp-1)}
 .cb-pop li.cb-empty{color:var(--muted);cursor:default}
 .cb-pop mark{background:none;color:inherit;font-weight:700}
