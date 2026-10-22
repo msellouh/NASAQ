@@ -1,0 +1,596 @@
+<!-- نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved. ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر دون إذن كتابي. -->
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>نَسَق المقلوب</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved. */
+/* نَسَق المقلوب: يوم الفريق من «أنا بخير» إلى تقرير المانح. هوية نَسَق (عاجي، Teal، زعفران) بنية جديدة.
+   التخطيط: رأس بخط زمني للحظات اليوم والربع، ثم مشهد لكل لحظة بعمودين على الحاسوب وعمود على الجوال. */
+:root{
+  --bg:#F7F6F2; --surface:#FFFFFF; --surface-2:#F1EFE9; --ink:#202A2A; --ink-2:#4A5656; --ink-3:#5E6A6A; --rule:#E2E0D8;
+  --teal:#174C4F; --on-teal:#FFFFFF; --teal-soft:#DCEBE9; --saffron:#D6A84F; --saffron-ink:#7A5A16;
+  --ok:#2F6B4F; --ok-bg:#E5F0E9; --warn:#8A5A0E; --warn-bg:#F8EFD9; --bad:#9A3B2C; --bad-bg:#F8E6E1; --info:#1F5E77; --info-bg:#E1EEF3;
+  --f:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif; --mono:ui-monospace,Menlo,Consolas,monospace;
+  --pen:#1E3A8A;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#0C1A1B; --surface:#112426; --surface-2:#16302F; --ink:#E8EFEE; --ink-2:#BCCDCB; --ink-3:#9FB3B1; --rule:#24403F;
+  --teal:#7CC4BC; --on-teal:#0C1A1B; --teal-soft:#173B3B; --saffron:#E0B865; --saffron-ink:#E9C77E;
+  --ok:#8FC9A8; --ok-bg:#17302A; --warn:#E6C06A; --warn-bg:#2E2814; --bad:#F0A08B; --bad-bg:#3A231E; --info:#9AD3E6; --info-bg:#123341; --pen:#9DB8FF; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0C1A1B; --surface:#112426; --surface-2:#16302F; --ink:#E8EFEE; --ink-2:#BCCDCB; --ink-3:#9FB3B1; --rule:#24403F;
+  --teal:#7CC4BC; --on-teal:#0C1A1B; --teal-soft:#173B3B; --saffron:#E0B865; --saffron-ink:#E9C77E;
+  --ok:#8FC9A8; --ok-bg:#17302A; --warn:#E6C06A; --warn-bg:#2E2814; --bad:#F0A08B; --bad-bg:#3A231E; --info:#9AD3E6; --info-bg:#123341; --pen:#9DB8FF; color-scheme:dark }
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.65;padding-block:0 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.3}
+p{margin:0}
+.num{font-variant-numeric:tabular-nums}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:1240px;margin-inline:auto}
+
+/* الرأس: لحظات اليوم والربع */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--rule)}
+@supports not (backdrop-filter:blur(1px)){ .top{background:var(--bg)} }
+.top .wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding-block:12px 10px}
+.top .wrap > *{min-width:0}
+.brand{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.brand b{font-size:18px;font-weight:700;display:inline-flex;align-items:center;gap:8px}
+.brand b::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--saffron)}
+.brand span{color:var(--ink-3);font-size:13px}
+.steps{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;list-style:none;margin:0;padding:0}
+.steps button{display:grid;gap:0;text-align:start;min-width:132px;border:1px solid var(--rule);background:var(--surface);border-radius:10px;padding:6px 12px;cursor:pointer;min-height:48px}
+.steps button small{color:var(--ink-3);font-size:12px}
+.steps button span{font-weight:600;font-size:14px}
+.steps button[aria-current="step"]{background:var(--teal);border-color:var(--teal);color:var(--on-teal)}
+.steps button[aria-current="step"] small{color:inherit;opacity:.85}
+
+/* المشهد */
+.scene{padding-block:24px 0;display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+.claim{display:grid;gap:6px;max-width:80ch}
+.claim .k{font-size:13px;color:var(--saffron-ink);font-weight:700}
+.claim h1{font-size:clamp(26px,3.4vw,40px);font-weight:700}
+.claim p{color:var(--ink-2);font-size:16px}
+.cols{display:grid;gap:20px;align-items:start}
+@media (min-width:1000px){ .cols{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)} .cols.even{grid-template-columns:1fr 1fr} }
+.box{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:18px;display:grid;gap:12px;min-width:0}
+.box > h2{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.box > h2 small{font-weight:400;color:var(--ink-3);font-size:13px}
+.plain{padding:0;border:0;background:transparent}
+.note{font-size:13px;color:var(--ink-3)}
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:0;border-top:1px solid var(--rule)}
+.why div{padding:10px 0;padding-inline-end:16px;border-bottom:1px solid var(--rule);font-size:13.5px;color:var(--ink-2)}
+.why b{display:block;color:var(--ink);font-size:12.5px;margin-bottom:2px}
+
+/* عناصر مشتركة */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border-radius:10px;border:1px solid var(--rule);background:var(--surface);cursor:pointer;font-weight:600;font-size:14px;white-space:nowrap}
+.btn:hover{border-color:var(--ink-3)}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:var(--on-teal)}
+.btn.big{min-height:60px;font-size:17px;padding:12px 22px;border-radius:14px}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btn.sm{min-height:34px;padding:4px 12px;font-size:13px;font-weight:500}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok)} .pill.warn{background:var(--warn-bg);color:var(--warn)} .pill.bad{background:var(--bad-bg);color:var(--bad)} .pill.info{background:var(--info-bg);color:var(--info)} .pill.mute{background:var(--surface-2);color:var(--ink-2)}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.chip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--rule);border-radius:999px;padding:1px 10px;font-size:12.5px;color:var(--ink-2);background:var(--surface);cursor:pointer;min-height:28px}
+.chip[aria-pressed="true"]{border-color:var(--teal);color:var(--teal);font-weight:600}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--teal-soft);color:var(--teal);font-weight:700;flex:none}
+select,input[type=text],textarea{border:1px solid var(--ink-3);border-radius:8px;background:var(--surface);min-height:40px;padding:6px 10px;width:100%}
+textarea{min-height:90px;line-height:1.7}
+label.f{display:grid;gap:4px;font-size:13px;color:var(--ink-2);font-weight:600}
+.toast{position:fixed;z-index:30;inset-inline:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));margin-inline:auto;max-width:520px;background:var(--ink);color:var(--bg);border-radius:12px;padding:12px 16px;font-size:14px;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+
+/* 1) الصباح: غرفة الفريق */
+.me{display:grid;gap:12px}
+.me .q{font-size:22px;font-weight:700}
+.team{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:10px}
+.team li{border:1px solid var(--rule);border-radius:12px;padding:12px;display:grid;gap:8px;background:var(--surface)}
+.team li[data-alert="true"]{border-color:var(--warn);box-shadow:inset 0 0 0 1px var(--warn)}
+.team li[data-help="true"]{border-color:var(--bad);box-shadow:inset 0 0 0 1px var(--bad)}
+.team .who{display:flex;gap:10px;align-items:center}
+.team .who b{display:block}
+.team .who span{font-size:12.5px;color:var(--ink-3)}
+.clock{display:flex;gap:6px;flex-wrap:wrap}
+.clock button{min-height:36px}
+.clock button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.risk{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.risk li{padding:10px 0;border-bottom:1px solid var(--rule);display:grid;gap:4px}
+.risk li:last-child{border-bottom:0}
+
+/* 2) الوعود */
+.graph{width:100%;height:auto;display:block}
+.plist{list-style:none;margin:0;padding:0;display:grid}
+.plist li{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--rule)}
+.plist .t{font-weight:600}
+.plist .s{grid-column:2 / -1;font-size:12.5px;color:var(--ink-3)}
+.chain{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:c}
+.chain li{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:8px 0;position:relative}
+.chain li::before{counter-increment:c;content:counter(c);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--surface-2);color:var(--ink-2)}
+.chain li[data-weak="true"]::before{background:var(--warn);color:var(--bg)}
+.chain li:not(:last-child)::after{content:"";position:absolute;inset-inline-start:13px;top:36px;bottom:-6px;border-inline-start:2px dotted var(--rule)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink-2)}
+.legend i{display:inline-block;width:22px;height:0;border-top:3px solid;vertical-align:middle;margin-inline-end:6px}
+
+/* 3) الورقة */
+.paper{background:#FBF8F0;color:#1F2324;border:1px solid #D9D2BF;border-radius:6px;box-shadow:0 1px 0 #E7E0CC,0 16px 36px rgba(40,30,10,.14);padding:18px 18px 14px;position:relative;display:grid;gap:10px;max-width:560px;justify-self:center;width:100%}
+.paper .fid{position:absolute;width:14px;height:14px;background:#1F2324}
+.paper .fid.a{top:8px;right:8px}.paper .fid.b{top:8px;left:8px}.paper .fid.c{bottom:8px;right:8px}.paper .fid.d{bottom:8px;left:8px}
+.paper header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding-inline:20px;font-size:13px}
+.paper header b{font-size:16px}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border-top:1px solid #DDD5C2;padding-top:8px}
+.prow .pt{font-size:14px;line-height:1.45}
+.prow .pt small{display:block;color:#5A5E5F;font-size:12px}
+.boxes{display:flex;gap:6px;align-items:center}
+.pb{width:40px;height:40px;border:1.6px solid #1F2324;background:#fff;border-radius:3px;display:grid;place-items:center;cursor:pointer;padding:0;position:relative}
+.pb svg{width:30px;height:30px;overflow:visible}
+.pb .lbl{position:absolute;top:-15px;font-size:10px;color:#5A5E5F}
+.codes{display:flex;gap:3px;margin-inline-start:4px}
+.cb{width:24px;height:28px;border:1.2px solid #1F2324;background:#fff;border-radius:2px;font-size:11px;cursor:pointer;padding:0;display:grid;place-items:end center;position:relative;color:#5A5E5F}
+.cb svg{position:absolute;inset:0;width:100%;height:100%}
+.paper footer{font-size:11.5px;color:#5A5E5F;padding-inline:20px;display:flex;flex-wrap:wrap;gap:4px 12px;border-top:1px dashed #CFC6B0;padding-top:8px}
+.scanline{position:absolute;inset-inline:0;height:3px;background:linear-gradient(90deg,transparent,#2F8F7F,transparent);top:0;animation:scan 1.1s linear 1;pointer-events:none}
+@keyframes scan{from{top:0}to{top:100%}}
+.recon{list-style:none;margin:0;padding:0;display:grid}
+.recon li{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--rule);font-size:14px}
+
+/* 4) الرواية */
+.trace{list-style:none;margin:0;padding:0;display:grid}
+.trace li{display:grid;grid-template-columns:62px 92px 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:13.5px;align-items:start}
+.trace li[data-hl="true"]{background:color-mix(in srgb,var(--saffron) 16%,transparent);margin-inline:-8px;padding-inline:8px;border-radius:6px}
+.trace .src{font-size:12px;color:var(--ink-3)}
+.trace li[data-new="true"]{animation:fadein .6s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(-4px)}}
+.story{display:grid;gap:12px}
+.sent{border:1px solid var(--rule);border-radius:12px;padding:14px;display:grid;gap:8px}
+.sent[data-off="true"]{opacity:.5}
+.sent p{font-size:16.5px;line-height:1.9}
+.sent .tags{display:flex;flex-wrap:wrap;gap:6px}
+.sent .acts{display:flex;flex-wrap:wrap;gap:6px}
+.approved{border:1px solid var(--ok);background:var(--ok-bg);color:var(--ok);border-radius:12px;padding:12px 14px;font-weight:600}
+
+/* 5) الربع */
+.heat{display:grid;grid-template-columns:repeat(31,minmax(0,1fr));gap:3px;direction:rtl}
+.heat i{aspect-ratio:1;border-radius:3px;background:var(--surface-2);display:block}
+.heat i[data-v="1"]{background:color-mix(in srgb,var(--teal) 45%,var(--surface-2))}
+.heat i[data-v="2"]{background:var(--teal)}
+.heat i[data-today="true"]{outline:2px solid var(--saffron);outline-offset:1px}
+.heat i[data-off="true"]{background:transparent;border:1px dashed var(--rule)}
+.rep{display:grid;gap:18px}
+.rep section{display:grid;gap:8px;padding-bottom:16px;border-bottom:1px solid var(--rule)}
+.rep h3{font-size:16px}
+.rep p{font-size:15.5px;line-height:1.95}
+.cite{display:inline-flex;align-items:center;gap:4px;font-size:12px;border:1px solid var(--rule);border-radius:999px;padding:0 8px;background:var(--surface-2);cursor:pointer;vertical-align:middle;min-height:24px;color:var(--ink-2)}
+.flag{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:8px 10px;font-size:13px}
+.srcs{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13.5px}
+.srcs li{display:grid;grid-template-columns:110px 1fr;gap:8px;padding:6px 8px;background:var(--surface-2);border-radius:8px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px}
+.kpis div{border:1px solid var(--rule);border-radius:12px;padding:10px 12px;display:grid}
+.kpis b{font-size:24px;font-variant-numeric:tabular-nums}
+.kpis span{font-size:12.5px;color:var(--ink-3)}
+
+/* 6) المانح والمستفيد */
+.donor{border:1px solid var(--rule);border-radius:16px;overflow:hidden;background:var(--surface)}
+.donor .dh{background:var(--teal);color:var(--on-teal);padding:14px 18px;display:grid;gap:2px}
+.donor .dh small{opacity:.85}
+.donor .db{padding:16px 18px;display:grid;gap:14px}
+.bar{height:10px;border-radius:5px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--teal);border-radius:5px}
+.hidden-row{border:1px dashed var(--bad);border-radius:10px;padding:10px 12px;color:var(--ink-2);font-size:13.5px;background:var(--bad-bg)}
+.fam{list-style:none;margin:0;padding:0;display:grid}
+.fam li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:center}
+.fam code{font-family:var(--mono);font-size:13px;direction:ltr;unicode-bidi:isolate}
+.steps3{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12px;color:var(--ink-3)}
+.steps3 span{padding:1px 8px;border-radius:999px;border:1px solid var(--rule)}
+.steps3 span[data-on="true"]{background:var(--teal-soft);color:var(--teal);border-color:transparent;font-weight:600}
+@media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
+
+</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="page" dir="rtl" lang="ar">
+<header class="top"><div class="wrap">
+  <div class="brand"><b>نَسَق المقلوب</b><span id="date"></span><span>نموذج تفاعلي للرهانات الخمسة | البيانات وهمية</span></div>
+  <nav aria-label="لحظات اليوم والربع"><ol class="steps" id="steps"></ol></nav>
+</div></header>
+<main class="wrap scene" id="scene" aria-live="off"></main>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</div>
+
+<script>
+/* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved. */
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const M = (h, m) => h * 60 + m;
+const LOC = 'ar-EG-u-nu-latn';
+const fmt = n => Number(n).toLocaleString(LOC);
+function t12(m){ m = ((Math.round(m) % 1440) + 1440) % 1440; let h = Math.floor(m / 60), mi = m % 60; const s = h < 12 ? 'ص' : 'م'; h = h % 12 || 12; return h + ':' + String(mi).padStart(2, '0') + ' ' + s; }
+function dur(m){ m = Math.max(0, Math.round(m)); const h = Math.floor(m / 60), r = m % 60; if(!h) return r + ' د'; return h + ' س' + (r ? ' ' + r + ' د' : ''); }
+const TODAY = new Date(2026, 9, 21);
+const dayLbl = off => { const d = new Date(TODAY); d.setDate(d.getDate() + off); return off === 0 ? 'اليوم' : off === 1 ? 'غدًا' : d.toLocaleDateString(LOC, {weekday: 'long', day: 'numeric', month: 'long'}); };
+function hijri(d){ try{ const f = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn', {day: 'numeric', month: 'long', year: 'numeric'}); return f.resolvedOptions().calendar === 'islamic-umalqura' ? f.format(d) : ''; }catch(e){ return ''; } }
+function rng(seed){ return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+let toastT = 0;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 4200); }
+
+/* ---------------- النظام الواحد: الناس والوعود والآثار ---------------- */
+const P = {
+  me: {n: 'أنت', role: 'المالك', a: 'م'}, rana: {n: 'رنا', role: 'مديرة مشروع الدعم النفسي', a: 'ر'}, samer: {n: 'سامر', role: 'المالي', a: 'س'},
+  ahmad: {n: 'أحمد', role: 'منسّق ميداني', a: 'أ'}, heba: {n: 'هبة', role: 'إدارية ومسؤولة السلامة', a: 'ه'}, layla: {n: 'ليلى', role: 'منسّقة ميدانية', a: 'ل'},
+  gharas: {n: 'صندوق غِراس', role: 'مانح | الدعم النفسي', a: 'غ', ext: true}, rafd: {n: 'مؤسسة الرفد', role: 'مانح | الطرود الصحية', a: 'ف', ext: true}
+};
+const ZONES = ['المكتب', 'حي الرمال', 'الشيخ رضوان', 'مركز الإيواء (المدرسة)', 'المخزن'];
+const ST = {
+  view: 'ops', clock: 'a',
+  check: {me: null, rana: {t: M(7, 40), z: 'المكتب'}, samer: {t: M(7, 55), z: 'المكتب'}, heba: null, ahmad: {t: M(7, 20), z: 'حي الرمال'}, layla: null},
+  last: {heba: 'أمس 4:30 م', layla: 'أمس 6:10 م'}, stuck: {}, help: null, verified: {},
+  promises: [
+    {id: 'p1', from: 'ahmad', to: 'rana', t: 'أرقام المستفيدين لشهر أكتوبر', due: 1, st: 'done', proj: 'psy', note: 'سُلّمت اليوم 11:30 ص'},
+    {id: 'p2', from: 'rana', to: 'me', t: 'قسم المؤشرات في مسودة تقرير Q3', due: 2, st: 'ok', proj: 'psy'},
+    {id: 'p3', from: 'samer', to: 'rana', t: 'المطابقة المالية لتقرير Q3', due: 1, st: 'risk', proj: 'psy', note: 'لم يبدأ بعد'},
+    {id: 'p4', from: 'me', to: 'gharas', t: 'إرسال تقرير Q3', due: 4, st: 'ok', proj: 'psy'},
+    {id: 'p5', from: 'heba', to: 'me', t: 'نموذج موحّد لطلبات الشراء', due: 0, st: 'risk', proj: 'kits'},
+    {id: 'p6', from: 'me', to: 'samer', t: 'موافقة صرف سلفة 1,250 ₪', due: 0, st: 'done', proj: 'kits', note: 'وافقتَ 10:05 ص'},
+    {id: 'p7', from: 'layla', to: 'ahmad', t: '12 استمارة من الشيخ رضوان', due: 0, st: 'risk', proj: 'psy'},
+    {id: 'p8', from: 'ahmad', to: 'heba', t: 'تسليم الاستمارات الورقية', due: 0, st: 'ok', proj: 'psy'},
+    {id: 'p9', from: 'rana', to: 'ahmad', t: 'خطة زيارات الأسبوع القادم', due: 3, st: 'ok', proj: 'psy'},
+    {id: 'p10', from: 'me', to: 'rafd', t: 'تقرير توزيع الدفعة 2', due: 6, st: 'ok', proj: 'kits'}
+  ],
+  focus: null,
+  card: [
+    {t: 'زيارة أسرة R-0412', z: 'مركز الإيواء | الصف 3', m: 'ok', c: null},
+    {t: 'تسليم طرد صحي لأسرة R-0388', z: 'حي الرمال', m: 'ok', c: null},
+    {t: 'استمارة متابعة لأسرة R-0451', z: 'مدرسة الإيواء | غرفة 12', m: 'ok', c: null},
+    {t: 'جلسة دعم نفسي جماعية (أطفال)', z: 'مركز الإيواء', m: 'no', c: 1},
+    {t: 'تصوير إيصالات التوزيع', z: 'المخزن', m: null, c: null},
+    {t: 'تسليم الاستمارات لهبة', z: 'المكتب', m: null, c: null}
+  ],
+  scanned: false, scanning: false,
+  sent: null, approved: false, extra: [], hl: null,
+  q4: null, cite: null,
+  donor: 'rafd', showHidden: false,
+  fams: [['R-0388', 5, 2], ['R-0391', 7, 2], ['R-0402', 4, 1], ['R-0405', 6, 1], ['R-0412', 3, 2], ['R-0417', 8, 0], ['R-0423', 5, 0], ['R-0430', 2, 1]]
+};
+const CODES = ['لا كهرباء', 'طريق مغلق', 'الأسرة غير موجودة', 'نقص مواد', 'وضع أمني'];
+const PROJ = {psy: 'الدعم النفسي', kits: 'الطرود الصحية'};
+
+/* ---------------- الرأس ---------------- */
+const STEPS = [['ops', 'الصباح 8:05', 'غرفة الفريق'], ['promises', 'النهار', 'شبكة الوعود'], ['paper', 'الميدان', 'بطاقة الورق'], ['story', 'المساء 8:40', 'الرواية'], ['quarter', 'نهاية الربع', 'التقرير يكتب نفسه'], ['donor', 'خارج المنظمة', 'المانح والمستفيد']];
+function renderSteps(){
+  $('#steps').innerHTML = STEPS.map(([k, s, l], i) => `<li><button type="button" data-step="${k}" ${ST.view === k ? 'aria-current="step"' : ''}><small>${i + 1}. ${s}</small><span>${l}</span></button></li>`).join('');
+}
+function go(v){ ST.view = v; renderSteps(); render(); window.scrollTo({top: 0}); const h = $('#scene h1'); if(h){ h.setAttribute('tabindex', '-1'); h.focus({preventScroll: true}); } }
+const claim = (k, h, p) => `<header class="claim"><span class="k">${k}</span><h1>${h}</h1><p>${p}</p></header>`;
+const why = items => `<div class="why">${items.map(([b, t]) => `<div><b>${b}</b>${t}</div>`).join('')}</div>`;
+
+/* ================= 1) الصباح: غرفة الفريق ================= */
+const CLOCKS = {a: M(8, 5), b: M(9, 30), c: M(11, 0)};
+function applyClock(){
+  const t = CLOCKS[ST.clock];
+  if(t >= M(9, 30) && !ST.check.heba) ST.check.heba = {t: M(8, 20), z: 'المكتب'};
+  if(t >= M(11, 0) && !ST.stuck.ahmad) ST.stuck.ahmad = 'طريق مغلق إلى مركز الإيواء منذ 10:40 ص';
+  if(t < M(11, 0)) delete ST.stuck.ahmad;
+  if(t < M(9, 30) && ST.check.heba && ST.check.heba.t === M(8, 20)) ST.check.heba = null;
+}
+function statusOf(k){
+  const c = ST.check[k], now = CLOCKS[ST.clock];
+  if(ST.help === k) return ['bad', 'يحتاج مساعدة الآن'];
+  if(ST.stuck[k]) return ['warn', 'عالق: ' + ST.stuck[k]];
+  if(c) return c.z === 'المكتب' ? ['ok', 'بخير | المكتب | ' + t12(c.t)] : ['info', 'بخير | في الميدان: ' + c.z + ' | ' + t12(c.t)];
+  if(ST.verified[k]) return ['ok', 'تحقّق منه ' + ST.verified[k]];
+  return now >= M(9, 30) ? ['warn', 'لم يؤكد بعد | آخر تأكيد ' + (ST.last[k] || '')] : ['mute', 'لم يؤكد بعد'];
+}
+function opsView(){
+  applyClock();
+  const now = CLOCKS[ST.clock];
+  const me = ST.check.me;
+  const meBox = ST.help === 'me' ? `<div class="me"><span class="q">أُرسل طلب المساعدة</span><p>وصل إلى هبة (مسؤولة السلامة) وإليك كمالك، مع آخر منطقة اخترتها. لا يُرسل موقعك الجغرافي.</p><div class="row"><button class="btn" data-a="unhelp" type="button">ألغِ: ضغطتُ خطأً</button></div></div>`
+    : me ? `<div class="me"><span class="q">سُجّل: بخير، ${me.z === 'المكتب' ? 'في المكتب' : 'في الميدان: ' + esc(me.z)}</span><p class="note">${t12(me.t)} | يراه منسّقك والمالك فقط. يمكنك تغييره عند كل تنقّل.</p><div class="row"><button class="btn sm" data-a="recheck" type="button">غيّر حالتي</button></div></div>`
+    : `<div class="me"><span class="q">صباح الخير. هل أنت بخير؟</span>
+      <div class="row"><button class="btn primary big" data-a="ok-office" type="button">بخير، في المكتب</button>
+      <label class="vh" for="zone">المنطقة</label><select id="zone" style="width:auto;min-height:60px">${ZONES.slice(1).map(z => `<option>${z}</option>`).join('')}</select>
+      <button class="btn big" data-a="ok-field" type="button">بخير، في الميدان</button></div>
+      <div><button class="btn danger" data-a="help" type="button">أحتاج مساعدة</button></div></div>`;
+  const team = ['rana', 'samer', 'heba', 'ahmad', 'layla'].map(k => { const [cls, txt] = statusOf(k); const alert = cls === 'warn' && !ST.check[k] && !ST.stuck[k];
+    return `<li data-alert="${alert}" data-help="${cls === 'bad'}"><div class="who"><span class="av" aria-hidden="true">${P[k].a}</span><div><b>${P[k].n}</b><span>${P[k].role}</span></div></div>
+      <span class="pill ${cls}">${esc(txt)}</span>
+      ${alert ? `<div class="row"><span class="note">مضت ساعة ونصف بعد بداية الدوام.</span><button class="btn sm" data-a="verify:${k}" type="button">تحقّقتُ هاتفيًا: بخير</button><button class="btn sm" data-a="ask:${k}" type="button">أرسل سؤالًا</button></div>` : ''}
+      ${ST.stuck[k] ? `<div class="row"><button class="btn sm" data-a="unstick:${k}" type="button">أعِد جدولة زياراته المتأثرة</button></div>` : ''}</li>`; }).join('');
+  const risks = ST.promises.filter(p => p.st === 'risk' || p.st === 'late');
+  const confirmed = ['rana', 'samer', 'heba', 'ahmad', 'layla'].filter(k => ST.check[k] || ST.verified[k]).length + (me ? 1 : 0);
+  return claim('الافتراض المكسور: المستخدم فرد', 'اليوم يبدأ بـ«أنا بخير»، لا بقائمة مهام', 'الشاشة الأولى ليست مهامك بل الفريق: من بخير، ومن في الميدان وأين، ومن عالق بماذا، وأي وعد للمانح في خطر. واجب الرعاية يخرج من مجموعات «طمّنونا» إلى مكان واحد.')
+  + `<div class="row clock" role="group" aria-label="الوقت المحاكى"><span class="note">الوقت:</span>${Object.entries(CLOCKS).map(([k, t]) => `<button class="btn sm" type="button" data-a="clock:${k}" aria-pressed="${ST.clock === k}">${t12(t)}</button>`).join('')}<span class="note">حرّك الوقت لترى من يؤكد ومن يتأخر.</span></div>
+  <div class="cols">
+    <div class="box"><h2>حالتي</h2>${meBox}</div>
+    <div class="box"><h2>الفريق الآن <small class="num">${confirmed} من 6 بخير</small></h2><p class="note">لا تتبّع موقع. المنطقة يختارها الشخص بنفسه، ويراها منسّقه والمالك فقط.</p></div>
+  </div>
+  <div class="cols">
+    <div class="box"><h2>الفريق</h2><ul class="team" aria-live="polite">${team}</ul></div>
+    <div class="box"><h2>وعود في خطر اليوم <small>من شبكة الوعود</small></h2><ul class="risk">${risks.map(p => `<li><span><b>${esc(P[p.from].n)}</b> وعد <b>${esc(P[p.to].n)}</b>: ${esc(p.t)}</span><span class="note">${dayLbl(p.due)}${p.note ? ' | ' + esc(p.note) : ''}</span><div><button class="btn sm" data-a="goto:promises" type="button">افتح في الشبكة</button></div></li>`).join('') || '<li class="note">لا شيء في خطر.</li>'}</ul></div>
+  </div>`
+  + why([['ما يتغير في المنتج', 'الشاشة الأولى لكل حساب فريق هي الفريق، و«مهامي» تأتي ثانيًا.'], ['على بنيتنا', 'سهل: حالة صغيرة لكل مستخدم في Drive يكتبها الجسر ويقرؤها المنسّق والمالك فقط.'], ['الخطر', 'إحساس بالمراقبة. التأكيد طوعي، ولا موقع جغرافي، والمسؤول يرى «لم يؤكد» لا «أين هو».'], ['كيف نختبره', 'أسبوع مع الفريق: هل تختفي رسائل «طمّنونا» من مجموعة الواتساب؟']]);
+}
+
+/* ================= 2) شبكة الوعود ================= */
+const STC = {done: ['ok', 'وُفي به'], ok: ['info', 'في الطريق'], risk: ['warn', 'في خطر'], late: ['bad', 'تأخر']};
+const STROKE = {done: 'var(--ok)', ok: 'var(--info)', risk: 'var(--warn)', late: 'var(--bad)'};
+const NODE_POS = {me: [500, 230], rana: [300, 150], samer: [250, 330], ahmad: [500, 420], heba: [740, 330], layla: [700, 150], gharas: [140, 40], rafd: [860, 40]};
+function promisesView(){
+  const F = ST.focus;
+  const edges = ST.promises.map(p => { const [x1, y1] = NODE_POS[p.from], [x2, y2] = NODE_POS[p.to]; const mx = (x1 + x2) / 2 + (y2 - y1) * .18, my = (y1 + y2) / 2 - (x2 - x1) * .18;
+    const dim = F && p.from !== F && p.to !== F;
+    return `<path d="M${x1},${y1} Q${mx.toFixed(0)},${my.toFixed(0)} ${x2},${y2}" fill="none" stroke="${STROKE[p.st]}" stroke-width="${p.st === 'risk' ? 3.5 : 2.5}" ${p.st === 'risk' ? 'stroke-dasharray="7 5"' : ''} marker-end="url(#ar-${p.st})" opacity="${dim ? .15 : .9}"/>`; }).join('');
+  const nodes = Object.entries(NODE_POS).map(([k, [x, y]]) => `<g data-node="${k}" role="button" tabindex="0" aria-label="${P[k].n}: اعرض وعوده" style="cursor:pointer" opacity="${F && F !== k && !ST.promises.some(p => (p.from === F && p.to === k) || (p.to === F && p.from === k)) ? .35 : 1}">
+      <circle cx="${x}" cy="${y}" r="${P[k].ext ? 26 : 30}" fill="${F === k ? 'var(--teal)' : 'var(--surface)'}" stroke="${P[k].ext ? 'var(--saffron)' : 'var(--teal)'}" stroke-width="2.5" ${P[k].ext ? 'stroke-dasharray="4 3"' : ''}/>
+      <text x="${x}" y="${y + 6}" text-anchor="middle" font-size="18" font-weight="700" fill="${F === k ? 'var(--on-teal)' : 'var(--ink)'}">${P[k].a}</text>
+      <text x="${x}" y="${y + (P[k].ext ? -34 : 50)}" text-anchor="middle" font-size="14" fill="var(--ink-2)">${P[k].n}</text></g>`).join('');
+  const markers = Object.entries(STROKE).map(([k, c]) => `<marker id="ar-${k}" viewBox="0 0 10 10" refX="34" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker>`).join('');
+  const who = F || 'me';
+  const owe = ST.promises.filter(p => p.from === who), owed = ST.promises.filter(p => p.to === who);
+  const item = p => `<li><span class="pill ${STC[p.st][0]}">${STC[p.st][1]}</span><span class="t">${esc(p.t)}</span><span class="note num">${dayLbl(p.due)}</span>
+      <span class="s">${p.from === who ? 'إلى ' + esc(P[p.to].n) : 'من ' + esc(P[p.from].n)} | ${PROJ[p.proj]}${p.note ? ' | ' + esc(p.note) : ''}</span></li>`;
+  const p3 = ST.promises.find(p => p.id === 'p3'), p4 = ST.promises.find(p => p.id === 'p4');
+  return claim('الافتراض المكسور: الوحدة مهمة', 'لا مهام خاصة. كل بند وعدٌ له طرفان', 'يومك هو ما وعدتَ به وما وُعدتَ به. والمنظمة كلها شبكة وعود ترى فيها أين تنقطع السلسلة قبل أن يصل التقرير إلى المانح.')
+  + `<div class="cols">
+    <div class="box"><h2>شبكة وعود المنظمة <small>اضغط شخصًا لترى وعوده</small></h2>
+      <svg class="graph" viewBox="0 0 1000 500" role="img" aria-label="شبكة الوعود بين الفريق والمانحين"><defs>${markers}</defs>${edges}${nodes}</svg>
+      <div class="legend"><span><i style="border-color:var(--ok)"></i>وُفي به</span><span><i style="border-color:var(--info)"></i>في الطريق</span><span><i style="border-color:var(--warn);border-top-style:dashed"></i>في خطر</span><span><i style="border-color:var(--bad)"></i>تأخر</span><span>الدائرة المنقّطة: مانح خارج المنظمة</span></div>
+      ${F ? `<div><button class="btn sm" data-a="unfocus" type="button">اعرض الكل</button></div>` : ''}</div>
+    <div class="box"><h2>سلسلة تقرير صندوق غِراس <small>يُستحق الأحد</small></h2>
+      <ol class="chain">${['p1', 'p3', 'p2', 'p4'].map(id => { const p = ST.promises.find(x => x.id === id); return `<li data-weak="${p.st === 'risk'}"><div><b>${esc(P[p.from].n)} ← ${esc(P[p.to].n)}</b>: ${esc(p.t)}<br><span class="pill ${STC[p.st][0]}">${STC[p.st][1]}</span> <span class="note">${dayLbl(p.due)}${p.note ? ' | ' + esc(p.note) : ''}</span></div></li>`; }).join('')}</ol>
+      ${p3.st === 'risk' ? `<div class="flag">الحلقة الضعيفة: المطابقة المالية لم تبدأ. إن تأخرت إلى السبت لا يبقى هامش لإرسال الأحد.</div>
+        <div class="row"><span class="note">اسأل سامر عن موعد واقعي:</span>${[[1, 'الخميس كما هو'], [2, 'الجمعة'], [3, 'السبت']].map(([d, l]) => `<button class="btn sm" data-a="neg:${d}" type="button">${l}</button>`).join('')}</div>`
+        : `<div class="${p4.st === 'risk' ? 'flag' : 'note'}">${esc(p3.note || '')}${p4.st === 'risk' ? ' | الإرسال يوم الأحد صار بلا هامش.' : ' | الإرسال يوم الأحد ممكن بهامش.'}</div>`}
+    </div></div>
+  <div class="cols even">
+    <div class="box"><h2>${who === 'me' ? 'ما وعدتَ به' : 'ما وعد به ' + esc(P[who].n)}</h2><ul class="plist">${owe.map(item).join('') || '<li class="note">لا شيء.</li>'}</ul></div>
+    <div class="box"><h2>${who === 'me' ? 'ما وُعدتَ به' : 'ما وُعد به ' + esc(P[who].n)}</h2><ul class="plist">${owed.map(item).join('') || '<li class="note">لا شيء.</li>'}</ul></div>
+  </div>
+  <form class="box" id="newp" onsubmit="return false"><h2>وعد جديد <small>لا يُحفظ بند بلا طرف ثانٍ</small></h2>
+    <div class="cols even" style="gap:12px">
+      <label class="f">أعد بـ<input type="text" id="np-t" placeholder="مثال: مراجعة خطة توزيع نوفمبر" required></label>
+      <div class="cols even" style="gap:12px"><label class="f">لمن؟<select id="np-to" required><option value="">اختر</option>${Object.keys(P).filter(k => k !== 'me').map(k => `<option value="${k}">${P[k].n}</option>`).join('')}</select></label>
+        <label class="f">متى؟<select id="np-d"><option value="0">اليوم</option><option value="1">غدًا</option><option value="2">${dayLbl(2)}</option><option value="4">${dayLbl(4)}</option></select></label></div>
+    </div><div class="row"><button class="btn primary" data-a="newp" type="button">أضف الوعد</button><span class="note">يصل إلى الطرف الثاني ليقبله أو يفاوض على موعده.</span></div></form>`
+  + why([['ما يتغير في المنتج', 'حقل «لمن» إلزامي في كل بند، والقبول والتفاوض جزء من حياة البند. «مهامي الخاصة» تصبح وعودًا لنفسك، وتبقى خاصة.'], ['على بنيتنا', 'متوسط: الوعد بند في نوشن بطرفين، والجسر يكتب في ملفَّي الطرفين.'], ['الخطر', 'ثقافة لوم. الوعد يُقبل أو يُفاوض، والشبكة تُظهر «في خطر» قبل «تأخر» لتتيح الإنقاذ.'], ['كيف نختبره', 'ربع واحد: هل تقل الحلقات المتأخرة قبل تقارير المانحين؟']]);
+}
+
+/* ================= 3) بطاقة الورق ================= */
+const PEN = {ok: '<path d="M5 16 L12 23 L26 6" fill="none" stroke="var(--pen)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>',
+  no: '<path d="M7 7 L24 24 M24 6 L8 23" fill="none" stroke="var(--pen)" stroke-width="3.2" stroke-linecap="round"/>',
+  later: '<path d="M25 15 L6 15 M12 8 L5 15 L12 22" fill="none" stroke="var(--pen)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>'};
+function paperView(){
+  const rows = ST.card.map((r, i) => `<div class="prow"><div class="pt">${i + 1}. ${esc(r.t)}<small>${esc(r.z)}</small></div>
+    <div class="boxes" role="group" aria-label="علامة السطر ${i + 1}">${[['ok', 'تمّ'], ['no', 'تعذّر'], ['later', 'لاحقًا']].map(([k, l]) => `<button type="button" class="pb" data-mark="${i}:${k}" aria-pressed="${r.m === k}" aria-label="${l}: ${esc(r.t)}"><span class="lbl">${l}</span>${r.m === k ? `<svg viewBox="0 0 30 30" aria-hidden="true">${PEN[k]}</svg>` : ''}</button>`).join('')}
+    ${r.m === 'no' ? `<span class="codes" role="group" aria-label="سبب التعذّر">${CODES.map((c, j) => `<button type="button" class="cb" data-code="${i}:${j}" aria-pressed="${r.c === j}" aria-label="${c}" title="${c}">${'أبجده'[j]}${r.c === j ? '<svg viewBox="0 0 24 28" aria-hidden="true"><path d="M3 4 L21 24 M21 4 L3 24" stroke="var(--pen)" stroke-width="2.4" stroke-linecap="round"/></svg>' : ''}</button>`).join('')}</span>` : ''}</div></div>`).join('');
+  const res = ST.scanned ? `<div class="box"><h2>ما قرأه نَسَق من الصورة</h2><ul class="recon">${ST.card.map(r => `<li><span>${esc(r.t)}</span>${r.m === 'ok' ? '<span class="pill ok">تمّ</span>' : r.m === 'no' ? `<span class="pill warn">تعذّر: ${r.c != null ? CODES[r.c] : 'بلا سبب'}</span>` : r.m === 'later' ? '<span class="pill info">لاحقًا</span>' : '<span class="pill mute">لا علامة</span>'}</li>`).join('')}</ul>
+      <p class="note">تحدّث: رواية المساء، وحالة أحمد في غرفة الفريق، ووعد «تسليم الاستمارات».</p><div class="row"><button class="btn" data-a="goto:story" type="button">شاهدها في رواية المساء</button></div></div>` : '';
+  return claim('الافتراض المكسور: المنتج شاشة', 'يوم المنسّق الميداني على ورقة بحجم الكف', 'في سياق انقطاع الكهرباء والشبكة، الورقة أمتن وسيط. يحمل أحمد بطاقته ويعلّم بقلمه. ومساءً يصوّرها مرة واحدة، فيقرأ نَسَق المربعات لا الخط.')
+  + `<div class="cols">
+    <div class="paper" id="paper" aria-label="بطاقة يوم أحمد"><i class="fid a"></i><i class="fid b"></i><i class="fid c"></i><i class="fid d"></i>
+      <header><b>أحمد | الأربعاء 21 أكتوبر</b><span style="font-family:var(--mono);direction:ltr">R-1021-A</span></header>
+      ${rows}
+      <footer><span>علّم مربعًا واحدًا في كل سطر.</span><span>عند «تعذّر» علّم سببًا: أ لا كهرباء، ب طريق مغلق، ج الأسرة غير موجودة، د نقص مواد، هـ وضع أمني.</span></footer>
+      ${ST.scanning ? '<i class="scanline" aria-hidden="true"></i>' : ''}</div>
+    <div class="box"><h2>جرّبها كأنك أحمد</h2>
+      <p>السطران 5 و6 بلا علامة بعد. علّمهما بالضغط على المربعات كما يعلّم القلم، ثم صوّر البطاقة.</p>
+      <div class="row"><button class="btn primary big" data-a="scan" type="button" ${ST.scanning ? 'disabled' : ''}>${ST.scanned ? 'صوّرها مرة أخرى' : 'صوّر البطاقة'}</button></div>
+      <p class="note">علامات الزوايا الأربع تتيح تصحيح ميل الصورة، والمربعات في مواقع ثابتة فتُقرأ على الجهاز دون خدمة خارجية ودون قراءة خط اليد. الرمز R-1021-A يربط البطاقة بصاحبها ويومها.</p></div>
+  </div>${res}`
+  + why([['ما يتغير في المنتج', 'زر «اطبع بطاقة يومي» لحسابات الميدان، وزر «صوّر البطاقة» يعيدها إلى النظام.'], ['على بنيتنا', 'الطباعة سهلة. قراءة المربعات من الصورة على الجهاز متوسطة الصعوبة، بلا خدمة مدفوعة.'], ['الخطر', 'الطباعة تحتاج طابعة وكهرباء في المكتب. البديل: بطاقة موحّدة تُنسخ باليد بالترتيب نفسه.'], ['كيف نختبره', 'أسبوع مع منسّقَين: كم بطاقة عادت مصوّرة ومقروءة كاملة؟']]);
+}
+
+/* ================= 4) رواية المساء ================= */
+function traces(){
+  const T = [
+    [M(8, 12), 'نوشن', 'عدّلتَ «مسودة تقرير Q3»: قسم المؤشرات (+420 كلمة)', 'psy', 's1'],
+    [M(9, 0), 'التقويم', 'اجتماع الفريق الأسبوعي، 45 د، 6 حاضرين', 'team', 's3'],
+    [M(10, 5), 'المصروفات', 'وافقتَ على سلفة 1,250 ₪ لشراء طرود صحية', 'kits', 's2'],
+    [M(10, 40), 'Drive', 'رُفع «كشف التوزيع | مركز الرمال.xlsx» (340 سطرًا)', 'kits', 's2'],
+    [M(11, 30), 'الوعود', 'أحمد سلّم رنا «أرقام المستفيدين لشهر أكتوبر»', 'psy', 's1'],
+    [M(12, 50), 'جلسة تركيز', '1 س 45 د على «مسودة تقرير Q3»', 'psy', 's1'],
+    [M(14, 40), 'نوشن', 'أُغلق «اتصال بالمورّد» بملاحظة: الكمية مؤكدة 340 طردًا', 'kits', 's2'],
+    [M(16, 0), 'التقويم', 'مكالمة مع ممثل صندوق غِراس، 30 د', 'psy', 's1'],
+    [M(16, 45), 'Drive', 'رُفعت «صور التوزيع | الدفعة 2» (24 صورة)', 'kits', 's2']
+  ];
+  if(ST.scanned){ const ok = ST.card.filter(r => r.m === 'ok').length, no = ST.card.filter(r => r.m === 'no'); T.push([M(19, 10), 'بطاقة ورقية', `بطاقة أحمد: ${ok} تمّ، ${no.length} تعذّر${no.length ? ' (' + no.map(r => r.c != null ? CODES[r.c] : 'بلا سبب').join('، ') + ')' : ''}`, 'kits', 's2']); }
+  return T;
+}
+function buildSentences(){
+  const card = ST.scanned ? ST.card : null;
+  const ok = card ? card.filter(r => r.m === 'ok').length : 0, no = card ? card.filter(r => r.m === 'no') : [];
+  return [
+    {id: 's1', on: true, proj: 'psy', share: true, ind: ['مؤشر 2.1: تقارير في موعدها'],
+      text: 'تقدّمتُ في مسودة تقرير الربع الثالث: أضفتُ قسم المؤشرات وعملتُ عليها ساعة و45 دقيقة. واستلمت رنا من أحمد أرقام المستفيدين لشهر أكتوبر، وتحدثتُ نصف ساعة مع ممثل صندوق غِراس.'},
+    {id: 's2', on: true, proj: 'kits', share: true, ind: ['مؤشر 1.3: أسر تستلم طرودًا صحية'],
+      text: 'اعتُمدت سلفة 1,250 ₪ لشراء الطرود، وتأكدت الكمية مع المورّد (340 طردًا)، ورُفع كشف التوزيع لمركز الرمال وصور الدفعة الثانية.' + (card ? ` وفي الميدان أنجز أحمد ${ok} من ${card.length} بنود${no.length ? '، وتعذّر ' + (no.length === 1 ? 'بند واحد' : no.length + ' بنود') + ' بسبب: ' + [...new Set(no.map(r => r.c != null ? CODES[r.c] : 'سبب غير محدد'))].join(' و') : ''}.` : ''),
+      warn: 'رفعُ الكشف ليس استلامًا. الأسر تُحسب «مستلمة» حين تؤكد، لا حين يُرفع الملف.'},
+    {id: 's3', on: true, proj: 'team', share: false, ind: [], text: 'اجتمع الفريق اجتماعه الأسبوعي (6 حاضرين، 45 دقيقة).'}
+  ];
+}
+function storyView(){
+  if(!ST.sent) ST.sent = buildSentences();
+  else { const fresh = buildSentences(); ST.sent.forEach(s => { const f = fresh.find(x => x.id === s.id); if(f && !s.edited) s.text = f.text; }); }
+  const T = traces();
+  const sents = [...ST.sent, ...ST.extra];
+  return claim('الافتراض المكسور: تخطط ثم تنفذ', 'لا تخطيط. نَسَق يروي يومك، وأنت تصحّح', 'آثار يومك موجودة في أدوات العمل أصلًا: نوشن وDrive والمصروفات والتقويم والوعود والبطاقة الورقية. نَسَق يجمعها في ثلاثة أسطر بلغة بشرية، كل سطر موسوم بمشروعه ومؤشره. أنت تحذف أو تعدّل أو تضيف، ثم تعتمد.')
+  + `<div class="cols">
+    <div class="box"><h2>روايتك لليوم <small>الأربعاء 21 أكتوبر | 8:40 م</small></h2>
+      ${ST.approved ? `<div class="approved" role="status">اعتُمدت الرواية. أُضيفت إلى سجل الربع الرابع، وستغذّي تقرير الربع تلقائيًا.</div>` : ''}
+      <div class="story">${sents.map(s => `<article class="sent" data-off="${!s.on}">
+        ${s.editing ? `<label class="vh" for="ed-${s.id}">حرّر الجملة</label><textarea id="ed-${s.id}">${esc(s.text)}</textarea>` : `<p>${esc(s.text)}</p>`}
+        <div class="tags"><span class="chip" aria-hidden="true">${s.proj === 'team' ? 'الفريق' : PROJ[s.proj] || 'يدوي'}</span>${(s.ind || []).map(i => `<span class="chip" aria-hidden="true">${esc(i)}</span>`).join('')}<button class="chip" type="button" data-a="share:${s.id}" aria-pressed="${!!s.share}">${s.share ? 'تُشارك مع المانح' : 'داخلية فقط'}</button></div>
+        ${s.warn ? `<div class="flag">${esc(s.warn)}</div>` : ''}
+        <div class="acts">${s.editing ? `<button class="btn sm primary" type="button" data-a="save:${s.id}">احفظ</button>` : `<button class="btn sm" type="button" data-a="edit:${s.id}">حرّر</button>`}
+          <button class="btn sm" type="button" data-a="toggle:${s.id}">${s.on ? 'احذفها من الرواية' : 'أعِدها'}</button>
+          ${s.id.startsWith('s') ? `<button class="btn sm" type="button" data-a="from:${s.id}" aria-pressed="${ST.hl === s.id}">من أين جاءت؟</button>` : ''}</div></article>`).join('')}</div>
+      <div class="row"><label class="vh" for="addx">شيء لم يُرصد</label><input type="text" id="addx" placeholder="شيء لم يُرصد؟ مثال: زرتُ مركز الإيواء وتحدثتُ مع مديره عن مكان الجلسات" style="flex:1;min-width:220px"><button class="btn" type="button" data-a="addx">أضف</button></div>
+      <div class="row"><button class="btn primary big" type="button" data-a="approve" ${ST.approved ? 'disabled' : ''}>اعتمد رواية اليوم</button><span class="note">نحو 40 ثانية بدل كتابة تقرير يومي.</span></div></div>
+    <div class="box"><h2>آثار اليوم <small>${T.length} أثرًا من أدوات العمل</small></h2>
+      <ul class="trace">${T.map(([t, src, txt, , sid], i) => `<li data-hl="${ST.hl === sid}" ${i === 9 ? 'data-new="true"' : ''}><span class="num">${t12(t)}</span><span class="src">${src}</span><span>${esc(txt)}</span></li>`).join('')}</ul>
+      ${ST.scanned ? '' : `<p class="note">لم تُصوَّر بطاقة أحمد بعد. <button class="btn sm" type="button" data-a="goto:paper">صوّرها الآن</button> وشاهد أثرها يظهر هنا.</p>`}
+      <p class="note">يُرصد ما يحدث في أدوات العمل فقط. لا يُقرأ بريدك ولا واتساب ولا مكالماتك الشخصية.</p></div>
+  </div>`
+  + why([['ما يتغير في المنتج', 'يختفي التخطيط الصباحي الإلزامي. يبقى «الآن» لمن يريده، ويصبح المساء لحظة المنتج الأساسية.'], ['على بنيتنا', 'الآثار متاحة في الجسر اليوم. الصياغة إما قوالب محلية كهذه، أو نموذج لغوي بمفتاح المنظمة عند الطلب.'], ['الخطر', 'الرواية الآلية تبالغ أو تخطئ، فلا شيء يُحفظ قبل الاعتماد، وكل جملة تُظهر مصدرها.'], ['كيف نختبره', 'شهر على مشروع واحد: نسبة الأيام المعتمدة، ونسبة الجمل المعدّلة يدويًا.']]);
+}
+
+/* ================= 5) الربع: التقرير يكتب نفسه ================= */
+function corpus(){
+  const r = rng(1448), days = []; const start = new Date(2026, 6, 1);
+  for(let i = 0; i < 92; i++){
+    const d = new Date(start); d.setDate(d.getDate() + i);
+    if(d.getDay() === 5) continue;
+    const narrated = r() < .82; if(!narrated){ days.push({d, narrated: false}); continue; }
+    const sessions = Math.floor(r() * 4), att = sessions ? sessions * (8 + Math.floor(r() * 8)) : 0;
+    const dist = r() < .22 ? 20 + Math.floor(r() * 40) : 0, conf = dist ? Math.max(0, dist - Math.floor(r() * 7)) : 0;
+    const power = r() < .2, road = r() < .09, sec = r() < .05;
+    const s = [];
+    if(sessions) s.push(sessions === 1 ? `نُفّذت جلسة دعم نفسي واحدة في مركز الإيواء (${att} حضورًا).` : `نُفّذت ${sessions} ${sessions === 2 ? 'جلستا' : 'جلسات'} دعم نفسي في مركز الإيواء (${att} حضورًا).`);
+    if(dist) s.push(`وُزّعت طرود على ${dist} أسرة، وأكدت ${conf} منها الاستلام.`);
+    if(road) s.push('تعذّرت الزيارات الميدانية لإغلاق الطريق.');
+    if(power) s.push('انقطعت الكهرباء معظم النهار، فأُجّلت الجلسة المسائية.');
+    if(sec) s.push('عُلّق العمل الميداني لوضع أمني، وتأكد الفريق كله أنه بخير.');
+    if(!s.length) s.push('عمل مكتبي: متابعة الاستمارات وتحديث السجلات.');
+    days.push({d, narrated: true, sessions, att, dist, conf, power, road, sec, s});
+  }
+  return days;
+}
+function quarterView(){
+  const C = corpus(), N = C.filter(x => x.narrated);
+  const sum = k => N.reduce((a, x) => a + (x[k] || 0), 0), cnt = k => N.filter(x => x[k]).length;
+  const S = {sessions: sum('sessions'), att: sum('att'), dist: sum('dist'), conf: sum('conf'), power: cnt('power'), road: cnt('road'), sec: cnt('sec')};
+  const daysWith = f => N.filter(f);
+  const cite = (key, f, label) => { const n = daysWith(f).length; return `<button type="button" class="cite" data-cite="${key}" aria-expanded="${ST.cite === key}">من ${n} يومًا${label ? ' | ' + label : ''}</button>`; };
+  const srcFor = {
+    s: x => x.sessions, d: x => x.dist, c: x => x.power || x.road || x.sec, o: x => !x.sessions && !x.dist
+  };
+  const srcList = key => { const list = daysWith(srcFor[key]).slice(0, 6);
+    return `<ul class="srcs">${list.map(x => `<li><span class="num">${x.d.toLocaleDateString(LOC, {weekday: 'short', day: 'numeric', month: 'long'})}</span><span>${esc(x.s.join(' '))}</span></li>`).join('')}<li><span></span><span class="note">و${daysWith(srcFor[key]).length - list.length} يومًا آخر في السجل.</span></li></ul>`; };
+  const q4 = (() => { const out = []; const s = new Date(2026, 9, 1); for(let i = 0; i < 92; i++){ const d = new Date(s); d.setDate(d.getDate() + i); const past = d < TODAY, today = d.getTime() === TODAY.getTime();
+    const v = d.getDay() === 5 ? 'off' : past ? (rng(i + 3)() < .8 ? '2' : '0') : today ? (ST.approved ? '2' : '0') : '0'; out.push([d, v, today]); } return out; })();
+  return claim('الافتراض المكسور: التقرير عمل منفصل', 'تقرير الربع يكتب نفسه من روايات الأيام', 'كل جملة اعتمدتها مساءً تصبح دليلًا. في نهاية الربع يجمعها نَسَق في مسودة تقرير للمانح، وكل رقم وكل فقرة فيها يُرجعك إلى الأيام التي جاء منها. وما لا يستطيع التحقق منه يقوله صراحة.')
+  + `<div class="box"><h2>سجل الربع الرابع حتى الآن <small>كل مربع يوم، والممتلئ يوم اعتُمدت روايته</small></h2>
+      <div class="heat" role="img" aria-label="الربع الرابع: ${q4.filter(x => x[1] === '2').length} يومًا معتمدًا حتى الآن">${q4.map(([d, v, t]) => `<i data-v="${v === 'off' ? 0 : v}" ${v === 'off' ? 'data-off="true"' : ''} ${t ? 'data-today="true"' : ''} title="${d.toLocaleDateString(LOC, {day: 'numeric', month: 'long'})}"></i>`).join('')}</div>
+      <p class="note">${ST.approved ? 'اليوم (المحاط بالزعفران) معتمد.' : 'اليوم (المحاط بالزعفران) لم يُعتمد بعد. <button class="btn sm" type="button" data-a="goto:story">اعتمد رواية اليوم</button>'}</p></div>
+  <div class="cols">
+    <div class="box"><h2>مسودة تقرير الربع الثالث | صندوق غِراس <small>يوليو–سبتمبر 2026 | يراجعها إنسان قبل الإرسال</small></h2>
+      <div class="kpis"><div><b>${fmt(N.length)}</b><span>يومًا مرويًّا من ${C.length}</span></div><div><b>${fmt(S.sessions)}</b><span>جلسة دعم نفسي</span></div><div><b>${fmt(S.att)}</b><span>حضورًا (لا أطفالًا فريدين)</span></div><div><b>${fmt(S.conf)}</b><span>أسرة أكدت الاستلام من ${fmt(S.dist)}</span></div></div>
+      <div class="rep">
+        <section><h3>1. التقدّم في الفترة</h3><p>نفّذ الفريق ${fmt(S.sessions)} جلسة دعم نفسي جماعية للأطفال في مراكز الإيواء، بمجموع ${fmt(S.att)} حضورًا. ${cite('s', srcFor.s)}</p>
+          <div class="flag">يحتاج تحقّقًا: هذا مجموع حضور، لا عدد أطفال فريدين. الرقم الفريد يأتي من سجل الحضور الاسمي، لا من الروايات.</div>${ST.cite === 's' ? srcList('s') : ''}</section>
+        <section><h3>2. المستفيدون والاستلام</h3><p>وُزّعت طرود صحية على ${fmt(S.dist)} أسرة، وأكدت ${fmt(S.conf)} منها الاستلام بنفسها (${Math.round(S.conf / Math.max(1, S.dist) * 100)}%). نعدّ في التقرير المؤكَّد فقط. ${cite('d', srcFor.d)}</p>${ST.cite === 'd' ? srcList('d') : ''}</section>
+        <section><h3>3. التحديات وما تغيّر بسببها</h3><p>انقطعت الكهرباء في ${S.power} أيام عمل فأُجّلت جلسات مسائية، وتعذّر الوصول الميداني ${S.road} أيام لإغلاق الطرق، وعُلّق العمل الميداني ${S.sec} أيام لأسباب أمنية مع تأكيد سلامة الفريق في كل مرة. ${cite('c', srcFor.c)}</p>${ST.cite === 'c' ? srcList('c') : ''}</section>
+        <section><h3>4. التعديلات المقترحة للربع القادم</h3><p>نقترح نقل جلسات المساء إلى الضحى في الأيام التي يُتوقع فيها انقطاع الكهرباء، وتجهيز مخزون طرود في مركز ثانٍ يُستعمل حين يُغلق الطريق.</p>
+          <div class="flag">صياغة مقترحة من نَسَق بناءً على تكرار التحديات. القرار لكم.</div></section>
+      </div>
+      <div class="row"><button class="btn primary" type="button" data-a="copyrep">انسخ المسودة</button><span class="note">البنية مستوحاة من نموذج 8+3 للتقارير السردية. الأسئلة الرسمية تُؤخذ من النموذج نفسه.</span></div></div>
+    <div class="box"><h2>كيف تُقرأ هذه المسودة</h2>
+      <p>كل فقرة تنتهي بزر «من N يومًا». اضغطه لترى جمل الأيام التي بُنيت عليها الفقرة، بتواريخها.</p>
+      <p>لا يضيف نَسَق رقمًا لا أصل له في الروايات المعتمدة. وحين يختلط معنيان (حضور مقابل أطفال، أو توزيع مقابل استلام)، يضع تنبيهًا بدل أن يختار عنك.</p>
+      <p class="note">البيانات هنا محاكاة لربع كامل (${C.length} يوم عمل) بمولّد ثابت، لتبيان الآلية لا النتائج.</p></div>
+  </div>`
+  + why([['ما يتغير في المنتج', 'التقرير الربعي ليس مهمة تبدأ قبل الموعد بأسبوع، بل ناتج جانبي لروايات الأيام.'], ['على بنيتنا', 'التجميع والأرقام محلية. الصياغة السردية بقوالب أو بنموذج لغوي بمفتاح المنظمة.'], ['الخطر', 'مسودة مقنعة تُرسل دون مراجعة. لذلك تنبيهات صريحة، ولا يُصدَّر شيء دون اعتماد بشري.'], ['كيف نختبره', 'ربع واحد على منحة واحدة: كم ساعة استغرقت المراجعة مقابل الكتابة من الصفر؟']]);
+}
+
+/* ================= 6) المانح والمستفيد ================= */
+function donorView(){
+  const conf = ST.fams.filter(f => f[2] === 2).length, del = ST.fams.filter(f => f[2] >= 1).length;
+  const shared = (ST.sent || buildSentences()).filter(s => s.share && s.on);
+  const isRafd = ST.donor === 'rafd';
+  const dpage = `<div class="donor"><div class="dh"><b>${isRafd ? 'مؤسسة الرفد | الطرود الصحية' : 'صندوق غِراس | الدعم النفسي'}</b><small>صفحة حيّة للقراءة فقط | آخر تحديث: اليوم 8:41 م</small></div>
+    <div class="db">${isRafd ? `<div><div class="row" style="justify-content:space-between"><b>الدفعة 2: أسر أكدت الاستلام</b><span class="num">${conf} من ${ST.fams.length}</span></div><div class="bar"><i style="width:${conf / ST.fams.length * 100}%"></i></div><p class="note">نعرض المؤكَّد من الأسرة فقط. سُلّم ${del} طردًا بحسب الموزّعين.</p></div>`
+      : `<div><div class="row" style="justify-content:space-between"><b>جلسات الربع الرابع</b><span class="num">31 من 180 مخطّطة</span></div><div class="bar"><i style="width:17%"></i></div></div>`}
+      <div><b>من يوم العمل (جمل اعتمدها الفريق للمشاركة)</b>${shared.filter(s => (isRafd ? s.proj === 'kits' : s.proj === 'psy')).map(s => `<p style="margin-top:6px">${esc(s.text)}</p>`).join('') || '<p class="note">لا جمل مشتركة اليوم.</p>'}</div>
+      ${ST.showHidden ? `<div class="hidden-row"><b>لا يراه المانح:</b> أسماء الموظفين، ورموز الأسر، وأسباب التعذّر التفصيلية، ومناطق تحرّك الفريق، والجمل الموسومة «داخلية فقط».</div>` : ''}</div></div>`;
+  return claim('الافتراض المكسور: المنتج ينتهي عند حدود المنظمة', 'المانح يرى العمل حيًّا، و«تمّت» تعني أن الأسرة أكدت', 'بدل التقرير الشهري، صفحة حيّة للقراءة يختار المالك ما يظهر فيها. ومن الجهة الأخرى، التوزيع لا ينتهي حين يضغط الموظف «تمّ»، بل حين تؤكد الأسرة بمسح رمز على الطرد أو بتوقيع على الكشف يُصوَّر.')
+  + `<div class="cols even">
+    <div class="box"><h2>ما يراه المانح</h2>
+      <div class="row" role="group" aria-label="المانح"><button class="chip" type="button" data-a="donor:rafd" aria-pressed="${isRafd}">مؤسسة الرفد</button><button class="chip" type="button" data-a="donor:gharas" aria-pressed="${!isRafd}">صندوق غِراس</button>
+        <button class="chip" type="button" data-a="hidden" aria-pressed="${ST.showHidden}">اكشف ما لا يراه</button></div>${dpage}</div>
+    <div class="box"><h2>تأكيد الاستلام | الدفعة 2، مركز الرمال <small class="num">${conf} من ${ST.fams.length} مؤكدة</small></h2>
+      <ul class="fam">${ST.fams.map(([code, size, st], i) => `<li><div><code>${code}</code> <span class="note">${size} أفراد</span>
+        <div class="steps3" aria-label="مراحل"><span data-on="${st >= 0}">مسجّلة</span><span data-on="${st >= 1}">سُلّم</span><span data-on="${st >= 2}">أكدت الأسرة</span></div></div>
+        <div>${st === 0 ? `<button class="btn sm" type="button" data-a="fam:${i}">سجّل التسليم</button>` : st === 1 ? `<button class="btn sm primary" type="button" data-a="fam:${i}">امسح رمز الطرد مع الأسرة</button>` : '<span class="pill ok">مؤكَّد</span>'}</div></li>`).join('')}</ul>
+      <p class="note">الأسر برموز لا بأسماء، حتى داخل الفريق في هذه الشاشة. الأسماء في سجل التسجيل المحمي فقط.</p></div>
+  </div>
+  <div class="flag" role="note">لا يُبنى هذا الجزء قبل سياسة لحماية بيانات المستفيدين، توافق عليها المنظمة وتُراجع مع المانحين: ما يُجمع، ومن يراه، وكم يُحفظ.</div>`
+  + why([['ما يتغير في المنتج', 'تعريف «تمّت» للتوزيع يصبح تأكيد الأسرة. والمانح يقرأ صفحة بدل انتظار تقرير.'], ['على بنيتنا', 'صفحة المانح: عرض للقراءة يولّده الجسر برابط خاص. المسح: رمز QR مطبوع على الطرد. التوقيع المصوَّر بديل لمن لا هاتف معه.'], ['الخطر', 'هو الأعلى: تسريب بيانات أسر في سياق نزاع. أعداد مجمّعة فقط للمانح، ولا أسماء خارج سجل التسجيل.'], ['كيف نختبره', 'دفعة توزيع واحدة: كم من الأسر أكد فعلًا؟ وهل يقبل المانح الصفحة بديلًا عن تقرير شهري؟']]);
+}
+
+/* ---------------- العرض والأحداث ---------------- */
+function render(){
+  const v = ST.view;
+  $('#scene').innerHTML = v === 'ops' ? opsView() : v === 'promises' ? promisesView() : v === 'paper' ? paperView() : v === 'story' ? storyView() : v === 'quarter' ? quarterView() : donorView();
+  $('#scene').innerHTML += `<nav class="row" style="justify-content:space-between;margin-top:8px" aria-label="التالي والسابق">${(() => { const i = STEPS.findIndex(s => s[0] === v); return (i > 0 ? `<button class="btn" type="button" data-step="${STEPS[i - 1][0]}">→ ${STEPS[i - 1][2]}</button>` : '<span></span>') + (i < STEPS.length - 1 ? `<button class="btn primary" type="button" data-step="${STEPS[i + 1][0]}">${STEPS[i + 1][2]} ←</button>` : ''); })()}</nav>`;
+}
+function onClick(e){
+  const st = e.target.closest('[data-step]'); if(st){ go(st.dataset.step); return; }
+  const node = e.target.closest('[data-node]'); if(node){ ST.focus = ST.focus === node.dataset.node ? null : node.dataset.node; render(); return; }
+  const mk = e.target.closest('[data-mark]'); if(mk){ const [i, k] = mk.dataset.mark.split(':'); const r = ST.card[+i]; r.m = r.m === k ? null : k; if(r.m !== 'no') r.c = null; ST.scanned = false; render(); const again = $(`[data-mark="${i}:${k}"]`); if(again) again.focus(); return; }
+  const cb = e.target.closest('[data-code]'); if(cb){ const [i, j] = cb.dataset.code.split(':').map(Number); ST.card[i].c = ST.card[i].c === j ? null : j; ST.scanned = false; render(); const again = $(`[data-code="${i}:${j}"]`); if(again) again.focus(); return; }
+  const ci = e.target.closest('[data-cite]'); if(ci){ ST.cite = ST.cite === ci.dataset.cite ? null : ci.dataset.cite; render(); const again = $(`[data-cite="${ci.dataset.cite}"]`); if(again) again.focus(); return; }
+  const b = e.target.closest('[data-a]'); if(!b) return;
+  const [a, x] = b.dataset.a.split(':');
+  const keep = b.dataset.a;
+  switch(a){
+    case 'clock': ST.clock = x; break;
+    case 'ok-office': ST.check.me = {t: CLOCKS[ST.clock], z: 'المكتب'}; toast('سُجّلت: بخير في المكتب'); break;
+    case 'ok-field': ST.check.me = {t: CLOCKS[ST.clock], z: $('#zone').value}; toast('سُجّلت: بخير في الميدان | ' + $('#zone').value); break;
+    case 'help': ST.help = 'me'; toast('أُرسل طلب المساعدة إلى هبة وإليك'); break;
+    case 'unhelp': ST.help = null; break;
+    case 'recheck': ST.check.me = null; break;
+    case 'verify': ST.verified[x] = t12(CLOCKS[ST.clock]) + ' هاتفيًا'; toast(P[x].n + ': سُجّل أنك تحقّقت هاتفيًا'); break;
+    case 'ask': toast('أُرسل إلى ' + P[x].n + ': «صباح الخير، طمّنّا عنك»'); break;
+    case 'unstick': toast('اقتراح: نقل زيارتي مركز الإيواء إلى الغد، وإبلاغ رنا. لا شيء يتغير دون موافقة أحمد'); break;
+    case 'goto': go(x); return;
+    case 'unfocus': ST.focus = null; break;
+    case 'neg': { const p3 = ST.promises.find(p => p.id === 'p3'), p4 = ST.promises.find(p => p.id === 'p4'); const d = +x;
+      p3.due = d; p3.st = 'ok'; p3.note = 'سامر قبِل: ' + dayLbl(d); p4.st = d >= 3 ? 'risk' : 'ok'; p4.note = d >= 3 ? 'بلا هامش بعد تأجيل المطابقة' : ''; toast(d >= 3 ? 'المطابقة يوم السبت: صار إرسال الأحد بلا هامش' : 'اتُّفق مع سامر. الإرسال يوم الأحد بهامش'); break; }
+    case 'newp': { const t = $('#np-t').value.trim(), to = $('#np-to').value, d = +$('#np-d').value;
+      if(!t || !to){ toast(!t ? 'اكتب ما تعِد به' : 'لا يُحفظ وعد بلا طرف ثانٍ: اختر لمن'); return; }
+      ST.promises.push({id: 'n' + Date.now(), from: 'me', to, t, due: d, st: 'ok', proj: P[to].ext && to === 'rafd' ? 'kits' : 'psy', note: 'بانتظار قبول ' + P[to].n}); toast('أُرسل الوعد إلى ' + P[to].n + ' ليقبله أو يفاوض عليه'); break; }
+    case 'scan': ST.scanning = true; render(); setTimeout(() => { ST.scanning = false; ST.scanned = true;
+        const p8 = ST.promises.find(p => p.id === 'p8'); if(ST.card[5].m === 'ok'){ p8.st = 'done'; p8.note = 'من البطاقة الورقية'; }
+        const blocked = ST.card.find(r => r.m === 'no' && r.c === 1); if(blocked) ST.stuck.ahmad = 'طريق مغلق (من بطاقته)';
+        render(); toast('قُرئت البطاقة: تحدّثت الرواية والوعود وغرفة الفريق'); }, 1150); return;
+    case 'edit': { const s = [...ST.sent, ...ST.extra].find(q => q.id === x); s.editing = true; render(); const t = $('#ed-' + x); if(t) t.focus(); return; }
+    case 'save': { const s = [...ST.sent, ...ST.extra].find(q => q.id === x); s.text = $('#ed-' + x).value; s.editing = false; s.edited = true; ST.approved = false; break; }
+    case 'toggle': { const s = [...ST.sent, ...ST.extra].find(q => q.id === x); s.on = !s.on; ST.approved = false; break; }
+    case 'share': { const s = [...ST.sent, ...ST.extra].find(q => q.id === x); s.share = !s.share; break; }
+    case 'from': ST.hl = ST.hl === x ? null : x; break;
+    case 'addx': { const v = $('#addx').value.trim(); if(!v){ toast('اكتب ما لم يُرصد'); return; } ST.extra.push({id: 'x' + Date.now(), on: true, proj: 'manual', share: false, ind: ['أضفتَها بنفسك'], text: v}); ST.approved = false; break; }
+    case 'approve': ST.approved = true; toast('اعتُمدت رواية اليوم وأُضيفت إلى سجل الربع'); break;
+    case 'copyrep': { const txt = $$('.rep section').map(s => s.querySelector('h3').textContent + '\n' + s.querySelector('p').textContent.replace(/من \d+ يومًا.*$/, '').trim()).join('\n\n');
+      try{ navigator.clipboard.writeText(txt).then(() => toast('نُسخت المسودة'), () => toast('تعذّر النسخ. حدّد النص يدويًا')); }catch(err){ toast('تعذّر النسخ. حدّد النص يدويًا'); } return; }
+    case 'donor': ST.donor = x; break;
+    case 'hidden': ST.showHidden = !ST.showHidden; break;
+    case 'fam': { const f = ST.fams[+x]; f[2] = Math.min(2, f[2] + 1); toast(f[2] === 2 ? 'أكدت الأسرة ' + f[0] + ' الاستلام. تحدّثت صفحة المانح' : 'سُجّل التسليم. يبقى تأكيد الأسرة'); break; }
+  }
+  render();
+  const again = document.querySelector(`[data-a="${CSS.escape(keep)}"]`); if(again && !again.disabled) again.focus({preventScroll: true});
+}
+function init(){
+  const h = hijri(TODAY); $('#date').textContent = 'الأربعاء 21 أكتوبر 2026' + (h ? ' | ' + h : '');
+  renderSteps(); render();
+  document.addEventListener('click', onClick);
+  document.addEventListener('keydown', e => { const n = e.target.closest && e.target.closest('[data-node]'); if(n && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); ST.focus = ST.focus === n.dataset.node ? null : n.dataset.node; render(); const again = $(`[data-node="${n.dataset.node}"]`); if(again) again.focus(); } });
+}
+document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
+
+</script>
+</body>
+</html>
