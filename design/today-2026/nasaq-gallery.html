@@ -1,0 +1,804 @@
+<!-- نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved. ملكية خاصة: يُمنع النسخ أو التعديل أو إعادة النشر دون إذن كتابي. -->
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>معرض يوم نَسَق</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;600;700&family=Tajawal:wght@400;500;700;800&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap">
+<style>
+/* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved. */
+/* المعرض: قاعات متتالية، لكل قاعة عالمها البصري الخاص (اختيار مقصود بثيم واحد)، وإطار الصفحة يتبع ثيم المشاهد.
+   الخطوط خارج طوابع نَسَق الحالية عمدًا: رقعة كوفية للعناوين، وتجوّل للنص، ونسخ للمخطوطة. */
+:root{
+  --bg:#E9ECE8; --surface:#F7F8F6; --ink:#141C1B; --ink-2:#465251; --rule:#C9CFCB; --accent:#B07A1E; --focus:#1F5E5A;
+  --f-display:"Reem Kufi","Noto Kufi Arabic",Tahoma,sans-serif; --f-body:Tajawal,"Segoe UI",Tahoma,sans-serif; --f-naskh:"Noto Naskh Arabic","Traditional Arabic",serif;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){ --bg:#0D1211; --surface:#151C1B; --ink:#E6ECEA; --ink-2:#A7B4B1; --rule:#26302F; --accent:#E3B35A; --focus:#8FD0C8; color-scheme:dark } }
+:root[data-theme="dark"]{ --bg:#0D1211; --surface:#151C1B; --ink:#E6ECEA; --ink-2:#A7B4B1; --rule:#26302F; --accent:#E3B35A; --focus:#8FD0C8; color-scheme:dark }
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.7;padding-block:0 40px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+.wrap{max-width:1280px;margin-inline:auto}
+
+/* الملاحة */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px));
+  background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+@supports not (backdrop-filter:blur(1px)){ .nav{background:var(--bg)} }
+.nav .wrap{display:flex;align-items:center;gap:18px;overflow-x:auto;scrollbar-width:none;min-height:52px}
+.nav b{font-family:var(--f-display);font-weight:700;font-size:18px;white-space:nowrap}
+.nav a{color:var(--ink-2);text-decoration:none;white-space:nowrap;font-size:14px;padding:6px 0;border-bottom:2px solid transparent}
+.nav a:hover{color:var(--ink);border-bottom-color:var(--accent)}
+
+/* الافتتاح */
+.hero{padding-block:clamp(40px,8vw,96px) clamp(24px,5vw,56px);display:grid;gap:28px}
+.hero h1{font-family:var(--f-display);font-weight:700;font-size:clamp(44px,8.5vw,112px);line-height:1.05;letter-spacing:0}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lede{max-width:62ch;font-size:clamp(17px,1.6vw,20px);color:var(--ink-2)}
+.principles{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:0;border-top:1px solid var(--rule)}
+.principles li{border-bottom:1px solid var(--rule);padding:16px 0;display:grid;grid-template-columns:44px 1fr;gap:6px 10px;padding-inline-end:20px}
+.principles a{color:inherit;text-decoration:none}
+.principles .n{font-family:var(--f-display);font-size:28px;color:var(--accent);line-height:1}
+.principles b{font-family:var(--f-display);font-size:20px;font-weight:600;display:block}
+.principles span{color:var(--ink-2);font-size:14px}
+
+/* القاعة: نطاق كامل العرض بلونه الخاص */
+.room{margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px));padding-block:clamp(40px,6vw,80px);scroll-margin-top:60px}
+.room .wrap{display:grid;gap:28px}
+.room-h{display:grid;gap:10px;max-width:70ch}
+.room-h .k{font-size:13px;letter-spacing:.04em;opacity:.8}
+.room-h h2{font-family:var(--f-display);font-weight:700;font-size:clamp(34px,5vw,64px);line-height:1.1}
+.room-h p{font-size:18px;opacity:.9}
+.stagegrid{display:grid;gap:28px;align-items:start}
+@media (min-width:980px){ .stagegrid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)} }
+.panel{min-width:0;display:grid;gap:14px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:0;border-top:1px solid currentColor;border-color:color-mix(in srgb,currentColor 25%,transparent)}
+.facts div{padding:12px 0;padding-inline-end:16px;border-bottom:1px solid color-mix(in srgb,currentColor 18%,transparent);font-size:14px;line-height:1.65}
+.facts b{display:block;font-size:12px;letter-spacing:.03em;opacity:.75;font-weight:700;margin-bottom:2px}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border-radius:999px;border:1.5px solid currentColor;background:transparent;cursor:pointer;font-weight:700;font-size:15px}
+.btn.solid{border-color:transparent}
+.chip{min-height:36px;padding:4px 14px;border-radius:999px;border:1px solid color-mix(in srgb,currentColor 40%,transparent);background:transparent;cursor:pointer;font-size:14px}
+.chip[aria-pressed="true"]{font-weight:700;border-width:2px}
+input[type=range]{width:100%;accent-color:currentColor;min-height:36px}
+
+/* 1) الظل */
+#shadow{background:#E7DCC6;color:#2A231C}
+#shadow .btn.solid{background:#2A231C;color:#F3EADA}
+#shadow .dial{width:100%;max-width:640px;aspect-ratio:1;justify-self:center}
+#shadow .read{display:grid;gap:4px;border-inline-start:3px solid #2A231C;padding-inline-start:14px}
+#shadow .read .big{font-family:var(--f-display);font-size:clamp(26px,3vw,36px);line-height:1.2}
+#shadow .ratio{font-size:15px}
+#shadow .ratio b{font-size:22px}
+#shadow .tl{list-style:none;margin:0;padding:0;display:grid;font-size:14px}
+#shadow .tl li{display:grid;grid-template-columns:96px 1fr;gap:8px;padding:6px 0;border-bottom:1px solid #C9B999}
+#shadow .tl li[data-now="true"]{font-weight:700}
+#shadow .tl li[data-past="true"]{opacity:.55}
+
+/* 2) المتن والحاشية */
+#manuscript{background:#EFE6D4;color:#1D1915}
+#manuscript .page{background:#F7F0E2;box-shadow:0 1px 0 #D8CBAF,0 18px 40px rgba(60,40,10,.12);border:1px solid #DCCDAE;padding:clamp(18px,4vw,48px);display:grid;gap:22px;font-family:var(--f-naskh)}
+@media (min-width:980px){ #manuscript .page{grid-template-columns:minmax(0,1fr) 260px} }
+#manuscript .matn{font-size:clamp(19px,1.9vw,23px);line-height:2.15;min-width:0}
+#manuscript .matn .rub{color:#9B2318}
+#manuscript .matn .dur{color:#9B2318;border-bottom:1px dotted #9B2318}
+#manuscript .matn sup{font-family:var(--f-body);font-size:11px;color:#9B2318;margin-inline:2px}
+#manuscript textarea{width:100%;min-height:260px;font-family:var(--f-naskh);font-size:20px;line-height:2;background:#FFFDF7;border:1px dashed #B8A27A;padding:12px;color:#1D1915;resize:vertical}
+#manuscript .hashiya{border-inline-start:1px solid #CDB991;padding-inline-start:16px;display:grid;gap:18px;align-content:start;font-size:15px;line-height:1.8}
+#manuscript .hashiya h3{font-family:var(--f-naskh);font-size:16px;color:#9B2318;font-weight:700}
+#manuscript .idx{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+#manuscript .idx label{display:flex;gap:8px;align-items:flex-start;cursor:pointer;min-height:36px}
+#manuscript .idx input{accent-color:#1D1915;width:18px;height:18px;margin-top:6px;flex:none}
+#manuscript .idx small{display:block;color:#6A5A43;font-family:var(--f-body);font-size:12px}
+#manuscript .note{font-size:14px;color:#3D3428}
+#manuscript .note b{color:#9B2318;font-family:var(--f-body);font-size:12px;margin-inline-end:4px}
+#manuscript .colophon{text-align:center;font-size:19px;line-height:2;margin-inline:auto;display:grid;justify-items:center}
+#manuscript .colophon span{display:block}
+#manuscript .orn{color:#9B2318;font-size:22px;letter-spacing:6px}
+#manuscript .btn{color:#1D1915}
+
+/* 3) التطريز */
+#tatreez{background:#1C2233;color:#EFE7D6}
+#tatreez canvas{width:100%;height:auto;display:block;border-radius:4px;box-shadow:0 20px 40px rgba(0,0,0,.35)}
+#tatreez .tasks{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+#tatreez .tasks label{display:flex;gap:10px;align-items:center;min-height:44px;cursor:pointer;border-bottom:1px solid #343C52;font-size:15px}
+#tatreez .tasks input{width:20px;height:20px;accent-color:#C8372D;flex:none}
+#tatreez .sw{display:inline-block;width:14px;height:14px;flex:none}
+#tatreez .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;opacity:.9}
+#tatreez .legend span{display:inline-flex;gap:6px;align-items:center}
+
+/* 4) لمن؟ */
+#whom{background:#0E1530;color:#E9EAF2}
+#whom svg{width:100%;height:auto;display:block}
+#whom .chip{color:#E9EAF2}
+#whom .chip[aria-pressed="true"]{background:#E3B35A;color:#0E1530;border-color:#E3B35A}
+#whom .verdict{font-size:18px;line-height:1.7;border-inline-start:3px solid #E3B35A;padding-inline-start:14px;min-height:5.2em}
+#whom .verdict b{color:#F2C873}
+
+/* 5) الميزان */
+#scale{background:#F4F1EA;color:#1B1A17}
+#scale svg{width:100%;height:auto;display:block;max-width:700px;justify-self:center}
+#scale .beam{transition:transform 700ms cubic-bezier(.34,1.56,.64,1);transform-origin:350px 120px}
+#scale .pans{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+#scale .pans h3{font-family:var(--f-display);font-size:18px;margin-bottom:6px}
+#scale .w{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;min-height:44px;border:1px solid #CFC7B5;background:#FFFDF8;border-radius:8px;padding:6px 10px;margin-bottom:6px;cursor:pointer;text-align:start;font-size:14px}
+#scale .w:hover{border-color:#8C6A2A}
+#scale .w .m{font-weight:700;white-space:nowrap}
+#scale .verdict{font-family:var(--f-display);font-size:clamp(22px,2.6vw,30px)}
+#scale .btn{color:#1B1A17}
+
+/* 6) الميدان */
+#field{background:#121212;color:#F2F2F2}
+#field .phone{width:min(390px,100%);aspect-ratio:390 / 780;justify-self:center;border:10px solid #2B2B2B;border-radius:40px;overflow:hidden;position:relative;background:var(--fb);color:var(--ff);display:grid;grid-template-rows:auto 1fr auto}
+#field .phone[data-sun="true"]{--fb:#FFE14D;--ff:#000;--fx:#000;--fy:#FFE14D;--fl:#000}
+#field .phone[data-sun="false"]{--fb:#000;--ff:#FFF;--fx:#FFF;--fy:#000;--fl:#FFF}
+#field .ph-top{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;font-size:15px;font-weight:700;border-bottom:3px solid var(--fl)}
+#field .ph-body{padding:18px;display:grid;align-content:start;gap:12px;overflow:auto}
+#field .ph-body .big{font-size:30px;font-weight:800;line-height:1.3}
+#field .ph-body .sub{font-size:18px;font-weight:600}
+#field .ph-acts{display:grid;gap:10px;padding:14px 14px 18px}
+#field .fb{min-height:68px;border-radius:14px;border:3px solid var(--fl);font-size:24px;font-weight:800;cursor:pointer;background:var(--fb);color:var(--ff)}
+#field .fb.main{background:var(--fx);color:var(--fy)}
+#field .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#field .reasons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#field .reasons button{min-height:56px;border:3px solid var(--fl);border-radius:12px;background:var(--fb);color:var(--ff);font-weight:800;font-size:16px;cursor:pointer}
+#field .code{display:grid;justify-items:center;gap:10px}
+#field .code canvas{width:200px;height:200px;image-rendering:pixelated;background:#fff;padding:8px;border-radius:8px}
+#field .btn{color:#F2F2F2}
+
+/* البطاقات والتوصية */
+#deck{background:var(--surface);color:var(--ink)}
+.ideas{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:0;border-top:1px solid var(--rule)}
+.ideas li{padding:18px 0;padding-inline-end:24px;border-bottom:1px solid var(--rule);display:grid;gap:6px;align-content:start}
+.ideas h3{font-family:var(--f-display);font-size:21px;font-weight:600}
+.ideas p{color:var(--ink-2);font-size:15px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;border:1px solid var(--rule);border-radius:999px;padding:1px 9px;color:var(--ink-2)}
+.tag.ok{border-color:color-mix(in srgb,var(--focus) 60%,transparent);color:var(--focus)}
+.tag.no{border-color:color-mix(in srgb,var(--accent) 70%,transparent);color:var(--accent)}
+#reco{color:var(--ink)}
+.reco{display:grid;gap:28px}
+@media (min-width:980px){ .reco{grid-template-columns:1fr 1fr} }
+.reco h3{font-family:var(--f-display);font-size:24px;margin-bottom:10px}
+.reco ol{margin:0;padding-inline-start:22px;display:grid;gap:10px}
+.tblw{overflow-x:auto;border:1px solid var(--rule);border-radius:10px}
+.tblw table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+.tblw th,.tblw td{text-align:start;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+.tblw th{background:color-mix(in srgb,var(--ink) 6%,var(--surface))}
+.foot{color:var(--ink-2);font-size:13px;padding-top:24px;border-top:1px solid var(--rule)}
+.foot a{color:inherit}
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
+
+</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="page" dir="rtl" lang="ar">
+<nav class="nav" aria-label="قاعات المعرض"><div class="wrap">
+  <b>معرض «يوم» نَسَق</b>
+  <a href="#shadow">الظل</a><a href="#manuscript">المتن والحاشية</a><a href="#tatreez">التطريز</a><a href="#whom">لمن؟</a><a href="#scale">الميزان</a><a href="#field">الميدان</a><a href="#deck">أفكار أجرأ</a><a href="#reco">التوصية</a>
+</div></nav>
+
+<header class="hero wrap">
+  <h1>اليوم <em>ليس</em> قائمة.</h1>
+  <p class="lede">النموذج السابق كان نسخة أفضل من المألوف: قوائم وبطاقات وفترات. هنا نكسر المظلة كلها. ست قاعات، كل قاعة استعارة مختلفة ليومك بلغة بصرية جديدة لا تشبه أي طابع حالي في نَسَق، وكلها تعمل فعلًا. بعدها اثنتا عشرة فكرة أجرأ، ثم اتجاه واحد نوصي به وكيف نختبره خلال أسبوعين.</p>
+  <ol class="principles" aria-label="مبادئ القاعات الست">
+    <li><span class="n num" aria-hidden="true">1</span><a href="#shadow"><b>الوقت ضوء لا شبكة</b><span>الظل يحلّ محل الجدول.</span></a></li>
+    <li><span class="n num" aria-hidden="true">2</span><a href="#manuscript"><b>اليوم يُكتب لا يُنقر</b><span>متن وحاشية وخاتمة.</span></a></li>
+    <li><span class="n num" aria-hidden="true">3</span><a href="#tatreez"><b>الإنجاز نسيج لا عدّاد</b><span>ما أنجزته يُطرَّز، وما لم تنجزه لا يُعَدّ.</span></a></li>
+    <li><span class="n num" aria-hidden="true">4</span><a href="#whom"><b>لكل مهمة «لمن»</b><span>خيط من المهمة إلى الناس.</span></a></li>
+    <li><span class="n num" aria-hidden="true">5</span><a href="#scale"><b>الحمل يوزن لا يُعدّ</b><span>الميزان يميل بدل رسالة تحذير.</span></a></li>
+    <li><span class="n num" aria-hidden="true">6</span><a href="#field"><b>الميدان أولًا</b><span>بلا شبكة ولا ضوء ولا يدين فارغتين.</span></a></li>
+  </ol>
+</header>
+
+<section class="room" id="shadow" aria-labelledby="h-shadow"><div class="wrap">
+  <div class="room-h"><span class="k">القاعة 1 | الوقت ضوء لا شبكة</span><h2 id="h-shadow">الظل</h2>
+    <p>لا جدول ولا ساعات. شاخص واحد وظلّه، كما قيس الوقت قرونًا. يطول الظل صباحًا ويقصر عند الظهر ثم يطول، ويدخل العصر حين يبلغ الظلّ طولَ الشاخص مع ظلّ الزوال. مهامك علامات على مسار طرف الظل، وما بعد الغروب نجوم.</p></div>
+  <div class="stagegrid">
+    <svg class="dial" id="dial" viewBox="0 0 640 640" role="img" aria-label="مزولة اليوم"></svg>
+    <div class="panel">
+      <div class="read" aria-live="polite"><span id="sTime" class="num"></span><span class="big" id="sNow"></span><span id="sNext"></span></div>
+      <p class="ratio num" id="sRatio"></p>
+      <label for="sSlide" style="font-size:14px">حرّك الشمس</label>
+      <input type="range" id="sSlide" min="300" max="1290" step="5" value="785">
+      <div class="ctrl"><button class="btn solid" id="sPlay" type="button">شغّل اليوم</button>
+        <span role="group" aria-label="الفصل" class="ctrl"><button class="chip" data-season="oct" aria-pressed="true" type="button">اليوم: 21 أكتوبر</button><button class="chip" data-season="jun" aria-pressed="false" type="button">21 يونيو</button><button class="chip" data-season="dec" aria-pressed="false" type="button">21 ديسمبر</button></span></div>
+      <ul class="tl num" id="sList" aria-label="مهام اليوم على المزولة"></ul>
+    </div>
+  </div>
+  <div class="facts">
+    <div><b>الفكرة</b>صفحة «اليوم» شاخص يتحرك ظله مع الشمس الحقيقية في موقعك. «الآن» حيث يقع طرف الظل.</div>
+    <div><b>لماذا تتفوّق</b>لم نجدها عند أي منافس فحصناه. وتجعل حساب المواقيت الموجود في nasaq-core.js هو الواجهة نفسها، لا إضافة جانبية. وتتغير مع الفصول، فيرى المستخدم قِصر نهار الشتاء قبل أن يخطط.</div>
+    <div><b>الدليل</b>ابتكار بلا سابقة منتج. أساسه فلكي فقهي: العصر عند بلوغ الظل مثل الشاخص مع ظل الزوال، وهي الطريقة المستعملة في الكود. لا دليل على أثرها في الإنتاجية [تقدير].</div>
+    <div><b>الكلفة</b>سهلة: SVG ودوال الشمس الموجودة. الخطر: جمال يُبهر أول أسبوع ويُتعب بعد شهر، فتكون واجهة «الآن» وتبقى القائمة تحتها.</div>
+    <div><b>كيف نختبرها</b>خمسة مستخدمين، سؤالان: «ما الذي تفعله الآن؟» و«كم بقي حتى العصر؟». نقيس زمن الإجابة مقابل الشريط الزمني الحالي.</div>
+  </div>
+</div></section>
+
+<section class="room" id="manuscript" aria-labelledby="h-ms"><div class="wrap">
+  <div class="room-h"><span class="k">القاعة 2 | اليوم يُكتب لا يُنقر</span><h2 id="h-ms">المتن والحاشية</h2>
+    <p>تكتب يومك بعد الفجر فقرةً واحدة كما تكتب رسالة. نَسَق يقرؤها، فيُحمِّر المواقيت والمُدد كما كان النسّاخ يحمّرون رؤوس الكلام، ويستخرج فهرس المهام في الهامش. ما يطرأ في النهار يُكتب حاشيةً بجانب المتن، وفي الليل يكتب نَسَق خاتمة يومك على هيئة «حَرْد المتن» المثلث.</p></div>
+  <div class="ctrl"><button class="btn" id="msEdit" type="button" aria-pressed="false">حرّر المتن</button><button class="btn" id="msColo" type="button">اكتب خاتمة اليوم</button></div>
+  <article class="page" aria-label="صفحة اليوم">
+    <div class="matn" id="matn"></div>
+    <aside class="hashiya" aria-label="الحاشية">
+      <div><h3>فهرس اليوم</h3><ul class="idx" id="msIdx"></ul></div>
+      <div><h3>حواشٍ</h3><div style="display:grid;gap:10px" id="msNotes"></div></div>
+    </aside>
+    <div class="colophon" id="colo" style="grid-column:1 / -1" hidden></div>
+  </article>
+  <div class="facts" style="color:#1D1915">
+    <div><b>الفكرة</b>المخطوطة العربية نظام معلومات جاهز: متن وشرح وحاشية وخاتمة. نستعيرها بنيةً، لا زخرفة.</div>
+    <div><b>لماذا تتفوّق</b>كل المنافسين حقول وأزرار. هنا الكتابة الحرة هي الإدخال، والتحليل العربي على الجهاز يحوّلها إلى مهام. قريب من Ramble في Todoist، لكنه مكتوب ومحلي وعربي.</div>
+    <div><b>الدليل</b>الخطط المكتوبة المحددة تخفف الأفكار العالقة (Masicampo & Baumeister 2011) [ب]، وقائمة الغد المحددة سرّعت النوم (Scullin 2018) [ب]. الاستعارة نفسها ابتكار.</div>
+    <div><b>الكلفة</b>متوسطة: المحلّل جاهز من النموذج السابق. الخطر: الكتابة الحرة أبطأ على الجوال، فهي «وضع الصباح» للمالك، لا الإدخال الوحيد.</div>
+    <div><b>كيف نختبرها</b>هل يغلق من يكتب فقرته الصباحية يومه أكثر؟ نقارن نسبة الأيام المغلقة لأربعة أسابيع.</div>
+  </div>
+</div></section>
+
+<section class="room" id="tatreez" aria-labelledby="h-tt"><div class="wrap">
+  <div class="room-h"><span class="k">القاعة 3 | الإنجاز نسيج لا عدّاد</span><h2 id="h-tt">التطريز</h2>
+    <p>كل مهمة تنجزها تُطرَّز غرزًا على قماش أسبوعك: نجمة للتقارير، ومعيّن للمكالمات، وسروة للعمل الميداني، وصليب صغير للعادات. ما لم تنجزه لا يظهر أحمر ولا ناقصًا، فالقماش ببساطة لم يُطرَّز بعد. وفي آخر الشهر يكون للفريق ثوب واحد.</p></div>
+  <div class="stagegrid">
+    <canvas id="cloth" width="980" height="640" role="img" aria-label="قماش الأسبوع"></canvas>
+    <div class="panel">
+      <div class="ctrl" role="group" aria-label="العرض"><button class="chip" data-cloth="week" aria-pressed="true" type="button">قماش أسبوعي</button><button class="chip" data-cloth="team" aria-pressed="false" type="button">ثوب الفريق</button></div>
+      <p style="font-size:15px">مهام اليوم (الأربعاء). أنجز واحدة وشاهدها تُطرَّز في عمود اليوم:</p>
+      <ul class="tasks" id="ttList"></ul>
+      <div class="legend" id="ttLegend"></div>
+      <p id="ttSum" style="font-size:14px;opacity:.85" aria-live="polite"></p>
+    </div>
+  </div>
+  <div class="facts">
+    <div><b>الفكرة</b>بدل الإحصاءات والسلاسل: قطعة قماش تكبر بما أنجزت، ولا تعدّ ما لم تنجزه.</div>
+    <div><b>لماذا تتفوّق</b>Forest وHabitica تلعيب بنقاط وأشجار مستوردة. هنا ذاكرة فلسطينية حيّة، فالتطريز مدرج في قائمة اليونسكو للتراث غير المادي منذ 2021، والتقدّم يُرى ولا يُحسب.</div>
+    <div><b>الدليل</b>التقدّم المرئي في عمل ذي معنى أقوى محرّك لليوم الجيد (Amabile & Kramer 2011) [ب]. وكسر السلسلة يدفع إلى الهجر (Silverman & Barasch 2023) [أ]، والقماش لا ينكسر. أثر الاستعارة نفسها غير مُختبَر [تقدير].</div>
+    <div><b>الكلفة</b>متوسطة: Canvas خالص، وأنماط هندسية مولّدة لا منسوخة من أثواب مناطق بعينها. الخطر الثقافي حقيقي، فيُراجع التصميم مع مطرّزات من المجتمع قبل البناء.</div>
+    <div><b>كيف نختبرها</b>هل يعود المستخدم في اليوم التالي بعد يوم ضعيف أكثر مع القماش منه مع العدّاد؟ اختبار A/B لشهر.</div>
+  </div>
+</div></section>
+
+<section class="room" id="whom" aria-labelledby="h-wh"><div class="wrap">
+  <div class="room-h"><span class="k">القاعة 4 | لكل مهمة «لمن»</span><h2 id="h-wh">لمن؟</h2>
+    <p>كل مهمة في منظمة إنسانية خيطٌ ينتهي عند ناس. اختر مهمة لترى خيطها: التقرير يفتح الدفعة، والدفعة تشتري الطرود، والطرود تصل إلى الأسر. ثم حرّك المؤشر لترى ماذا يحدث لو تأخرت، وأين تمتص الهوامش التأخير.</p></div>
+  <div class="ctrl" role="group" aria-label="اختر مهمة" id="whChips"></div>
+  <svg id="thread" viewBox="0 0 1200 360" role="img" aria-label="خيط الأثر"></svg>
+  <div class="stagegrid" style="align-items:center">
+    <p class="verdict" id="whVerdict" aria-live="polite"></p>
+    <div class="panel"><label for="whSlip" style="font-size:15px">لو تأخرت هذه المهمة: <b id="whSlipV" class="num">0 أيام</b></label><input type="range" id="whSlip" min="0" max="10" value="0"></div>
+  </div>
+  <p style="font-size:13px;opacity:.7">الأرقام والمانحون في هذه القاعة توضيحية. في المنتج تأتي من حقلين في نوشن لكل مهمة: «يفتح» و«يخدم».</p>
+  <div class="facts">
+    <div><b>الفكرة</b>بدل «الأولوية: عالية»، سلسلة أثر مرئية من المهمة إلى المستفيدين، بهوامش زمنية تمتص بعض التأخير.</div>
+    <div><b>لماذا تتفوّق</b>Asana وLinear يعرضان الاعتمادية بين المهام فقط. لا أحد يمد الخيط إلى الدفعة والمستفيد. وFluxx يرى الأمر من جهة المانح، لا من يوم العامل.</div>
+    <div><b>الدليل</b>لقاء قصير بمستفيد رفع وقت المكالمات 142% والإيرادات 171% في دراسة Adam Grant على مركز اتصال (الأرقام من مصادر ثانوية) [ب]. والتقارير المتأخرة قد تؤخر الدفعات (Russell Sage) [ج].</div>
+    <div><b>الكلفة</b>متوسطة: حقلان في نوشن وحساب الهوامش على الجهاز. الخطر: أن يتحول الأثر إلى ذنب، فيظهر عند الطلب، بلغة الأثر لا اللوم.</div>
+    <div><b>كيف نختبرها</b>هل تُرحَّل مهام الالتزامات المعروضة بخيطها أقل؟ نقارن معدل الترحيل معه وبدونه.</div>
+  </div>
+</div></section>
+
+<section class="room" id="scale" aria-labelledby="h-sc"><div class="wrap">
+  <div class="room-h"><span class="k">القاعة 5 | الحمل يوزن لا يُعدّ</span><h2 id="h-sc">الميزان</h2>
+    <p>في كفّة ما تعهّدت به اليوم، وفي الأخرى ما تملكه من وقت بعد الصلاة والمواعيد. لا رسالة تحذير: الميزان يميل. خفّف الكفّة بنقل مهمة إلى رفّ الغد، أو أضف اجتماعًا طارئًا لترى كيف يختل كل شيء.</p></div>
+  <div class="stagegrid">
+    <svg id="balance" viewBox="0 0 700 420" role="img" aria-label="ميزان اليوم"></svg>
+    <div class="panel">
+      <p class="verdict" id="scVerdict" aria-live="polite"></p>
+      <div class="pans">
+        <div><h3>في الكفّة اليوم</h3><div id="scToday"></div></div>
+        <div><h3>رفّ الغد</h3><div id="scShelf"></div></div>
+      </div>
+      <div class="ctrl"><button class="btn" id="scAdd" type="button">أضف اجتماعًا طارئًا 45 د</button><button class="btn" id="scReset" type="button">أعِد الميزان</button></div>
+    </div>
+  </div>
+  <div class="facts">
+    <div><b>الفكرة</b>مقياس السعة جسم مادي له ثقل وحركة، يفهمه الجسد قبل العقل.</div>
+    <div><b>لماذا تتفوّق</b>Sunsama يكتب لك أنك تجاوزت ساعاتك نصًّا [د]. الميزان يجعل التجاوز محسوسًا دون لون أحمر، والقرار واضح: ماذا أرفع عن الكفّة؟</div>
+    <div><b>الدليل</b>مغالطة التخطيط (Buehler 1994) [أ]، والكفّة تزن بتقديرك المصحّح من سجلك. الاستعارة ابتكار.</div>
+    <div><b>الكلفة</b>سهلة: SVG وتحويل واحد. الخطر: لعبة لطيفة تُستعمل مرة، فلا يظهر الميزان إلا حين يختل اليوم.</div>
+    <div><b>كيف نختبرها</b>حين يميل الميزان، هل ينقل المستخدم مهمة قبل الظهر بدل أن يرحّلها ليلًا؟ نقيس توقيت قرارات الترحيل.</div>
+  </div>
+</div></section>
+
+<section class="room" id="field" aria-labelledby="h-fd"><div class="wrap">
+  <div class="room-h"><span class="k">القاعة 6 | بلا شبكة ولا ضوء ولا يدين فارغتين</span><h2 id="h-fd">الميدان</h2>
+    <p>للمنسّق الميداني: شاشة واحدة، وثلاثة أزرار بحجم الإبهام، ووضع شمس بتباين أقصى. «عائق» يسجّل السبب بضغطة. ولا اتصال؟ يسلّم تغييراته لزميل متصل برمز تمسحه كاميرته، بلا خادم.</p></div>
+  <div class="stagegrid">
+    <div class="phone" id="phone" data-sun="true" aria-label="هاتف المنسّق الميداني"></div>
+    <div class="panel">
+      <div class="ctrl"><button class="btn" id="fdSun" type="button" aria-pressed="true">وضع الشمس</button><button class="btn" id="fdReset" type="button">من البداية</button></div>
+      <p style="font-size:15px;opacity:.9">جرّب: «تمّ» ثم «عائق» ثم «سلّم لزميل متصل». كل ضغطة تُحفظ على الجهاز، والعدّاد في الأعلى يبيّن ما ينتظر المزامنة.</p>
+      <div class="facts">
+        <div><b>الفكرة</b>ليست تصغيرًا لواجهة المكتب، بل وضع مختلف كليًا لمن يعمل واقفًا تحت الشمس بيد واحدة.</div>
+        <div><b>لماذا تتفوّق</b>كل المنافسين يفترضون اتصالًا دائمًا ومكتبًا. هذا مصمم لسياق إنساني فعلي.</div>
+        <div><b>الدليل</b>نحو نصف المستخدمين يمسكون الهاتف بيد واحدة (Hoober 2013) [ب]. وSafari لا يدعم المزامنة في الخلفية [ب]. أسباب العوائق من طبيعة العمل الإنساني [تقدير].</div>
+        <div><b>الكلفة</b>الوضع نفسه سهل. التسليم بالرمز متوسط: مكتبة QR محلية للعرض، والمسح عبر BarcodeDetector يعمل في Chrome أندرويد لا في iOS [غ: يُتحقق]. الرمز المعروض هنا تمثيل بصري.</div>
+        <div><b>كيف نختبرها</b>أسبوع ميداني مع منسّقَين: هل يقل زمن تسجيل الزيارة عن 3 ثوانٍ؟ وهل تصل كل التغييرات دون تكرار؟</div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="room" id="deck" aria-labelledby="h-dk"><div class="wrap">
+  <div class="room-h"><span class="k">ما بعد القاعات</span><h2 id="h-dk">اثنتا عشرة فكرة أجرأ</h2>
+    <p>بعضها ممكن غدًا، وبعضها غير ممكن الآن ومعه بديل. نذكر الدليل حيث وُجد، ونسمّي الابتكار ابتكارًا.</p></div>
+  <ul class="ideas" id="ideas"></ul>
+</div></section>
+
+<section class="room" id="reco" aria-labelledby="h-rc"><div class="wrap">
+  <div class="room-h"><span class="k">القرار</span><h2 id="h-rc">اتجاه واحد نوصي به</h2>
+    <p>لا نبني القاعات الست. نركّب منها يومًا واحدًا، ونختبر الأجرأ قبل أن نكتب سطرًا في المنصة.</p></div>
+  <div class="reco">
+    <div><h3>«يوم» نَسَق المركّب</h3><ol>
+      <li><b>الظل</b> واجهةُ «الآن» على الحاسوب، والقائمة تحتها لمن يريدها.</li>
+      <li><b>الميزان</b> يظهر فقط حين يختل اليوم، بدل شريط السعة.</li>
+      <li><b>التطريز</b> هو الإحصاء الوحيد للفرد، ويختفي العدّاد والسلسلة.</li>
+      <li><b>لمن؟</b> داخل «التزامات قادمة» للمالك ومديري المشاريع.</li>
+      <li><b>الميدان</b> الوضع الافتراضي لحسابات «اليوم فقط» على الجوال.</li>
+      <li><b>المتن</b> وضع صباحي اختياري للمالك.</li></ol></div>
+    <div><h3>ثلاث تجارب في أسبوعين، قبل أي بناء</h3><ol>
+      <li><b>الظل:</b> نموذج ورقي أو هذه الصفحة مع خمسة مستخدمين. ننجح إن أجابوا عن «ما الآن؟ وكم بقي؟» أسرع من الشريط الحالي.</li>
+      <li><b>التطريز:</b> عرضه أولًا على مطرّزتين من المجتمع، ثم A/B لشهر مقابل العدّاد، ونقيس العودة بعد الأيام الضعيفة.</li>
+      <li><b>الميدان:</b> أسبوع مع منسّقَين. ننجح إن قل زمن تسجيل الزيارة عن 3 ثوانٍ وسُجّلت أسباب العوائق.</li></ol>
+      <p style="margin-top:14px;color:var(--ink-2)"><b>ما لا نوصي به:</b> نقاط وشارات، وسلاسل أيام، ووكيل ذكاء اصطناعي يخطط عنك، وحركة دائمة في الخلفية.</p></div>
+  </div>
+  <div class="tblw" role="region" aria-label="مقارنة القاعات" tabindex="0"><table>
+    <thead><tr><th scope="col">القاعة</th><th scope="col">الكلفة على بنيتنا</th><th scope="col">أكبر خطر</th><th scope="col">ما يتغير في الجسر</th></tr></thead>
+    <tbody>
+      <tr><td>الظل</td><td>سهلة (SVG + NasaqTime)</td><td>الإبهار المؤقت</td><td>لا شيء</td></tr>
+      <tr><td>المتن والحاشية</td><td>متوسطة (المحلّل جاهز)</td><td>البطء على الجوال</td><td>حفظ نص المتن في ملف الحالة</td></tr>
+      <tr><td>التطريز</td><td>متوسطة (Canvas)</td><td>الحساسية الثقافية</td><td>لا شيء (يُشتق من المهام المنجزة)</td></tr>
+      <tr><td>لمن؟</td><td>متوسطة</td><td>التحول إلى ذنب</td><td>حقلا «يفتح/يخدم» في نوشن، والهوامش</td></tr>
+      <tr><td>الميزان</td><td>سهلة</td><td>اللعب لمرة واحدة</td><td>لا شيء</td></tr>
+      <tr><td>الميدان</td><td>سهلة، والتسليم بالرمز متوسط</td><td>تعارض التغييرات المسلّمة</td><td>معرّف فريد لكل تغيير يمنع التكرار</td></tr>
+    </tbody></table></div>
+  <p class="foot">المصادر: <a href="https://ich.unesco.org/en/RL/the-art-of-embroidery-in-palestine-practices-skills-knowledge-and-rituals-01722" target="_blank" rel="noopener">UNESCO: فن التطريز في فلسطين (2021)</a> | <a href="https://www.psychologytoday.com/us/blog/happiness-and-the-pursuit-of-leadership/201507/are-you-a-giver-or-a-taker" target="_blank" rel="noopener">دراسة Grant (عرض ثانوي)</a> | <a href="https://hbswk.hbs.edu/item/6685.html" target="_blank" rel="noopener">Amabile & Kramer</a> | <a href="https://www.colorado.edu/business/faculty-research/2023/04/19/or-track-how-broken-streaks-affect-consumer-decisions" target="_blank" rel="noopener">Silverman & Barasch 2023</a> | <a href="https://smashingmagazine.com/2016/09/the-thumb-zone-designing-for-mobile-users" target="_blank" rel="noopener">Hoober</a> | <a href="https://caniuse.com/background-sync" target="_blank" rel="noopener">caniuse: Background Sync</a> | <a href="https://claude.ai/artifact/VBVQfkawMwb3Z5VTXr6dir" target="_blank" rel="noopener">الدراسة والنموذج السابق</a>. الأوقات محسوبة لإحداثيات nasaq-core.js، والبيانات وهمية.</p>
+</div></section>
+</div>
+
+<script>
+/* نَسَق (NASAQ) — Copyright (c) 2026 Mohammed S. Ellouh. All rights reserved. */
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const M = (h, m) => h * 60 + m;
+const REDUCED = (() => { try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } })();
+const LOC = 'ar-EG-u-nu-latn', HLOC = 'ar-SA-u-ca-islamic-umalqura-nu-latn';
+const WD = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+const fmtDate = (d, o) => d.toLocaleDateString(LOC, o || {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'});
+function fmtHijri(d){ try{ const f = new Intl.DateTimeFormat(HLOC, {day: 'numeric', month: 'long', year: 'numeric'}); return f.resolvedOptions().calendar === 'islamic-umalqura' ? f.format(d) : ''; }catch(e){ return ''; } }
+function t12(m){ m = ((Math.round(m) % 1440) + 1440) % 1440; let h = Math.floor(m / 60), mi = m % 60; const s = h < 12 ? 'ص' : 'م'; h = h % 12 || 12; return h + ':' + String(mi).padStart(2, '0') + ' ' + s; }
+function dur(m){ m = Math.max(0, Math.round(m)); const h = Math.floor(m / 60), r = m % 60; if(!h) return r + ' د'; return h + ' س' + (r ? ' ' + r + ' د' : ''); }
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+function rng(seed){ return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const BASE = new Date(2026, 9, 21);
+
+/* ---------- المحلّل العربي للالتقاط (محلي بالكامل) ---------- */
+const PERIOD_LBL = {prefajr: 'قبل الفجر', fajr: 'بعد الفجر', duha: 'الضحى', dhuhr: 'بعد الظهر', asr: 'بعد العصر', maghrib: 'بعد المغرب', isha: 'بعد العشاء'};
+function normAr(s){
+  return String(s).replace(/[٠-٩]/g, d => d.charCodeAt(0) - 1632).replace(/[۰-۹]/g, d => d.charCodeAt(0) - 1776)
+    .replace(/[٫,](?=\d)/g, '.').replace(/ـ/g, '').replace(/[ً-ْ]/g, '');
+}
+const E = '(?=$|[\\s،,.؛!؟])';
+const B0 = '(?:^|(?<=[\\s،,.؛]))';
+const rx = s => new RegExp(B0 + '(?:' + s + ')' + E);
+const WDN = [['الأحد|الاحد', 0], ['الاثنين|الإثنين|الاتنين', 1], ['الثلاثاء|الثلاثا|التلات', 2], ['الأربعاء|الاربعاء|الاربعا', 3], ['الخميس', 4], ['الجمعة|الجمعه', 5], ['السبت', 6]];
+const toLatin = s => String(s).replace(/[٠-٩]/g, d => d.charCodeAt(0) - 1632).replace(/[۰-۹]/g, d => d.charCodeAt(0) - 1776);
+function parseCapture(raw, base){
+  /* نطابق على نص مطبَّع، ونبني العنوان من النص الأصلي (بتشكيله) عبر خريطة مواضع */
+  const orig = ' ' + String(raw) + ' ', idx = []; let n = '';
+  for(let i = 0; i < orig.length; i++){ if(/[\u064B-\u0652\u0640]/.test(orig[i])) continue; idx.push(i); n += toLatin(orig[i]); }
+  idx.push(orig.length);
+  let s = n.replace(/[٫,](?=\d)/g, '.');
+  const rem = new Array(s.length).fill(false);
+  const out = {raw, chips: [], spans: []};
+  const take = (re, fn) => { const m = s.match(re); if(!m) return null; for(let k = m.index; k < m.index + m[0].length; k++) rem[k] = true;
+    s = s.slice(0, m.index) + ' '.repeat(m[0].length) + s.slice(m.index + m[0].length); out.spans.push(m[0].trim()); fn(m); return m; };
+  take(/^\s*(?:ذكرني|فكرني|لا تنسى|لا تنس|تذكير:?)\s*(?:أن|ان|إن|ب)?\s+/, () => {});
+  take(/#([^\s#@،,]+)/, m => { out.proj = m[1].replace(/_/g, ' '); });
+  take(/@([^\s#@،,]+)/, m => { out.who = m[1].replace(/_/g, ' '); });
+  take(rx('مهم جدا|مهم جدًا|عاجل|مهم|!'), () => { out.important = true; });
+  /* الأيام */
+  take(rx('بعد بكرة|بعد بكرا|بعد بكره|بعد غد|بعد الغد'), m => { out.dayOff = 2; out.dayLbl = 'بعد غد'; })
+    || take(rx('بكرة|بكرا|بكره|غدا|الغد|غداً'), () => { out.dayOff = 1; out.dayLbl = 'غدًا'; })
+    || take(rx('اليوم|النهارده|هلأ|هلق'), () => { out.dayOff = 0; out.dayLbl = 'اليوم'; })
+    || take(rx('الأسبوع القادم|الاسبوع القادم|الأسبوع الجاي|الاسبوع الجاي'), () => { const dd = (6 - base.getDay() + 7) % 7 || 7; out.dayOff = dd; out.dayLbl = 'الأسبوع القادم'; })
+    || take(new RegExp(B0 + 'بعد\\s+(\\d+)\\s+(?:أيام|ايام|يوم)' + E), m => { out.dayOff = +m[1]; out.dayLbl = 'بعد ' + m[1] + ' أيام'; })
+    || (() => { for(const [names, idx] of WDN){
+        const r = new RegExp(B0 + '(?:يوم\\s+)?(?:' + names + ')(?:\\s+(?:القادم|الجاي|الجاية|القادمة))?' + E);
+        if(take(r, () => { let dd = (idx - base.getDay() + 7) % 7; if(dd === 0) dd = 7; out.dayOff = dd; out.dayLbl = WD[idx]; })) return true; }
+        return null; })()
+    || take(/(\d{1,2})\s*\/\s*(\d{1,2})/, m => { const d = new Date(base.getFullYear(), +m[2] - 1, +m[1]); if(d < base) d.setFullYear(d.getFullYear() + 1);
+        out.dayOff = Math.round((d - new Date(base.getFullYear(), base.getMonth(), base.getDate())) / 864e5); out.dayLbl = fmtDate(d, {day: 'numeric', month: 'long'}); });
+  /* ساعة محددة: «الساعة 3»، «3:30»، «3 العصر» */
+  const PM = /^(م|مساء|مساءا|العصر|المغرب|العشاء|العشا|بالليل|الليل)$/, NOON = /^(الظهر)$/;
+  take(new RegExp(B0 + '(?:الساعة|الساعه)\\s*(\\d{1,2})(?::(\\d{2}))?(?:\\s*(ص|م|صباحا|مساء|الصبح|العصر|الظهر|المغرب|العشاء|بالليل))?' + E), m => setTime(m[1], m[2], m[3]))
+    || take(new RegExp(B0 + '(\\d{1,2}):(\\d{2})(?:\\s*(ص|م|صباحا|مساء|الصبح|العصر|الظهر|المغرب|العشاء|بالليل))?' + E), m => setTime(m[1], m[2], m[3]))
+    || take(new RegExp(B0 + '(\\d{1,2})\\s*(ص|م|الصبح|العصر|الظهر|المغرب|العشاء|بالليل)' + E), m => setTime(m[1], 0, m[2]));
+  function setTime(h, mi, suf){
+    h = +h; mi = +(mi || 0);
+    if(suf && PM.test(suf) && h < 12) h += 12; else if(suf && NOON.test(suf) && h < 6) h += 12; else if(!suf && h >= 1 && h <= 6) h += 12;
+    out.time = h * 60 + mi; out.timeLbl = t12(out.time);
+  }
+  /* الفترات */
+  const PR = [['قبل الفجر|السحور|وقت السحور', 'prefajr'], ['بعد الفجر|الفجر', 'fajr'], ['قبل الظهر|الصبح|الصباح|صباحا|الضحى', 'duha'],
+    ['قبل العصر|بعد الظهر|الظهر|الظهيرة', 'dhuhr'], ['قبل المغرب|بعد العصر|العصرية|العصريه|العصر', 'asr'],
+    ['قبل العشاء|بعد المغرب|المغرب|المسا|المساء|مساء', 'maghrib'], ['بعد العشاء|بعد العشا|العشاء|العشا|بالليل|الليل|ليلا', 'isha']];
+  for(const [w, k] of PR){ if(take(rx(w), m => { out.period = k; out.periodLbl = m[0].trim(); })) break; }
+  /* المدد */
+  take(rx('ساعة ونص|ساعة و نص|ساعة ونصف|ساعه ونص'), () => { out.dur = 90; })
+    || take(rx('ساعة وربع|ساعه وربع'), () => { out.dur = 75; })
+    || take(rx('ساعتين|ساعتان'), () => { out.dur = 120; })
+    || take(rx('نص ساعة|نصف ساعة|نص ساعه'), () => { out.dur = 30; })
+    || take(rx('ربع ساعة|ربع ساعه'), () => { out.dur = 15; })
+    || take(new RegExp(B0 + '(\\d+(?:\\.\\d+)?)\\s*(?:ساعات|ساعة|ساعه|س)' + E), m => { out.dur = Math.round(+m[1] * 60); })
+    || take(new RegExp(B0 + '(\\d+)\\s*(?:دقيقة|دقائق|دقايق|دقيقه|دقيقتين|دق|د)' + E), m => { out.dur = +m[1]; })
+    || take(rx('دقيقتين'), () => { out.dur = 2; })
+    || take(rx('ساعة|ساعه'), () => { out.dur = 60; });
+  /* العنوان: ما تبقّى من النص الأصلي بعد إزالة ما فُهم */
+  let t = ''; for(let j = 0; j < n.length; j++) t += rem[j] ? ' ' : toLatin(orig.slice(idx[j], idx[j + 1]));
+  t = t.replace(/\s+/g, ' ').trim();
+  const EDGE = /^(في|يوم|على|عند|من|و|ب|الساعة|الساعه|خلال|مدة|لمدة)\s+|\s+(في|يوم|على|عند|من|و|ب|الساعة|الساعه|خلال|مدة|لمدة|مع)$/u;
+  for(let i = 0; i < 4; i++) t = t.replace(EDGE, '').trim();
+  out.title = t.replace(/^[،,.\-–—\s]+|[،,.\-–—\s]+$/g, '');
+  if(out.time != null && !out.period) out.period = periodAtTime(out.time);
+  return out;
+}
+let PERIODS_REF = [];
+function periodAtTime(m){ const p = PERIODS_REF.find(p => m >= p.from && m < p.to); return p ? p.k : (m < (PERIODS_REF[0] || {}).from ? 'fajr' : 'isha'); }
+
+
+/* ================= 1) الظل: هندسة الشمس الحقيقية (خوارزمية NasaqTime نفسها) ================= */
+const LAT = 31.5017, LNG = 34.4668;
+function sunDay(y, mo, d, tz){
+  const rad = Math.PI / 180; let Y = y, Mo = mo; if(Mo <= 2){ Y -= 1; Mo += 12; }
+  const A = Math.floor(Y / 100), B = 2 - A + Math.floor(A / 4);
+  const jd = Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (Mo + 1)) + d + B - 1524.5 + .5 - LNG / 360;
+  const D = jd - 2451545.0, g = (357.529 + .98560028 * D) % 360, q = (280.459 + .98564736 * D) % 360;
+  const L = (q + 1.915 * Math.sin(g * rad) + .020 * Math.sin(2 * g * rad)) % 360, e = 23.439 - .00000036 * D;
+  const RA = Math.atan2(Math.cos(e * rad) * Math.sin(L * rad), Math.cos(L * rad)) / rad / 15;
+  const decl = Math.asin(Math.sin(e * rad) * Math.sin(L * rad)) / rad, eqt = q / 15 - ((RA % 24) + 24) % 24;
+  const dhuhr = 12 + tz - LNG / 15 - eqt;
+  const T = a => Math.acos((-Math.sin(a * rad) - Math.sin(decl * rad) * Math.sin(LAT * rad)) / (Math.cos(decl * rad) * Math.cos(LAT * rad))) / rad / 15;
+  const asrA = -Math.atan(1 / (1 + Math.tan(Math.abs(LAT - decl) * rad))) / rad;
+  const toMin = h => Math.round((((h % 24) + 24) % 24) * 60);
+  return {decl, noon: dhuhr * 60, pt: {fajr: toMin(dhuhr - T(19.5)), sunrise: toMin(dhuhr - T(.833)), dhuhr: toMin(dhuhr), asr: toMin(dhuhr + T(asrA)), maghrib: toMin(dhuhr + T(.833)), isha: toMin(dhuhr + T(17.5))}};
+}
+function shadowAt(min, s){
+  const rad = Math.PI / 180, H = (min - s.noon) / 4 * rad, f = LAT * rad, dl = s.decl * rad;
+  const alt = Math.asin(Math.sin(f) * Math.sin(dl) + Math.cos(f) * Math.cos(dl) * Math.cos(H));
+  if(alt <= 1.5 * rad) return null;
+  const Az = Math.atan2(Math.sin(H), Math.cos(H) * Math.sin(f) - Math.tan(dl) * Math.cos(f));
+  const Lh = 1 / Math.tan(alt);
+  return {L: Lh, e: Math.sin(Az) * Lh, n: Math.cos(Az) * Lh, alt: alt / rad};
+}
+const SEASONS = {oct: [2026, 10, 21, 3, 'الأربعاء 21 أكتوبر'], jun: [2026, 6, 21, 3, 'الأحد 21 يونيو'], dec: [2026, 12, 21, 2, 'الاثنين 21 ديسمبر']};
+const DAYTASKS = [
+  ['ورد الفجر', M(5, 40), M(6, 0)], ['بريد المانحين', M(7, 40), M(8, 10)], ['اجتماع الفريق الأسبوعي', M(9, 0), M(9, 45)],
+  ['اعتماد طلب الشراء رقم 14', M(10, 0), M(10, 20)], ['الرد على ملاحظات المانح', M(10, 30), M(11, 40)],
+  ['مسودة التقرير الربعي', M(12, 45), M(14, 50)], ['اتصال بالمورّد', M(14, 55), M(15, 15)], ['مكالمة مع ممثل المانح', M(16, 0), M(16, 30)],
+  ['مراجعة كشف التوزيع', M(16, 35), M(17, 10)], ['مشي 20 دقيقة', M(18, 30), M(18, 50)], ['اتصال بالأهل', M(19, 0), M(19, 15)],
+  ['ختام اليوم وقائمة الغد', M(20, 30), M(20, 40)], ['قراءة مسودة سياسة الحماية', M(20, 45), M(21, 25)]
+];
+const PR_NAMES = [['fajr', 'الفجر'], ['sunrise', 'الشروق'], ['dhuhr', 'الظهر'], ['asr', 'العصر'], ['maghrib', 'المغرب'], ['isha', 'العشاء']];
+const SH = {season: 'oct', now: M(13, 5), timer: 0};
+function shadowRender(){
+  const [y, mo, d, tz, label] = SEASONS[SH.season]; const s = sunDay(y, mo, d, tz), pt = s.pt;
+  const cx = 320, cy = 400, R = 292, k = 118;
+  /* يُقص الظل عند حافة القرص (مركزه 320,320) لا عند دائرة حول الشاخص */
+  const P = sh => { const x = sh.e * k, yy = -sh.n * k, len = Math.hypot(x, yy) || 1, ux = x / len, uy = yy / len, dy = cy - 320, r0 = R - 8;
+    const b = dy * uy, tmax = -b + Math.sqrt(b * b - (dy * dy - r0 * r0)); const t = Math.min(len, tmax); return [cx + ux * t, cy + uy * t, len > tmax]; };
+  const noonSh = shadowAt(s.noon, s), asrR = (1 + noonSh.L) * k;
+  let curve = []; for(let m = pt.sunrise + 2; m <= pt.maghrib - 2; m += 4){ const sh = shadowAt(m, s); if(sh) curve.push(P(sh)); }
+  const now = shadowAt(SH.now, s), night = !now;
+  const r = rng(7); let stars = ''; for(let i = 0; i < 70; i++){ const a = r() * Math.PI * 2, rr = Math.sqrt(r()) * (R - 10); stars += `<circle cx="${(cx + Math.cos(a) * rr).toFixed(1)}" cy="${(320 + Math.sin(a) * rr).toFixed(1)}" r="${(r() * 1.6 + .4).toFixed(2)}" fill="#F3EADA" opacity="${(.35 + r() * .6).toFixed(2)}"/>`; }
+  let marks = '';
+  DAYTASKS.forEach(([t, a, b], i) => { const sh = shadowAt(a, s); const cur = SH.now >= a && SH.now < b;
+    if(sh){ const [x, yy] = P(sh); marks += `<g><circle cx="${x.toFixed(1)}" cy="${yy.toFixed(1)}" r="${cur ? 9 : 5.5}" fill="${cur ? '#B5651D' : '#F3EADA'}" stroke="#2A231C" stroke-width="1.5"/>${cur ? '' : `<text x="${x.toFixed(1)}" y="${(yy - 10).toFixed(1)}" font-size="11" text-anchor="middle" fill="#2A231C" font-family="Tajawal">${i + 1}</text>`}</g>`; }
+  });
+  const prMarks = [['dhuhr', 'الظهر'], ['asr', 'العصر']].map(([key, nm]) => { const sh = shadowAt(pt[key], s); if(!sh) return ''; const [x, yy] = P(sh);
+    return `<g><rect x="${(x - 4).toFixed(1)}" y="${(yy - 4).toFixed(1)}" width="8" height="8" transform="rotate(45 ${x.toFixed(1)} ${yy.toFixed(1)})" fill="#2A231C"/><text x="${x.toFixed(1)}" y="${(yy + 26).toFixed(1)}" text-anchor="middle" font-size="14" font-weight="700" fill="#2A231C" font-family="Tajawal">${nm} ${t12(pt[key])}</text></g>`; }).join('');
+  let shadowLine = '', sunDot = '';
+  if(now){ const [x, yy, cut] = P(now); shadowLine = `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="#2A231C" stroke-width="9" stroke-linecap="round" opacity=".82"/>${cut ? `<text x="${x.toFixed(1)}" y="${(yy - 14).toFixed(1)}" font-size="12" text-anchor="middle" fill="#2A231C" font-family="Tajawal">الظل أطول من الإطار</text>` : ''}`;
+    const ang = Math.atan2(-now.n, -now.e); sunDot = `<circle cx="${(cx + Math.cos(ang) * (R + 2)).toFixed(1)}" cy="${(320 - Math.sin(ang) * (R + 2)).toFixed(1)}" r="14" fill="#E2A73B" stroke="#F7EBD0" stroke-width="4"/>`; }
+  $('#dial').innerHTML = `
+    <defs><clipPath id="disc"><circle cx="${cx}" cy="320" r="${R}"/></clipPath><radialGradient id="stone" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="${night ? '#2B2F45' : '#F3EADA'}"/><stop offset="1" stop-color="${night ? '#171A2B' : '#DCCDB0'}"/></radialGradient></defs>
+    <circle cx="${cx}" cy="320" r="${R + 14}" fill="none" stroke="#2A231C" stroke-width="1" opacity=".35"/>
+    <circle cx="${cx}" cy="320" r="${R}" fill="url(#stone)" stroke="#2A231C" stroke-width="2"/>
+    ${night ? stars : ''}
+    <g opacity="${night ? .25 : 1}" clip-path="url(#disc)">
+      <circle cx="${cx}" cy="${cy}" r="${k}" fill="none" stroke="#2A231C" stroke-width="1" stroke-dasharray="2 6" opacity=".5"/>
+      <circle cx="${cx}" cy="${cy}" r="${Math.min(asrR, R - 4).toFixed(1)}" fill="none" stroke="#B5651D" stroke-width="1.5" stroke-dasharray="6 6"/>
+      <text x="${cx}" y="${(cy - Math.min(asrR, R - 4) - 8).toFixed(1)}" font-size="12" text-anchor="middle" fill="#8A4A12" font-family="Tajawal">دائرة العصر: ظلٌّ بطول الشاخص مع ظلّ الزوال</text>
+      <polyline points="${curve.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}" fill="none" stroke="#2A231C" stroke-width="1.5" opacity=".55"/>
+      ${prMarks}${marks}
+    </g>
+    <text x="${cx}" y="44" font-size="13" text-anchor="middle" fill="${night ? '#F3EADA' : '#2A231C'}" font-family="Tajawal">شمال</text>
+    <text x="${cx + R - 30}" y="${cy + 5}" font-size="13" text-anchor="middle" fill="${night ? '#F3EADA' : '#2A231C'}" font-family="Tajawal">شرق</text>
+    <text x="${cx - R + 30}" y="${cy + 5}" font-size="13" text-anchor="middle" fill="${night ? '#F3EADA' : '#2A231C'}" font-family="Tajawal">غرب</text>
+    <g clip-path="url(#disc)">${shadowLine}</g>${sunDot}
+    <circle cx="${cx}" cy="${cy}" r="7" fill="#2A231C"/>
+    ${night ? `<text x="${cx}" y="${cy + 46}" font-size="17" text-anchor="middle" fill="#F3EADA" font-family="Tajawal" font-weight="700">لا ظلّ. الليل يُقاس بالمواقيت</text>` : ''}`;
+  $('#dial').setAttribute('aria-label', `مزولة يوم ${label}: الساعة ${t12(SH.now)}. ${now ? 'طول الظل ' + now.L.toFixed(2) + ' من طول الشاخص.' : 'الشمس تحت الأفق.'}`);
+  /* القراءة */
+  const cur = DAYTASKS.find(([, a, b]) => SH.now >= a && SH.now < b), nxt = DAYTASKS.find(([, a]) => a > SH.now);
+  const nextPr = PR_NAMES.find(([key]) => pt[key] > SH.now);
+  $('#sTime').textContent = `${label} | ${t12(SH.now)}`;
+  $('#sNow').textContent = cur ? cur[0] : (nxt ? 'فسحة قبل: ' + nxt[0] : 'انتهى اليوم');
+  $('#sNext').textContent = (nextPr ? `بقي ${dur(pt[nextPr[0]] - SH.now)} حتى ${nextPr[1]} (${t12(pt[nextPr[0]])})` : 'بعد العشاء') + (cur && nxt ? ` | بعدها: ${nxt[0]}` : '');
+  $('#sRatio').innerHTML = now ? `طول الظل الآن <b>${now.L.toFixed(2)}</b> من طول الشاخص. يدخل العصر حين يبلغ <b>${(1 + noonSh.L).toFixed(2)}</b>.` : `الشمس تحت الأفق: ${SH.now < pt.sunrise ? 'الشروق ' + t12(pt.sunrise) : 'غربت ' + t12(pt.maghrib)}، وطول النهار ${dur(pt.maghrib - pt.sunrise)}.`;
+  $('#sList').innerHTML = DAYTASKS.map(([t, a, b], i) => `<li data-now="${SH.now >= a && SH.now < b}" data-past="${SH.now >= b}"><span>${i + 1}. ${t12(a).replace(' ', ' ')}</span><span>${esc(t)}${shadowAt(a, s) ? '' : ' <span style="opacity:.7">(نجمة: بلا ظل)</span>'}</span></li>`).join('');
+}
+function shadowInit(){
+  const sl = $('#sSlide');
+  sl.addEventListener('input', () => { SH.now = +sl.value; shadowRender(); });
+  $$('[data-season]').forEach(b => b.addEventListener('click', () => { SH.season = b.dataset.season; $$('[data-season]').forEach(x => x.setAttribute('aria-pressed', x === b)); shadowRender(); }));
+  $('#sPlay').addEventListener('click', e => {
+    if(SH.timer){ clearInterval(SH.timer); SH.timer = 0; e.currentTarget.textContent = 'شغّل اليوم'; return; }
+    if(SH.now >= 1285) SH.now = 300;
+    e.currentTarget.textContent = 'أوقف'; const btn = e.currentTarget;
+    SH.timer = setInterval(() => { SH.now += REDUCED ? 30 : 5; if(SH.now >= 1290){ SH.now = 1290; clearInterval(SH.timer); SH.timer = 0; btn.textContent = 'شغّل اليوم'; } sl.value = SH.now; shadowRender(); }, REDUCED ? 400 : 60);
+  });
+  shadowRender();
+}
+
+/* ================= 2) المتن والحاشية ================= */
+const MS = {edit: false, done: {}, text: 'بسم الله. أبدأ بعد الظهر بمسودة التقرير الربعي ساعة ونص، ثم أتصل بالمورّد بشأن عرض الأسعار 20 د. بعد العصر أراجع كشف التوزيع نص ساعة مع @سامر، وبعد المغرب أقرأ مسودة سياسة الحماية. وبكرا الصبح زيارة مخزن الطرود.'};
+const NOTES = [['المورّد', '11:20 ص', 'المورّد يطلب تأكيد الكمية قبل ظهر الغد.'], ['سامر', '12:05 م', 'سامر يطلب موافقة صرف 1,250 ₪ قبل 2:00 م.'], ['الطرود', '12:40 م', 'أحمد: المخزن يفتح من 9:00 ص فقط.']];
+function msClauses(){
+  let prev = null;
+  return MS.text.split(/[.،؛\n]|\s+ثم\s+|\s+و(?=بعد|بكرا|بكرة|غدا|الخميس)/).map(c => c.trim().replace(/^و(?=(بعد|بكرا|بكرة|قبل|غدا))/, '')).filter(c => c.length > 3 && !/^بسم الله$/.test(c))
+    .map(c => { const p = parseCapture(c, BASE); if(!p.title) return null;
+      if(prev && p.period == null && p.dayOff == null && p.time == null){ p.period = prev.period; p.dayOff = prev.dayOff; p.dayLbl = prev.dayLbl; }
+      prev = p; return p; }).filter(Boolean);
+}
+function msRender(){
+  const cl = msClauses();
+  $('#msIdx').innerHTML = cl.map((p, i) => { const key = p.title; const when = [p.dayLbl, p.period ? PERIOD_LBL[p.period] : '', p.dur ? dur(p.dur) : ''].filter(Boolean).join(' | ');
+    return `<li><label><input type="checkbox" data-ms="${esc(key)}" ${MS.done[key] ? 'checked' : ''}><span>${esc(p.title)}<small>${esc(when || 'بلا موعد: إلى الوارد')}</small></span></label></li>`; }).join('');
+  $('#msNotes').innerHTML = NOTES.map(([, tm, n], i) => `<p class="note"><b>حاشية ${i + 1}</b> <bdi class="num">${tm}</bdi>: ${esc(n)}</p>`).join('');
+  if(MS.edit){ if(!$('#msTa')){ $('#matn').innerHTML = `<label class="vh" for="msTa">متن اليوم</label><textarea id="msTa">${esc(MS.text)}</textarea>`; $('#msTa').addEventListener('input', e => { MS.text = e.target.value; clearTimeout(MS.t); MS.t = setTimeout(msRender, 250); }); } return; }
+  let h = esc(MS.text);
+  const spans = []; cl.forEach(p => (p.spans || []).forEach(s => { if(s && s.length > 1) spans.push([s, p.dur && /\d|ساع|دقيق|نص|ربع/.test(s) ? 'dur' : 'rub']); }));
+  spans.sort((a, b) => b[0].length - a[0].length).forEach(([s, cls]) => { const e = esc(s); const i = h.indexOf(e); if(i >= 0 && !/<[^>]*$/.test(h.slice(0, i))) h = h.slice(0, i) + `<span class="${cls}">${e}</span>` + h.slice(i + e.length); });
+  NOTES.forEach(([anchor], i) => { const e = esc(anchor); const idx = h.indexOf(e); if(idx >= 0){ const end = idx + e.length; h = h.slice(0, end) + `<sup class="num" aria-label="حاشية ${i + 1}">${i + 1}</sup>` + h.slice(end); } });
+  $('#matn').innerHTML = `<p>${h.replace(/@/g, '')}</p>`;
+}
+function msColophon(){
+  const cl = msClauses(); const done = cl.filter(p => MS.done[p.title]).map(p => p.title), left = cl.filter(p => !MS.done[p.title]).map(p => p.title);
+  const h = fmtHijri(BASE);
+  const text = `تمّ يومُ ${fmtDate(BASE)} الموافق ${h}، أُنجز فيه ${done.length} من ${cl.length}${done.length ? ': ' + done.join('، ') : ''}${left.length ? '. وبقي إلى الغد: ' + left.join('، ') : ''}. وحواشيه ${NOTES.length}، ردّ عليها صاحبها أو أرجأها. والحمد لله`;
+  const words = text.split(' '), budget = [74, 64, 54, 44, 34, 26, 18, 12, 8, 6, 6]; const lines = []; let line = '', bi = 0;
+  words.forEach(w => { if((line + ' ' + w).trim().length > (budget[bi] || 6) && line){ lines.push(line); line = w; bi++; } else line = (line + ' ' + w).trim(); });
+  if(line) lines.push(line);
+  const c = $('#colo'); c.hidden = false;
+  c.innerHTML = `<span class="orn" aria-hidden="true">❁ ❁ ❁</span>${lines.map(l => `<span>${esc(l)}</span>`).join('')}<span class="orn" aria-hidden="true">❁</span>`;
+  c.setAttribute('aria-label', 'خاتمة اليوم: ' + text);
+}
+function msInit(){
+  const s = sunDay(2026, 10, 21, 3).pt;
+  PERIODS_REF = [['fajr', s.fajr, s.sunrise], ['duha', s.sunrise, s.dhuhr], ['dhuhr', s.dhuhr, s.asr], ['asr', s.asr, s.maghrib], ['maghrib', s.maghrib, s.isha], ['isha', s.isha, 1350]].map(([k, from, to]) => ({k, from, to}));
+  $('#msIdx').addEventListener('change', e => { const k = e.target.dataset.ms; if(k != null){ MS.done[k] = e.target.checked; if(!$('#colo').hidden) msColophon(); } });
+  $('#msEdit').addEventListener('click', e => { MS.edit = !MS.edit; e.currentTarget.setAttribute('aria-pressed', MS.edit); e.currentTarget.textContent = MS.edit ? 'اقرأ المتن' : 'حرّر المتن'; if(!MS.edit) $('#matn').innerHTML = ''; msRender(); if(MS.edit) $('#msTa').focus(); });
+  $('#msColo').addEventListener('click', msColophon);
+  msRender();
+}
+
+/* ================= 3) التطريز ================= */
+const MOTIF = {
+  star: ['X..X..X', '.X.X.X.', '..XXX..', 'XXXXXXX', '..XXX..', '.X.X.X.', 'X..X..X'],
+  diamond: ['...X...', '..XXX..', '.XX.XX.', 'XX...XX', '.XX.XX.', '..XXX..', '...X...'],
+  cypress: ['...X...', '..XXX..', '...X...', '.XXXXX.', '...X...', '..XXX..', '...X...'],
+  cross: ['.......', '.......', '...X...', '..XXX..', '...X...', '.......', '.......']
+};
+const THREAD = {star: '#A3231C', diamond: '#24346E', cypress: '#A3231C', cross: '#3F6B2E'};
+const TYPE_LBL = {star: 'تقرير أو كتابة (نجمة)', diamond: 'مكالمة أو اجتماع (معيّن)', cypress: 'عمل ميداني (سروة)', cross: 'عادة (صليب)'};
+const TT = {mode: 'week', anim: null,
+  today: [['مسودة التقرير الربعي', 'star', true], ['اتصال بالمورّد', 'diamond', true], ['ورد الفجر', 'cross', true], ['مراجعة كشف التوزيع', 'cypress', false], ['مكالمة مع ممثل المانح', 'diamond', false], ['مشي 20 دقيقة', 'cross', false]],
+  stitched: {}};
+const CELL = 10, COLS = 98, ROWS = 64;
+function clothSlots(){
+  /* أعمدة الأسبوع من اليمين: السبت ← الجمعة؛ اليوم الأربعاء */
+  const days = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+  const r = rng(21), types = ['star', 'diamond', 'cypress', 'cross'], counts = [3, 5, 4, 6, 0, 0, 0];
+  const out = [];
+  days.forEach((d, i) => { const x0 = COLS - 4 - (i + 1) * 13 + 3; let list;
+    if(i === 4) list = TT.today.map((t, j) => ({type: t[1], done: !!TT.today[j][2], key: 'T' + j}));
+    else list = Array.from({length: counts[i]}, (_, j) => ({type: types[Math.floor(r() * 4)], done: true, key: d + j}));
+    list.forEach((m, j) => out.push({x: x0, y: 8 + j * 8, ...m})); });
+  return {out, days};
+}
+function teamSlots(){
+  const names = ['المالك', 'رنا', 'سامر', 'أحمد', 'هبة'], r = rng(5), types = ['star', 'diamond', 'cypress', 'cross'], out = [];
+  names.forEach((n, i) => { const x0 = COLS - 4 - (i + 1) * 18 + 2; const cnt = 9 + Math.floor(r() * 4);
+    for(let j = 0; j < cnt; j++) out.push({x: x0 + (j % 2) * 8, y: 8 + Math.floor(j / 2) * 8, type: types[Math.floor(r() * 4)], done: true, key: n + j}); });
+  return {out, days: names};
+}
+function drawCloth(progressKey, progress){
+  const cv = $('#cloth'), g = cv.getContext('2d'); const W = cv.width, H = cv.height;
+  g.fillStyle = '#EDE3CF'; g.fillRect(0, 0, W, H);
+  const r = rng(3); for(let i = 0; i < 2600; i++){ g.fillStyle = r() > .5 ? 'rgba(120,100,70,.06)' : 'rgba(255,255,255,.18)'; g.fillRect(r() * W, r() * H, 1 + r() * 2, 1); }
+  g.fillStyle = 'rgba(150,130,100,.28)'; for(let x = 0; x <= COLS; x++) for(let y = 0; y <= ROWS; y++) g.fillRect(x * CELL - .5, y * CELL - .5, 1, 1);
+  const stitch = (cx, cy, col, jitter) => { const x = cx * CELL, y = cy * CELL; g.strokeStyle = col; g.lineWidth = 2.4; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(x + 2, y + 2); g.lineTo(x + CELL - 2, y + CELL - 2); g.stroke();
+    g.globalAlpha = .92 + jitter * .08; g.beginPath(); g.moveTo(x + CELL - 2, y + 2); g.lineTo(x + 2, y + CELL - 2); g.stroke(); g.globalAlpha = 1; };
+  /* حاشية الثوب: شريط متكرر في الأعلى والأسفل */
+  for(let x = 2; x < COLS - 2; x++){ if(x % 4 !== 1) stitch(x, 2 + (x % 4 === 3 ? 1 : 0), '#7A1A14', .5); if(x % 4 !== 3) stitch(x, ROWS - 5 + (x % 4 === 1 ? 1 : 0), '#7A1A14', .5); }
+  const {out, days} = TT.mode === 'week' ? clothSlots() : teamSlots();
+  out.forEach(m => { const pat = MOTIF[m.type], col = THREAD[m.type]; let cells = [];
+    pat.forEach((row, yy) => [...row].forEach((ch, xx) => { if(ch === 'X') cells.push([m.x + xx, m.y + yy]); }));
+    if(m.done || TT.stitched[m.key]){ const n = m.key === progressKey ? Math.ceil(cells.length * progress) : cells.length; cells.slice(0, n).forEach(([cx, cy], i) => stitch(cx, cy, col, (i % 3) / 3)); }
+    else { g.fillStyle = 'rgba(110,90,60,.45)'; cells.forEach(([cx, cy]) => { g.beginPath(); g.arc(cx * CELL + CELL / 2, cy * CELL + CELL / 2, 1.3, 0, 7); g.fill(); }); }
+  });
+  g.fillStyle = '#3B2F22'; g.font = '600 15px Tajawal, sans-serif'; g.textAlign = 'center'; g.direction = 'rtl';
+  days.forEach((d, i) => { const w = TT.mode === 'week' ? 13 : 18; const cx = (COLS - 4 - (i + 1) * w + (TT.mode === 'week' ? 3 + 3.5 : 2 + 7.5)) * CELL; g.fillText(d + (TT.mode === 'week' && i === 4 ? ' (اليوم)' : ''), cx, (ROWS - 7) * CELL); });
+}
+function ttRender(){
+  $('#ttList').innerHTML = TT.today.map((t, i) => `<li><label><input type="checkbox" data-tt="${i}" ${t[2] ? 'checked' : ''}><span class="sw" aria-hidden="true" style="background:${THREAD[t[1]]}"></span>${esc(t[0])}</label></li>`).join('');
+  $('#ttLegend').innerHTML = Object.keys(MOTIF).map(k => `<span><span class="sw" style="background:${THREAD[k]}"></span>${TYPE_LBL[k]}</span>`).join('');
+  const n = TT.today.filter(t => t[2]).length;
+  $('#ttSum').textContent = TT.mode === 'week' ? `طُرّز اليوم ${n} من ${TT.today.length}. القماش يحفظ ما أنجزت، ولا يعدّ ما لم تنجزه.` : 'ثوب الفريق لهذا الشهر: كل عمود بخيوط صاحبه، بلا ترتيب ولا منافسة.';
+  $('#cloth').setAttribute('aria-label', TT.mode === 'week' ? `قماش الأسبوع: أيام السبت إلى الثلاثاء مطرّزة، واليوم ${n} من ${TT.today.length}، والخميس والجمعة لم يُطرّزا بعد.` : 'ثوب الفريق: خمسة أعمدة مطرّزة لأعضاء الفريق.');
+}
+function ttInit(){
+  $('#ttList').addEventListener('change', e => { const i = e.target.dataset.tt; if(i == null) return; TT.today[i][2] = e.target.checked; ttRender();
+    if(e.target.checked && TT.mode === 'week' && !REDUCED){ let p = 0; cancelAnimationFrame(TT.anim); const step = () => { p += .045; drawCloth('T' + i, Math.min(1, p)); if(p < 1) TT.anim = requestAnimationFrame(step); }; step(); }
+    else drawCloth(); });
+  $$('[data-cloth]').forEach(b => b.addEventListener('click', () => { TT.mode = b.dataset.cloth; $$('[data-cloth]').forEach(x => x.setAttribute('aria-pressed', x === b)); ttRender(); drawCloth(); }));
+  ttRender(); drawCloth();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(() => drawCloth());
+}
+
+/* ================= 4) لمن؟ ================= */
+const CHAINS = [
+  {t: 'مسودة التقرير الربعي', n: [['مسودة التقرير الربعي', 0, 1], ['اعتماد المدير', 3, 0], ['إرسال التقرير إلى صندوق غِراس', 4, 0], ['الدفعة الثانية 48,000 $', 15, 3], ['جلسات دعم نفسي لـ 120 طفلًا', 20, 0, true]]},
+  {t: 'مراجعة كشف التوزيع', n: [['مراجعة كشف التوزيع', 0, 0], ['أمر الشراء الموقّع', 1, 1], ['استلام الطرود من المورّد', 3, 1], ['طرود صحية لـ 340 أسرة', 4, 0, true]]},
+  {t: 'أرقام المستفيدين (من أحمد)', n: [['أرقام المستفيدين لشهر أكتوبر', 1, 0], ['جدول مؤشرات التقرير', 2, 1], ['إرسال التقرير', 4, 0], ['الدفعة الثانية', 15, 3], ['120 طفلًا', 20, 0, true]]},
+  {t: 'قراءة سياسة الحماية', n: [['قراءة مسودة سياسة الحماية', 0, 4], ['اعتماد السياسة', 5, 2], ['تدريب 40 متطوعًا', 12, 0], ['زيارات آمنة لـ 600 أسرة', 14, 0, true]]}
+];
+const WH = {i: 0, slip: 0};
+function whRender(){
+  const ch = CHAINS[WH.i], n = ch.n.length; const delays = []; let dl = WH.slip;
+  ch.n.forEach((nd, j) => { if(j === 0) delays.push(dl); else { dl = Math.max(0, delays[j - 1] - ch.n[j - 1][2]); delays.push(dl); } });
+  const W = 1200, x0 = 1060, x1 = 150, pts = ch.n.map((_, j) => [x0 - (x0 - x1) * j / (n - 1), 170 + (j % 2 ? -50 : 50)]);
+  let path = `M ${pts[0][0]} ${pts[0][1]}`; for(let j = 1; j < n; j++){ const [ax, ay] = pts[j - 1], [bx, by] = pts[j], mx = (ax + bx) / 2; path += ` C ${mx} ${ay}, ${mx} ${by}, ${bx} ${by}`; }
+  const nodes = ch.n.map((nd, j) => { const [x, y] = pts[j], late = delays[j] > 0, d = addDays(BASE, nd[1] + delays[j]);
+    const lbl = j === 0 ? 'اليوم' : fmtDate(d, {weekday: 'long', day: 'numeric', month: 'long'});
+    const up = j % 2 === 1, ty = up ? y - 34 : y + 46;
+    let people = ''; if(nd[3]){ const r = rng(j + 9); for(let q = 0; q < 26; q++){ const a = r() * Math.PI * 2, rr = 16 + r() * 22; people += `<circle cx="${(x + Math.cos(a) * rr).toFixed(1)}" cy="${(y + Math.sin(a) * rr).toFixed(1)}" r="2.6" fill="${late ? '#FF9D6E' : '#F2C873'}" opacity=".85"/>`; } }
+    return `<g>${people}<circle cx="${x}" cy="${y}" r="${nd[3] ? 12 : 9}" fill="${late ? '#FF9D6E' : '#0E1530'}" stroke="${late ? '#FF9D6E' : '#E3B35A'}" stroke-width="3"/>
+      <text x="${x}" y="${ty}" text-anchor="middle" font-size="17" font-weight="700" fill="#E9EAF2" font-family="Tajawal">${esc(nd[0])}</text>
+      <text x="${x}" y="${ty + (up ? -22 : 22)}" text-anchor="middle" font-size="14" fill="${late ? '#FFB38F' : '#AEB3CC'}" font-family="Tajawal">${esc(lbl)}${late ? ' | +' + delays[j] + ' ' + (delays[j] === 1 ? 'يوم' : 'أيام') : ''}${nd[2] && j < n - 1 ? ' | هامش ' + nd[2] : ''}</text></g>`; }).join('');
+  $('#thread').innerHTML = `<path d="${path}" fill="none" stroke="#E3B35A" stroke-width="3" stroke-linecap="round"/>${nodes}`;
+  $('#thread').setAttribute('aria-label', 'خيط الأثر: ' + ch.n.map((nd, j) => nd[0] + (delays[j] ? ' (يتأخر ' + delays[j] + ')' : '')).join(' ثم '));
+  const last = ch.n[n - 1][0], fin = delays[n - 1];
+  $('#whSlipV').textContent = WH.slip + ' ' + (WH.slip === 1 ? 'يوم' : WH.slip === 2 ? 'يومان' : 'أيام');
+  $('#whVerdict').innerHTML = !WH.slip ? `هذه المهمة طرف خيط ينتهي عند <b>${esc(last)}</b>. على الخيط ${ch.n.slice(0, -1).reduce((a, x) => a + x[2], 0)} أيام هامش في المجموع.`
+    : fin ? `تأخير ${WH.slip} أيام هنا يصل إلى الناس: <b>${esc(last)}</b> تتأخر ${fin} أيام. امتصت الهوامش ${WH.slip - fin} فقط.`
+    : `الهوامش تمتص التأخير كله، و<b>${esc(last)}</b> في موعدها. لكن الهامش التالي صار أضيق، والتأخير القادم سيصل إلى الناس.`;
+}
+function whInit(){
+  $('#whChips').innerHTML = CHAINS.map((c, i) => `<button class="chip" type="button" data-wh="${i}" aria-pressed="${i === 0}">${esc(c.t)}</button>`).join('');
+  $('#whChips').addEventListener('click', e => { const b = e.target.closest('[data-wh]'); if(!b) return; WH.i = +b.dataset.wh; $$('[data-wh]').forEach(x => x.setAttribute('aria-pressed', x === b)); whRender(); });
+  $('#whSlip').addEventListener('input', e => { WH.slip = +e.target.value; whRender(); });
+  whRender();
+}
+
+/* ================= 5) الميزان ================= */
+const SC0 = [['مسودة التقرير الربعي', 125], ['الرد على ملاحظات المانح', 70], ['تحضير عرض الشركاء', 60], ['قراءة سياسة الحماية', 45], ['مراجعة كشف التوزيع', 35], ['اتصال بالمورّد', 20], ['اعتماد كشف الحوافز', 20]];
+const SC = {items: [], avail: 300};
+function scReset(){ SC.items = SC0.map(([t, m]) => ({t, m, shelf: false, fixed: false})); SC.avail = 300; }
+function scRender(){
+  const load = SC.items.filter(i => !i.shelf).reduce((a, i) => a + i.m, 0), diff = load - SC.avail;
+  const ang = Math.max(-14, Math.min(14, diff / SC.avail * 40)), rad = ang * Math.PI / 180, half = 250;
+  const rx = 350 + Math.cos(rad) * half, ry = 120 + Math.sin(rad) * half, lx = 350 - Math.cos(rad) * half, ly = 120 - Math.sin(rad) * half;
+  const blocksR = SC.items.filter(i => !i.shelf); let yAcc = 0;
+  const bR = blocksR.map(i => { const h = Math.max(10, i.m / 5); const y = -yAcc - h; yAcc += h + 2; return `<rect x="-62" y="${y.toFixed(1)}" width="124" height="${h.toFixed(1)}" rx="3" fill="${i.fixed ? '#3B2F22' : '#B08A3E'}" opacity="${i.fixed ? 1 : .9}"/>`; }).join('');
+  let bL = '', yl = 0; for(let h = 0; h < SC.avail; h += 60){ const hh = Math.min(60, SC.avail - h) / 5; bL += `<rect x="-62" y="${(-yl - hh).toFixed(1)}" width="124" height="${hh.toFixed(1)}" rx="3" fill="#6E8A7C"/>`; yl += hh + 2; }
+  const pan = (x, y, blocks, label, sub) => `<g style="transform:translate(${x.toFixed(1)}px,${y.toFixed(1)}px);transition:transform 700ms cubic-bezier(.34,1.56,.64,1)">
+      <line x1="-70" y1="150" x2="0" y2="0" stroke="#1B1A17" stroke-width="1.5"/><line x1="70" y1="150" x2="0" y2="0" stroke="#1B1A17" stroke-width="1.5"/>
+      <g transform="translate(0,150)">${blocks}</g><path d="M -84 150 Q 0 176 84 150 Z" fill="#1B1A17"/>
+      <text y="200" text-anchor="middle" font-size="16" font-weight="700" fill="#1B1A17" font-family="Tajawal">${label}</text><text y="220" text-anchor="middle" font-size="14" fill="#4A463E" font-family="Tajawal">${sub}</text></g>`;
+  $('#balance').innerHTML = `<rect x="330" y="120" width="40" height="270" fill="#1B1A17" opacity=".08"/><path d="M 350 120 L 350 380 M 290 392 L 410 392" stroke="#1B1A17" stroke-width="6" stroke-linecap="round"/>
+    <g style="transform:rotate(${ang.toFixed(2)}deg);transform-origin:350px 120px;transition:transform 700ms cubic-bezier(.34,1.56,.64,1)"><line x1="100" y1="120" x2="600" y2="120" stroke="#1B1A17" stroke-width="7" stroke-linecap="round"/></g>
+    <path d="M 338 104 L 350 84 L 362 104 Z" fill="#B08A3E"/><circle cx="350" cy="120" r="9" fill="#B08A3E" stroke="#1B1A17" stroke-width="2"/>
+    ${pan(rx, ry, bR, 'ما تعهّدت به', dur(load))}${pan(lx, ly, bL, 'وقتك المتاح', dur(SC.avail))}`;
+  /* الكفّتان معلّقتان من طرفي العاتق؛ في RTL كفّة الالتزام يمينًا */
+  $('#balance').setAttribute('aria-label', `الميزان: ما تعهّدت به ${dur(load)} مقابل وقت متاح ${dur(SC.avail)}.`);
+  $('#scVerdict').textContent = Math.abs(diff) <= 10 ? 'متوازن. يومك يتسع لما تعهّدت به.' : diff > 0 ? `يميل نحو ما تعهّدت به بـ ${dur(diff)}. ارفع شيئًا إلى رفّ الغد.` : `خفيف بـ ${dur(-diff)}: متسع لشيء من الوارد، أو لراحة.`;
+  const btn = (i, k) => `<button class="w" type="button" data-sc="${k}" ${i.fixed ? 'disabled title="موعد ثابت"' : ''} aria-label="${i.shelf ? 'أعِد إلى اليوم' : 'انقل إلى الغد'}: ${esc(i.t)}"><span>${esc(i.t)}</span><span class="m num">${dur(i.m)}</span></button>`;
+  $('#scToday').innerHTML = SC.items.map((i, k) => i.shelf ? '' : btn(i, k)).join('') || '<p style="font-size:14px">الكفّة فارغة.</p>';
+  $('#scShelf').innerHTML = SC.items.map((i, k) => i.shelf ? btn(i, k) : '').join('') || '<p style="font-size:14px;color:#4A463E">اضغط أي مهمة لرفعها إلى هنا.</p>';
+}
+function scInit(){
+  scReset();
+  $('#scale').addEventListener('click', e => { const b = e.target.closest('[data-sc]'); if(!b) return; const it = SC.items[+b.dataset.sc]; if(it.fixed) return; it.shelf = !it.shelf; scRender(); const again = $(`[data-sc="${b.dataset.sc}"]`); if(again) again.focus(); });
+  $('#scAdd').addEventListener('click', () => { if(!SC.items.some(i => i.fixed)){ SC.items.unshift({t: 'اجتماع طارئ (موعد ثابت)', m: 45, shelf: false, fixed: true}); scRender(); } });
+  $('#scReset').addEventListener('click', () => { scReset(); scRender(); });
+  scRender();
+}
+
+/* ================= 6) الميدان ================= */
+const VISITS = [['زيارة أسرة أبو سالم', 'مركز الإيواء | الصف 3'], ['تسليم طرد صحي لأسرة الشريف', 'حي الرمال | قرب المسجد'], ['استمارة متابعة لأسرة النجار', 'مدرسة الإيواء | غرفة 12'], ['تصوير إيصالات التوزيع', 'المخزن'], ['اتصال بمسؤول المركز', 'هاتفيًا'], ['تسليم الاستمارات لهبة', 'المكتب']];
+const REASONS = ['لا كهرباء', 'لا تغطية', 'الطريق مغلق', 'الأسرة غير موجودة', 'نقص مواد', 'وضع أمني'];
+const FD = {i: 0, pending: 2, screen: 'task', log: []};
+function buzz(){ try{ if(navigator.vibrate) navigator.vibrate(15); }catch(e){} }
+function fdRender(){
+  const ph = $('#phone'); const v = VISITS[FD.i];
+  const top = `<div class="ph-top" role="status"><span>${FD.pending ? 'دون اتصال' : 'متزامن'}</span><span class="num">${FD.pending ? FD.pending + ' بانتظار المزامنة' : 'لا شيء ينتظر'}</span></div>`;
+  let body = '', acts = '';
+  if(FD.screen === 'task' && v){
+    body = `<span class="sub num">${FD.i + 1} من ${VISITS.length}</span><span class="big">${esc(v[0])}</span><span class="sub">${esc(v[1])}</span>`;
+    acts = `<button class="fb main" data-fd="done" type="button">تمّ</button><div class="row2"><button class="fb" data-fd="block" type="button">عائق</button><button class="fb" data-fd="next" type="button">التالي</button></div><button class="fb" style="min-height:52px;font-size:17px" data-fd="hand" type="button">سلّم لزميل متصل</button>`;
+  } else if(FD.screen === 'block'){
+    body = `<span class="big">ما العائق؟</span><span class="sub">${esc(v[0])}</span><div class="reasons">${REASONS.map((r, k) => `<button type="button" data-fd="r${k}">${r}</button>`).join('')}</div>`;
+    acts = `<button class="fb" data-fd="back" type="button">رجوع</button>`;
+  } else if(FD.screen === 'hand'){
+    body = `<div class="code"><canvas id="qr" width="29" height="29" aria-label="رمز تسليم تمثيلي"></canvas><span class="sub" style="text-align:center">يمسحه زميل متصل، فتُرسل ${FD.pending} تغييرات باسمك ويتحقق الجسر من توقيعها.</span><span style="font-size:13px;text-align:center">تمثيل بصري. الرمز الحقيقي يحمل التغييرات موقّعة.</span></div>`;
+    acts = `<button class="fb main" data-fd="handed" type="button">تمّ التسليم</button><button class="fb" data-fd="back" type="button">رجوع</button>`;
+  } else {
+    const blocked = FD.log.filter(l => l[1] !== 'تمّ');
+    body = `<span class="big">انتهت زيارات اليوم</span><span class="sub">أُنجز ${FD.log.filter(l => l[1] === 'تمّ').length}، وعوائق ${blocked.length}${blocked.length ? ': ' + blocked.map(b => b[1]).join('، ') : ''}.</span><span class="sub">ستصل العوائق لمديرتك مع أسبابها، لا كتأخير.</span>`;
+    acts = `<button class="fb" data-fd="reset" type="button">من البداية</button>`;
+  }
+  ph.innerHTML = top + `<div class="ph-body" aria-live="polite">${body}</div><div class="ph-acts">${acts}</div>`;
+  if(FD.screen === 'hand') drawCode();
+}
+function drawCode(){
+  const c = $('#qr'), g = c.getContext('2d'), N = 29, r = rng(FD.pending * 31 + 7); g.fillStyle = '#fff'; g.fillRect(0, 0, N, N); g.fillStyle = '#000';
+  const finder = (x, y) => { g.fillRect(x, y, 7, 7); g.fillStyle = '#fff'; g.fillRect(x + 1, y + 1, 5, 5); g.fillStyle = '#000'; g.fillRect(x + 2, y + 2, 3, 3); };
+  for(let y = 0; y < N; y++) for(let x = 0; x < N; x++){ const inF = (x < 8 && y < 8) || (x > N - 9 && y < 8) || (x < 8 && y > N - 9); if(!inF && r() > .52) g.fillRect(x, y, 1, 1); }
+  finder(0, 0); finder(N - 7, 0); finder(0, N - 7);
+}
+function fdInit(){
+  $('#phone').addEventListener('click', e => { const b = e.target.closest('[data-fd]'); if(!b) return; const a = b.dataset.fd; buzz();
+    const adv = () => { FD.i++; FD.screen = FD.i >= VISITS.length ? 'end' : 'task'; };
+    if(a === 'done'){ FD.log.push([VISITS[FD.i][0], 'تمّ']); FD.pending++; adv(); }
+    else if(a === 'next'){ FD.log.push([VISITS[FD.i][0], 'أُجّل']); adv(); }
+    else if(a === 'block') FD.screen = 'block';
+    else if(a[0] === 'r'){ FD.log.push([VISITS[FD.i][0], REASONS[+a.slice(1)]]); FD.pending++; adv(); }
+    else if(a === 'hand') FD.screen = 'hand';
+    else if(a === 'handed'){ FD.pending = 0; FD.screen = FD.i >= VISITS.length ? 'end' : 'task'; }
+    else if(a === 'back') FD.screen = 'task';
+    else if(a === 'reset'){ Object.assign(FD, {i: 0, pending: 2, screen: 'task', log: []}); }
+    fdRender(); const f = $('#phone [data-fd]'); if(f) f.focus({preventScroll: true}); });
+  $('#fdSun').addEventListener('click', e => { const on = $('#phone').dataset.sun !== 'true'; $('#phone').dataset.sun = on; e.currentTarget.setAttribute('aria-pressed', on); e.currentTarget.textContent = on ? 'وضع الشمس' : 'وضع الليل'; });
+  $('#fdReset').addEventListener('click', () => { Object.assign(FD, {i: 0, pending: 2, screen: 'task', log: []}); fdRender(); });
+  fdRender();
+}
+
+/* ================= الأفكار الأجرأ ================= */
+const IDEAS = [
+  ['النهر والأهوسة', 'كل استحقاق منحة «هويس» على نهر، وعملك قوارب يجب أن تعبره قبل أن يُغلق. ترى الطابور قبل أسبوعين، لا قبل يومين.', [['متوسط', 'ok'], ['ابتكار', ''], ['يبني على الجدولة العكسية', '']]],
+  ['قمر الشهر', 'الشهر الهجري حلقة أطوار قمرية، والالتزامات نجوم حولها، ورمضان يضيء الحلقة كلها. نظرة شهرية بلا شبكة تقويم.', [['سهل', 'ok'], ['ابتكار', '']]],
+  ['رسالة من أمس', 'الختام يكتب سطرًا لنفسك صباح الغد، فتفتح التطبيق على صوتك أنت لا على قائمة.', [['سهل', 'ok'], ['Scullin 2018، Masicampo 2011 [ب]', '']]],
+  ['مرآة التقدير', 'قبل أن تقدّر، يريك نَسَق ثلاث مهام مشابهة وكم أخذت فعلًا. النظرة من الخارج بدل التخمين.', [['سهل', 'ok'], ['Buehler 1994 [أ]', '']]],
+  ['التسليم بالرمز', 'لا شبكة؟ تغييراتك تنتقل إلى هاتف زميل متصل برمز QR، والجسر يتحقق من توقيعها.', [['متوسط', 'ok'], ['المسح: أندرويد فقط [غ]', 'no']]],
+  ['وضع الغياب الطارئ', 'زر واحد: «أنا غير متاح 3 أيام». وعودك المفتوحة تنتقل إلى زميل تسمّيه، مع ملاحظات الاستئناف. لعمل قد ينقطع فيه أحد فجأة.', [['متوسط', 'ok'], ['صلاحيات على الخادم', ''], ['ابتكار', '']]],
+  ['ميزان الفريق', 'المدير يرى ثقل كل عضو هذا الأسبوع، لا تفاصيل مهامه. عدالة في التوزيع دون رقابة.', [['متوسط', 'ok'], ['تماسك الفريق يحمي من الاحتراق [ب]', '']]],
+  ['الشورى السريعة', 'دقيقة في أول الأسبوع: كل عضو يرتّب أهم ثلاثة التزامات، والنتيجة ترتّب أولويات المشاريع.', [['سهل', 'ok'], ['ابتكار بلا دليل', '']]],
+  ['وضع الكهرباء', 'حين تنخفض البطارية: نص فقط، وتباين عالٍ، و«الآن» والالتقاط، ولا شيء آخر.', [['سهل', 'ok'], ['Battery API في Chrome فقط [غ]', 'no']]],
+  ['يوم الطوارئ', 'زر يطوي الخطة كلها: الطارئ في «الآن»، والباقي يُرحّل كتلة واحدة بقرار واحد لاحقًا.', [['سهل', 'ok'], ['ابتكار', '']]],
+  ['الأثر الصامت', 'ملخص الخميس لا يعدّ مهامك، بل من وصلهم عملك: أسر، وتقارير فتحت دفعات، ومتطوعون دُرّبوا.', [['متوسط', 'ok'], ['Grant [ب]', '']]],
+  ['الطاولة', 'على الحاسوب: المهام أوراق على مكتب، والقديم يصفرّ ويعلو كومة. العمر يُرى بلا أرقام.', [['متوسط', 'ok'], ['يحتاج بديلًا نصيًا لقارئ الشاشة', 'no']]],
+  ['ودجات الشاشة الرئيسية', 'كنا نريد «الآن» على شاشة القفل. غير ممكن في PWA. البديل: شارة الأيقونة للتطبيق المثبّت، و«الآن» أول ما يُرى عند الفتح.', [['غير ممكن الآن', 'no'], ['بديل جاهز', 'ok']]]
+];
+function ideasInit(){ $('#ideas').innerHTML = IDEAS.map(([t, p, tags]) => `<li><h3>${esc(t)}</h3><p>${esc(p)}</p><div class="tags">${tags.map(([x, c]) => `<span class="tag ${c}">${esc(x)}</span>`).join('')}</div></li>`).join(''); }
+
+function init(){ shadowInit(); msInit(); ttInit(); whInit(); scInit(); fdInit(); ideasInit(); }
+document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
+
+</script>
+</body>
+</html>
