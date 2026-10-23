@@ -220,7 +220,6 @@ const DEFAULT_BRIDGE = 'https://script.google.com/macros/s/AKfycbwwrcb-T-vBdPd2u
 let bridge = ''; try{ bridge = localStorage.getItem('daily-board-bridge') || ''; }catch(e){}
 if(!bridge) bridge = DEFAULT_BRIDGE;
 let auth = NasaqAuth.load();   /* رمز الجلسة من localStorage أو sessionStorage — nasaq-core.js */
-const ORG_DENIED = !NasaqAuth.allowOrg(ORG);   /* P2: نبض مؤسسة ممنوعة لا يُرسم */
 NasaqBridge.configure(()=>bridge);
 function post(body){
   /* داخل اللوح: اتصال اللوح القائم بدل فتح اتصال ثانٍ */
@@ -468,8 +467,7 @@ document.addEventListener('click', e=>{
 });
 $('orgs').innerHTML = Object.entries(ORGS).map(([k, o])=>'<a href="pulse.html' + (k !== 'medics' ? '?org=' + k : '') + '"' + (k === ORG ? ' class="on" aria-current="page"' : '') + '>' + o.name + '</a>').join('');
 $('toProjects').href = 'projects.html' + (ORG !== 'medics' ? '?org=' + ORG : '');
-if(ORG_DENIED) $('main').innerHTML = '<div class="empty" role="status"><b>لا صلاحيات؛ راجع المالك</b><br>لم تُمنح لحسابك صلاحية على مشاريع ' + ORGS[ORG].name + '.</div>';
-else load();
+load();
 </script>
 <footer class="nasaq-copy" dir="rtl">© 2026 نَسَق · Mohammed S. Ellouh — جميع الحقوق محفوظة</footer>
 <script src="nasaq-brand.js?v=20260927"></script>

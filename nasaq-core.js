@@ -195,22 +195,11 @@ window.NasaqAuth = (function(){
     /* وذاكرتا التقويم: مهام نوشن لكل شهر ومواعيد تقويم Google (CALKEY وGCAL_KEY في index.html) */
     del('localStorage', 'daily-board-cal-cache'); del('localStorage', 'daily-board-gcal');
     del('localStorage', 'daily-board-budget-h');   /* ارتفاع قائمة الميزانية المحفوظ (index.html: BUDGET_H_KEY) */
-    /* والمصروفات المزامَنة (لها notionId) نسخة من الجسر؛ غير المزامَن كتبه المستخدم فيبقى (P2، index.html: EKEY) */
-    try{ var ex = JSON.parse(localStorage.getItem('daily-board-expenses-v1') || 'null');
-      if(Array.isArray(ex) && ex.some(function(x){ return x && x.notionId; }))
-        localStorage.setItem('daily-board-expenses-v1', JSON.stringify(ex.filter(function(x){ return !(x && x.notionId); }))); }catch(e){}
   }
-  /* الصلاحيات (P2): perms كما يردّها الجسر للحساب غير المالك؛ المالك والوضع المحلي: كل شيء.
-     الجسر يمنع البيانات نفسها، وهذه للواجهة: لا تُرسم صفحة ولا قسم ولا أمر ممنوع.
-     ما غاب من perms.tabs يأخذ افتراضي الجسر (defaultPerms_)، وما غاب من orgs يُعدّ «none» */
-  var TABS0 = { today: true, tasks: true, flow: true, projects: false, expenses: false };
-  function perms(){ var a = load(); return a && !a.isOwner && a.perms || null; }
-  function allowTab(k){ var p = perms(); if(!p) return true; var t = p.tabs || {}; return k in t ? t[k] !== false : !!TABS0[k]; }
-  function allowOrg(o){ var p = perms(); if(!p) return true; return allowTab('projects') && ((p.orgs && p.orgs[o]) || 'none') !== 'none'; }
   function rememberedUser(){ try{ return localStorage.getItem(USER_KEY) || ''; }catch(e){ return ''; } }
   function rememberUser(u){ try{ u ? localStorage.setItem(USER_KEY, u) : localStorage.removeItem(USER_KEY); }catch(e){} }
   return { load: load, save: save, clear: clear, persistent: persistent,
-           rememberedUser: rememberedUser, rememberUser: rememberUser, perms: perms, allowTab: allowTab, allowOrg: allowOrg };
+           rememberedUser: rememberedUser, rememberUser: rememberUser };
 })();
 
 /* ---------- تهريب النصوص قبل إدخالها في HTML ----------
