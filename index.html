@@ -705,6 +705,12 @@ body.focus-open{overflow:hidden}
 .side-today .st-late{font-size:var(--fs-xs);color:var(--urgent);font-weight:600}
 /* عناصر «كهرمان» (K5): مخفية هنا، ويُظهرها layouts/nav-rail.css في data-nav="rail" وحده */
 .day-col,.greet-phrase,.tabbar .ind{display:none}
+/* P2: أقسام «اليوم» المأخوذة من صفحة ممنوعة لا تُرسم (data-deny يكتبه applyPerms) */
+:root[data-deny~="tasks"] :is(.c-now,.c-tasks,.c-focus,.archive,#sideToday,.hero-glance,#daySummary,#dcRing){display:none !important}
+:root[data-deny~="flow"] :is(.c-habits,.dc-habits){display:none !important}
+.noperm{max-width:560px;margin:var(--sp-8) auto;text-align:center}
+.noperm h2{margin:0 0 var(--sp-2);font-family:var(--font-head);font-size:var(--fs-xl)}
+.noperm p{margin:0;color:var(--muted);line-height:1.8}
 .page-title{font-family:var(--font-head);font-size:var(--fs-xl);font-weight:700;margin:0;color:var(--brand,var(--ink));line-height:1.2}
 .page-sub{margin:var(--sp-1) 0 0;color:var(--muted);font-size:var(--fs-base)}
 .page-date{font-size:var(--fs-sm);color:var(--muted)}
@@ -2265,6 +2271,8 @@ li.exp-row:nth-child(even){background:var(--stripe)}
   </aside>
 </div>
 </div>
+<!-- حساب بلا أي صفحة مسموحة (P2) -->
+<div class="tabpanel" id="tabNoperm" hidden><section class="card noperm" role="status"><h2>لا صلاحيات؛ راجع المالك</h2><p>لم تُمنح لحسابك أي صفحة في نَسَق بعد. اطلب من مالك اللوح أن يفتح لك ما تحتاجه من «الإعدادات ← الحسابات».</p></section></div>
 <footer class="nasaq-copy page-copy" dir="rtl">© 2026 نَسَق · Mohammed S. Ellouh — جميع الحقوق محفوظة</footer>
 </div><!-- /content -->
 <!-- عمود «يومك» (K5): يظهر في «كهرمان» وحده (data-nav="rail") وفي صفحة اليوم فقط؛ يُملأ من renderDayCol -->
@@ -2299,7 +2307,9 @@ li.exp-row:nth-child(even){background:var(--stripe)}
 <script src="nasaq-pulse.js?v=20260927c"></script>
 <script>
 const AR = n => fmtNum(n);   /* الأرقام إنجليزية — fmtNum وأخواتها في nasaq-core.js */
-const $ = id => document.getElementById(id);
+const $ = id => document.getElementById(id) || ownerNode(id);
+/* أقسام المالك المفصولة عن الصفحة لغير المالك (P2، gateOwnerSettings): تبقى عناصرها قابلة للإشارة من الكود دون أن تُرسم */
+function ownerNode(id){ if(typeof OWNER_SECTIONS === 'undefined') return null; for(const v of OWNER_SECTIONS.values()){ const e = v.sec.querySelector('#' + CSS.escape(id)); if(e || v.sec.id === id) return e || v.sec; } return null; }
 function localYMD(dt){ return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); }
 function iso(d){
   if(typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
@@ -2464,10 +2474,10 @@ document.addEventListener('keydown', e=>{
   if(!$('authOverlay').hidden || document.querySelector('.modal-overlay,.bsheet-back') || !$('settingsOverlay').hidden) return;
   /* بموضع المفتاح (e.code) لا بحرفه، فتعمل بلوحة المفاتيح العربية أيضًا («/» فيها «ظ»، والأرقام قد تكون هندية) */
   const k = e.key, c = e.code || '', dg = /^Digit([1-5])$/.exec(c) || /^Numpad([1-5])$/.exec(c);
-  if(k === 'n' || k === 'N' || c === 'KeyN'){ e.preventDefault(); showTab('board'); const i = $('tText'); i.scrollIntoView({block:'center'}); i.focus(); }
+  if((k === 'n' || k === 'N' || c === 'KeyN') && tabAllowed('tasks')){ e.preventDefault(); showTab('board'); const i = $('tText'); i.scrollIntoView({block:'center'}); i.focus(); }
   else if(k === '?' || (c === 'Slash' && e.shiftKey)){ e.preventDefault(); openShortcuts(); }
   else if(k === '/' || c === 'Slash' || c === 'NumpadDivide'){ e.preventDefault(); openPalette(); }
-  else if(dg && !e.shiftKey){ e.preventDefault(); showTab(['board', 'tasks', 'flow', 'projects', 'expenses'][+dg[1] - 1]); }
+  else if(dg && !e.shiftKey){ e.preventDefault(); const tn = ['board', 'tasks', 'flow', 'projects', 'expenses'][+dg[1] - 1]; if(tabAllowed(tn)) showTab(tn); }   /* P2: الممنوع لا يُفتح */
 });
 /* Ctrl+Z: «تراجع» الإشعار الظاهر من لوحة المفاتيح، بلا حاجة للوصول إلى زرّه */
 document.addEventListener('keydown', e=>{
@@ -2511,7 +2521,9 @@ const TAB_NAMES = ['board','tasks','flow','projects','expenses'];
 const PERM_TAB = {board: 'today', tasks: 'tasks', flow: 'flow', projects: 'projects', expenses: 'expenses'};
 function tabAllowed(n){
   const p = auth && !auth.isOwner && auth.perms;
-  return !p || !p.tabs || p.tabs[PERM_TAB[n]] !== false;
+  if(!p) return true;
+  const t = p.tabs || {}, k = PERM_TAB[n];
+  return k in t ? t[k] !== false : ['today', 'tasks', 'flow'].includes(k);   /* ما غاب يأخذ افتراضي الجسر (defaultPerms_) */
 }
 /* رابط لكل صفحة (#today، #tasks…) — يعمل زر الرجوع، ويمكن فتح صفحة مباشرة بالرابط */
 const TAB_HASH = {board:'today', tasks:'tasks', flow:'habits', projects:'projects', expenses:'expenses'};
@@ -2525,7 +2537,13 @@ function showTab(name){
   const prevTab = document.documentElement.dataset.tab;
   if(prevTab) TAB_Y[prevTab] = window.scrollY;
   if(TAB_NAMES.indexOf(name)<0) name = 'board';
-  if(!tabAllowed(name)) name = TAB_NAMES.find(tabAllowed) || 'board';
+  if(!tabAllowed(name)) name = TAB_NAMES.find(tabAllowed) || '';
+  $('tabNoperm').hidden = !!name;
+  if(!name){   /* حساب بلا أي صفحة مسموحة (P2): رسالة ثابتة بدل التحويل، فلا حلقة ولا قفل */
+    TAB_NAMES.forEach(n=>{ $('tab'+n[0].toUpperCase()+n.slice(1)).hidden = true; const b = $('tab'+n[0].toUpperCase()+n.slice(1)+'Btn'); b.classList.remove('active'); b.removeAttribute('aria-current'); });
+    document.documentElement.dataset.tab = 'none';
+    return;
+  }
   TAB_NAMES.forEach(n=>{
     $('tab'+n[0].toUpperCase()+n.slice(1)).hidden = (n!==name);
     const b = $('tab'+n[0].toUpperCase()+n.slice(1)+'Btn');
@@ -2767,7 +2785,7 @@ function setStateNote(msg){ const el = $('stateNote'); if(el) el.textContent = m
 function clockNow(){ return fmtTime(new Date()); }
 
 function fullState(){
-  return { board: snapshot(), flow: flow, expenses: expenses };
+  return tabAllowed('expenses') ? { board: snapshot(), flow: flow, expenses: expenses } : { board: snapshot(), flow: flow };   /* P2: لا تُرسل بعد المنع */
 }
 function saveAllLocal(){
   try{
@@ -2779,7 +2797,7 @@ function saveAllLocal(){
 function applyFullState(s){
   if(s.board) apply(s.board);
   if(s.flow) flow = Object.assign(flow, s.flow);
-  if(Array.isArray(s.expenses)) expenses = s.expenses;
+  if(Array.isArray(s.expenses) && tabAllowed('expenses')) expenses = s.expenses;
   render(); renderTimeline(); renderFlow(); renderExpenses();
 }
 
@@ -2887,7 +2905,9 @@ if(!bridge && DEFAULT_BRIDGE) bridge = DEFAULT_BRIDGE;
 let auth = NasaqAuth.load();
 function saveAuth(a, persist){
   auth = a;
+  if(!a) try{ expenses = expenses.filter(x=>!x.notionId); }catch(e){}   /* الخروج: نسخة الجسر من المصروفات لا تبقى (NasaqAuth.clear يمسحها من التخزين) */
   NasaqAuth.save(a, persist);
+  try{ applyPerms(); }catch(e){}   /* P2: كل ردّ perms، والخروج، وتبديل المستخدم */
 }
 /* نوشن متاح لصاحب الجسر وحده — لأن مفاتيحه ملكه */
 function notionOK(){ return !!(bridge && auth && auth.isOwner); }
@@ -3452,7 +3472,8 @@ function dayTitle(){
   const d = new Date(), day = NasaqDay.at(d.getHours() * 60 + d.getMinutes(), NasaqDay.times(d));
   const total = tasks.length, left = tasks.filter(t=>!t.done).length, m = document.createElement('mark');
   g.dataset.k5 = '1'; g.textContent = day.greeting + '،'; g.appendChild(document.createElement('br'));
-  if(!total){ m.textContent = 'صفحة بيضاء'; g.append('ويومك ', m, '.'); }
+  if(!tabAllowed('tasks')){ g.textContent = day.greeting + '.'; }   /* P2: لا عدد مهام لحساب مُنعت عنه المهام */
+  else if(!total){ m.textContent = 'صفحة بيضاء'; g.append('ويومك ', m, '.'); }
   else if(!left){ m.textContent = 'كل مهامك'; g.append('وأنهيت ', m, '.'); }
   else { m.textContent = countAr(left, 'مهمة واحدة', 'مهمتان', 'مهام', 'مهمة'); g.append('وأمامك ', m, '.'); }
   ph.textContent = heroPhrase.text || '';
@@ -5085,7 +5106,7 @@ function pomoFinish(){
   pomoRemaining = POMO_DEFAULT;
   if(pomoBellCancel) pomoBellCancel = null;   /* الجرس المجدول رنّ في موعده */
   else playSound('end');
-  notify('done', 'انتهت جلسة التركيز', t ? 'أُضيفت 25 دقيقة إلى: ' + t.text + ' — خذ استراحة 5 دقائق' : 'خذ استراحة 5 دقائق', {noSound:true, urgent:true, action:'focus'});
+  notify('done', 'انتهت جلسة التركيز', t ? 'أُضيفت 25 دقيقة إلى: ' + t.text + ' — خذ استراحة 5 دقائق' : 'خذ استراحة 5 دقائق', {noSound:true, urgent:true, action:'focus', need:'tasks'});
   clearTimeout(pomoBreakTimer);
   pomoBreakTimer = setTimeout(()=>{ if(!pomoRunning) notify('remind', 'انتهت الاستراحة', 'جاهز لجلسة أخرى؟', {action:'focus'}); }, 5 * 60 * 1000);
   if(t) sync(); else updatePomoLive();
@@ -5171,16 +5192,16 @@ updatePomoLive();
 
 /* ---------- لوحة الأوامر (Ctrl+K): انتقل، نفّذ، ابحث في المهام، أو أضف مهمة ---------- */
 const PAL_COMMANDS = [
-  {ic:'today', t:'اذهب إلى: اليوم',      k:'اليوم لوح الرئيسية today', run:()=>showTab('board')},
-  {ic:'list-checks', t:'اذهب إلى: المهام',     k:'المهام قائمة tasks',       run:()=>showTab('tasks')},
-  {ic:'sprout', t:'اذهب إلى: العادات',    k:'العادات روتين طاقة habits', run:()=>showTab('flow')},
-  {ic:'folder', t:'اذهب إلى: المشاريع',   k:'المشاريع مديكس هيوميرا projects', run:()=>showTab('projects')},
-  {ic:'wallet', t:'اذهب إلى: المصروفات',  k:'المصروفات ميزانية expenses', run:()=>showTab('expenses')},
-  {ic:'sun', t:'خطّط يومك',            k:'خطط تخطيط الصباح plan',     run:()=>openPlanDay()},
-  {ic:'maximize', t:'وضع التركيز',          k:'تركيز مؤقت بومودورو focus', run:()=>openFocusMode()},
+  {ic:'today', t:'اذهب إلى: اليوم',      k:'اليوم لوح الرئيسية today', run:()=>showTab('board'), need:'board'},
+  {ic:'list-checks', t:'اذهب إلى: المهام',     k:'المهام قائمة tasks',       run:()=>showTab('tasks'), need:'tasks'},
+  {ic:'sprout', t:'اذهب إلى: العادات',    k:'العادات روتين طاقة habits', run:()=>showTab('flow'), need:'flow'},
+  {ic:'folder', t:'اذهب إلى: المشاريع',   k:'المشاريع مديكس هيوميرا projects', run:()=>showTab('projects'), need:'projects'},
+  {ic:'wallet', t:'اذهب إلى: المصروفات',  k:'المصروفات ميزانية expenses', run:()=>showTab('expenses'), need:'expenses'},
+  {ic:'sun', t:'خطّط يومك',            k:'خطط تخطيط الصباح plan',     run:()=>openPlanDay(), need:'tasks'},
+  {ic:'maximize', t:'وضع التركيز',          k:'تركيز مؤقت بومودورو focus', run:()=>openFocusMode(), need:'tasks'},
   {ic:'contrast', t:'بدّل الوضع الداكن',    k:'داكن فاتح ليلي theme dark', run:()=>toggleTheme()},
-  {ic:'copy', t:'انسخ ملخص اليوم',      k:'نسخ ملخص copy',             run:()=>$('copyBtn').click()},
-  {ic:'clock', t:'ساعات عملي',           k:'ساعات العمل سعة capacity',  run:()=>openCapacityModal()},
+  {ic:'copy', t:'انسخ ملخص اليوم',      k:'نسخ ملخص copy',             run:()=>$('copyBtn').click(), need:'tasks'},
+  {ic:'clock', t:'ساعات عملي',           k:'ساعات العمل سعة capacity',  run:()=>openCapacityModal(), need:'tasks'},
   {ic:'settings', t:'الإعدادات',             k:'اعدادات إعدادات settings',  run:()=>openSettings()}
 ];
 let palItems = [], palIndex = 0, palReturn = null;
@@ -5206,10 +5227,11 @@ function renderPalette(){
   /* \b لا يعمل مع الحروف العربية، لذلك نتحقق من الفاصل صراحةً */
   const wantsAdd = /^(أضف|اضف|add)(?=[\s:：]|$)/i.test(raw);
   const addText = wantsAdd ? raw.replace(/^(أضف|اضف|add)\s*[:：]?\s*/i, '') : '';
-  if(raw && wantsAdd && addText){ item('plus', 'أضف مهمة: ' + addText, 'Enter', ()=>{ const t = quickTask(addText); showToast('أُضيفت: ' + t.text); }); }
-  const cmds = PAL_COMMANDS.filter(c=>!q || palNorm(c.t + ' ' + c.k).includes(q));
+  const tasksOK = tabAllowed('tasks');
+  if(raw && wantsAdd && addText && tasksOK){ item('plus', 'أضف مهمة: ' + addText, 'Enter', ()=>{ const t = quickTask(addText); showToast('أُضيفت: ' + t.text); }); }
+  const cmds = PAL_COMMANDS.filter(c=>(!c.need || tabAllowed(c.need)) && (!q || palNorm(c.t + ' ' + c.k).includes(q)));   /* P2: لا أمر لصفحة ممنوعة */
   if(cmds.length){ group('أوامر'); cmds.forEach(c=>item(c.ic, c.t, '', c.run)); }
-  if(q){
+  if(q && tasksOK){
     const found = tasks.filter(t=>palNorm([t.text, t.proj, t.donor, t.notes].join(' ')).includes(q))
       .sort((a,b)=>Number(a.done) - Number(b.done)).slice(0, 8);
     if(found.length){
@@ -5428,6 +5450,7 @@ const NOTIF_ACTIONS = {
 function focusBusy(){ try{ return pomoRunning; }catch(e){ return false; } }
 /* kind: remind | warn | done | info — o: key (مرة في اليوم)، urgent (يتجاوز الهدوء والتركيز)، noSound، noToast، action */
 function notify(kind, title, body, o = {}){
+  if(o.need && !tabAllowed(o.need)) return;   /* P2: لا إشعار من صفحة ممنوعة */
   if(o.key && sentToday(o.key)) return;
   if(focusBusy() && !o.urgent && !o.duringFocus){ deferredNotifs.push([kind, title, body, Object.assign({}, o, {key:null})]); return; }
   const item = {id: Date.now() + '-' + Math.random().toString(36).slice(2, 6), at: Date.now(), kind, title, body: body || '', read: false, action: o.action || null};
@@ -5518,13 +5541,13 @@ function aliveTick(){
     if(late) parts.push(AR(late) + ' متأخرة');
     if(stale) parts.push(AR(stale) + ' بانتظار رد تحتاج متابعة');
     if(parts.length) notify(late || stale ? 'warn' : 'info', 'يومك في لمحة', parts.join('، '), {key:'summary', action:'plan', noToast:true});
-    if(!plannedToday() && tasks.length) notify('info', 'خطّط يومك قبل أن يزدحم', 'أمس، ثم ما ينتظر قرارك، ثم أولوياتك', {key:'plan', action:'plan', noSound:true, noToast:true});
+    if(!plannedToday() && tasks.length) notify('info', 'خطّط يومك قبل أن يزدحم', 'أمس، ثم ما ينتظر قرارك، ثم أولوياتك', {key:'plan', action:'plan', noSound:true, noToast:true, need:'tasks'});
   }
   /* نهاية يوم العمل: «أغلق يومك» خلال الساعة التالية لنهايته */
   const we = hmToMin(alive.workEnd);
   if(ready && tasks.length && n >= we && n < we + 60){
     const done = tasks.filter(t=>t.done).length;
-    notify('remind', 'انتهى يوم عملك — أغلق يومك بسلام', AR(done) + ' من ' + AR(tasks.length) + ' منجزة', {key:'closeday', action:'close'});
+    notify('remind', 'انتهى يوم عملك — أغلق يومك بسلام', AR(done) + ' من ' + AR(tasks.length) + ' منجزة', {key:'closeday', action:'close', need:'tasks'});
   }
   if(!focusBusy() && deferredNotifs.length) flushDeferredNotifs();
 }
@@ -5726,6 +5749,7 @@ function renderFocus(){
     : '<li class="fv-empty">لا شيء عاجل الآن. أضف مهمة من الخانة أدناه.</li>';
 }
 function openFocus(add){
+  if(!tabAllowed('tasks')){ if(/^#focus/.test(location.hash)) history.replaceState(null, '', '#' + TAB_HASH.board); return; }   /* P2: شاشة التركيز قائمة مهام */
   FV.open = true; $('focusView').hidden = false; document.documentElement.classList.add('fv-on'); renderFocus();
   setTimeout(() => (add ? $('fvText') : ($('fvList').querySelector('.fv-chk') || $('fvText'))).focus({preventScroll: true}), 30);
 }
@@ -6944,7 +6968,7 @@ function renderExpenses(){
 
 let pushingExpenses = false;
 function pushDirtyExpenses(){
-  if(!notionOK() || pushingExpenses) return;
+  if(!notionOK() || pushingExpenses || !tabAllowed('expenses')) return;
   const pend = expenses.filter(x=>x.dirty);
   if(!pend.length) return;
   pushingExpenses = true;
@@ -7473,11 +7497,53 @@ function forcePwChange(then){
 }
 
 /* ---------- التبويبات المسموحة للحساب (الجسر يمنع البيانات؛ هذا يخفي ما لا يخصّه) ---------- */
+/* P2: تُستدعى مع كل حفظ للجلسة (ردّ perms عند الإقلاع والدخول، والخروج، وتبديل المستخدم) — saveAuth.
+   1) التبويبات الممنوعة لا تظهر، ولا تُفتح برابط ولا اختصار ولا أمر.
+   2) أقسام «اليوم» المأخوذة من صفحة ممنوعة لا تُرسم (data-deny على <html> ← قواعده في <style> أعلى الصفحة).
+   3) ما جاء من الجسر لصفحة سُحبت يُمسح من الجهاز؛ وما كتبه المستخدم ولم يُزامَن يبقى مخفيًا ولا يُرسل.
+   4) أقسام الإعدادات الخاصة بالمالك لا تبقى في الصفحة لغيره. */
 function applyPerms(){
   TAB_NAMES.forEach(n=>{ const b = $('tab' + n[0].toUpperCase() + n.slice(1) + 'Btn'); if(b) b.hidden = !tabAllowed(n); });
   document.querySelectorAll('.card.c-projects').forEach(c=>{ c.hidden = !tabAllowed('projects'); });
+  document.documentElement.dataset.deny = TAB_NAMES.filter(n=>!tabAllowed(n)).join(' ');
+  /* نسخ المشاريع وقوائم ملفاتها مصدرها الجسر: تُمسح كاملة لكل مؤسسة لم تعد مسموحة */
+  try{ ['medics', 'humera'].forEach(o=>{ if(!orgAllowed(o)){ localStorage.removeItem('daily-board-projects-cache-' + o); localStorage.removeItem('daily-board-projfiles-' + o); } }); }catch(e){}
+  if(!tabAllowed('expenses')) hideRevokedExpenses();
+  gateOwnerSettings();
   const cur = document.documentElement.dataset.tab;
-  if(cur && !tabAllowed(cur)) showTab(cur);
+  if(cur && (cur === 'none' || !tabAllowed(cur))) showTab(cur === 'none' ? 'board' : cur);
+}
+function orgAllowed(o){
+  const p = auth && !auth.isOwner && auth.perms;
+  return !p || (tabAllowed('projects') && ((p.orgs && p.orgs[o]) || 'none') !== 'none');
+}
+/* المصروفات بعد سحبها: المزامَن منها (له notionId) نسخة من الجسر فيُمسح؛ وغير المزامَن كتبه المستخدم فيبقى مخفيًا،
+   مع تنبيه لمرة واحدة، ولا يُرسل إلى الجسر بعد المنع (pushDirtyExpenses وfullState) */
+function hideRevokedExpenses(){
+  const n0 = expenses.length;
+  expenses = expenses.filter(x=>!x.notionId);
+  if(expenses.length !== n0){ try{ localStorage.setItem(EKEY, JSON.stringify(expenses)); }catch(e){} }
+  const k = 'daily-board-exp-hidden-note-' + (auth && auth.user || '');
+  let seen = false; try{ seen = !!localStorage.getItem(k); }catch(e){}
+  if(expenses.length && !seen){
+    try{ localStorage.setItem(k, '1'); }catch(e){}
+    setTimeout(()=>showToast('لديك مدخلات محلية غير مزامنة تُعرض عند عودة الصلاحية'), 400);
+  }
+}
+var OWNER_SECTIONS = new Map();   /* var: ownerNode يسأل عنها قبل هذا السطر أثناء التحميل */
+function gateOwnerSettings(){
+  document.querySelectorAll('.settings-body > section[data-owner]').forEach(sec=>{
+    if(setAllowed(sec)) return;
+    const mark = document.createComment('owner:' + sec.dataset.set);
+    sec.replaceWith(mark); OWNER_SECTIONS.set(sec.dataset.set, {sec, mark});
+  });
+  OWNER_SECTIONS.forEach((v, k)=>{
+    if(!v.mark.isConnected) return;
+    v.sec.hidden = false;
+    if(setAllowed(v.sec)){ v.mark.replaceWith(v.sec); OWNER_SECTIONS.delete(k); }
+  });
+  if(OWNER_SECTIONS.size && !$('settingsOverlay').hidden) showSetTab(setTab, false);
+  try{ syncSetNav(); }catch(e){}
 }
 function openSettings(k){
   $('setUser').textContent = auth ? auth.user : 'غير مسجّل';
