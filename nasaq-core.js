@@ -7,7 +7,13 @@
    ويُستدعى NasaqBridge.reset() عند تغيير رابط الجسر. */
 window.NasaqBridge = (function(){
 let getUrl = function(){ return ""; };
-function URL_(){ return getUrl() || ""; }
+/* منذ 19 نوفمبر 2026 صارت Google تردّ على الرابط العادي للجسر (script.google.com/macros/s/…)
+   بصفحة «Sorry, unable to open the file at present»، بينما الصيغة /a/~/macros/s/… تعمل للنشر نفسه.
+   نحوّل كل رابط جسر إليها هنا، فيشمل ذلك الرابط الافتراضي والرابط المحفوظ في المتصفح. */
+function fixUrl(u){
+  return String(u || "").replace(/^(https:\/\/script\.google\.com)\/macros\/(?:u\/\d+\/)?s\//, "$1/a/~/macros/s/");
+}
+function URL_(){ return fixUrl(getUrl()); }
 /* ---------- النقل إلى الجسر ----------
    تطبيقات Apps Script تردّ بإعادة توجيه إلى رابط مؤقّت على script.googleusercontent.com.
    استرجاع ذلك الرابط عبر fetch يفشل بـ 404 في بعض المتصفحات رغم أن السكربت نفّذ ونجح.
